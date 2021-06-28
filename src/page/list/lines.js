@@ -21,6 +21,30 @@ const LINES = [
             {position: [117.151749, 36.537283], name: '北裕山路', note: ''},
             {position: [117.148525, 36.541463], name: '建议终点', note: '往北是水泥路'},
         ]
+    },
+    {
+        name: '华山风景区 - 光华大道',
+        paths: [
+            {position: [117.075955,36.718342], name: '起点', note: ''},
+            {position: [117.089677,36.733301], name: '旁边山坡不错', note: ''},
+            {position: [117.087709,36.738589], name: '途经点', note: ''},
+            {position: [117.078358,36.739405], name: '途经点', note: ''},
+            {position: [117.065656,36.716442], name: '途经点', note: ''},
+            {position: [117.06926,36.71722], name: '景区南门', note: ''},
+            {position: [117.074283,36.718502], name: '终点', note: ''},
+        ]
+    },
+    {
+        name: '黄河乡道',
+        paths: [
+            {position: [117.039897,36.746698], name: '起点', note: ''},
+            {position: [117.08462,36.774927], name: '付家钓鱼', note: ''},
+            {position: [117.10125,36.782954], name: '途经点', note: ''},
+            {position: [117.123534,36.798376], name: '途经点', note: ''},
+            {position: [117.151922,36.835841], name: '途经点', note: ''},
+            {position: [117.171894,36.862967], name: '途经点', note: ''},
+            {position: [117.18833,36.90988], name: '终点', note: '可以接着往北走'},
+        ]
     }
 ]
 const COLORS = {

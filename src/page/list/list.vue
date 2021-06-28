@@ -30,7 +30,8 @@ export default {
             map: null,
             lines: mapData.LINES,
             colors: mapData.COLORS,
-            currentLine: 0
+            currentLine: 0,
+            mapRoute: null,  // 当前导航路线
         }
     },
     created() {
@@ -104,7 +105,7 @@ export default {
          * @param line 线路信息
          */
         loadLine(map, line) {
-            map.plugin('AMap.DragRoute', function () {
+            map.plugin('AMap.DragRoute', () => {
                 // path 是驾车导航的起、途径和终点，最多支持16个途经点
                 let path = []
                 line.paths.forEach(point => {
@@ -113,6 +114,7 @@ export default {
                 let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE)
                 // 查询导航路径并开启拖拽导航
                 route.search()
+                this.mapRoute = route
             })
         },
 
@@ -153,6 +155,10 @@ export default {
     },
     watch: {
         currentLine(nValue){
+            if (this.mapRoute){
+                this.mapRoute.destroy()
+                // TODO: clear all markers
+            }
             this.loadLine(this.map, this.lines[nValue])
             this.loadLineLables(this.map, this.lines[nValue])
         }
