@@ -17,19 +17,10 @@ const router = [
       name: 'page',
       path: '/page',
       component: Layout,
-      meta: {
-         title: '常用',
-         showInMenu: true,
-         icon: 'el-icon-house' // 菜单 icon 对应 Element UI 中的 ICON class 名
-      },
       children: [
          {
             name: 'list',
-            path: 'list/:lineNumber',
-            meta: {
-               title: '骑行列表',
-               showInMenu: true
-            },
+            path: 'list/:lineId',
             component: resolve => require(['@/page/list/list'], resolve),
          }
       ]
@@ -55,28 +46,29 @@ const router = [
    }
 ]
 
+// 该列表用于菜单展示
 const routes = [
    {
       name: 'page',
       path: '/page',
       component: Layout,
       meta: {
-         title: '常用',
+         title: '路线推荐',
          showInMenu: true,
-         icon: 'el-icon-house' // 菜单 icon 对应 Element UI 中的 ICON class 名
+         icon: 'el-icon-bicycle' // 菜单 icon 对应 Element UI 中的 ICON class 名
       },
       children: [
-         {
-            name: 'list',
-            path: 'list/1',
-            meta: {
-               title: '骑行列表',
-               showInMenu: true
-            },
-         }
+         // {name: 'line1', path: 'list/1', meta: {title: '路线一', showInMenu: true},},
       ]
    },
 ]
+
+import lines from "./page/list/lines";
+
+// 添加路线到菜单
+lines.LINES.forEach((line, index) => {
+   routes[0].children.push({name: `line${index + 1}`, path: `list/${index + 1}`, meta: {title: line.name, showInMenu: true}},)
+})
 
 export default {
    routes,

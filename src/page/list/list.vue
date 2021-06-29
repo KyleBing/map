@@ -3,11 +3,11 @@
         <div id="container" :style="`height: ${contentHeight}px`"></div>
 
         <a class="home" href="/">返回主页</a>
-        <div class="op-btns">
-            <el-radio-group size="mini" v-model="currentLine">
-                <el-radio-button v-for="(line, index) in lines" :key="line.name" :label="index">{{line.name}}</el-radio-button>
+        <!--        <div class="op-btns">
+                    <el-radio-group size="mini" v-model="currentLine">
+                        <el-radio-button v-for="(line, index) in lines" :key="line.name" :label="index">{{line.name}}</el-radio-button>
             </el-radio-group>
-        </div>
+        </div>-->
     </div>
 </template>
 
@@ -27,12 +27,11 @@ export default {
         return {
             isLoading: false,
             contentHeight: 400,
-            AMap: null,
             map: null,
             lines: mapData.LINES,
             colors: mapData.COLORS,
             currentLine: 0,
-            mapRoute: null,  // 当前导航路线
+            currentRouting: null,  // 当前导航路线
         }
     },
     created() {
@@ -85,6 +84,8 @@ export default {
                     // onError(result)
                 }
             });
+            let line = this.lines[parseInt(this.$route.params.lineId) - 1]
+            this.loadLine(this.map, line)
         }).catch(e => {
             console.log(e);
         })
@@ -113,40 +114,40 @@ export default {
                     path.push(point.position)
                 })
                 let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
-                    startMarkerOptions:{
-                        offset: new AMap.Pixel(-13,-40),
+                    startMarkerOptions: {
+                        offset: new AMap.Pixel(-13, -40),
                         icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26,40),
+                            size: new AMap.Size(26, 40),
                             image: ICON.start,
                             // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26,40) // 指定图标的大小，可以压缩图片
+                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
 
                         }),
                     },
-                    endMarkerOptions:{
-                        offset: new AMap.Pixel(-13,-40),
+                    endMarkerOptions: {
+                        offset: new AMap.Pixel(-13, -40),
                         icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26,40),
+                            size: new AMap.Size(26, 40),
                             image: ICON.end,
                             // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26,40) // 指定图标的大小，可以压缩图片
+                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
 
                         }),
                     },
                     midMarkerOptions: {
-                        offset: new AMap.Pixel(-5,-10),
+                        offset: new AMap.Pixel(-5, -10),
                         icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(15,15),
+                            size: new AMap.Size(15, 15),
                             image: ICON.midIcon,
                             // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(15,15) // 指定图标的大小，可以压缩图片
+                            imageSize: new AMap.Size(15, 15) // 指定图标的大小，可以压缩图片
 
                         }),
                     },
                 })
                 // 查询导航路径并开启拖拽导航
                 route.search()
-                this.mapRoute = route
+                this.currentRouting = route
             })
         },
 
@@ -186,23 +187,25 @@ export default {
 
     },
     watch: {
-        currentLine(nValue){
-            if (this.mapRoute){
-                this.mapRoute.destroy()
+        '$route'(to, from){
+            if (this.currentRouting) {
+                this.currentRouting.destroy()
                 // TODO: clear all markers
             }
-            this.loadLine(this.map, this.lines[nValue])
-            this.loadLineLables(this.map, this.lines[nValue])
-        }
+            let line = this.lines[parseInt(to.params.lineId) - 1]
+            this.loadLine(this.map, line)
+            this.loadLineLables(this.map, line)
+        },
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.map-container{
+.map-container {
     position: relative;
 }
-.op-btns{
+
+.op-btns {
     position: absolute;
     top: 30px;
     left: 30px;
