@@ -15,10 +15,11 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader';
 import mapData from './lines'
+import ICON from "@/page/list/icons";
 
 
 const MY_POSITION = [117.129533, 36.685668]
-
+let AMap = null
 
 export default {
     name: "list",
@@ -50,8 +51,8 @@ export default {
                 version: '1.1',   // AMapUI 缺省 1.1
                 plugins: [],       // 需要加载的 AMapUI ui插件
             },
-        }).then(AMap => {
-            this.AMap = AMap
+        }).then(map => {
+            AMap = map
             this.map = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
@@ -111,7 +112,38 @@ export default {
                 line.paths.forEach(point => {
                     path.push(point.position)
                 })
-                let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE)
+                let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
+                    startMarkerOptions:{
+                        offset: new AMap.Pixel(-13,-40),
+                        icon: new AMap.Icon({ // 设置途经点的图标
+                            size: new AMap.Size(26,40),
+                            image: ICON.start,
+                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                            imageSize: new AMap.Size(26,40) // 指定图标的大小，可以压缩图片
+
+                        }),
+                    },
+                    endMarkerOptions:{
+                        offset: new AMap.Pixel(-13,-40),
+                        icon: new AMap.Icon({ // 设置途经点的图标
+                            size: new AMap.Size(26,40),
+                            image: ICON.end,
+                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                            imageSize: new AMap.Size(26,40) // 指定图标的大小，可以压缩图片
+
+                        }),
+                    },
+                    midMarkerOptions: {
+                        offset: new AMap.Pixel(-5,-10),
+                        icon: new AMap.Icon({ // 设置途经点的图标
+                            size: new AMap.Size(15,15),
+                            image: ICON.midIcon,
+                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                            imageSize: new AMap.Size(15,15) // 指定图标的大小，可以压缩图片
+
+                        }),
+                    },
+                })
                 // 查询导航路径并开启拖拽导航
                 route.search()
                 this.mapRoute = route
