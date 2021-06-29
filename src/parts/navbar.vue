@@ -28,14 +28,14 @@
 
 <script>
 import {mapMutations, mapState} from "vuex"
-import router from "@/router";
+import route from "@/router";
 
 export default {
     name: "navbar",
     created() {
         this.activeMenu = this.$route.path
         // 过滤 Router 中的路由，去除 showInMenu === false 的菜单
-        let submenuShow = router.filter(submenu => submenu.meta.showInMenu)
+        let submenuShow = route.routes.filter(submenu => submenu.meta.showInMenu)
         submenuShow.forEach(menu => {
             menu.children = menu.children.filter(menuItem => menuItem.meta.showInMenu)
             return menu

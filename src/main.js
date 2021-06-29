@@ -13,7 +13,7 @@ import route from "@/router";
 import Router from "vue-router"
 
 let router = new Router({
-   routes: route
+   routes: route.router
 })
 Vue.use(Router)
 

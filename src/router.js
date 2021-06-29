@@ -3,11 +3,11 @@ import Layout from "@/layout"
 import login from "@/page/login"
 import register from "@/page/register"
 
-export default [
+const router = [
    {
       name: 'index',
       path: '/',
-      redirect: '/page/list',
+      redirect: '/page/list/1',
       meta: { // meta 字段用于 navMenu 显示菜单
          title: '主页',
          showInMenu: false,
@@ -25,7 +25,7 @@ export default [
       children: [
          {
             name: 'list',
-            path: 'list',
+            path: 'list/:lineNumber',
             meta: {
                title: '骑行列表',
                showInMenu: true
@@ -34,7 +34,6 @@ export default [
          }
       ]
    },
-
 
    {
       name: 'login',
@@ -55,3 +54,31 @@ export default [
       component: register,
    }
 ]
+
+const routes = [
+   {
+      name: 'page',
+      path: '/page',
+      component: Layout,
+      meta: {
+         title: '常用',
+         showInMenu: true,
+         icon: 'el-icon-house' // 菜单 icon 对应 Element UI 中的 ICON class 名
+      },
+      children: [
+         {
+            name: 'list',
+            path: 'list/1',
+            meta: {
+               title: '骑行列表',
+               showInMenu: true
+            },
+         }
+      ]
+   },
+]
+
+export default {
+   routes,
+   router
+}
