@@ -189,8 +189,8 @@ export default {
     watch: {
         '$route'(to, from){
             if (this.currentRouting) {
-                this.currentRouting.destroy()
-                // TODO: clear all markers
+                this.currentRouting.destroy() // 清除当前路线
+                this.map.clearMap() // 删除所有 Marker
             }
             let line = this.lines[parseInt(to.params.lineId) - 1]
             this.loadLine(this.map, line)
