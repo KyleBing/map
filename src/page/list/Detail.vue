@@ -42,7 +42,7 @@ i{
     @extend .unselectable;
 }
 .detail{
-    padding: 5px 8px;
+    padding: 6px 8px;
     background-color: white;
     @include border-radius(10px);
     @include box-shadow(1px 1px 3px rgba(0,0,0,0.2));
@@ -52,7 +52,7 @@ i{
     left: 20px;
     &.closed{
         .title{
-            padding: 5px 0 5px;
+            padding: 6px 0 6px;
             border: none;
         }
     }
@@ -79,9 +79,13 @@ i{
         font-weight: bold;
         color: $text-main;
     }
-
 }
 .note{
+    padding: 8px 0 5px;
+    border-top: 1px solid $color-border;
+
+    line-height: 1.5;
+    color: $text-main;
     font-size: 0.9rem;
     margin-top: 5px;
 }
