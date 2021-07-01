@@ -4,9 +4,18 @@ import Vuex from "vuex"
 
 
 // element ui
-import ElementUI from 'element-ui';
+import { Button, Menu, Submenu, MenuItem, Form, FormItem, Input,  Container, Aside, Main} from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(ElementUI);
+Vue.use(Button);
+Vue.use(Menu);
+Vue.use(Submenu);
+Vue.use(MenuItem);
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(Input);
+Vue.use(Container);
+Vue.use(Aside);
+Vue.use(Main);
 
 // Router
 import route from "@/router";

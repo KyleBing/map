@@ -1,13 +1,8 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${contentHeight}px`"></div>
-
         <a class="home" href="/">返回主页</a>
-        <!--        <div class="op-btns">
-                    <el-radio-group size="mini" v-model="currentLine">
-                        <el-radio-button v-for="(line, index) in lines" :key="line.name" :label="index">{{line.name}}</el-radio-button>
-            </el-radio-group>
-        </div>-->
+
     </div>
 </template>
 
@@ -86,6 +81,7 @@ export default {
             });
             let line = this.lines[parseInt(this.$route.params.lineId) - 1]
             this.loadLine(this.map, line)
+            this.loadLineLabels(this.map, line)
         }).catch(e => {
             console.log(e);
         })
@@ -156,7 +152,7 @@ export default {
          * @param map
          * @param line 线路信息
          */
-        loadLineLables(map, line) {
+        loadLineLabels(map, line) {
             line.paths.forEach(item => {
                 this.addMarker(item, map)
             })
@@ -179,7 +175,7 @@ export default {
                 content: `
                <div class="marker">
                   <div class="title">${item.name}</div>
-                  <div class="note">${item.note}</div>
+                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
             });
             map.add(marker);
@@ -194,7 +190,7 @@ export default {
             }
             let line = this.lines[parseInt(to.params.lineId) - 1]
             this.loadLine(this.map, line)
-            this.loadLineLables(this.map, line)
+            this.loadLineLabels(this.map, line)
         },
     }
 }
