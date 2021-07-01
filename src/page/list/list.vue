@@ -1,7 +1,7 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${contentHeight}px`"></div>
-        <a class="home" href="/">返回主页</a>
+        <detail :line="activeLineObj"></detail>
 
     </div>
 </template>
@@ -11,6 +11,7 @@
 import AMapLoader from '@amap/amap-jsapi-loader';
 import mapData from './lines'
 import ICON from "@/page/list/icons";
+import Detail from "./Detail";
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -18,6 +19,7 @@ let AMap = null
 
 export default {
     name: "list",
+    components: {Detail},
     data() {
         return {
             isLoading: false,
@@ -25,7 +27,8 @@ export default {
             map: null,
             lines: mapData.LINES,
             colors: mapData.COLORS,
-            currentLine: 0,
+            currentLineId: 0,
+            activeLineObj: null, // 当前 Line 对象
             currentRouting: null,  // 当前导航路线
         }
     },
@@ -79,9 +82,9 @@ export default {
                     // onError(result)
                 }
             });
-            let line = this.lines[parseInt(this.$route.params.lineId) - 1]
-            this.loadLine(this.map, line)
-            this.loadLineLabels(this.map, line)
+            this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
+            this.loadLine(this.map, this.activeLineObj)
+            this.loadLineLabels(this.map, this.activeLineObj)
         }).catch(e => {
             console.log(e);
         })
@@ -188,9 +191,9 @@ export default {
                 this.currentRouting.destroy() // 清除当前路线
                 this.map.clearMap() // 删除所有 Marker
             }
-            let line = this.lines[parseInt(to.params.lineId) - 1]
-            this.loadLine(this.map, line)
-            this.loadLineLabels(this.map, line)
+            this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
+            this.loadLine(this.map, this.activeLineObj)
+            this.loadLineLabels(this.map, this.activeLineObj)
         },
     }
 }
@@ -201,10 +204,4 @@ export default {
     position: relative;
 }
 
-.op-btns {
-    position: absolute;
-    top: 30px;
-    left: 30px;
-
-}
 </style>
