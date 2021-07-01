@@ -1,3 +1,5 @@
+// note 字段中，使用 `|` 来作为 html 中的换行符
+
 const LINES = [
     {
         name: '金刚纂路',
