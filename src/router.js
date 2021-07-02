@@ -1,4 +1,4 @@
-import Layout from "@/layout"
+import Layout from "@/layout/layout"
 
 import login from "@/page/login"
 import register from "@/page/register"

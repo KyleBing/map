@@ -35,8 +35,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables";
-@import "../../scss/utility";
+@import "../../scss/plugin";
 
 i{
     @extend .unselectable;

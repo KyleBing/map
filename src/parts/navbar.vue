@@ -1,5 +1,5 @@
 <template>
-    <nav>
+    <nav :style="`height:${height}px`">
         <el-button :round="false"
                    @click="handleCollapseToggle"
                    type="primary"
@@ -32,6 +32,11 @@ import route from "@/router";
 
 export default {
     name: "navbar",
+    props: {
+        height:{
+            type: Number,
+        }
+    },
     created() {
         this.activeMenu = this.$route.path
         // 过滤 Router 中的路由，去除 showInMenu === false 的菜单
