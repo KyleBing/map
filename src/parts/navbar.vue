@@ -1,9 +1,10 @@
 <template>
     <nav :style="`height:${height}px`">
-        <el-button :round="false"
-                   @click="handleCollapseToggle"
-                   type="primary"
-                   :style="`width: ${navWidth}px`">{{ isCollapse ? '展开' : '折叠' }}
+        <el-button
+            size="small"
+            @click="handleCollapseToggle"
+            :style="`width: ${navWidth}px`">
+            {{ isCollapse ? '展开' : '折叠' }}
         </el-button>
         <el-menu
             :default-active="activeMenu"
@@ -89,12 +90,9 @@ export default {
 .el-menu {
     border: none;
 }
-
 .el-radio-group {
     padding: 10px;
 }
-
-
 .el-submenu{
     border-bottom: 1px solid #eeeeee;
 }

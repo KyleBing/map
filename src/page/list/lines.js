@@ -64,7 +64,7 @@ const LINES = [
         name: '黄河大坝附近',
         note: '春天的时候特别好看，两边的紫叶李都开花了，白色的一片，加上左边的蓝色小湖面，甚是好看',
         roadType: '柏油路',
-        months: '春，夏，秋',
+        months: '春',
         paths: [
             {position: [116.867337,36.647036], name: '起点', note: ''},
             {position: [116.836749,36.66289], name: '途经点', note: ''},

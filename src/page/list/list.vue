@@ -1,7 +1,8 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${contentHeight}px`"></div>
-        <detail :line="activeLineObj"></detail>
+        <detail v-if="activeLineObj" :line="activeLineObj"></detail>
+        <!-- 在有 activeLineObj 对象之后再显示 -->
 
     </div>
 </template>
@@ -12,6 +13,7 @@ import AMapLoader from '@amap/amap-jsapi-loader';
 import mapData from './lines'
 import ICON from "@/page/list/icons";
 import Detail from "./Detail";
+import lines from "./lines";
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -83,6 +85,8 @@ export default {
                 }
             });
             this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
+            console.log(this.activeLineObj, this.$route.params.lineId)
+
             this.loadLine(this.map, this.activeLineObj)
             this.loadLineLabels(this.map, this.activeLineObj)
         }).catch(e => {

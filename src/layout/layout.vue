@@ -34,7 +34,7 @@ export default {
             heightAside: 0,
             heightNavbar: 0,
             heightLogo: 100,
-            heightCopyright: 100
+            heightCopyright: 200
         }
     },
     created() {
