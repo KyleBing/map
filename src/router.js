@@ -7,7 +7,7 @@ const router = [
    {
       name: 'index',
       path: '/',
-      redirect: '/page/route/1',
+      redirect: '/route/1',
       meta: { // meta 字段用于 navMenu 显示菜单
          title: '主页',
          showInMenu: false,
@@ -63,7 +63,7 @@ const router = [
 ]
 
 // 该列表用于菜单展示
-const routes = [
+const routeMap = [
    {
       name: 'route',
       path: '/route',
@@ -96,10 +96,10 @@ import lines from "./page/route/lines";
 
 // 添加路线到菜单
 lines.LINES.forEach((line, index) => {
-   routes[0].children.push({name: `line${index + 1}`, path: `${index + 1}`, meta: {title: line.name, showInMenu: true}},)
+   routeMap[0].children.push({name: `line${index + 1}`, path: `${index + 1}`, meta: {title: index + 1 + ' - ' +  line.name, showInMenu: true}},)
 })
 
 export default {
-   routes,
+   routeMap,
    router
 }

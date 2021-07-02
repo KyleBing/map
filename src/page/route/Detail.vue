@@ -5,6 +5,7 @@
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i></h1>
         </div>
         <div class="content" v-if="showContent">
+            <div class="info"><p>路线区域：</p><p>{{line.area}}</p></div>
             <div class="info"><p>路面类型：</p><p>{{line.roadType}}</p></div>
             <div class="info"><p>推荐季节：</p><p>{{line.months}}</p></div>
             <p class="note">{{line.note}}</p>
