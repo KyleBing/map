@@ -14,18 +14,34 @@ const router = [
       },
    },
    {
-      name: 'page',
-      path: '/page',
+      name: 'route',
+      path: '/route',
       component: Layout,
       children: [
          {
             name: 'route',
-            path: 'route/:lineId',
+            path: ':lineId',
             component: resolve => require(['@/page/route/lines.vue'], resolve),
+         },
+         {
+            name: 'tool',
+            path: 'tool',
+            component: resolve => require(['@/page/tool/tool'], resolve),
          }
       ]
    },
-
+   {
+      name: 'tool',
+      path: '/tool',
+      component: Layout,
+      children: [
+         {
+            name: 'tool',
+            path: 'tool',
+            component: resolve => require(['@/page/tool/tool'], resolve),
+         }
+      ]
+   },
    {
       name: 'login',
       path: '/login',
@@ -49,16 +65,29 @@ const router = [
 // 该列表用于菜单展示
 const routes = [
    {
-      name: 'page',
-      path: '/page',
+      name: 'route',
+      path: '/route',
       component: Layout,
       meta: {
          title: '路线推荐',
          showInMenu: true,
-         icon: 'el-icon-bicycle' // 菜单 icon 对应 Element UI 中的 ICON class 名
+         icon: 'el-icon-wind-power' // 菜单 icon 对应 Element UI 中的 ICON class 名
       },
       children: [
          // {name: 'line1', path: 'list/1', meta: {title: '路线一', showInMenu: true},},
+      ]
+   },
+   {
+      name: 'tool',
+      path: '/tool',
+      component: Layout,
+      meta: {
+         title: '地图工具',
+         showInMenu: true,
+         icon: 'el-icon-position' // 菜单 icon 对应 Element UI 中的 ICON class 名
+      },
+      children: [
+         {name: 'tool', path: 'tool', meta: {title: '工具', showInMenu: true},},
       ]
    },
 ]
@@ -67,7 +96,7 @@ import lines from "./page/route/lines";
 
 // 添加路线到菜单
 lines.LINES.forEach((line, index) => {
-   routes[0].children.push({name: `line${index + 1}`, path: `route/${index + 1}`, meta: {title: line.name, showInMenu: true}},)
+   routes[0].children.push({name: `line${index + 1}`, path: `${index + 1}`, meta: {title: line.name, showInMenu: true}},)
 })
 
 export default {
