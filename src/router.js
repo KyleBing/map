@@ -7,7 +7,7 @@ const router = [
    {
       name: 'index',
       path: '/',
-      redirect: '/page/list/1',
+      redirect: '/page/route/1',
       meta: { // meta 字段用于 navMenu 显示菜单
          title: '主页',
          showInMenu: false,
@@ -19,9 +19,9 @@ const router = [
       component: Layout,
       children: [
          {
-            name: 'list',
-            path: 'list/:lineId',
-            component: resolve => require(['@/page/list/list'], resolve),
+            name: 'route',
+            path: 'route/:lineId',
+            component: resolve => require(['@/page/route/lines.vue'], resolve),
          }
       ]
    },
@@ -63,11 +63,11 @@ const routes = [
    },
 ]
 
-import lines from "./page/list/lines";
+import lines from "./page/route/lines";
 
 // 添加路线到菜单
 lines.LINES.forEach((line, index) => {
-   routes[0].children.push({name: `line${index + 1}`, path: `list/${index + 1}`, meta: {title: line.name, showInMenu: true}},)
+   routes[0].children.push({name: `line${index + 1}`, path: `route/${index + 1}`, meta: {title: line.name, showInMenu: true}},)
 })
 
 export default {
