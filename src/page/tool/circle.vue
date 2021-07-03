@@ -4,8 +4,10 @@
         <circle-panel
             @pick-start="pickLocationStart"
             @pick-stop="pickLocationStop"
-            :location="location"
-            :data="circleData"></circle-panel>
+            @draw="drawCircle"
+            :lng="positionPicked.lng"
+            :lat="positionPicked.lat"
+            v-model="circleData"></circle-panel>
     </div>
 </template>
 
@@ -34,9 +36,20 @@ export default {
             currentLineId: 0,
             activeLineObj: null, // 当前 Line 对象
             currentRouting: null,  // 当前导航路线
-            circleData: [], // 对应点的范围数据
+            circleData: [
+                {
+                    lng: 0, // lng
+                    lat: 0, // lat
+                    radius: 0, // 半径
+                    color: '#000000' //
+                }
+            ], // 对应点的范围数据
 
-            location: []
+            positionPicked: {
+                lng: 0,
+                lat: 0,
+                radius: 0
+            }
         }
     },
     created() {
@@ -91,16 +104,20 @@ export default {
         window.onresize = this.resizeMap
     },
     methods: {
+        drawCircle(circle){
+            this.addMarker(this.map, {position: circle.center, name: circle.name, note: circle.center.toString(',')})
+            this.addCircle(this.map, circle.center, '#000', circle.radius)
+        },
         // 设置地图中心点：用户坐标
         setMapCenterToUserLocation(status, res){
             if (status === 'complete') {
                 let center = [res.position.lng, res.position.lat]
                 this.map.setCenter(center)
-                this.addMarker({
+                this.addMarker(this.map, {
                     position: center,
                     name: '你的位置',
                     note: ''
-                }, this.map)
+                })
             } else {
                 console.log(res)
             }
@@ -110,7 +127,11 @@ export default {
             this.map.on('click', this.showLocation)
         },
         showLocation(res) {
-            this.location = [res.lnglat.lng, res.lnglat.lat]
+            console.log(res.lnglat.lng, res.lnglat.lat)
+            this.positionPicked = {
+                lng: res.lnglat.lng,
+                lat: res.lnglat.lat
+            }
         },
         // 结束拾取坐标
         pickLocationStop() {
@@ -179,7 +200,7 @@ export default {
          */
         loadLineLabels(map, line) {
             line.paths.forEach(item => {
-                this.addMarker(item, map)
+                this.addMarker(map, item)
             })
         },
         addCircle(map, position, borderColor, radius) {
@@ -194,7 +215,7 @@ export default {
             });
             map.add(circle);
         },
-        addMarker(item, map) {
+        addMarker(map, item) {
             let marker = new AMap.Marker({
                 position: item.position,
                 content: `

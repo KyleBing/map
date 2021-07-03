@@ -99,11 +99,11 @@ export default {
             if (status === 'complete') {
                 let center = [res.position.lng, res.position.lat]
                 this.map.setCenter(center)
-                this.addMarker({
+                this.addMarker(this.map, {
                     position: center,
                     name: '你的位置',
                     note: ''
-                }, this.map)
+                })
             } else {
                 console.log(res)
             }
@@ -172,7 +172,7 @@ export default {
          */
         loadLineLabels(map, line) {
             line.paths.forEach(item => {
-                this.addMarker(item, map)
+                this.addMarker(map, item)
             })
         },
         addCircle(map, position, borderColor, radius) {
@@ -187,7 +187,7 @@ export default {
             });
             map.add(circle);
         },
-        addMarker(item, map) {
+        addMarker(map, item) {
             let marker = new AMap.Marker({
                 position: item.position,
                 content: `
