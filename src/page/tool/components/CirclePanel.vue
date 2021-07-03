@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import TableInserter from "@/components/tableInserter";
 export default {
     props:{
         data: {
@@ -20,7 +19,6 @@ export default {
         }
     },
     name: "CirclePanel",
-    components: {TableInserter},
     data(){
         return {
             // location: [] // 经纬度
@@ -28,10 +26,10 @@ export default {
     },
     methods:{
         pickStart(){
-            this.$emit('pickStart', null)
+            this.$emit('pick-start', null)
         },
         pickStop(){
-            this.$emit('pickStop', null)
+            this.$emit('pick-stop', null)
         }
     }
 }

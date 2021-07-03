@@ -100,19 +100,15 @@ export default {
     },
     methods: {
         // 开始拾取坐标
-        pickLocationStart(){
+        pickLocationStart() {
             this.map.on('click', this.showLocation)
-            this.map.on('dbclick', this.showLocation)
-            this.map.on('mousemove', this.showLocation)
         },
-        showLocation(res){
-            console.log(res)
+        showLocation(res) {
+            this.location = [res.lnglat.lng, res.lnglat.lat]
         },
         // 结束拾取坐标
-        pickLocationStop(){
+        pickLocationStop() {
             this.map.off('click', this.showLocation)
-            this.map.off('dbclick', this.showLocation)
-            this.map.off('mousemove', this.showLocation)
         },
         resizeMap() {
             let mapContainer = document.getElementById('container');
@@ -206,7 +202,7 @@ export default {
 
     },
     watch: {
-        '$route'(to, from){
+        '$route'(to, from) {
             if (this.currentRouting) {
                 this.currentRouting.destroy() // 清除当前路线
                 this.map.clearMap() // 删除所有 Marker
