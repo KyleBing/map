@@ -49,7 +49,7 @@ export default {
             plugins: [
                 'AMap.ToolBar',
                 'AMap.Scale', // 比例尺
-                'AMap.Geolocation'
+                'AMap.Geolocation' // 定位
             ],
             AMapUI: {             // 是否加载 AMapUI，缺省不加载
                 version: '1.1',   // AMapUI 缺省 1.1
@@ -80,15 +80,7 @@ export default {
                 buttonPosition: 'RB'
             })
 
-            geolocation.getCurrentPosition(function (status, result) {
-                if (status === 'complete') {
-                    console.log(result)
-                    // onComplete(result)
-                } else {
-                    console.log(result)
-                    // onError(result)
-                }
-            });
+            geolocation.getCurrentPosition(this.setMapCenterToUserLocation);
 
         }).catch(e => {
             console.log(e);
@@ -99,6 +91,20 @@ export default {
         window.onresize = this.resizeMap
     },
     methods: {
+        // 设置地图中心点：用户坐标
+        setMapCenterToUserLocation(status, res){
+            if (status === 'complete') {
+                let center = [res.position.lng, res.position.lat]
+                this.map.setCenter(center)
+                this.addMarker({
+                    position: center,
+                    name: '你的位置',
+                    note: ''
+                }, this.map)
+            } else {
+                console.log(res)
+            }
+        },
         // 开始拾取坐标
         pickLocationStart() {
             this.map.on('click', this.showLocation)

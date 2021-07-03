@@ -20,7 +20,7 @@ const router = [
          title: '登录',
          showInMenu: false
       },
-      component: login,
+      component: resolve => require(['@/page/login.vue'], resolve),
    },
    {
       name: 'register',
@@ -29,12 +29,13 @@ const router = [
          title: '注册',
          showInMenu: false
       },
-      component: register,
+      component: resolve => require(['@/page/register.vue'], resolve),
    },
    {
       name: 'route',
       path: '/route',
       component: Layout,
+      redirect: '/route/1',
       children: [
          {
             name: 'line',
@@ -47,6 +48,7 @@ const router = [
       name: 'tool',
       path: '/tool',
       component: Layout,
+      redirect: '/tool/circle',
       children: [
          {
             name: 'circle',

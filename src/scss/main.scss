@@ -56,6 +56,6 @@ body{
 .card{
     padding: 6px 8px;
     background-color: white;
-    @include border-radius(10px);
+    @include border-radius(8px);
     @include box-shadow(1px 1px 3px rgba(0,0,0,0.2));
 }

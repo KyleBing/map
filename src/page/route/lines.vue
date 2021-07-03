@@ -75,18 +75,13 @@ export default {
                 buttonPosition: 'RB'
             })
 
-            geolocation.getCurrentPosition(function (status, result) {
-                if (status === 'complete') {
-                    console.log(result)
-                    // onComplete(result)
-                } else {
-                    console.log(result)
-                    // onError(result)
-                }
-            });
+            geolocation.getCurrentPosition(this.setMapCenterToUserLocation);
+
+            // 获取 Route 中的路线 ID
             this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
             console.log(this.activeLineObj, this.$route.params.lineId)
 
+            // 载入默认路线和标记
             this.loadLine(this.map, this.activeLineObj)
             this.loadLineLabels(this.map, this.activeLineObj)
         }).catch(e => {
@@ -98,6 +93,22 @@ export default {
         window.onresize = this.resizeMap
     },
     methods: {
+
+        // 设置地图中心点：用户坐标
+        setMapCenterToUserLocation(status, res){
+            if (status === 'complete') {
+                let center = [res.position.lng, res.position.lat]
+                this.map.setCenter(center)
+                this.addMarker({
+                    position: center,
+                    name: '你的位置',
+                    note: ''
+                }, this.map)
+            } else {
+                console.log(res)
+            }
+        },
+
         resizeMap() {
             let mapContainer = document.getElementById('container');
             mapContainer.style.height = window.innerHeight + "px";
