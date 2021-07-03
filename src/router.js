@@ -5,44 +5,6 @@ import register from "@/page/register"
 
 const router = [
    {
-      name: 'index',
-      path: '/',
-      redirect: '/route/1',
-      meta: { // meta 字段用于 navMenu 显示菜单
-         title: '主页',
-         showInMenu: false,
-      },
-   },
-   {
-      name: 'route',
-      path: '/route',
-      component: Layout,
-      children: [
-         {
-            name: 'route',
-            path: ':lineId',
-            component: resolve => require(['@/page/route/lines.vue'], resolve),
-         },
-         {
-            name: 'tool',
-            path: 'tool',
-            component: resolve => require(['@/page/tool/tool'], resolve),
-         }
-      ]
-   },
-   {
-      name: 'tool',
-      path: '/tool',
-      component: Layout,
-      children: [
-         {
-            name: 'tool',
-            path: 'tool',
-            component: resolve => require(['@/page/tool/tool'], resolve),
-         }
-      ]
-   },
-   {
       name: 'login',
       path: '/login',
       meta: {
@@ -59,7 +21,40 @@ const router = [
          showInMenu: false
       },
       component: register,
-   }
+   },
+   {
+      name: 'index',
+      path: '/',
+      redirect: '/route/1',
+      meta: { // meta 字段用于 navMenu 显示菜单
+         title: '主页',
+         showInMenu: false,
+      },
+   },
+   {
+      name: 'route',
+      path: '/route',
+      component: Layout,
+      children: [
+         {
+            name: 'line',
+            path: ':lineId',
+            component: resolve => require(['@/page/route/lines.vue'], resolve),
+         }
+      ]
+   },
+   {
+      name: 'tool',
+      path: '/tool',
+      component: Layout,
+      children: [
+         {
+            name: 'circle',
+            path: 'circle',
+            component: resolve => require(['@/page/tool/circle'], resolve),
+         }
+      ]
+   },
 ]
 
 // 该列表用于菜单展示
@@ -87,7 +82,7 @@ const routeMap = [
          icon: 'el-icon-position' // 菜单 icon 对应 Element UI 中的 ICON class 名
       },
       children: [
-         {name: 'tool', path: 'tool', meta: {title: '工具', showInMenu: true},},
+         {name: 'circle', path: 'circle', meta: {title: '范围工具', showInMenu: true},},
       ]
    },
 ]

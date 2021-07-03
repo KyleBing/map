@@ -7,6 +7,7 @@ const LINES = [
         note: '金刚纂路是一条比较曲折的山路，平坦，注意拐弯不可见的地方鸣笛示意',
         roadType: '柏油路',
         months: '春，夏，秋',
+        videoLink: '',
         paths: [
             {position: [117.111285, 36.658996], name: '奥体西', note: ''},
             {position: [117.119066, 36.647191], name: '龙洞立交桥', note: ''},
@@ -24,6 +25,7 @@ const LINES = [
         note: '上面的路会比较险，落差比较大',
         roadType: '柏油路',
         months: '春，夏，秋',
+        videoLink: '',
         paths: [
             {position: [117.164021, 36.529783], name: '潘洪路起点', note: ''},
             {position: [117.155944, 36.531921], name: '村庄', note: ''},
@@ -38,6 +40,7 @@ const LINES = [
         note: '很平缓的一段路，也能沿途看点风景，两边的树挺好的，途经居民区的时候注意减速',
         roadType: '柏油路',
         months: '春，夏，秋，冬',
+        videoLink: '',
         paths: [
             {position: [117.075955,36.718342], name: '起点', note: ''},
             {position: [117.089677,36.733301], name: '旁边山坡不错', note: ''},
@@ -54,6 +57,7 @@ const LINES = [
         note: '路两边是紫叶李，春天的时候开白花，夏末的时候，树下会有长草，很棒，还能看到黄河堤坝',
         roadType: '柏油路',
         months: '春，夏，秋',
+        videoLink: '',
         paths: [
             {position: [117.039897,36.746698], name: '起点', note: ''},
             {position: [117.08462,36.774927], name: '付家钓鱼', note: ''},
@@ -70,6 +74,7 @@ const LINES = [
         note: '春天的时候特别好看，两边的紫叶李都开花了，白色的一片，加上左边的蓝色小湖面，甚是好看',
         roadType: '柏油路',
         months: '春',
+        videoLink: '',
         paths: [
             {position: [116.867337,36.647036], name: '起点', note: ''},
             {position: [116.836749,36.66289], name: '途经点', note: ''},
@@ -85,6 +90,7 @@ const LINES = [
         note: '济南摩托车友最喜欢的一条路，辅路好走',
         roadType: '柏油路',
         months: '春、夏、秋、冬',
+        videoLink: '',
         paths: [
             {position: [117.52971,36.674825], name: '章丘区', note: ''},
             {position: [117.451066,36.670276], name: '圣井立交', note: ''},
@@ -97,9 +103,8 @@ const LINES = [
             {position: [117.120165,36.660012], name: '奥体中心', note: ''},
             {position: [117.100743,36.657516], name: '万象城', note: ''},
             {position: [117.071582,36.651508], name: '燕山立交', note: ''},
-            {position: [117.010074,36.648612], name: '山东体育中心', note: ''},
-            {position: [117.010074,36.648612], name: '八一立交', note: '建议走中间路，|走辅路还需要转两个弯'},
-            {position: [116.963553,36.648868], name: '腊山立交', note: ''},
+            {position: [116.997166,36.648618], name: '八一立交', note: '建议走中间路，|走辅路还需要转两个弯'},
+            {position: [116.933255,36.651579], name: '腊山立交', note: ''},
             {position: [116.889495,36.65012], name: '济西立交桥', note: ''},
             {position: [116.874072,36.647787], name: '经十西路', note: ''},
             {position: [116.842528,36.638568], name: '湿地公园', note: ''},
