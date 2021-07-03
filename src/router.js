@@ -5,6 +5,15 @@ import register from "@/page/register"
 
 const router = [
    {
+      name: 'index',
+      path: '/',
+      redirect: '/tool/circle',
+      meta: { // meta 字段用于 navMenu 显示菜单
+         title: '主页',
+         showInMenu: false,
+      },
+   },
+   {
       name: 'login',
       path: '/login',
       meta: {
@@ -21,15 +30,6 @@ const router = [
          showInMenu: false
       },
       component: register,
-   },
-   {
-      name: 'index',
-      path: '/',
-      redirect: '/route/1',
-      meta: { // meta 字段用于 navMenu 显示菜单
-         title: '主页',
-         showInMenu: false,
-      },
    },
    {
       name: 'route',

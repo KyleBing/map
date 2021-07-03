@@ -1,5 +1,5 @@
 <template>
-    <div :class="['detail', {'closed': !showContent}]">
+    <div :class="['detail', 'card', {'closed': !showContent}]">
         <div class="title">
             <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i></h1>
@@ -36,16 +36,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/plugin";
+@import "../../../scss/plugin";
 
 i{
     @extend .unselectable;
 }
 .detail{
-    padding: 6px 8px;
-    background-color: white;
-    @include border-radius(10px);
-    @include box-shadow(1px 1px 3px rgba(0,0,0,0.2));
     width: 300px;
     position: absolute;
     top: 20px;

@@ -12,7 +12,7 @@
 import AMapLoader from '@amap/amap-jsapi-loader';
 import mapData from './lines'
 import ICON from "@/page/route/icons";
-import Detail from "./Detail";
+import Detail from "./components/Detail";
 import lines from "./lines";
 
 

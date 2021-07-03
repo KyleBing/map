@@ -1,9 +1,11 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${contentHeight}px`"></div>
-        <detail v-if="activeLineObj" :line="activeLineObj"></detail>
-        <!-- 在有 activeLineObj 对象之后再显示 -->
-
+        <circle-panel
+            @pick-start="pickLocationStart"
+            @pick-stop="pickLocationStop"
+            :location="location"
+            :data="circleData"></circle-panel>
     </div>
 </template>
 
@@ -12,8 +14,8 @@
 import AMapLoader from '@amap/amap-jsapi-loader';
 import mapData from '../route/lines'
 import ICON from "@/page/route/icons";
-import Detail from "../route/Detail";
-import lines from "../route/lines";
+import Detail from "../route/components/Detail";
+import CirclePanel from "@/page/tool/components/CirclePanel";
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -21,7 +23,7 @@ let AMap = null
 
 export default {
     name: "tool",
-    components: {Detail},
+    components: {Detail, CirclePanel},
     data() {
         return {
             isLoading: false,
@@ -32,6 +34,9 @@ export default {
             currentLineId: 0,
             activeLineObj: null, // 当前 Line 对象
             currentRouting: null,  // 当前导航路线
+            circleData: [], // 对应点的范围数据
+
+            location: []
         }
     },
     created() {
@@ -84,11 +89,7 @@ export default {
                     // onError(result)
                 }
             });
-            this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
-            console.log(this.activeLineObj, this.$route.params.lineId)
 
-            this.loadLine(this.map, this.activeLineObj)
-            this.loadLineLabels(this.map, this.activeLineObj)
         }).catch(e => {
             console.log(e);
         })
@@ -98,6 +99,21 @@ export default {
         window.onresize = this.resizeMap
     },
     methods: {
+        // 开始拾取坐标
+        pickLocationStart(){
+            this.map.on('click', this.showLocation)
+            this.map.on('dbclick', this.showLocation)
+            this.map.on('mousemove', this.showLocation)
+        },
+        showLocation(res){
+            console.log(res)
+        },
+        // 结束拾取坐标
+        pickLocationStop(){
+            this.map.off('click', this.showLocation)
+            this.map.off('dbclick', this.showLocation)
+            this.map.off('mousemove', this.showLocation)
+        },
         resizeMap() {
             let mapContainer = document.getElementById('container');
             mapContainer.style.height = window.innerHeight + "px";
