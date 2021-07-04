@@ -11,6 +11,7 @@
             @select="handleMenu"
             @open="handleOpen"
             @close="handleClose"
+            :unique-opened="true"
             :collapse="navMenuIsClosed"
             :collapse-transition="false"
         >
