@@ -20,8 +20,10 @@
                     </div>
                 </td>
                 <td><el-input @keyup.native.enter="addNewCircle" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
-                <td><el-input @keyup.native.enter="addNewCircle" clearable ref="radius" size="mini" placeholder="半径" v-model="radius" type="number"></el-input></td>
-                <td></td>
+                <td><el-input @keyup.native.enter="addNewCircle" ref="radius" size="mini" placeholder="半径" v-model="radius" type="number"></el-input></td>
+                <td>
+                    <el-button size="mini" type="primary" @click="addNewCircle">添加</el-button>
+                </td>
             </tr>
                 <tr v-for="(item, index) in dataLocal" :key="index">
 
@@ -242,12 +244,11 @@ thead{
     }
 }
 tbody{
-
     tr:nth-child(2n + 1){
         background-color: #f2f2f2;
     }
     td{
-        padding: 2px 0 2px 5px;
+        padding: 2px 2px 2px 5px;
         &:last-child, &:first-child {
             text-align: center;
         }

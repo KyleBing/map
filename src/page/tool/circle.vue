@@ -127,7 +127,7 @@ export default {
                 this.map.setCenter(center)
                 this.addMarker(this.map, {
                     position: center,
-                    name: '你的位置',
+                    name: '我',
                     note: ''
                 })
             } else {
@@ -213,8 +213,8 @@ export default {
             let circle = new AMap.Circle({
                 center: position,         // 圆心位置
                 radius: radius * 1000,    // 圆半径
-                fillColor: 'white',       // 圆形填充颜色
-                fillOpacity: 0,           // 填充透明度
+                // fillColor: '#ffffff',       // 圆形填充颜色
+                // fillOpacity: 0.3,           // 填充透明度
                 strokeColor: borderColor, // 描边颜色
                 strokeOpacity: 1,         // 描边透明度
                 strokeWeight: 2,          // 描边宽度
