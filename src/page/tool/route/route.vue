@@ -140,7 +140,7 @@ export default {
 
         // 打印 路线数据
         printRoute(){
-            console.log(JSON.stringify(this.routeData))
+            console.log(JSON.stringify([...this.routeData].reverse()))
         },
 
         // 展示规划的路线
@@ -162,7 +162,7 @@ export default {
                 // path 是驾车导航的起、途径和终点，最多支持16个途经点
                 let path = []
                 line.paths.forEach(point => {
-                    path.push(point.position)
+                    path.unshift(point.position) // 之前存入的是倒序的，所以现在给正过来
                 })
                 let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
                     startMarkerOptions: {
