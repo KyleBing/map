@@ -35,10 +35,10 @@
                     <td>{{item.name}}</td>
                     <td>{{item.radius}} km</td>
                     <td>
-                        <div class="operation">
+                        <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < data.length - 1}]">
                             <div class="move">
-                                <i class="el-icon-caret-top up" v-if="index > 0"  @click="move(index, 'up')"></i>
-                                <i class="el-icon-caret-bottom down" v-if="index < data.length - 1" @click="move(index, 'down')"></i>
+                                <i class="el-icon-caret-top" v-if="index > 0"  @click="move(index, 'up')"></i>
+                                <i class="el-icon-caret-bottom" v-if="index < data.length - 1" @click="move(index, 'down')"></i>
                             </div>
                             <div class="delete">
                                 <i class="el-icon-circle-close" @click="circleDelete(index)"></i>
@@ -150,21 +150,18 @@ $height-btn: 28px;
     display: flex;
 }
 .delete{
-    flex-shrink: 0;
     i {
         @include border-radius(3px);
         margin: 0 auto;
         cursor: pointer;
-        color: white;
         text-align: center;
         font-size: 1rem;
         display: block;
         height: $height-btn - 2;
         width: $height-btn;
         line-height: $height-btn - 2;
-        background-color: $color-info;
-
         &:hover{
+            color: white;
             background-color: $color-danger;
         }
         &:active{
@@ -173,21 +170,31 @@ $height-btn: 28px;
     }
 }
 
+
+.align-items-start{
+    align-items: flex-start;
+}
+.align-items-end{
+    align-items: flex-end;
+}
+
 .move{
+    display: flex;
+    flex-flow: column nowrap;
     flex-shrink: 0;
     > *{
         margin: 0 auto;
         cursor: pointer;
-        color: white;
         text-align: center;
         font-size: 0.5rem;
         display: block;
         height: ( $height-btn - 2 )/2;
         width: ( $height-btn - 2 )/2 + 6;
         line-height: ( $height-btn - 2 )/2;
-        background-color: $color-info;
+        background-color: $color-border;
 
         &:hover{
+            color: white;
             background: $color-main;
         }
         &:active{

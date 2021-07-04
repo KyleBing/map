@@ -3,8 +3,11 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 export default  new Vuex.Store({
    state: {
-      navWidth: 200,
-      windowInsets: {}
+      navWidth: 200, // 导航宽度
+      windowInsets: { // 窗口数据
+         height: 0,
+         width: 0
+      }
    },
    getters: {
    },
