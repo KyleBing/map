@@ -2,12 +2,10 @@
     <div class="map-container">
         <div id="container" :style="`height: ${contentHeight}px`"></div>
         <circle-panel
-            @pick-start="pickLocationStart"
-            @pick-stop="pickLocationStop"
-            @draw="drawCircle"
+            @circleAdd="handleCircleAdd"
             :lng="positionPicked.lng"
             :lat="positionPicked.lat"
-            v-model="circleData"></circle-panel>
+            :data="circleData"></circle-panel>
     </div>
 </template>
 
@@ -22,7 +20,6 @@ import CirclePanel from "@/page/tool/components/CirclePanel";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
-
 export default {
     name: "tool",
     components: {Detail, CirclePanel},
@@ -37,19 +34,18 @@ export default {
             activeLineObj: null, // 当前 Line 对象
             currentRouting: null,  // 当前导航路线
             circleData: [
-                {
-                    lng: 0, // lng
-                    lat: 0, // lat
-                    radius: 0, // 半径
+/*                {
+                    lng: 234.5235, // lng
+                    lat: 34.53245, // lat
+                    radius: 2.4, // 半径
                     color: '#000000' //
-                }
+                },*/
             ], // 对应点的范围数据
 
             positionPicked: {
                 lng: 0,
                 lat: 0,
-                radius: 0
-            }
+            },
         }
     },
     created() {
@@ -62,7 +58,7 @@ export default {
             plugins: [
                 'AMap.ToolBar',
                 'AMap.Scale', // 比例尺
-                'AMap.Geolocation' // 定位
+                'AMap.Geolocation', // 定位
             ],
             AMapUI: {             // 是否加载 AMapUI，缺省不加载
                 version: '1.1',   // AMapUI 缺省 1.1
@@ -73,11 +69,10 @@ export default {
             this.map = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
-            });
+            })
 
-            this.map.addControl(new AMap.ToolBar());
-            this.map.addControl(new AMap.Scale());
-
+            this.map.addControl(new AMap.ToolBar())
+            this.map.addControl(new AMap.Scale())
 
             // 定位
             let geolocation = new AMap.Geolocation({
@@ -93,7 +88,9 @@ export default {
                 buttonPosition: 'RB'
             })
 
-            geolocation.getCurrentPosition(this.setMapCenterToUserLocation);
+            geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
+
+            this.pickLocationStart()
 
         }).catch(e => {
             console.log(e);
@@ -104,10 +101,43 @@ export default {
         window.onresize = this.resizeMap
     },
     methods: {
-        drawCircle(circle){
-            this.addMarker(this.map, {position: circle.center, name: circle.name, note: circle.center.toString(',')})
-            this.addCircle(this.map, circle.center, '#000', circle.radius)
+        zoomMenu(tag) {// 右键菜单缩放地图
+            if (tag === 0) {
+                this.map.zoomOut();
+            }
+            if (tag === 1) {
+                this.map.zoomIn();
+            }
+            this.menu.close();
         },
+        distanceMeasureMenu () {  // 右键菜单距离量测
+            this.mouseTool.rule();
+            this.menu.close();
+        },
+        addMarkerMenu () {  // 右键菜单添加Marker标记
+            this.mouseTool.close();
+            let marker = new AMap.Marker({
+                map: map,
+                position: this.contextMenuPositon // 基点位置
+            });
+            this.menu.close();
+        },
+
+        handleCircleAdd(circle){
+            this.circleData.push({
+                lng: this.positionPicked.lng,
+                lat: this.positionPicked.lat,
+                radius: circle.radius,
+                color: '#00b8e5',
+            })
+            this.addMarker(this.map, {
+                position: circle.center,
+                name: circle.name,
+                note: circle.center.toString(',')
+            })
+            this.addCircle(this.map, circle.center, '#00b8e5', circle.radius)
+        },
+
         // 设置地图中心点：用户坐标
         setMapCenterToUserLocation(status, res){
             if (status === 'complete') {
@@ -127,7 +157,6 @@ export default {
             this.map.on('click', this.showLocation)
         },
         showLocation(res) {
-            console.log(res.lnglat.lng, res.lnglat.lat)
             this.positionPicked = {
                 lng: res.lnglat.lng,
                 lat: res.lnglat.lat
@@ -240,11 +269,15 @@ export default {
         },
     }
 }
+
+
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/plugin";
 .map-container {
     position: relative;
 }
+
 
 </style>
