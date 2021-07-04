@@ -4,14 +4,15 @@
             size="small"
             @click="handleCollapseToggle"
             :style="`width: ${navWidth}px`">
-            {{ isCollapse ? '展开' : '折叠' }}
+            {{ navMenuIsClosed ? '展开' : '折叠' }}
         </el-button>
         <el-menu
             :default-active="activeMenu"
             @select="handleMenu"
             @open="handleOpen"
             @close="handleClose"
-            :collapse="isCollapse"
+            :collapse="navMenuIsClosed"
+            :collapse-transition="false"
         >
             <el-submenu :index="submenu.path" v-for="submenu in menus" :key="submenu.path">
                 <template slot="title">
@@ -51,24 +52,20 @@ export default {
     data() {
         return {
             activeMenu: '/page-components/canvas',
-            isCollapse: false,
             menus:[]
         };
     },
 
     computed: {
-        ...mapState(['navWidth'])
-    },
-    watch: {
-        isCollapse() {
-            this.SET_NAV_WIDTH(this.isCollapse ? 64 : 200)
-        }
+        ...mapState(['navWidth', 'navMenuIsClosed'])
     },
 
+
     methods: {
-        ...mapMutations(['SET_NAV_WIDTH']),
+        ...mapMutations(['SET_NAV_WIDTH', 'SET_NAV_MENU_STATUS']),
         handleCollapseToggle() {
-            this.isCollapse = !this.isCollapse
+            this.SET_NAV_MENU_STATUS(!this.navMenuIsClosed)
+            this.SET_NAV_WIDTH(this.navMenuIsClosed ? 64 : 200)
         },
         handleOpen() {
             // 处理导航组展开

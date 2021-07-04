@@ -7,7 +7,8 @@ export default  new Vuex.Store({
       windowInsets: { // 窗口数据
          height: 0,
          width: 0
-      }
+      },
+      navMenuIsClosed: false, // navMenu 是否折叠状态
    },
    getters: {
    },
@@ -17,6 +18,9 @@ export default  new Vuex.Store({
       },
       SET_WINDOW_INSETS(state, value){
          state.windowInsets = value
+      },
+      SET_NAV_MENU_STATUS(state, value){
+         state.navMenuIsClosed = value
       }
    }
 })

@@ -4,7 +4,7 @@
             <el-aside :style="`min-height: ${heightAside}px`" :width="`${navWidth}px`">
                 <logo :height="heightLogo"></logo>
                 <navbar :height="heightNavbar"/>
-                <copyright :height="heightCopyright"></copyright>
+                <copyright v-show="!navMenuIsClosed" :height="heightCopyright"></copyright>
             </el-aside>
             <el-container>
                 <el-main>
@@ -43,7 +43,7 @@ export default {
         window.onresize = this.onResize
     },
     computed: {
-        ...mapState(['navWidth'])
+        ...mapState(['navWidth', 'navMenuIsClosed'])
     },
     methods: {
         ...mapMutations(['SET_WINDOW_INSETS']),
