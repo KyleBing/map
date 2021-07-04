@@ -13,7 +13,6 @@ import AMapLoader from '@amap/amap-jsapi-loader';
 import mapData from './lines'
 import ICON from "@/page/route/icons";
 import Detail from "./components/Detail";
-import lines from "./lines";
 import {mapState} from "vuex";
 
 
@@ -116,11 +115,7 @@ export default {
             mapContainer.style.width = window.innerWidth + "px"
         },
 
-        /**
-         *
-         * @param map
-         * @param line 线路信息
-         */
+        // 载入路线信息
         loadLine(map, line) {
             map.plugin('AMap.DragRoute', () => {
                 // path 是驾车导航的起、途径和终点，最多支持16个途经点
@@ -166,11 +161,8 @@ export default {
             })
         },
 
-        /**
-         *
-         * @param map
-         * @param line 线路信息
-         */
+
+        // 添加路线 Label
         loadLineLabels(map, line) {
             line.paths.forEach(item => {
                 this.addMarker(map, item)

@@ -38,7 +38,12 @@ const router = [
          {
             name: 'circle',
             path: 'circle',
-            component: resolve => require(['@/page/tool/circle'], resolve),
+            component: resolve => require(['@/page/tool/circle/circle'], resolve),
+         },
+         {
+            name: 'route',
+            path: 'route',
+            component: resolve => require(['@/page/tool/route/route'], resolve),
          }
       ]
    },
@@ -69,7 +74,8 @@ const routeMap = [
          icon: 'el-icon-position' // 菜单 icon 对应 Element UI 中的 ICON class 名
       },
       children: [
-         {name: 'circle', path: 'circle', meta: {title: '范围工具', showInMenu: true},},
+         {name: 'circle', path: 'circle', meta: {title: '范围标记', showInMenu: true},},
+         {name: 'route', path: 'route', meta: {title: '路线标记', showInMenu: true},},
       ]
    },
 ]

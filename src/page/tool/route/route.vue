@@ -1,21 +1,19 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
-        <circle-panel
-            @circleAdd="handleCircleAdd"
+        <route-panel
+            @circleAdd="handleAddRoutePoint"
             :lng="positionPicked.lng"
             :lat="positionPicked.lat"
-            v-model="circleData"></circle-panel>
+            v-model="routeData"></route-panel>
     </div>
 </template>
 
 <script>
 
 import AMapLoader from '@amap/amap-jsapi-loader';
-import mapData from '../route/lines'
 import ICON from "@/page/route/icons";
-import Detail from "../route/components/Detail";
-import CirclePanel from "@/page/tool/components/CirclePanel";
+import RoutePanel from "@/page/tool/route/components/RoutePanel";
 
 import { mapState } from 'vuex'
 
@@ -24,22 +22,21 @@ const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 export default {
     name: "tool",
-    components: {Detail, CirclePanel},
+    components: {RoutePanel},
     data() {
         return {
             isLoading: false,
             contentHeight: 400,
             map: null,
-            lines: mapData.LINES,
-            colors: mapData.COLORS,
             currentLineId: 0,
             activeLineObj: null, // 当前 Line 对象
             currentRouting: null,  // 当前导航路线
-            circleData: [
+            routeData: [
 /*                {
+                    name: '',
                     lng: 234.5235, // lng
                     lat: 34.53245, // lat
-                    radius: 2.4, // 半径
+                    note: '', // 备注
                     color: '#000000' //
                 },*/
             ], // 对应点的范围数据
@@ -104,20 +101,19 @@ export default {
     },
     methods: {
         // 添加新标记点和圆圈
-        handleCircleAdd(circle){
-            this.circleData.push({
-                name: circle.name,
+        handleAddRoutePoint(routePoint){
+            this.routeData.push({
+                name: routePoint.name,
                 lng: this.positionPicked.lng,
                 lat: this.positionPicked.lat,
-                radius: circle.radius,
+                note: routePoint.note,
                 color: '#00b8e5',
             })
             this.addMarker(this.map, {
-                position: circle.center,
-                name: circle.name,
-                note: circle.radius + ' km'
+                position: routePoint.center,
+                name: routePoint.name,
+                note: routePoint.note
             })
-            this.addCircle(this.map, circle.center, '#00b8e5', circle.radius)
         },
 
         // 设置地图中心点：用户坐标
@@ -149,11 +145,8 @@ export default {
             this.map.off('click', this.showLocation)
         },
 
-        /**
-         *
-         * @param map
-         * @param line 线路信息
-         */
+
+        // 载入线路信息
         loadLine(map, line) {
             map.plugin('AMap.DragRoute', () => {
                 // path 是驾车导航的起、途径和终点，最多支持16个途经点
@@ -199,27 +192,11 @@ export default {
             })
         },
 
-        /**
-         *
-         * @param map
-         * @param line 线路信息
-         */
+        // 添加路线 label 线路信息
         loadLineLabels(map, line) {
             line.paths.forEach(item => {
                 this.addMarker(map, item)
             })
-        },
-        addCircle(map, position, borderColor, radius) {
-            let circle = new AMap.Circle({
-                center: position,         // 圆心位置
-                radius: radius * 1000,    // 圆半径
-                // fillColor: '#ffffff',       // 圆形填充颜色
-                // fillOpacity: 0.3,           // 填充透明度
-                strokeColor: borderColor, // 描边颜色
-                strokeOpacity: 1,         // 描边透明度
-                strokeWeight: 2,          // 描边宽度
-            });
-            map.add(circle);
         },
         addMarker(map, item) {
             let marker = new AMap.Marker({
@@ -251,7 +228,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/plugin";
+@import "../../../scss/plugin";
 .map-container {
     position: relative;
 }

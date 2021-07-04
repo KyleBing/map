@@ -19,10 +19,10 @@
                         <div class="lat">lat: {{lat || '--'}}</div>
                     </div>
                 </td>
-                <td><el-input @keyup.native.enter="addNewCircle" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
-                <td><el-input @keyup.native.enter="addNewCircle" ref="radius" size="mini" placeholder="半径" v-model="radius" type="number"></el-input></td>
+                <td><el-input @keyup.native.enter="addNewRoutePoint" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
+                <td><el-input @keyup.native.enter="addNewRoutePoint" ref="note" size="mini" placeholder="备注" v-model="note" ></el-input></td>
                 <td>
-                    <el-button size="mini" type="primary" @click="addNewCircle">添加</el-button>
+                    <el-button size="mini" type="primary" @click="addNewRoutePoint">添加</el-button>
                 </td>
             </tr>
                 <tr v-for="(item, index) in dataLocal" :key="index">
@@ -35,7 +35,7 @@
                         </div>
                     </td>
                     <td>{{item.name}}</td>
-                    <td>{{item.radius}} km</td>
+                    <td>{{item.note}}</td>
                     <td>
                         <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < data.length - 1}]">
                             <div class="move">
@@ -55,7 +55,7 @@
 
 <script>
 export default {
-    name: "CirclePanel",
+    name: "RoutePanel",
     props: {
         data: {type: Array},
         lng: {type: Number},
@@ -68,7 +68,7 @@ export default {
     data() {
         return {
             name: '', // 当前点的地名
-            radius: '1', // 半径：公里
+            note: '', // 标记note
         }
     },
     computed: {
@@ -77,7 +77,7 @@ export default {
         }
     },
     methods: {
-        addNewCircle(){
+        addNewRoutePoint(){
             if(this.validateInput()){
                 this.$emit('circleAdd', {
                     center: [this.lng, this.lat],
@@ -102,12 +102,12 @@ export default {
                 this.$refs.name.focus()
                 return false
             }
-            if (!this.radius){
+            if (!this.note){
                 this.$message({
                     message: '半径未填写',
                     type: 'warning'
                 })
-                this.$refs.radius.focus()
+                this.$refs.note.focus()
                 return false
             }
             return true
@@ -124,20 +124,13 @@ export default {
         circleDelete(index){
             this.data.splice(index, 1)
         }
-    },
-    watch: {
-        radius(newValue){
-            if (newValue < 0){
-                this.radius = 0
-            }
-        }
     }
 
 }
 </script>
 
 <style scoped lang="scss">
-@import "../../../scss/plugin";
+@import "../../../../scss/plugin";
 .circle-panel {
     width: 400px;
     position: absolute;
