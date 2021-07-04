@@ -226,19 +226,20 @@ $height-btn: 28px;
 }
 
 table{
-    font-size: 0.9rem;
     width: 100%;
 }
 thead{
     td {
+        font-size: 0.8rem;
+        color: $text-main;
         padding: 8px 2px 3px 5px;
         border-bottom: 1px solid $color-border;
         &:last-child, &:first-child {
             text-align: center;
         }
         &:nth-child(1) {width: 10%;}
-        &:nth-child(2) {width: 30%;}
-        &:nth-child(3) {width: 25%;}
+        &:nth-child(2) {width: 25%;}
+        &:nth-child(3) {width: 30%;}
         &:nth-child(4) {width: 20%;}
         &:nth-child(5) {width: 15%;}
     }
