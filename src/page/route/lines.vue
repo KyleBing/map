@@ -176,18 +176,6 @@ export default {
                 this.addMarker(map, item)
             })
         },
-        addCircle(map, position, borderColor, radius) {
-            let circle = new AMap.Circle({
-                center: position,         // 圆心位置
-                radius: radius * 1000,    // 圆半径
-                fillColor: 'white',       // 圆形填充颜色
-                fillOpacity: 0,           // 填充透明度
-                strokeColor: borderColor, // 描边颜色
-                strokeOpacity: 1,         // 描边透明度
-                strokeWeight: 2,          // 描边宽度
-            });
-            map.add(circle);
-        },
         addMarker(map, item) {
             let marker = new AMap.Marker({
                 position: item.position,

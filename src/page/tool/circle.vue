@@ -115,7 +115,7 @@ export default {
             this.addMarker(this.map, {
                 position: circle.center,
                 name: circle.name,
-                note: circle.center.toString(',')
+                note: circle.radius + ' km'
             })
             this.addCircle(this.map, circle.center, '#00b8e5', circle.radius)
         },

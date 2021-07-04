@@ -66,7 +66,7 @@ export default {
     data() {
         return {
             name: '', // 当前点的地名
-            radius: '', // 半径：公里
+            radius: '1', // 半径：公里
         }
     },
     computed: {
@@ -139,8 +139,8 @@ export default {
 .circle-panel {
     width: 400px;
     position: absolute;
-    left: 30px;
-    top: 30px;
+    left: 20px;
+    top: 20px;
     padding: 0;
 }
 
