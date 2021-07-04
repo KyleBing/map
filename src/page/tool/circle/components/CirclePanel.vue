@@ -4,8 +4,8 @@
             <thead>
                 <tr>
                     <td>#</td>
-                    <td>经纬度</td>
-                    <td>地点名称</td>
+                    <td>经纬</td>
+                    <td>地点</td>
                     <td>半径</td>
                     <td>操作</td>
                 </tr>
@@ -27,7 +27,7 @@
             </tr>
                 <tr v-for="(item, index) in dataLocal" :key="index">
 
-                    <td>{{index + 1}}</td>
+                    <td>{{dataLocal.length - index}}</td>
                     <td>
                         <div class="lnglat">
                             <div class="lng">lng: {{item.lng}}</div>
@@ -73,7 +73,7 @@ export default {
     },
     computed: {
         dataLocal(){
-            return [...this.data]
+            return [...this.data.reverse()]
         }
     },
     methods: {
@@ -248,6 +248,7 @@ tbody{
         background-color: #f2f2f2;
     }
     td{
+        font-size: 0.7rem;
         padding: 2px 2px 2px 5px;
         &:last-child, &:first-child {
             text-align: center;

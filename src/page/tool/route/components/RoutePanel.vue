@@ -1,12 +1,15 @@
 <template>
     <div class="circle-panel card">
+        <div class="toolbar">
+            <el-button size="mini" type="primary" @click="">展示路线</el-button>
+        </div>
         <table class="log">
             <thead>
                 <tr>
                     <td>#</td>
-                    <td>经纬度</td>
-                    <td>地点名称</td>
-                    <td>半径</td>
+                    <td>经纬</td>
+                    <td>地点</td>
+                    <td>备注</td>
                     <td>操作</td>
                 </tr>
             </thead>
@@ -27,11 +30,11 @@
             </tr>
                 <tr v-for="(item, index) in dataLocal" :key="index">
 
-                    <td>{{index + 1}}</td>
+                    <td>{{dataLocal.length - index}}</td>
                     <td>
                         <div class="lnglat">
-                            <div class="lng">lng: {{item.lng}}</div>
-                            <div class="lat">lat: {{item.lat}}</div>
+                            <div class="lng">lng: {{item.position[0]}}</div>
+                            <div class="lat">lat: {{item.position[1]}}</div>
                         </div>
                     </td>
                     <td>{{item.name}}</td>
@@ -43,7 +46,7 @@
                                 <i class="el-icon-caret-bottom" v-if="index < data.length - 1" @click="move(index, 'down')"></i>
                             </div>
                             <div class="delete">
-                                <i class="el-icon-circle-close" @click="circleDelete(index)"></i>
+                                <i class="el-icon-circle-close" @click="routePointDelete(index)"></i>
                             </div>
                         </div>
                     </td>
@@ -73,15 +76,15 @@ export default {
     },
     computed: {
         dataLocal(){
-            return [...this.data]
+            return [...this.data.reverse()]
         }
     },
     methods: {
         addNewRoutePoint(){
             if(this.validateInput()){
-                this.$emit('circleAdd', {
-                    center: [this.lng, this.lat],
-                    radius: this.radius,
+                this.$emit('pointAdd', {
+                    position: [this.lng, this.lat],
+                    note: this.note,
                     name: this.name
                 })
             }
@@ -102,14 +105,6 @@ export default {
                 this.$refs.name.focus()
                 return false
             }
-            if (!this.note){
-                this.$message({
-                    message: '半径未填写',
-                    type: 'warning'
-                })
-                this.$refs.note.focus()
-                return false
-            }
             return true
         },
         move(index, direction){
@@ -121,7 +116,7 @@ export default {
             tempData[index] = preItem
             this.$emit('setData', [...tempData])
         },
-        circleDelete(index){
+        routePointDelete(index){
             this.data.splice(index, 1)
         }
     }
@@ -241,6 +236,7 @@ tbody{
         background-color: #f2f2f2;
     }
     td{
+        font-size: 0.7rem;
         padding: 2px 2px 2px 5px;
         &:last-child, &:first-child {
             text-align: center;

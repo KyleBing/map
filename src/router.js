@@ -17,7 +17,7 @@ const router = [
       component: resolve => require(['@/page/register.vue'], resolve),
    },
    {
-      name: 'route',
+      name: 'routeline',
       path: '/route',
       component: Layout,
       redirect: '/route/1',

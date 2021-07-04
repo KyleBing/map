@@ -2,7 +2,7 @@
     <div class="map-container">
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
         <route-panel
-            @circleAdd="handleAddRoutePoint"
+            @pointAdd="handleAddRoutePoint"
             :lng="positionPicked.lng"
             :lat="positionPicked.lat"
             v-model="routeData"></route-panel>
@@ -28,14 +28,11 @@ export default {
             isLoading: false,
             contentHeight: 400,
             map: null,
-            currentLineId: 0,
-            activeLineObj: null, // 当前 Line 对象
             currentRouting: null,  // 当前导航路线
             routeData: [
 /*                {
                     name: '',
-                    lng: 234.5235, // lng
-                    lat: 34.53245, // lat
+                    position: [lng,lat]
                     note: '', // 备注
                     color: '#000000' //
                 },*/
@@ -89,7 +86,13 @@ export default {
 
             geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
 
-            this.pickLocationStart()
+            // 地图选点操作
+            this.map.on('click', res =>{
+                this.positionPicked = {
+                    lng: res.lnglat.lng,
+                    lat: res.lnglat.lat
+                }
+            })
 
         }).catch(e => {
             console.log(e);
@@ -104,13 +107,12 @@ export default {
         handleAddRoutePoint(routePoint){
             this.routeData.push({
                 name: routePoint.name,
-                lng: this.positionPicked.lng,
-                lat: this.positionPicked.lat,
+                position: [this.positionPicked.lng, this.positionPicked.lat],
                 note: routePoint.note,
                 color: '#00b8e5',
             })
             this.addMarker(this.map, {
-                position: routePoint.center,
+                position: routePoint.potition,
                 name: routePoint.name,
                 note: routePoint.note
             })
@@ -118,6 +120,7 @@ export default {
 
         // 设置地图中心点：用户坐标
         setMapCenterToUserLocation(status, res){
+            console.log(res)
             if (status === 'complete') {
                 let center = [res.position.lng, res.position.lat]
                 this.map.setCenter(center)
@@ -128,16 +131,6 @@ export default {
                 })
             } else {
                 console.log(res)
-            }
-        },
-        // 开始拾取坐标
-        pickLocationStart() {
-            this.map.on('click', this.showLocation)
-        },
-        showLocation(res) {
-            this.positionPicked = {
-                lng: res.lnglat.lng,
-                lat: res.lnglat.lat
             }
         },
         // 结束拾取坐标
@@ -212,15 +205,13 @@ export default {
 
     },
     watch: {
-        '$route'(to, from) {
-            if (this.currentRouting) {
-                this.currentRouting.destroy() // 清除当前路线
-                this.map.clearMap() // 删除所有 Marker
-            }
-            this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
-            this.loadLine(this.map, this.activeLineObj)
-            this.loadLineLabels(this.map, this.activeLineObj)
-        },
+        routeData(newValue){
+            if (newValue.length <= 0) return
+            this.map.clearMap()
+            newValue.forEach(item => {
+                this.addMarker(this.map, item)
+            })
+        }
     }
 }
 
@@ -232,6 +223,5 @@ export default {
 .map-container {
     position: relative;
 }
-
 
 </style>

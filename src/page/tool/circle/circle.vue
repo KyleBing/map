@@ -27,16 +27,10 @@ export default {
             isLoading: false,
             contentHeight: 400,
             map: null,
-            lines: mapData.LINES,
-            colors: mapData.COLORS,
-            currentLineId: 0,
-            activeLineObj: null, // 当前 Line 对象
-            currentRouting: null,  // 当前导航路线
             circleData: [
 /*                {
                     name: '',
-                    lng: 234.5235, // lng
-                    lat: 34.53245, // lat
+                    center: [lng,lat]
                     radius: 2.4, // 半径
                     color: '#000000' //
                 },*/
@@ -90,7 +84,13 @@ export default {
 
             geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
 
-            this.pickLocationStart()
+            // 地图选点操作
+            this.map.on('click', res =>{
+                this.positionPicked = {
+                    lng: res.lnglat.lng,
+                    lat: res.lnglat.lat
+                }
+            })
 
         }).catch(e => {
             console.log(e);
@@ -132,16 +132,6 @@ export default {
                 console.log(res)
             }
         },
-        // 开始拾取坐标
-        pickLocationStart() {
-            this.map.on('click', this.showLocation)
-        },
-        showLocation(res) {
-            this.positionPicked = {
-                lng: res.lnglat.lng,
-                lat: res.lnglat.lat
-            }
-        },
         // 结束拾取坐标
         pickLocationStop() {
             this.map.off('click', this.showLocation)
@@ -173,15 +163,6 @@ export default {
 
     },
     watch: {
-        '$route'(to, from) {
-            if (this.currentRouting) {
-                this.currentRouting.destroy() // 清除当前路线
-                this.map.clearMap() // 删除所有 Marker
-            }
-            this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
-            this.loadLine(this.map, this.activeLineObj)
-            this.loadLineLabels(this.map, this.activeLineObj)
-        },
     }
 }
 
