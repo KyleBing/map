@@ -1,13 +1,10 @@
 import Layout from "@/layout/layout"
 
-import login from "@/page/login"
-import register from "@/page/register"
-
 const router = [
    {
       name: 'index',
       path: '/',
-      redirect: '/route/1',
+      redirect: process.env.VUE_APP_DEFAULT_INDEX, // 根据环境不同，设定不同首页路径
       meta: { // meta 字段用于 navMenu 显示菜单
          title: '主页',
          showInMenu: false,
@@ -80,7 +77,7 @@ const routeMap = [
       component: Layout,
       meta: {
          title: '地图工具',
-         showInMenu: false,
+         showInMenu: true,
          icon: 'el-icon-position' // 菜单 icon 对应 Element UI 中的 ICON class 名
       },
       children: [
