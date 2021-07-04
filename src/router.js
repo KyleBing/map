@@ -5,27 +5,15 @@ const router = [
       name: 'index',
       path: '/',
       redirect: process.env.VUE_APP_DEFAULT_INDEX, // 根据环境不同，设定不同首页路径
-      meta: { // meta 字段用于 navMenu 显示菜单
-         title: '主页',
-         showInMenu: false,
-      },
    },
    {
       name: 'login',
       path: '/login',
-      meta: {
-         title: '登录',
-         showInMenu: false
-      },
       component: resolve => require(['@/page/login.vue'], resolve),
    },
    {
       name: 'register',
       path: '/register',
-      meta: {
-         title: '注册',
-         showInMenu: false
-      },
       component: resolve => require(['@/page/register.vue'], resolve),
    },
    {
