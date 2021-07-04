@@ -1,6 +1,6 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${contentHeight}px`"></div>
+        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
         <detail v-if="activeLineObj" :line="activeLineObj"></detail>
         <!-- 在有 activeLineObj 对象之后再显示 -->
 
@@ -14,6 +14,7 @@ import mapData from './lines'
 import ICON from "@/page/route/icons";
 import Detail from "./components/Detail";
 import lines from "./lines";
+import {mapState} from "vuex";
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -89,8 +90,8 @@ export default {
         })
 
     },
-    mounted() {
-        window.onresize = this.resizeMap
+    computed: {
+        ...mapState(['windowInsets'])
     },
     methods: {
 

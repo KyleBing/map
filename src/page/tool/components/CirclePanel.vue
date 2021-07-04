@@ -1,7 +1,5 @@
 <template>
     <div class="circle-panel card">
-
-
         <table class="log">
             <thead>
                 <tr>
@@ -13,7 +11,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, index) in data" :key="index">
+            <tr>
+                <td><i class="el-icon-aim"></i></td>
+                <td>
+                    <div class="lnglat">
+                        <div class="lng">lng: {{lng || '--'}}</div>
+                        <div class="lat">lat: {{lat || '--'}}</div>
+                    </div>
+                </td>
+                <td><el-input @keyup.native.enter="addNewCircle" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
+                <td><el-input @keyup.native.enter="addNewCircle" clearable ref="radius" size="mini" placeholder="半径" v-model="radius" type="number"></el-input></td>
+                <td></td>
+            </tr>
+                <tr v-for="(item, index) in dataLocal" :key="index">
+
                     <td>{{index + 1}}</td>
                     <td>
                         <div class="lnglat">
@@ -21,36 +32,23 @@
                             <div class="lat">lat: {{item.lat}}</div>
                         </div>
                     </td>
-                    <td>{{item.lng}}</td>
-
-                    <td>{{item.radius}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.radius}} km</td>
                     <td>
-                        <div class="move-operation">
-                            <i class="el-icon-caret-top up" v-if="index > 0"  @click="moveUp"></i>
-                            <i class="el-icon-caret-bottom down" v-if="index < data.length - 1" @click="moveDown"></i>
+                        <div class="operation">
+                            <div class="move">
+                                <i class="el-icon-caret-top up" v-if="index > 0"  @click="move(index, 'up')"></i>
+                                <i class="el-icon-caret-bottom down" v-if="index < data.length - 1" @click="move(index, 'down')"></i>
+                            </div>
+                            <div class="delete">
+                                <i class="el-icon-circle-close" @click="circleDelete(index)"></i>
+                            </div>
                         </div>
                     </td>
                 </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <div class="lnglat">
-                        <div class="lng">lng: {{lng}}</div>
-                        <div class="lat">lat: {{lat}}</div>
-                    </div>
-                </td>
-                <td><el-input size="mini" placeholder="地点" v-model="name"></el-input></td>
-                <td><el-input size="mini" placeholder="半径" v-model="radius" type="number"></el-input></td>
-            </tr>
             </tbody>
-
         </table>
-
-        <div class="toolbar">
-            <el-button size="mini" type="success" @click="addNewCircle">标记并画圈</el-button>
-        </div>
     </div>
-
 </template>
 
 <script>
@@ -61,10 +59,19 @@ export default {
         lng: {type: Number},
         lat: {type: Number},
     },
+    model: {
+        prop: 'data',
+        event: 'setData'
+    },
     data() {
         return {
             name: '', // 当前点的地名
             radius: '', // 半径：公里
+        }
+    },
+    computed: {
+        dataLocal(){
+            return [...this.data]
         }
     },
     methods: {
@@ -80,26 +87,41 @@ export default {
         validateInput(){
             if (!this.lng || !this.lat){
                 this.$message({
-                    message: '坐标未选定'
+                    message: '坐标未选定',
+                    type: 'warning'
                 })
                 return false
             }
             if (!this.name){
                 this.$message({
-                    message: '地名未填写'
+                    message: '地名未填写',
+                    type: 'warning'
                 })
+                this.$refs.name.focus()
                 return false
             }
             if (!this.radius){
                 this.$message({
-                    message: '半径未填写'
+                    message: '半径未填写',
+                    type: 'warning'
                 })
+                this.$refs.radius.focus()
                 return false
             }
             return true
         },
-        moveUp(){},
-        moveDown(){},
+        move(index, direction){
+            let indexExchange = direction === 'up'? index - 1 : index + 1
+            let tempItem = this.data[index]
+            let preItem = this.data[indexExchange]
+            let tempData = this.data // 临时数组
+            tempData[indexExchange] = tempItem
+            tempData[index] = preItem
+            this.$emit('setData', [...tempData])
+        },
+        circleDelete(index){
+            this.data.splice(index, 1)
+        }
     },
     watch: {
         radius(newValue){
@@ -122,10 +144,36 @@ export default {
     padding: 0;
 }
 
-
 $height-btn: 28px;
 
-.move-operation{
+.operation{
+    display: flex;
+}
+.delete{
+    flex-shrink: 0;
+    i {
+        @include border-radius(3px);
+        margin: 0 auto;
+        cursor: pointer;
+        color: white;
+        text-align: center;
+        font-size: 1rem;
+        display: block;
+        height: $height-btn - 2;
+        width: $height-btn;
+        line-height: $height-btn - 2;
+        background-color: $color-info;
+
+        &:hover{
+            background-color: $color-danger;
+        }
+        &:active{
+            transform: translateY(2px);
+        }
+    }
+}
+
+.move{
     flex-shrink: 0;
     > *{
         margin: 0 auto;
@@ -198,4 +246,5 @@ tbody{
         }
     }
 }
+
 </style>

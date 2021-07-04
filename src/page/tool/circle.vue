@@ -1,11 +1,11 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${contentHeight}px`"></div>
+        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
         <circle-panel
             @circleAdd="handleCircleAdd"
             :lng="positionPicked.lng"
             :lat="positionPicked.lat"
-            :data="circleData"></circle-panel>
+            v-model="circleData"></circle-panel>
     </div>
 </template>
 
@@ -16,6 +16,8 @@ import mapData from '../route/lines'
 import ICON from "@/page/route/icons";
 import Detail from "../route/components/Detail";
 import CirclePanel from "@/page/tool/components/CirclePanel";
+
+import { mapState } from 'vuex'
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -97,34 +99,14 @@ export default {
         })
 
     },
-    mounted() {
-        window.onresize = this.resizeMap
+    computed: {
+        ...mapState(['windowInsets'])
     },
     methods: {
-        zoomMenu(tag) {// 右键菜单缩放地图
-            if (tag === 0) {
-                this.map.zoomOut();
-            }
-            if (tag === 1) {
-                this.map.zoomIn();
-            }
-            this.menu.close();
-        },
-        distanceMeasureMenu () {  // 右键菜单距离量测
-            this.mouseTool.rule();
-            this.menu.close();
-        },
-        addMarkerMenu () {  // 右键菜单添加Marker标记
-            this.mouseTool.close();
-            let marker = new AMap.Marker({
-                map: map,
-                position: this.contextMenuPositon // 基点位置
-            });
-            this.menu.close();
-        },
-
+        // 添加新标记点和圆圈
         handleCircleAdd(circle){
             this.circleData.push({
+                name: circle.name,
                 lng: this.positionPicked.lng,
                 lat: this.positionPicked.lat,
                 radius: circle.radius,
@@ -165,11 +147,6 @@ export default {
         // 结束拾取坐标
         pickLocationStop() {
             this.map.off('click', this.showLocation)
-        },
-        resizeMap() {
-            let mapContainer = document.getElementById('container');
-            mapContainer.style.height = window.innerHeight + "px";
-            mapContainer.style.width = window.innerWidth + "px"
         },
 
         /**
