@@ -1,7 +1,8 @@
 <template>
     <div class="circle-panel card">
         <div class="toolbar">
-            <el-button size="mini" type="primary" @click="">展示路线</el-button>
+            <el-button size="mini" type="info" @click="$emit('print', null)">导出数据</el-button>
+            <el-button size="mini" type="primary" @click="$emit('showLine', null)">展示路线</el-button>
         </div>
         <table class="log">
             <thead>
@@ -76,7 +77,7 @@ export default {
     },
     computed: {
         dataLocal(){
-            return [...this.data.reverse()]
+            return [...this.data]
         }
     },
     methods: {
@@ -150,10 +151,6 @@ $height-btn: 28px;
         height: $height-btn - 2;
         width: $height-btn;
         line-height: $height-btn - 2;
-        &:hover{
-            color: white;
-            background-color: $color-danger;
-        }
         &:active{
             transform: translateY(2px);
         }
@@ -183,10 +180,6 @@ $height-btn: 28px;
         line-height: ( $height-btn - 2 )/2;
         background-color: $color-border;
 
-        &:hover{
-            color: white;
-            background: $color-main;
-        }
         &:active{
             transform: translateY(2px);
         }
@@ -232,6 +225,16 @@ thead{
     }
 }
 tbody{
+    tr:hover{
+        .move i{
+            color: white;
+            background: $color-main;
+        }
+        .delete i{
+            color: white;
+            background-color: $color-danger;
+        }
+    }
     tr:nth-child(2n + 1){
         background-color: #f2f2f2;
     }

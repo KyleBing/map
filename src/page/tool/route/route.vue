@@ -3,6 +3,8 @@
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
         <route-panel
             @pointAdd="handleAddRoutePoint"
+            @print="printRoute"
+            @showLine="showLine"
             :lng="positionPicked.lng"
             :lat="positionPicked.lat"
             v-model="routeData"></route-panel>
@@ -34,7 +36,6 @@ export default {
                     name: '',
                     position: [lng,lat]
                     note: '', // 备注
-                    color: '#000000' //
                 },*/
             ], // 对应点的范围数据
 
@@ -105,11 +106,10 @@ export default {
     methods: {
         // 添加新标记点和圆圈
         handleAddRoutePoint(routePoint){
-            this.routeData.push({
+            this.routeData.unshift({
                 name: routePoint.name,
                 position: [this.positionPicked.lng, this.positionPicked.lat],
                 note: routePoint.note,
-                color: '#00b8e5',
             })
             this.addMarker(this.map, {
                 position: routePoint.potition,
@@ -138,6 +138,23 @@ export default {
             this.map.off('click', this.showLocation)
         },
 
+        // 打印 路线数据
+        printRoute(){
+            console.log(JSON.stringify(this.routeData))
+        },
+
+        // 展示规划的路线
+        showLine(){
+            this.map.clearMap() // 删除地图上的所有标记
+            if (this.currentRouting){
+                this.currentRouting.destroy() // 删除之前的路线
+            }
+            let lineData = {
+                paths: this.routeData,
+            }
+            this.loadLine(this.map, lineData)
+            this.loadLineLabels(this.map, lineData)
+        },
 
         // 载入线路信息
         loadLine(map, line) {
