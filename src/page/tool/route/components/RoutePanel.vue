@@ -18,7 +18,7 @@
             <tr>
                 <td><i class="el-icon-aim"></i></td>
                 <td>
-                    <div class="lnglat">
+                    <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
                         <div class="lng">lng: {{lng || '--'}}</div>
                         <div class="lat">lat: {{lat || '--'}}</div>
                     </div>
@@ -33,7 +33,7 @@
 
                     <td>{{dataLocal.length - index}}</td>
                     <td>
-                        <div class="lnglat">
+                        <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
                             <div class="lng">lng: {{item.position[0]}}</div>
                             <div class="lat">lat: {{item.position[1]}}</div>
                         </div>
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import ClipboardJS from 'clipboard'
 export default {
     name: "RoutePanel",
     props: {
@@ -79,6 +80,10 @@ export default {
         dataLocal(){
             return [...this.data]
         }
+    },
+    mounted() {
+        let clipboard = new ClipboardJS('.lnglat')
+
     },
     methods: {
         addNewRoutePoint(){
@@ -193,11 +198,16 @@ $height-btn: 28px;
 }
 
 .lnglat{
+    cursor: pointer;
     flex-shrink: 0;
     .lng, .lat{
         font-size: 10px;
         height: ( $height-btn - 2 )/2;
         line-height: ( $height-btn - 2 )/2;
+    }
+    &:active{
+        transform: translateY(1px);
+        color: $color-main;
     }
 }
 

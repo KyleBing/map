@@ -14,7 +14,7 @@
             <tr>
                 <td><i class="el-icon-aim"></i></td>
                 <td>
-                    <div class="lnglat">
+                    <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
                         <div class="lng">lng: {{lng || '--'}}</div>
                         <div class="lat">lat: {{lat || '--'}}</div>
                     </div>
@@ -29,9 +29,9 @@
 
                     <td>{{dataLocal.length - index}}</td>
                     <td>
-                        <div class="lnglat">
-                            <div class="lng">lng: {{item.lng}}</div>
-                            <div class="lat">lat: {{item.lat}}</div>
+                        <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
+                            <div class="lng">lng: {{item.position[0]}}</div>
+                            <div class="lat">lat: {{item.position[1]}}</div>
                         </div>
                     </td>
                     <td>{{item.name}}</td>
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import ClipboardJS from 'clipboard'
 export default {
     name: "CirclePanel",
     props: {
@@ -75,6 +76,10 @@ export default {
         dataLocal(){
             return [...this.data.reverse()]
         }
+    },
+    mounted() {
+        let clipboard = new ClipboardJS('.lnglat')
+
     },
     methods: {
         addNewCircle(){
@@ -212,11 +217,16 @@ $height-btn: 28px;
 }
 
 .lnglat{
+    cursor: pointer;
     flex-shrink: 0;
     .lng, .lat{
         font-size: 10px;
         height: ( $height-btn - 2 )/2;
         line-height: ( $height-btn - 2 )/2;
+    }
+    &:active{
+        transform: translateY(1px);
+        color: $color-main;
     }
 }
 
