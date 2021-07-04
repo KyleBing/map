@@ -18,7 +18,7 @@
 <script>
 
 import navbar from "@/parts/navbar"
-import {mapState} from "vuex"
+import {mapState, mapMutations} from "vuex"
 import Copyright from "@/layout/copyright";
 import Logo from "@/layout/logo";
 
@@ -46,9 +46,14 @@ export default {
         ...mapState(['navWidth'])
     },
     methods: {
+        ...mapMutations(['SET_WINDOW_INSETS']),
         onResize(){
             this.heightAside = window.innerHeight
             this.heightNavbar = this.heightAside - this.heightLogo - this.heightCopyright
+            this.SET_WINDOW_INSETS({
+                height: window.innerHeight,
+                width: window.innerWidth
+            })
         }
     }
 }

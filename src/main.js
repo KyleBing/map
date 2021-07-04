@@ -9,7 +9,8 @@ import {
    Menu, Submenu, MenuItem,
    Form, FormItem, Input,
    Container, Aside, Main,
-    Table, TableColumn
+    Table, TableColumn,
+    Message
 } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(Button);
@@ -17,7 +18,7 @@ Vue.use(Menu);Vue.use(Submenu);Vue.use(MenuItem);
 Vue.use(Form);Vue.use(FormItem);Vue.use(Input);
 Vue.use(Container);Vue.use(Aside);Vue.use(Main);
 Vue.use(Table);Vue.use(TableColumn);
-
+Vue.prototype.$message = Message
 // Router
 import route from "@/router";
 import Router from "vue-router"
