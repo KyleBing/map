@@ -23,7 +23,7 @@ import { mapState } from 'vuex'
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 export default {
-    name: "tool",
+    name: "ToolRoute",
     components: {RoutePanel},
     data() {
         return {

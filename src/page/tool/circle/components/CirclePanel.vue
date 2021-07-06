@@ -30,18 +30,18 @@
                     <td>{{dataLocal.length - index}}</td>
                     <td>
                         <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
-                            <div class="lng">lng: {{item.position[0]}}</div>
-                            <div class="lat">lat: {{item.position[1]}}</div>
+                            <div class="lng">lng: {{item.center[0]}}</div>
+                            <div class="lat">lat: {{item.center[1]}}</div>
                         </div>
                     </td>
                     <td>{{item.name}}</td>
                     <td>{{item.radius}} km</td>
                     <td>
                         <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < data.length - 1}]">
-                            <div class="move">
+<!--                            <div class="move">
                                 <i class="el-icon-caret-top" v-if="index > 0"  @click="move(index, 'up')"></i>
                                 <i class="el-icon-caret-bottom" v-if="index < data.length - 1" @click="move(index, 'down')"></i>
-                            </div>
+                            </div>-->
                             <div class="delete">
                                 <i class="el-icon-circle-close" @click="circleDelete(index)"></i>
                             </div>
@@ -221,8 +221,8 @@ $height-btn: 28px;
     flex-shrink: 0;
     .lng, .lat{
         font-size: 10px;
-        height: ( $height-btn - 2 )/2;
-        line-height: ( $height-btn - 2 )/2;
+        height: ( $height-btn - 2 ) / 2;
+        line-height: ( $height-btn - 2 ) / 2;
     }
     &:active{
         transform: translateY(1px);

@@ -20,7 +20,7 @@ import { mapState } from 'vuex'
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 export default {
-    name: "tool",
+    name: "ToolCircle",
     components: {CirclePanel},
     data() {
         return {
@@ -105,8 +105,7 @@ export default {
         handleCircleAdd(circle){
             this.circleData.push({
                 name: circle.name,
-                lng: this.positionPicked.lng,
-                lat: this.positionPicked.lat,
+                center: [this.positionPicked.lng, this.positionPicked.lat],
                 radius: circle.radius,
                 color: '#00b8e5',
             })
@@ -163,6 +162,21 @@ export default {
 
     },
     watch: {
+        circleData(newValue){
+            if (this.map){
+                this.map.clearMap()
+            }
+            if (newValue.length > 0){
+                newValue.forEach(item => {
+                    this.addCircle(this.map, item.center, item.color, item.radius)
+                    this.addMarker(this.map, {
+                        position: item.center,
+                        name: item.name,
+                        note: item.radius + ' km'
+                    })
+                })
+            }
+        }
     }
 }
 

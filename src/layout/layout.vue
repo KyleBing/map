@@ -17,7 +17,7 @@
 
 <script>
 
-import navbar from "@/parts/navbar"
+import navbar from "@/layout/navbar"
 import {mapState, mapMutations} from "vuex"
 import Copyright from "@/layout/copyright";
 import Logo from "@/layout/logo";
