@@ -1,8 +1,9 @@
 <template>
     <div class="circle-panel card">
         <div class="toolbar">
-            <el-button size="mini" type="info" @click="$emit('print', null)">导出数据</el-button>
+            <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info">复制数据到剪贴板</el-button>
             <el-button size="mini" type="primary" @click="$emit('showLine', null)">展示路线</el-button>
+            <el-button size="mini" type="danger" @click="$emit('setData', [])">清空</el-button>
         </div>
         <table class="log">
             <thead>
@@ -23,8 +24,8 @@
                         <div class="lat">lat: {{lat || '--'}}</div>
                     </div>
                 </td>
-                <td><el-input @keyup.native.enter="addNewRoutePoint" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
-                <td><el-input @keyup.native.enter="addNewRoutePoint" clearable ref="note" size="mini" placeholder="备注" v-model="note" ></el-input></td>
+                <td><el-input @keyup.native.enter="addNewRoutePointWithKeyEnter" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
+                <td><el-input @keyup.native.enter="addNewRoutePointWithKeyEnter" clearable ref="note" size="mini" placeholder="备注" v-model="note" ></el-input></td>
                 <td>
                     <el-button size="mini" type="primary" @click="addNewRoutePoint">添加</el-button>
                 </td>
@@ -74,6 +75,7 @@ export default {
         return {
             name: '', // 当前点的地名
             note: '', // 标记note
+            clipboardRouteData: '' // 要复制的所有路线点的数据
         }
     },
     computed: {
@@ -81,11 +83,32 @@ export default {
             return [...this.data]
         }
     },
+    watch:{
+        data(newValue){
+            this.clipboardRouteData = JSON.stringify(newValue)
+        }
+    },
     mounted() {
         let clipboard = new ClipboardJS('.lnglat')
-
     },
     methods: {
+        // enter 时触发的方法
+        addNewRoutePointWithKeyEnter(){
+            if(this.validateInput()){
+                this.$emit('pointAdd', {
+                    position: [this.lng, this.lat],
+                    note: this.note,
+                    name: this.name
+                })
+                this.name = ''
+                this.note = ''
+            }
+
+            this.$nextTick(()=>{
+                this.$refs.name.focus()
+            })
+        },
+        // 点击时触发的方法
         addNewRoutePoint(){
             if(this.validateInput()){
                 this.$emit('pointAdd', {
