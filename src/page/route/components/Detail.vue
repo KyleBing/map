@@ -5,9 +5,11 @@
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i></h1>
         </div>
         <div class="content" v-if="showContent">
-            <div class="info"><p>路线区域：</p><p>{{line.area}}</p></div>
-            <div class="info"><p>路面类型：</p><p>{{line.roadType}}</p></div>
-            <div class="info"><p>推荐季节：</p><p>{{line.months}}</p></div>
+            <div class="info-list">
+                <div class="info"><p>路线区域：</p><p>{{line.area}}</p></div>
+                <div class="info"><p>路面类型：</p><p>{{line.roadType}}</p></div>
+                <div class="info"><p>推荐季节：</p><p>{{line.months}}</p></div>
+            </div>
             <p class="note">{{line.note}}</p>
         </div>
 
@@ -42,30 +44,34 @@ i{
     @extend .unselectable;
 }
 .detail{
+    padding: 0;
     width: 300px;
     position: absolute;
     top: 20px;
     left: 20px;
+    .title{
+        text-align: center;
+        padding: 7px 0 8px;
+        font-size: 1rem;
+        color: $text-main;
+        border-bottom: 1px solid $color-border;
+    }
     &.closed{
         .title{
-            padding: 6px 0 6px;
+            padding: 7px 0 7px;
             border: none;
         }
     }
 }
 
-.title{
-    text-align: center;
-    padding: 5px 0 8px;
-    font-size: 1.1rem;
-    color: $text-main;
-    border-bottom: 1px solid $color-border;
-}
+
 
 .content{
-    padding: 6px;
     color: $text-subtitle;
     font-size: 0.8rem;
+}
+.info-list{
+    padding: 5px 10px;
 }
 .info{
     padding: 3px 0;
@@ -77,13 +83,10 @@ i{
     }
 }
 .note{
-    padding: 8px 0 5px;
+    padding: 5px 10px 10px;
     border-top: 1px solid $color-border;
-
     line-height: 1.5;
     color: $text-main;
-    font-size: 0.9rem;
-    margin-top: 5px;
 }
 
 </style>

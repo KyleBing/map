@@ -20,7 +20,7 @@ const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 
 export default {
-    name: "list",
+    name: "RouteLine",
     components: {Detail},
     data() {
         return {
