@@ -72,6 +72,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../scss/variables";
+
 .el-menu {
     border: none;
 }
@@ -80,10 +82,37 @@ export default {
 }
 .el-submenu{
     border-bottom: 1px solid #eeeeee;
+    .el-menu{
+        .el-menu-item:hover{
+            background-color: transparentize($orange, 0.8);
+        }
+    }
+    &.is-active{
+        background-color: transparentize($orange, 0.95);
+        .el-menu{
+            .el-menu-item{
+                background-color: transparentize($orange, 0.95);
+                &.is-active{
+                    background-color: transparentize($orange, 0.8);
+                }
+            }
+        }
+    }
 }
+
+.el-submenu__title{
+    line-height: 40px;
+    height: 40px;
+    &:hover{
+        background-color: transparentize($orange, 0.9) !important;
+    }
+}
+
 .el-menu-item{
     line-height: 40px;
     height: 40px;
+    font-size: 0.9rem;
+    color: $text-subtitle;
     &:after{
         background-color: #eeeeee;
         content: '';
@@ -98,4 +127,5 @@ export default {
         content: none;
     }
 }
+
 </style>
