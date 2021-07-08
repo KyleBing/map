@@ -47,6 +47,19 @@ const router = [
          }
       ]
    },
+   {
+      name: 'info',
+      path: '/info',
+      component: Layout,
+      redirect: '/info/plate',
+      children: [
+         {
+            name: 'plate',
+            path: 'plate',
+            component: resolve => require(['@/page/info/plate/plate'], resolve),
+         },
+      ]
+   },
 ]
 
 // 该列表用于菜单展示
@@ -76,6 +89,19 @@ const routeMap = [
       children: [
          {name: 'circle', path: 'circle', meta: {title: '范围标记', showInMenu: true},},
          {name: 'route', path: 'route', meta: {title: '路线标记', showInMenu: true},},
+      ]
+   },
+   {
+      name: 'info',
+      path: '/info',
+      component: Layout,
+      meta: {
+         title: '地图工具',
+         showInMenu: true,
+         icon: 'el-icon-document' // 菜单 icon 对应 Element UI 中的 ICON class 名
+      },
+      children: [
+         {name: 'plate', path: 'plate', meta: {title: '山东车牌', showInMenu: true}},
       ]
    },
 ]
