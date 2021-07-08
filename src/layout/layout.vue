@@ -3,7 +3,7 @@
         <el-container>
             <el-aside :style="`min-height: ${heightAside}px`" :width="`${navWidth}px`">
                 <logo :height="heightLogo"></logo>
-                <navbar :height="heightNavbar"/>
+                <navbar class="side-menu" :height="heightNavbar"/>
                 <copyright v-show="!navMenuIsClosed" :height="heightCopyright"></copyright>
             </el-aside>
             <el-container>
@@ -34,7 +34,7 @@ export default {
             heightAside: 0,
             heightNavbar: 0,
             heightLogo: 100,
-            heightCopyright: 200
+            heightCopyright: 120
         }
     },
     created() {
@@ -67,6 +67,10 @@ $border-color: #ddd;
 
 .el-aside {
     border-right: 1px solid $border-color;
+}
+.side-menu{
+    overflow: hidden;
+    overflow-y: auto;
 }
 .el-main {
     padding: 0;

@@ -1,6 +1,6 @@
 <template>
     <div class="logo-container" :style="`height: ${height}px`">
-        <div :class="['logo', {narrow: navMenuIsClosed}]">
+        <div :class="['logo', {narrow: navMenuIsClosed}]" @click="handleCollapseToggle">
             <img src="../assets/logo.png" alt="LOGO">
         </div>
     </div>
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapMutations, mapState} from "vuex";
 
 export default {
     props: {
@@ -18,8 +18,15 @@ export default {
         }
     },
     name: "logo",
-    computed:{
-        ...mapState(['navMenuIsClosed'])
+    computed: {
+        ...mapState(['navWidth', 'navMenuIsClosed'])
+    },
+    methods: {
+        ...mapMutations(['SET_NAV_WIDTH', 'SET_NAV_MENU_STATUS']),
+        handleCollapseToggle() {
+            this.SET_NAV_MENU_STATUS(!this.navMenuIsClosed)
+            this.SET_NAV_WIDTH(this.navMenuIsClosed ? 64 : 200)
+        },
     }
 }
 </script>
@@ -32,8 +39,10 @@ $height-logo-narrow: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-bottom: 1px solid $color-border;
 }
 .logo{
+    cursor: pointer;
     height: $height-logo;
     width: $height-logo;
     img{

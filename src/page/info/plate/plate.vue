@@ -25,19 +25,6 @@ export default {
             isLoading: false,
             contentHeight: 400,
             map: null,
-            circleData: [
-/*                {
-                    name: '',
-                    center: [lng,lat]
-                    radius: 2.4, // 半径
-                    color: '#000000' //
-                },*/
-            ], // 对应点的范围数据
-
-            positionPicked: {
-                lng: 0,
-                lat: 0,
-            },
             layerCity: null, // 区域图层
             colors: {
                 '370600': {color: 'rgb(190,194,161)', name: "烟台市"},
@@ -46,9 +33,9 @@ export default {
                 '370300': {color: 'rgb(103,104,99)', name: "淄博市"},
                 '370700': {color: 'rgb(201,166,85)', name: "潍坊市"},
                 '371100': {color: 'rgb(113,182,153)', name: "日照市"},
-                '371500': {color: 'rgb(205,87,85)', name: "聊城市"},
+                '371500': {color: 'rgb(212,227,206)', name: "聊城市"},
                 '370400': {color: 'rgb(208,198,170)', name: "枣庄市"},
-                '370100': {color: 'rgb(212,227,206)', name: "济南市"},
+                '370100': {color: 'rgb(205,87,85)', name: "济南市"},
                 '371700': {color: 'rgb(214,201,193)', name: "菏泽市"},
                 '370900': {color: 'rgb(212,144,167)', name: "泰安市"},
                 '371400': {color: 'rgb(242,242,218)', name: "德州市"},
@@ -86,7 +73,6 @@ export default {
             plugins: [
                 'AMap.ToolBar',
                 'AMap.Scale', // 比例尺
-                'AMap.Geolocation', // 定位
                 'AMap.DistrictLayer', // 定位
             ],
             AMapUI: {             // 是否加载 AMapUI，缺省不加载
@@ -97,7 +83,7 @@ export default {
             AMap = map
             this.map = new AMap.Map('container', {
                 center: [118.785193, 36.38918],
-                zoom: 8, // 缩放级别
+                zoom: 7.5, // 缩放级别
                 mapStyle: 'amap://styles/whitesmoke'
             })
 
@@ -109,22 +95,6 @@ export default {
 
             this.map.addControl(new AMap.ToolBar())
             this.map.addControl(new AMap.Scale())
-
-            // 定位
-            let geolocation = new AMap.Geolocation({
-                // 是否使用高精度定位，默认：true
-                enableHighAccuracy: true,
-                // 设置定位超时时间，默认：无穷大
-                timeout: 10000,
-                // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
-                buttonOffset: new AMap.Pixel(10, 20),
-                //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-                zoomToAccuracy: true,
-                //  定位按钮的排放位置,  RB表示右下
-                buttonPosition: 'RB'
-            })
-
-            geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
 
             let CodeShandong = 370000
             this.initPro(CodeShandong, DEPTH.city)
@@ -167,21 +137,6 @@ export default {
             });
 
             this.layerCity.setMap(this.map);
-        },
-
-        // 设置地图中心点：用户坐标
-        setMapCenterToUserLocation(status, res){
-            if (status === 'complete') {
-                let center = [res.position.lng, res.position.lat]
-                this.map.setCenter(center)
-                this.addMarker(this.map, {
-                    position: center,
-                    name: '我',
-                    note: ''
-                })
-            } else {
-                console.log(res)
-            }
         },
 
         addMarker(map, item) {
