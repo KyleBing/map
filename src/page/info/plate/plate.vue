@@ -39,24 +39,41 @@ export default {
                 lat: 0,
             },
             layerCity: null, // 区域图层
-            colors: {},
+            colors: {
+                '370600': {color: 'rgb(190,194,161)', name: "烟台市"},
+                '371300': {color: 'rgb(237,236,208)', name: "临沂市"},
+                '370200': {color: 'rgb(222,148,111)', name: "青岛市"},
+                '370300': {color: 'rgb(103,104,99)', name: "淄博市"},
+                '370700': {color: 'rgb(201,166,85)', name: "潍坊市"},
+                '371100': {color: 'rgb(113,182,153)', name: "日照市"},
+                '371500': {color: 'rgb(205,87,85)', name: "聊城市"},
+                '370400': {color: 'rgb(208,198,170)', name: "枣庄市"},
+                '370100': {color: 'rgb(212,227,206)', name: "济南市"},
+                '371700': {color: 'rgb(214,201,193)', name: "菏泽市"},
+                '370900': {color: 'rgb(212,144,167)', name: "泰安市"},
+                '371400': {color: 'rgb(242,242,218)', name: "德州市"},
+                '370800': {color: 'rgb(246,194,180)', name: "济宁市"},
+                '371600': {color: 'rgb(200,239,186)', name: "滨州市"},
+                '370500': {color: 'rgb(178,215,221)', name: "东营市"},
+                '371000': {color: 'rgb(146,128,140)', name: "威海市"},
+            },
             markers: [
-                {"name":"枣庄","position":[117.37981,34.94708],"note":""},
-                {"name":"济宁","position":[116.582207,35.434777],"note":""},
-                {"name":"菏泽","position":[115.721485,35.158462],"note":""},
-                {"name":"日照","position":[119.14716,35.612242],"note":""},
-                {"name":"临沂","position":[118.194627,35.317809],"note":""},
-                {"name":"泰安","position":[117.052736,36.012423],"note":""},
-                {"name":"青岛","position":[120.266099,36.613507],"note":""},
-                {"name":"潍坊","position":[118.980753,36.622718],"note":""},
-                {"name":"淄博","position":[117.886744,36.618112],"note":""},
-                {"name":"济南","position":[117.16176,36.677962],"note":""},
-                {"name":"威海","position":[122.050663,37.177945],"note":""},
-                {"name":"烟台","position":[120.834175,37.314978],"note":""},
-                {"name":"东营","position":[118.602036,37.606483],"note":""},
-                {"name":"滨州","position":[117.804433,37.524612],"note":""},
-                {"name":"德州","position":[116.622374,37.22365],"note":""},
-                {"name":"聊城","position":[115.928058,36.521334],"note":""}]
+                {"name":"D","position":[117.37981,34.94708],"note":"枣庄"},
+                {"name":"H","position":[116.582207,35.434777],"note":"济宁"},
+                {"name":"R","position":[115.721485,35.158462],"note":"菏泽"},
+                {"name":"L","position":[119.14716,35.612242],"note":"日照"},
+                {"name":"Q","position":[118.194627,35.317809],"note":"临沂"},
+                {"name":"J","position":[117.052736,36.012423],"note":"泰安"},
+                {"name":"BU","position":[120.266099,36.613507],"note":"青岛"},
+                {"name":"GV","position":[118.980753,36.622718],"note":"潍坊"},
+                {"name":"C","position":[117.886744,36.618112],"note":"淄博"},
+                {"name":"AS","position":[117.16176,36.677962],"note":"济南"},
+                {"name":"K","position":[122.050663,37.177945],"note":"威海"},
+                {"name":"FY","position":[120.834175,37.314978],"note":"烟台"},
+                {"name":"E","position":[118.602036,37.606483],"note":"东营"},
+                {"name":"M","position":[117.804433,37.524612],"note":"滨州"},
+                {"name":"N","position":[116.622374,37.22365],"note":"德州"},
+                {"name":"P","position":[115.928058,36.521334],"note":"聊城"}]
         }
     },
     created() {
@@ -133,31 +150,23 @@ export default {
                 adcode: [code],
                 depth: dep,
                 styles: {
-                    'fill': function (properties) {
+                    'fill': properties => {
                         // properties为可用于做样式映射的字段，包含
                         // NAME_CHN:中文名称
                         // adcode_pro
                         // adcode_cit
                         // adcode
-                        let adcode = properties.adcode;
-                        return that.getColorByAdcode(adcode);
+                        if (properties.adcode.toString().indexOf('37') === 0) {
+                            return this.colors[properties.adcode].color;
+                        }
                     },
-                    'province-stroke': 'cornflowerblue',
+                    'province-stroke': 'black',
                     'city-stroke': 'white', // 中国地级市边界
                     'county-stroke': 'rgba(255,255,255,0.5)' // 中国区县边界
                 }
             });
 
             this.layerCity.setMap(this.map);
-        },
-
-        getColorByAdcode(adcode) {
-            if (!this.colors[adcode]) {
-                let gb = Math.random() * 155 + 50;
-                this.colors[adcode] = 'rgb(' + gb + ',' + gb + ',255)';
-            }
-
-            return this.colors[adcode];
         },
 
         // 设置地图中心点：用户坐标
@@ -178,8 +187,9 @@ export default {
         addMarker(map, item) {
             let marker = new AMap.Marker({
                 position: item.position,
+                offset: new AMap.Pixel(0,-20),
                 content: `
-               <div class="marker">
+               <div class="marker-plate">
                   <div class="title">${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
