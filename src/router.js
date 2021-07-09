@@ -58,6 +58,11 @@ const router = [
             path: 'plate',
             component: resolve => require(['@/page/info/plate/plate'], resolve),
          },
+         {
+            name: 'area',
+            path: 'area',
+            component: resolve => require(['@/page/info/area/jinan'], resolve),
+         },
       ]
    },
 ]
@@ -96,12 +101,13 @@ const routeMap = [
       path: '/info',
       component: Layout,
       meta: {
-         title: '地图工具',
+         title: '地图信息',
          showInMenu: true,
          icon: 'el-icon-document' // 菜单 icon 对应 Element UI 中的 ICON class 名
       },
       children: [
-         {name: 'plate', path: 'plate', meta: {title: '山东车牌', showInMenu: true}},
+         {name: 'plate', path: 'plate', meta: {title: '山东各市车牌', showInMenu: true}},
+         {name: 'area', path: 'area', meta: {title: '济南市各区', showInMenu: true}},
       ]
    },
 ]
