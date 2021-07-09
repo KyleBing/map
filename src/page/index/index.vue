@@ -13,6 +13,12 @@ import {mapState} from "vuex";
 
 const MY_POSITION = [117.129533, 36.685668]
 const DEST_POSITION = [115.129533, 35.685668]
+const POSITION = {
+    hanyu: [117.148734, 36.659771],
+    home: [117.119074, 36.675504],
+    cityCenter: [117.120114, 36.652366],
+    cityCenterEast: [117.12492, 36.652189]
+}
 let AMap = null
 
 export default {
@@ -34,11 +40,7 @@ export default {
         AMapLoader.load({
             key: "581591b581149549d9035d039e83e368", // 开发应用的 ID
             version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-            plugins: [
-                'AMap.ToolBar',
-                'AMap.Scale', // 比例尺
-                'AMap.Geolocation',
-            ],
+            plugins: [],
             Loca:{
                 version: '2.0.0',
             },
@@ -51,92 +53,72 @@ export default {
             AMap = map
             this.map = new AMap.Map('container', {
                 viewMode: '3D',
-                zoom: 18,
-                center: MY_POSITION,
-                mapStyle: 'amap://styles/45311ae996a8bea0da10ad5151f72979',
-                showBuildingBlock: true,
-                showLabel: false,
+                zoom: 17,
+                center: POSITION.cityCenter,
+                // mapStyle: 'amap://styles/45311ae996a8bea0da10ad5151f72979',
+                showBuildingBlock: true, // 显示建筑物
+                showLabel: false, // 不显示地名什么的
             });
-
-            this.map.addControl(new AMap.ToolBar());
-            this.map.addControl(new AMap.Scale());
-
-
-            // 定位
-            let geolocation = new AMap.Geolocation({
-                // 是否使用高精度定位，默认：true
-                enableHighAccuracy: true,
-                // 设置定位超时时间，默认：无穷大
-                timeout: 10000,
-                // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
-                buttonOffset: new AMap.Pixel(10, 20),
-                //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-                zoomToAccuracy: true,
-                //  定位按钮的排放位置,  RB表示右下
-                buttonPosition: 'RB'
-            })
-            geolocation.getCurrentPosition(this.setMapCenterToUserLocation);
-
 
             this.loca = new Loca.Container({
                 map: this.map,
-            });
+/*                ambLight: {
+                    intensity: 2.2,
+                    color: '#babedc',
+                },
+                dirLight: {
+                    intensity: 0.46,
+                    color: '#d4d4d4',
+                    target: [0, 0, 0],
+                    position: [0, -1, 1],
+                },
+                pointLight: {
+                    color: 'rgb(15,19,40)',
+                    position: [MY_POSITION[0], MY_POSITION[1], 2600],
+                    intensity: 25,
+                    // 距离表示从光源到光照强度为 0 的位置，0 就是光不会消失。
+                    distance: 3900,
+                }*/
+            })
 
-            this.loca.ambLight = {
-                intensity: 2.2,
-                color: '#babedc',
-            };
-            this.loca.dirLight = {
-                intensity: 0.46,
-                color: '#d4d4d4',
-                target: [0, 0, 0],
-                position: [0, -1, 1],
-            };
-            this.loca.pointLight = {
-                color: 'rgb(15,19,40)',
-                position: [MY_POSITION[0], MY_POSITION[1], 2600],
-                intensity: 25,
-                // 距离表示从光源到光照强度为 0 的位置，0 就是光不会消失。
-                distance: 3900,
-            };
 
             this.loca.viewControl.addAnimates([{
-                center: {
-                    value: MY_POSITION, // 动画终点的经纬度
-                    control: [MY_POSITION, DEST_POSITION], // 过渡中的轨迹控制点，地图上的经纬度
+/*                center: {
+                    value: POSITION.cityCenter, // 动画终点的经纬度
+                    control: [POSITION.cityCenterEast, POSITION.cityCenter], // 过渡中的轨迹控制点，地图上的经纬度
                     timing: [0.42, 0, 0.4, 1], // 动画时间控制点
                     duration: 2000, // 过渡时间，毫秒（ms）
-                },
+                },*/
                 // 俯仰角动画
                 pitch: {
-                    value: 60, // 动画终点的俯仰角度
-                    control: [[0.3, 25], [0.4, 40]], // 控制器，x是0～1的起始区间，y是pitch值
+                    value: 45, // 动画终点的俯仰角度
+                    control: [[0, 0], [1, 45]], // 控制器，x是0～1的起始区间，y是pitch值
                     timing: [0, 0, 1, 1], // 这个值是线性过渡
-                    duration: 2000,
+                    duration: 10000,
                 },
-                // 缩放等级动画
+/*                // 缩放等级动画
                 zoom: {
                     value: 18, // 动画终点的地图缩放等级
-                    control: [[0.4, 5.7], [0.6, 5.7]], // 控制器，x是0～1的起始区间，y是zoom值
-                    timing: [0.42, 0, 0.4, 1],
-                    duration: 2000,
-                },
+                    control: [[0, 17], [1, 18]], // 控制器，x是0～1的起始区间，y是zoom值
+                    timing: [0, 0, 1, 1],
+                    duration: 10000,
+                },*/
                 // 旋转动画
                 rotation: {
-                    value: 0, // 动画终点的地图旋转角度
-                    control: [[0.4, 10], [0.6, 40]], // 控制器，x是0～1的起始区间，y是rotation值
-                    timing: [0.42, 0, 0.4, 1],
-                    duration: 2000,
+                    value: 120, // 动画终点的地图旋转角度
+                    control: [[0, 0], [1, 120]], // 控制器，x是0～1的起始区间，y是rotation值
+                    timing: [0, 0, 1, 1],
+                    duration: 10000,
                 }
             }],()=>{
 
-            })
 
+            })
 
             this.map.on('complete', ()=> {
                 setTimeout(()=>{
                 this.loca.animate.start();
-                }, 2000);
+                }, 3000); // 给地图一个加载的时间
             });
 
         }).catch(e => {
@@ -148,21 +130,6 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
-
-        // 设置地图中心点：用户坐标
-        setMapCenterToUserLocation(status, res){
-            if (status === 'complete') {
-                let center = [res.position.lng, res.position.lat]
-                this.map.setCenter(center)
-                this.addMarker(this.map, {
-                    position: center,
-                    name: '你的位置',
-                    note: ''
-                })
-            } else {
-                console.log(res)
-            }
-        },
 
         resizeMap() {
             let mapContainer = document.getElementById('container');

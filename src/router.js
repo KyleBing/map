@@ -92,9 +92,17 @@ const router = [
 // 该列表用于菜单展示
 const routeMap = [
    {
+      name: 'index',
+      path: '/index',
+      meta: {
+         title: '主页',
+         showInMenu: true,
+         icon: 'el-icon-house' // 菜单 icon 对应 Element UI 中的 ICON class 名
+      },
+   },
+   {
       name: 'route',
       path: '/route',
-      component: Layout,
       meta: {
          title: '路线推荐',
          showInMenu: true,
@@ -107,7 +115,6 @@ const routeMap = [
    {
       name: 'tool',
       path: '/tool',
-      component: Layout,
       meta: {
          title: '地图工具',
          showInMenu: true,
@@ -121,7 +128,6 @@ const routeMap = [
    {
       name: 'info',
       path: '/info',
-      component: Layout,
       meta: {
          title: '地图信息',
          showInMenu: true,
@@ -138,7 +144,7 @@ import lines from "./page/route/lines";
 
 // 添加路线到菜单
 lines.LINES.forEach((line, index) => {
-   routeMap[0].children.push({name: `line${index + 1}`, path: `${index + 1}`, meta: {title: index + 1 + ' - ' +  line.name, showInMenu: true}},)
+   routeMap[1].children.push({name: `line${index + 1}`, path: `${index + 1}`, meta: {title: index + 1 + ' - ' +  line.name, showInMenu: true}},)
 })
 
 export default {
