@@ -48,6 +48,19 @@ const router = [
       ]
    },
    {
+      name: 'debug',
+      path: '/debug',
+      component: Layout,
+      redirect: '/debug/debug',
+      children: [
+         {
+            name: 'debug',
+            path: 'debug',
+            component: resolve => require(['@/page/debug/debug'], resolve),
+         }
+      ]
+   },
+   {
       name: 'info',
       path: '/info',
       component: Layout,

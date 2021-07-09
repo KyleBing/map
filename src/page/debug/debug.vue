@@ -1,13 +1,23 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <route-panel
+            @pointAdd="handleAddRoutePoint"
+            @print="printRoute"
+            @showLine="showLine"
+            :lng="positionPicked.lng"
+            :lat="positionPicked.lat"
+            v-model="routeData"></route-panel>
     </div>
 </template>
 
 <script>
-import AMapLoader from '@amap/amap-jsapi-loader';
-import { mapState } from 'vuex'
 
+import AMapLoader from '@amap/amap-jsapi-loader';
+import ICON from "@/page/route/icons";
+import RoutePanel from "@/page/tool/route/components/RoutePanel";
+
+import { mapState } from 'vuex'
 // 显示地图行政区的深度
 const DEPTH = {
     province: 0, // 省
@@ -15,22 +25,22 @@ const DEPTH = {
     country: 2 // 县、区
 }
 
+const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
-
-
 export default {
-    name: "AreaJinan",
+    name: "Debug",
+    components: {RoutePanel},
     data() {
         return {
             isLoading: false,
             contentHeight: 400,
             map: null,
-            circleData: [
+            currentRouting: null,  // 当前导航路线
+            routeData: [
 /*                {
                     name: '',
-                    center: [lng,lat]
-                    radius: 2.4, // 半径
-                    color: '#000000' //
+                    position: [lng,lat]
+                    note: '', // 备注
                 },*/
             ], // 对应点的范围数据
 
@@ -54,18 +64,18 @@ export default {
                 '370105': {color: 'rgba(242,242,218,0.8)', name: "天桥区"},
             },
             markers: [
-                {"name": "平阴县", "position": [116.375526, 36.190518], "note": "370124"},
-                {"name": "商河县", "position": [117.201343, 37.319686], "note": "370126"},
-                {"name": "济阳区", "position": [117.085361, 37.002617], "note": "370115"},
-                {"name": "钢城区", "position": [117.825907, 36.127458], "note": "370117"},
-                {"name": "莱芜区", "position": [117.617702, 36.344708], "note": "370116"},
-                {"name": "章丘区", "position": [117.517144, 36.706865], "note": "370114"},
-                {"name": "历城区", "position": [117.250039, 36.639125], "note": "370112"},
-                {"name": " 市中区", "position": [116.953408, 36.586214], "note": "370103"},
-                {"name": "长清区", "position": [116.775567, 36.434444], "note": "370113"},
-                {"name": "槐荫区", "position": [116.885431, 36.683741], "note": "370104"},
-                {"name": "历下区", "position": [117.099664, 36.657856], "note": "370102"},
-                {"name": "天桥区", "position": [116.985681, 36.769594], "note": "370105"},
+                {name: '章丘区', note: '370114', position: [117.54,36.712]},
+                {name: '历城区', note: '370112', position: [117.063,36.681]},
+                {name: '济阳区', note: '370115', position: [117.176,36.976]},
+                {name: '商河县', note: '370126', position: [117.156,37.31]},
+                {name: '槐荫区', note: '370104', position: [116.947,36.668]},
+                {name: '长清区', note: '370113', position: [116.745,36.561]},
+                {name: '市中区', note: '370103', position: [116.998,36.657]},
+                {name: '历下区', note: '370102', position: [117.038,36.664]},
+                {name: '天桥区', note: '370105', position: [116.996,36.693]},
+                {name: '莱芜区', note: '370116', position: [117.675,36.214]},
+                {name: '钢城区', note: '370117', position: [117.82,36.058]},
+                {name: '平阴县', note: '370124', position: [116.455,36.286]},
             ]
         }
     },
@@ -89,9 +99,8 @@ export default {
         }).then(map => {
             AMap = map
             this.map = new AMap.Map('container', {
-                center:  [117.129533, 36.685668],
-                zoom: 9, // 缩放级别
-                mapStyle: 'amap://styles/whitesmoke'
+                center: MY_POSITION,
+                zoom: 11
             })
 
             this.map.setFeatures(['bg', 'point', 'road', 'building'])
@@ -119,10 +128,19 @@ export default {
 
             geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
 
+            // 显示济南各区位置
             let CodeShandong = 370000
             this.initPro(CodeShandong, DEPTH.country)
             this.markers.forEach(item => {
                 this.addMarker(this.map, item)
+            })
+
+            // 地图选点操作
+            this.map.on('click', res =>{
+                this.positionPicked = {
+                    lng: res.lnglat.lng,
+                    lat: res.lnglat.lat
+                }
             })
 
         }).catch(e => {
@@ -134,6 +152,7 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
+        // 展示行政图
         initPro(code, dep) {
             this.layerCity && this.layerCity.setMap(null);
 
@@ -155,8 +174,8 @@ export default {
                             return this.colors[adcode].color;
                         }
                     },
-                    'province-stroke': 'orange',
-                    'city-stroke': 'orange', // 中国地级市边界
+                    'province-stroke': 'black',
+                    'city-stroke': 'black', // 中国地级市边界
                     'county-stroke': 'rgba(255,255,255,0.5)' // 中国区县边界
                 }
             });
@@ -164,8 +183,23 @@ export default {
             this.layerCity.setMap(this.map);
         },
 
+        // 添加新标记点和圆圈
+        handleAddRoutePoint(routePoint){
+            this.routeData.unshift({
+                name: routePoint.name,
+                position: [this.positionPicked.lng, this.positionPicked.lat],
+                note: routePoint.note,
+            })
+            this.addMarker(this.map, {
+                position: routePoint.potition,
+                name: routePoint.name,
+                note: routePoint.note
+            })
+        },
+
         // 设置地图中心点：用户坐标
         setMapCenterToUserLocation(status, res){
+            console.log(res)
             if (status === 'complete') {
                 let center = [res.position.lng, res.position.lat]
                 this.map.setCenter(center)
@@ -178,11 +212,84 @@ export default {
                 console.log(res)
             }
         },
+        // 结束拾取坐标
+        pickLocationStop() {
+            this.map.off('click', this.showLocation)
+        },
 
+        // 打印 路线数据
+        printRoute(){
+            console.log(JSON.stringify([...this.routeData].reverse()))
+        },
+
+        // 展示规划的路线
+        showLine(){
+            this.map.clearMap() // 删除地图上的所有标记
+            if (this.currentRouting){
+                this.currentRouting.destroy() // 删除之前的路线
+            }
+            let lineData = {
+                paths: this.routeData,
+            }
+            this.loadLine(this.map, lineData)
+            this.loadLineLabels(this.map, lineData)
+        },
+
+        // 载入线路信息
+        loadLine(map, line) {
+            map.plugin('AMap.DragRoute', () => {
+                // path 是驾车导航的起、途径和终点，最多支持16个途经点
+                let path = []
+                line.paths.forEach(point => {
+                    path.unshift(point.position) // 之前存入的是倒序的，所以现在给正过来
+                })
+                let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
+                    startMarkerOptions: {
+                        offset: new AMap.Pixel(-13, -40),
+                        icon: new AMap.Icon({ // 设置途经点的图标
+                            size: new AMap.Size(26, 40),
+                            image: ICON.start,
+                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
+
+                        }),
+                    },
+                    endMarkerOptions: {
+                        offset: new AMap.Pixel(-13, -40),
+                        icon: new AMap.Icon({ // 设置途经点的图标
+                            size: new AMap.Size(26, 40),
+                            image: ICON.end,
+                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
+
+                        }),
+                    },
+                    midMarkerOptions: {
+                        offset: new AMap.Pixel(-5, -10),
+                        icon: new AMap.Icon({ // 设置途经点的图标
+                            size: new AMap.Size(15, 15),
+                            image: ICON.midIcon,
+                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                            imageSize: new AMap.Size(15, 15) // 指定图标的大小，可以压缩图片
+
+                        }),
+                    },
+                })
+                // 查询导航路径并开启拖拽导航
+                route.search()
+                this.currentRouting = route
+            })
+        },
+
+        // 添加路线 label 线路信息
+        loadLineLabels(map, line) {
+            line.paths.forEach(item => {
+                this.addMarker(map, item)
+            })
+        },
         addMarker(map, item) {
             let marker = new AMap.Marker({
                 position: item.position,
-                offset: new AMap.Pixel(-10,-20),
                 content: `
                <div class="marker">
                   <div class="title">${item.name}</div>
@@ -191,6 +298,16 @@ export default {
             });
             map.add(marker);
         }
+
+    },
+    watch: {
+        routeData(newValue){
+            if (newValue.length <= 0) return
+            this.map.clearMap()
+            newValue.forEach(item => {
+                this.addMarker(this.map, item)
+            })
+        }
     }
 }
 
@@ -198,10 +315,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../../scss/plugin";
+@import "../../scss/plugin";
 .map-container {
     position: relative;
 }
-
 
 </style>
