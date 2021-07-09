@@ -155,8 +155,8 @@ export default {
                             return this.colors[adcode].color;
                         }
                     },
-                    'province-stroke': 'orange',
-                    'city-stroke': 'orange', // 中国地级市边界
+                    'province-stroke': 'black',
+                    'city-stroke': 'brown', // 中国地级市边界
                     'county-stroke': 'rgba(255,255,255,0.5)' // 中国区县边界
                 }
             });
