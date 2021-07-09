@@ -148,9 +148,6 @@ const LINES = [
             {"name":"彩西路开始","position":[117.283779,36.635365],"note":""}
         ]
     },
-
-
-
 ]
 const COLORS = {
     green  : "#4CD964",
