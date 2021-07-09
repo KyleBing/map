@@ -4,7 +4,16 @@ const router = [
    {
       name: 'index',
       path: '/',
-      redirect: process.env.VUE_APP_DEFAULT_INDEX, // 根据环境不同，设定不同首页路径
+      component: Layout,
+      redirect: '/index',
+      children: [
+         {
+            name: 'indexIndex',
+            path: 'index',
+            component: resolve => require(['@/page/index/index.vue'], resolve),
+         }
+      ]
+      // redirect: process.env.VUE_APP_DEFAULT_INDEX, // 根据环境不同，设定不同首页路径
    },
    {
       name: 'login',
@@ -54,7 +63,7 @@ const router = [
       redirect: '/debug/debug',
       children: [
          {
-            name: 'debug',
+            name: 'debugIndex',
             path: 'debug',
             component: resolve => require(['@/page/debug/debug'], resolve),
          }
