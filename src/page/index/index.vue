@@ -12,6 +12,7 @@ import {mapState} from "vuex";
 
 
 const MY_POSITION = [117.129533, 36.685668]
+const DEST_POSITION = [115.129533, 35.685668]
 let AMap = null
 
 export default {
@@ -50,7 +51,7 @@ export default {
             AMap = map
             this.map = new AMap.Map('container', {
                 viewMode: '3D',
-                zoom: 12,
+                zoom: 18,
                 center: MY_POSITION,
                 mapStyle: 'amap://styles/45311ae996a8bea0da10ad5151f72979',
                 showBuildingBlock: true,
@@ -99,46 +100,42 @@ export default {
                 distance: 3900,
             };
 
-            let geo = new Loca.GeoJSONSource({
-                url: 'https://a.amap.com/Loca/static/loca-v2/demos/mock_data/sh_building_center.json',
-            });
-
-            let pl = window.pl = new Loca.PolygonLayer({
-                zIndex: 120,
-                shininess: 10,
-                hasSide: true,
-                cullface: 'back',
-                depth: true,
-            });
-
-            pl.setSource(geo);
-            pl.setStyle({
-                topColor: '#111',
-                height: function (index, feature) {
-                    return feature.properties.h;
+            this.loca.viewControl.addAnimates([{
+                center: {
+                    value: MY_POSITION, // 动画终点的经纬度
+                    control: [MY_POSITION, DEST_POSITION], // 过渡中的轨迹控制点，地图上的经纬度
+                    timing: [0.42, 0, 0.4, 1], // 动画时间控制点
+                    duration: 2000, // 过渡时间，毫秒（ms）
                 },
-                textureSize: [1000, 820],
-                texture: 'https://a.amap.com/Loca/static/loca-v2/demos/images/windows.jpg',
-            });
-            pl.setLoca(this.loca);
+                // 俯仰角动画
+                pitch: {
+                    value: 60, // 动画终点的俯仰角度
+                    control: [[0.3, 25], [0.4, 40]], // 控制器，x是0～1的起始区间，y是pitch值
+                    timing: [0, 0, 1, 1], // 这个值是线性过渡
+                    duration: 2000,
+                },
+                // 缩放等级动画
+                zoom: {
+                    value: 18, // 动画终点的地图缩放等级
+                    control: [[0.4, 5.7], [0.6, 5.7]], // 控制器，x是0～1的起始区间，y是zoom值
+                    timing: [0.42, 0, 0.4, 1],
+                    duration: 2000,
+                },
+                // 旋转动画
+                rotation: {
+                    value: 0, // 动画终点的地图旋转角度
+                    control: [[0.4, 10], [0.6, 40]], // 控制器，x是0～1的起始区间，y是rotation值
+                    timing: [0.42, 0, 0.4, 1],
+                    duration: 2000,
+                }
+            }],()=>{
 
-            let dat = new Loca.Dat();
-            dat.addLight(this.loca.ambLight, this.loca, '环境光');
-            dat.addLight(this.loca.dirLight, this.loca, '平行光');
-            dat.addLight(this.loca.pointLight, this.loca, '点光');
-            dat.addLayer(pl, '楼块');
+            })
 
 
             this.map.on('complete', ()=> {
-                this.loca.animate.start();
-                // document.querySelector('.start-btn').addEventListener('click', function () {
                 setTimeout(()=>{
-                    // 镜头动画
-                    this.map.setZoom(11.8, true);
-                    this.map.setPitch(0, true);
-                    this.map.setCenter(MY_POSITION, true);
-                    this.map.setRotation(1, true);
-                    pl.hide(1000);
+                this.loca.animate.start();
                 }, 2000);
             });
 
