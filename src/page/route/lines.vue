@@ -35,7 +35,6 @@ export default {
         }
     },
     created() {
-
         this.contentHeight = window.innerHeight
 
         AMapLoader.load({
@@ -87,8 +86,8 @@ export default {
         }).catch(e => {
             console.log(e);
         })
-
     },
+
     computed: {
         ...mapState(['windowInsets'])
     },
@@ -191,6 +190,10 @@ export default {
             this.loadLine(this.map, this.activeLineObj)
             this.loadLineLabels(this.map, this.activeLineObj)
         },
+    },
+    beforeDestroy() {
+        this.map.destroy() // 销毁地图，释放内存
+        this.map = null
     }
 }
 </script>

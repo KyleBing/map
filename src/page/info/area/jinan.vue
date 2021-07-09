@@ -191,6 +191,10 @@ export default {
             });
             map.add(marker);
         }
+    },
+    beforeDestroy() {
+        this.map.destroy() // 销毁地图，释放内存
+        this.map = null
     }
 }
 
