@@ -131,7 +131,7 @@ const routeMap = [
       meta: {
          title: '地图信息',
          showInMenu: true,
-         icon: 'el-icon-document' // 菜单 icon 对应 Element UI 中的 ICON class 名
+         icon: 'el-icon-data-line' // 菜单 icon 对应 Element UI 中的 ICON class 名
       },
       children: [
          {name: 'plate', path: 'plate', meta: {title: '山东各市车牌', showInMenu: true}},
