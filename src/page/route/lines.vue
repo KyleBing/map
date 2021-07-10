@@ -15,7 +15,6 @@ import ICON from "@/page/route/icons";
 import Detail from "./components/Detail";
 import {mapState} from "vuex";
 
-
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 

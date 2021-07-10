@@ -1,5 +1,5 @@
 <template>
-    <div :class="['detail', 'card', {'closed': !showContent}]">
+    <div :class="['detail', 'card', {'closed': !showContent}, {'center': isInPortraitMode}]">
         <div class="title">
             <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i></h1>
@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
     name: "Detail",
     props:{
@@ -28,6 +30,9 @@ export default {
         return {
             showContent: true
         }
+    },
+    computed:{
+        ...mapGetters(['isInPortraitMode']),
     },
     methods: {
         toggleContent(){
@@ -45,7 +50,7 @@ i{
 }
 .detail{
     padding: 0;
-    width: 300px;
+    width: 250px;
     position: absolute;
     top: 20px;
     left: 20px;
@@ -62,9 +67,12 @@ i{
             border: none;
         }
     }
+    &.center{
+        left: 50%;
+        top: 20px;
+        transform: translateX(-50%);
+    }
 }
-
-
 
 .content{
     color: $text-subtitle;
