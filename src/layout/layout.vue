@@ -18,7 +18,7 @@
 <script>
 
 import navbar from "@/layout/navbar"
-import {mapState, mapMutations} from "vuex"
+import {mapState, mapMutations, mapGetters} from "vuex"
 import Copyright from "@/layout/copyright";
 import Logo from "@/layout/logo";
 
@@ -43,10 +43,11 @@ export default {
         window.onresize = this.onResize
     },
     computed: {
-        ...mapState(['navWidth', 'navMenuIsClosed'])
+        ...mapGetters(['isInPortraitMode']),
+        ...mapState(['navWidth', 'navMenuIsClosed', 'isInMobile'])
     },
     methods: {
-        ...mapMutations(['SET_WINDOW_INSETS']),
+        ...mapMutations(['SET_WINDOW_INSETS', 'SET_IS_IN_MOBILE']),
         onResize(){
             this.heightAside = window.innerHeight
             this.heightNavbar = this.heightAside - this.heightLogo - this.heightCopyright

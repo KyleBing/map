@@ -9,8 +9,12 @@ export default  new Vuex.Store({
          width: 0
       },
       navMenuIsClosed: false, // navMenu 是否折叠状态
+      isInMobile: false, // 是否是手机端
    },
    getters: {
+      isInPortraitMode: state => {
+         return state.windowInsets.height > state.windowInsets.width
+      }
    },
    mutations: {
       SET_NAV_WIDTH(state, value){
@@ -21,6 +25,9 @@ export default  new Vuex.Store({
       },
       SET_NAV_MENU_STATUS(state, value){
          state.navMenuIsClosed = value
+      },
+      SET_IS_IN_MOBILE(state, value){
+         state.isInMobile = value
       }
    }
 })

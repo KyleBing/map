@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import {mapMutations, mapState} from "vuex"
+import {mapGetters, mapState} from "vuex"
 import route from "../router"
 
 export default {
@@ -61,6 +61,7 @@ export default {
     },
 
     computed: {
+        ...mapGetters(['isInPortraitMode']),
         ...mapState(['navMenuIsClosed'])
     },
     methods: {
