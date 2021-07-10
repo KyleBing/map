@@ -17,7 +17,8 @@ const POSITION = {
     hanyu: [117.148734, 36.659771],
     home: [117.119074, 36.675504],
     cityCenter: [117.120114, 36.652366],
-    cityCenterEast: [117.12492, 36.652189]
+    cityCenterEast: [117.12492, 36.652189],
+    yinHe: [117.12972, 36.67326]
 }
 let AMap = null
 
@@ -54,7 +55,7 @@ export default {
             this.map = new AMap.Map('container', {
                 viewMode: '3D',
                 zoom: 17,
-                center: POSITION.cityCenter,
+                center: POSITION.yinHe,
                 // mapStyle: 'amap://styles/45311ae996a8bea0da10ad5151f72979',
                 showBuildingBlock: true, // 显示建筑物
                 showLabel: false, // 不显示地名什么的
@@ -92,33 +93,63 @@ export default {
                 // 俯仰角动画
                 pitch: {
                     value: 45, // 动画终点的俯仰角度
-                    control: [[0, 0], [1, 45]], // 控制器，x是0～1的起始区间，y是pitch值
+                    control: [[0, -60], [1, 45]], // 控制器，x是0～1的起始区间，y是pitch值
                     timing: [0, 0, 1, 1], // 这个值是线性过渡
-                    duration: 10000,
+                    duration: 8000,
                 },
 /*                // 缩放等级动画
                 zoom: {
                     value: 18, // 动画终点的地图缩放等级
                     control: [[0, 17], [1, 18]], // 控制器，x是0～1的起始区间，y是zoom值
                     timing: [0, 0, 1, 1],
-                    duration: 10000,
+                    duration: 8000,
                 },*/
                 // 旋转动画
                 rotation: {
                     value: 120, // 动画终点的地图旋转角度
                     control: [[0, 0], [1, 120]], // 控制器，x是0～1的起始区间，y是rotation值
                     timing: [0, 0, 1, 1],
-                    duration: 10000,
+                    duration: 8000,
                 }
             }],()=>{
+                this.loca.viewControl.addAnimates([{
+                    center: {
+                        value: POSITION.cityCenter, // 动画终点的经纬度
+                        control: [POSITION.yinHe, POSITION.cityCenter], // 过渡中的轨迹控制点，地图上的经纬度
+                        timing: [0, 0, 1, 1], // 动画时间控制点
+                        duration: 8000, // 过渡时间，毫秒（ms）
+                    },
 
+                }],()=>{
+                    this.loca.viewControl.addAnimates([{
+                        center: {
+                            value: POSITION.yinHe, // 动画终点的经纬度
+                            control: [POSITION.cityCenter, POSITION.yinHe], // 过渡中的轨迹控制点，地图上的经纬度
+                            timing: [0, 0, 1, 1], // 动画时间控制点
+                            duration: 8000, // 过渡时间，毫秒（ms）
+                        },
+                    }],()=>{
+                        this.loca.viewControl.addAnimates([{
+                            // 旋转动画
+                            rotation: {
+                                value: 180, // 动画终点的地图旋转角度
+                                control: [[0, 120], [1, 180]], // 控制器，x是0～1的起始区间，y是rotation值
+                                timing: [0, 0, 1, 1],
+                                duration: 8000,
+                            }
+                        }],()=>{
+
+                        })
+
+                    })
+                })
 
             })
 
             this.map.on('complete', ()=> {
                 setTimeout(()=>{
                 this.loca.animate.start();
-                }, 3000); // 给地图一个加载的时间
+                }, 2000); // 给地图一个加载的时间
             });
 
         }).catch(e => {
