@@ -1,5 +1,6 @@
 @import "reset";
 @import "plugin";
+@import "animate";
 
 .header{
     line-height: 60px;
@@ -106,3 +107,4 @@ body{
 }
 
 @import "overwrite-el-ui";
+@import "overwrite-amap";

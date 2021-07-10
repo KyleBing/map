@@ -1,0 +1,8 @@
+// 隐藏地图中的高德地图 LOGG
+.amap-copyright, .amap-logo{
+  display: none !important;
+}
+
+.amap-control.amap-scalecontrol{
+  bottom: 10px !important;
+}

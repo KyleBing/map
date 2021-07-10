@@ -10,9 +10,6 @@ import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/page/route/icons";
 import {mapState} from "vuex";
 
-
-const MY_POSITION = [117.129533, 36.685668]
-const DEST_POSITION = [115.129533, 35.685668]
 const POSITION = {
     hanyu: [117.148734, 36.659771],
     home: [117.119074, 36.675504],

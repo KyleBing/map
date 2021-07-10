@@ -10,6 +10,7 @@ export default  new Vuex.Store({
       },
       navMenuIsClosed: false, // navMenu 是否折叠状态
       isInMobile: false, // 是否是手机端
+      isShowingMenuToggleBtn: false, // 是否显示移动端的菜单切换按钮
    },
    getters: {
       isInPortraitMode: state => {
@@ -28,6 +29,9 @@ export default  new Vuex.Store({
       },
       SET_IS_IN_MOBILE(state, value){
          state.isInMobile = value
+      },
+      SET_IS_SHOWING_MENU_TOGGLE_BTN(state, value){
+         state.isShowingMenuToggleBtn = value
       }
    }
 })

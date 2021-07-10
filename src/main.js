@@ -26,11 +26,24 @@ import Router from "vue-router"
 let router = new Router({
    routes: route.router
 })
+
 Vue.use(Router)
+
+
+
 
 // VUEX
 Vue.use(Vuex)
 import store from "@/store";
+
+
+
+
+router.afterEach((to, from) => {
+    if(store.getters.isInPortraitMode){ // 适配移动端 路由跳转后，隐藏菜单
+        store.commit('SET_IS_SHOWING_MENU_TOGGLE_BTN', true)
+    }
+})
 
 Vue.config.productionTip = false
 
