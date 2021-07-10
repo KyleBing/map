@@ -49,6 +49,8 @@ export default {
             this.heightNavbar = this.heightAside - this.heightLogo - this.heightCopyright
             if (this.isInPortraitMode){
                 this.SET_NAV_WIDTH(this.windowInsets.width)
+            } else {
+                this.SET_NAV_WIDTH(200) // 当从移动端切到 PC 时，重新设置 NavMenu 的宽度
             }
         }
     }
