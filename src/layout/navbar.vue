@@ -90,7 +90,7 @@ export default {
 .el-radio-group {
     padding: 10px;
 }
-.el-submenu{
+.el-submenu, .el-menu-item{
     border-bottom: 1px solid #eeeeee;
     .el-menu{
         .el-menu-item:hover{
@@ -103,6 +103,7 @@ export default {
             .el-menu-item{
                 background-color: transparentize($orange, 0.95);
                 &.is-active{
+                    color: $orange;
                     background-color: transparentize($orange, 0.8);
                 }
             }
@@ -118,24 +119,28 @@ export default {
     }
 }
 
-.el-menu-item{
-    line-height: 40px;
-    height: 40px;
-    font-size: 0.9rem;
-    color: $text-subtitle;
-    &:after{
-        background-color: #eeeeee;
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 20px;
-        height: 1px;
-        width: 100%;
-        transform: scaleY(0.5);
-    }
-    &:last-child:after{
-        content: none;
+.el-submenu{
+    .el-menu-item{
+        line-height: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+        color: $text-subtitle;
+        border-bottom: none;
+        &:after{
+            background-color: #eeeeee;
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            height: 1px;
+            width: 100%;
+            transform: scaleY(0.5);
+        }
+        &:last-child:after{
+            content: none;
+        }
     }
 }
+
 
 </style>

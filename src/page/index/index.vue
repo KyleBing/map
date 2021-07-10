@@ -243,8 +243,8 @@ export default {
         },
     },
     beforeDestroy() {
+        this.loca.destroy() // 需要先销毁 Loca 再销毁 Map
         this.map.destroy() // 销毁地图，释放内存
-        this.loca.destroy()
         this.map = null
     }
 }
