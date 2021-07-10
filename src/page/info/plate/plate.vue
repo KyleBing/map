@@ -72,7 +72,7 @@ export default {
             key: "581591b581149549d9035d039e83e368", // 开发应用的 ID
             version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
             plugins: [
-                'AMap.ToolBar',
+                // 'AMap.ToolBar', // 缩放按钮
                 'AMap.Scale', // 比例尺
                 'AMap.DistrictLayer', // 定位
             ],
@@ -94,7 +94,7 @@ export default {
             // road 道路和道路标记
             // building 建筑物
 
-            this.map.addControl(new AMap.ToolBar())
+            // this.map.addControl(new AMap.ToolBar())
             this.map.addControl(new AMap.Scale())
 
             let CodeShandong = 370000
