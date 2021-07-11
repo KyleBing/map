@@ -44,10 +44,7 @@ export default {
                 'AMap.Scale', // 比例尺
                 'AMap.Geolocation', // 定位
             ],
-            AMapUI: {             // 是否加载 AMapUI，缺省不加载
-                version: '1.1',   // AMapUI 缺省 1.1
-                plugins: [],       // 需要加载的 AMapUI ui插件
-            },
+
         }).then(map => {
             AMap = map
             this.map = new AMap.Map('container', {

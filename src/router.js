@@ -85,6 +85,11 @@ const router = [
             path: 'area',
             component: resolve => require(['@/page/info/area/jinan'], resolve),
          },
+         {
+            name: 'carManage',
+            path: 'car-manage',
+            component: resolve => require(['@/page/info/carManage/carManage'], resolve),
+         },
       ]
    },
 ]
@@ -136,6 +141,7 @@ const routeMap = [
       children: [
          {name: 'plate', path: 'plate', meta: {title: '山东各市车牌', showInMenu: true}},
          {name: 'area', path: 'area', meta: {title: '济南市各区', showInMenu: true}},
+         {name: 'carManage', path: 'car-manage', meta: {title: '济南车车管所', showInMenu: true}},
       ]
    },
 ]
