@@ -81,7 +81,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../scss/variables";
 
 .el-menu {
@@ -90,57 +90,80 @@ export default {
 .el-radio-group {
     padding: 10px;
 }
-.el-submenu, .el-menu-item{
-    border-bottom: 1px solid #eeeeee;
+.el-submenu{
+    .el-menu-item{
+        line-height: 40px;
+        height: 40px;
+        &:after{
+            background-color: $border-color-nav;
+        }
+    }
     .el-menu{
         .el-menu-item:hover{
-            background-color: transparentize($orange, 0.8);
+            background-color: transparentize($color-main, 0.8);
         }
     }
     &.is-active{
-        background-color: transparentize($orange, 0.95);
+        background-color: transparentize($color-main, 0.95);
         .el-menu{
             .el-menu-item{
-                background-color: transparentize($orange, 0.95);
+                background-color: transparentize($color-main, 0.95);
                 &.is-active{
-                    color: $orange;
-                    background-color: transparentize($orange, 0.8);
+                    color: white;
+                    //background-color: transparentize($color-main, 0.8);
+                    background-color: $color-main;
                 }
+            }
+        }
+    }
+    &.is-opened{
+        .el-menu{
+            &:after{
+                background-color: #eeeeee;
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 20px;
+                height: 1px;
+                width: 100%;
+                transform: scaleY(0.5);
             }
         }
     }
 }
 
-.el-submenu__title{
+.el-menu-item, .el-submenu__title{
     line-height: 40px;
     height: 40px;
+    font-size: 0.9rem;
+    color: $text-subtitle;
+    border-bottom: none;
+    transition: all 0s;
+    &.is-active {
+        color: white;
+        background-color: $color-main;
+    }
     &:hover{
-        background-color: transparentize($orange, 0.9) !important;
+        i{
+            color: inherit;
+        }
+        color: white;
+        background-color: transparentize($color-main, 0.4) !important;
+        transition: all 0s;
+    }
+    &:after{
+        background-color: $border-color-nav;
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 20px;
+        height: 1px;
+        width: 100%;
+        transform: scaleY(0.5);
+    }
+    &:last-child:after{
+        content: none;
     }
 }
-
-.el-submenu{
-    .el-menu-item{
-        line-height: 40px;
-        height: 40px;
-        font-size: 0.9rem;
-        color: $text-subtitle;
-        border-bottom: none;
-        &:after{
-            background-color: #eeeeee;
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 20px;
-            height: 1px;
-            width: 100%;
-            transform: scaleY(0.5);
-        }
-        &:last-child:after{
-            content: none;
-        }
-    }
-}
-
 
 </style>

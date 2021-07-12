@@ -10,7 +10,12 @@ $yellow           : #FFCC00;
 $gray             : #8E8E93;
 
 //ELEMTENT COLORS
-$color-main       : #409EFF;
+$color-main       : $magenta;
+$border-color-nav: transparentize($color-main, 0.8);
+
+
+
+$color-primary    : #409EFF;
 $color-success    : #67C23A;
 $color-warning    : #E6A23C;
 $color-danger     : #F56C6C;

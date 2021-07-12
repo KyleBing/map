@@ -23,7 +23,7 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/plugin";
 .copyright{
-    border-top: 1px solid $color-border;
+    border-top: 1px solid $border-color-nav;
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-end;

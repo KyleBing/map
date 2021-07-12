@@ -39,7 +39,7 @@ $height-logo-narrow: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: 1px solid $color-border;
+    border-bottom: 1px solid $border-color-nav;
 }
 .logo{
     cursor: pointer;
