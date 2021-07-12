@@ -9,6 +9,8 @@
                 <div class="info"><p>路线区域：</p><p>{{line.area}}</p></div>
                 <div class="info"><p>路面类型：</p><p>{{line.roadType}}</p></div>
                 <div class="info"><p>推荐季节：</p><p>{{line.months}}</p></div>
+                <div v-if="line.distance" class="info"><p>距离/时间：</p><p>{{line.distance}} km</p></div>
+                <div v-if="line.time" class="info"><p>行驶时间：</p><p>{{line.time}} min</p></div>
             </div>
             <p class="note">{{line.note}}</p>
         </div>

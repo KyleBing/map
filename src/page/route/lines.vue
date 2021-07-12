@@ -43,6 +43,7 @@ export default {
                 // 'AMap.ToolBar', // 缩放按钮
                 'AMap.Scale', // 比例尺
                 'AMap.Geolocation', // 定位
+                'AMap.DragRoute', // 定位
             ],
 
         }).then(map => {
@@ -112,48 +113,64 @@ export default {
 
         // 载入路线信息
         loadLine(map, line) {
-            map.plugin('AMap.DragRoute', () => {
-                // path 是驾车导航的起、途径和终点，最多支持16个途经点
-                let path = []
-                line.paths.forEach(point => {
-                    path.push(point.position)
-                })
-                let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
-                    startMarkerOptions: {
-                        offset: new AMap.Pixel(-13, -40),
-                        icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26, 40),
-                            image: ICON.start,
-                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
 
-                        }),
-                    },
-                    endMarkerOptions: {
-                        offset: new AMap.Pixel(-13, -40),
-                        icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26, 40),
-                            image: ICON.end,
-                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
-
-                        }),
-                    },
-                    midMarkerOptions: {
-                        offset: new AMap.Pixel(-5, -10),
-                        icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(15, 15),
-                            image: ICON.midIcon,
-                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(15, 15) // 指定图标的大小，可以压缩图片
-
-                        }),
-                    },
-                })
-                // 查询导航路径并开启拖拽导航
-                route.search()
-                this.currentRouting = route
+            // path 是驾车导航的起、途径和终点，最多支持16个途经点
+            let path = []
+            line.paths.forEach(point => {
+                path.push(point.position)
             })
+            let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
+                startMarkerOptions: {
+                    offset: new AMap.Pixel(-13, -40),
+                    icon: new AMap.Icon({ // 设置途经点的图标
+                        size: new AMap.Size(26, 40),
+                        image: ICON.start,
+                        // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                        imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
+
+                    }),
+                },
+                endMarkerOptions: {
+                    offset: new AMap.Pixel(-13, -40),
+                    icon: new AMap.Icon({ // 设置途经点的图标
+                        size: new AMap.Size(26, 40),
+                        image: ICON.end,
+                        // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                        imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
+
+                    }),
+                },
+                midMarkerOptions: {
+                    offset: new AMap.Pixel(-5, -10),
+                    icon: new AMap.Icon({ // 设置途经点的图标
+                        size: new AMap.Size(15, 15),
+                        image: ICON.midIcon,
+                        // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                        imageSize: new AMap.Size(15, 15) // 指定图标的大小，可以压缩图片
+
+                    }),
+                },
+            })
+
+            route.on('complete', res => {
+                // 路线规划完成后，返回的路线数据：设置距离、行驶时间
+                let lineData = res.data.routes[0]
+                let distance =  (lineData.distance / 1000).toFixed(1) // m -> km
+                let time = (lineData.time / 60).toFixed() // second -> min
+                this.$set(this.activeLineObj, 'distance', distance)
+                this.$set(this.activeLineObj, 'time', time)
+            })
+
+
+            // 切换线路之前如果存在路线，销毁已存在的路线
+            if (this.currentRouting){
+                this.currentRouting.destroy()
+                this.currentRouting = null
+            }
+            this.currentRouting = route
+
+            // 查询导航路径并开启拖拽导航
+            this.currentRouting.search()
         },
 
 
