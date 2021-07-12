@@ -107,11 +107,16 @@ export default {
         background-color: transparentize($color-main, 0.95);
         .el-menu{
             .el-menu-item{
+                color: #bb5475;
                 background-color: transparentize($color-main, 0.95);
                 &.is-active{
                     color: white;
                     //background-color: transparentize($color-main, 0.8);
                     background-color: $color-main;
+                }
+                &:hover{
+                    color: white;
+                    background-color: transparentize($color-main, 0.95);
                 }
             }
         }
@@ -136,17 +141,18 @@ export default {
     line-height: 40px;
     height: 40px;
     font-size: 0.9rem;
-    color: $text-subtitle;
+    color: $text-main;
     border-bottom: none;
     transition: all 0s;
+    i{
+        color: inherit;
+    }
+
     &.is-active {
         color: white;
         background-color: $color-main;
     }
     &:hover{
-        i{
-            color: inherit;
-        }
         color: white;
         background-color: transparentize($color-main, 0.4) !important;
         transition: all 0s;
