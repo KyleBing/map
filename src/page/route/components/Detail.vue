@@ -2,7 +2,9 @@
     <div :class="['detail', 'card', {'closed': !showContent}, {'center': isInPortraitMode}]">
         <div class="title">
             <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
-                <i @click="toggleContent" v-else class="el-icon-arrow-up"></i></h1>
+                <i @click="toggleContent" v-else class="el-icon-arrow-up"></i>
+            </h1>
+            <a v-if="line.videoLink" target="_blank" class="video-link" :href="line.videoLink"><i class="el-icon-video-camera"></i></a>
         </div>
         <div class="content" v-if="showContent">
             <div class="info-list">
@@ -57,11 +59,40 @@ i{
     top: 20px;
     left: 20px;
     .title{
+        position: relative;
         text-align: center;
         padding: 7px 0 8px;
         font-size: 1rem;
         color: $text-main;
         border-bottom: 1px solid $color-border;
+        .video-link{
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            ::after{
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                height: 30px;
+                width: 30px;
+                transform: translateX(-50%) translateY(-50%);
+                @include border-radius(100px);
+            }
+            &:hover{
+                color: $color-main;
+                ::after{
+                    background-color: transparentize($color-main, 0.9);
+                }
+            }
+            &:active{
+                ::after{
+                    background-color: transparentize($color-main, 0.7);
+                }
+            }
+        }
     }
     &.closed{
         .title{

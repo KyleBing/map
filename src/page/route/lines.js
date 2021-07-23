@@ -7,7 +7,7 @@ const LINES = [
         note: '金刚纂路是一条比较曲折的山路，平坦，注意拐弯不可见的地方鸣笛示意',
         roadType: '柏油路',
         months: '春，夏，秋',
-        videoLink: '',
+        videoLink: 'https://www.bilibili.com/video/BV1dB4y1M7fc/',
         paths: [
             {position: [117.111285, 36.658996], name: '奥体西', note: ''},
             {position: [117.119066, 36.647191], name: '龙洞立交桥', note: ''},

@@ -4,6 +4,7 @@
         <detail v-if="activeLineObj" :line="activeLineObj"></detail>
         <!-- 在有 activeLineObj 对象之后再显示 -->
 
+        <iframe src="//player.bilibili.com/player.html?bvid=BV1dB4y1M7fc&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
     </div>
 </template>
 
