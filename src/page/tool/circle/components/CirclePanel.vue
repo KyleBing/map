@@ -142,6 +142,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@use 'sass:math';
+
 @import "../../../../scss/plugin";
 .circle-panel {
     width: 400px;
@@ -195,9 +197,9 @@ $height-btn: 28px;
         text-align: center;
         font-size: 0.5rem;
         display: block;
-        height: ( $height-btn - 2 )/2;
-        width: ( $height-btn - 2 )/2 + 6;
-        line-height: ( $height-btn - 2 )/2;
+        height: math.div(($height-btn - 2), 2);
+        width: math.div(($height-btn - 2), 2) + 6;
+        line-height: math.div(($height-btn - 2), 2);
         background-color: $color-border;
 
         &:hover{
@@ -221,8 +223,8 @@ $height-btn: 28px;
     flex-shrink: 0;
     .lng, .lat{
         font-size: 10px;
-        height: ( $height-btn - 2 ) / 2;
-        line-height: ( $height-btn - 2 ) / 2;
+        height: math.div(($height-btn - 2), 2);
+        line-height: math.div(($height-btn - 2), 2);
     }
     &:active{
         transform: translateY(1px);
