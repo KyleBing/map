@@ -8,15 +8,24 @@
         </div>
         <div class="content" v-if="showContent">
             <div class="info-list">
-                <div class="info"><p>路线区域：</p><p>{{line.area}}</p></div>
-                <div class="info"><p>路面类型：</p><p>{{line.roadType}}</p></div>
-                <div class="info"><p>推荐季节：</p><p>{{line.months}}</p></div>
-                <div v-if="line.distance" class="info"><p>距离/时间：</p><p>{{line.distance}} km</p></div>
-                <div v-if="line.time" class="info"><p>行驶时间：</p><p>{{line.time}} min</p></div>
+                <div class="info">
+                    <p class="info-title">路线区域</p><p class="info-value">{{line.area}}</p>
+                </div>
+                <div class="info">
+                    <p class="info-title">路面类型</p><p class="info-value">{{line.roadType}}</p>
+                </div>
+                <div class="info">
+                    <p class="info-title">推荐季节</p><p class="info-value">{{line.months}}</p>
+                </div>
+                <div v-if="line.distance" class="info">
+                    <p class="info-title">距离/时间</p><p class="info-value">{{line.distance}} km</p>
+                </div>
+                <div v-if="line.time" class="info">
+                    <p class="info-title">行驶时间</p><p class="info-value">{{line.time}} min</p>
+                </div>
             </div>
             <p class="note">{{line.note}}</p>
         </div>
-
     </div>
 </template>
 
@@ -61,7 +70,7 @@ i{
     .title{
         position: relative;
         text-align: center;
-        padding: 7px 0 8px;
+        padding: 10px 0 15px;
         font-size: 1rem;
         color: $text-main;
         border-bottom: 1px solid $color-border;
@@ -96,7 +105,7 @@ i{
     }
     &.closed{
         .title{
-            padding: 7px 0 7px;
+            padding: 10px 0 10px;
             border: none;
         }
     }
@@ -108,23 +117,45 @@ i{
 }
 
 .content{
+    @include transition(all 0.3s);
     color: $text-subtitle;
     font-size: 0.8rem;
 }
 .info-list{
-    padding: 5px 10px;
+    font-size: 12px;
+    padding: 10px 20px;
 }
 .info{
-    padding: 3px 0;
+    width: 100%;
+    line-height: 1.5;
+    position: relative;
     display: flex;
-    justify-content: flex-start;
-    p:first-child{
-        font-weight: bold;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    p{
+        z-index: 10;
+        background-color: white;
+    }
+    &-title{
+        padding-right: 10px;
         color: $text-main;
+    }
+    &-value{
+        padding-left: 10px;
+    }
+
+    &::after{
+        width: 100%;
+        height: 1px;
+        position: absolute;
+        bottom: 50%;
+        left: 0;
+        content: '';
+        border-bottom: 1px dashed $color-border;
     }
 }
 .note{
-    padding: 5px 10px 10px;
+    padding: 10px 20px;
     border-top: 1px solid $color-border;
     line-height: 1.5;
     color: $text-main;

@@ -30,13 +30,9 @@ let router = new Router({
 Vue.use(Router)
 
 
-
-
 // VUEX
 Vue.use(Vuex)
 import store from "@/store";
-
-
 
 
 router.afterEach((to, from) => {

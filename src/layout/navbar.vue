@@ -151,6 +151,9 @@ export default {
     &.is-active {
         color: white;
         background-color: $color-main;
+        &:hover{
+            background-color: $color-main !important;
+        }
     }
     &:hover{
         color: white;
