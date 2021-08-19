@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import utility from "@/utility";
+import utility from "@/utility"
 
 export default {
    name: "register",
@@ -99,15 +99,15 @@ export default {
       submit(){
          this.$refs['register'].validate((valid) => {
             if (valid) {
-               this.register();
+               this.register()
             } else {
-               console.log('error submit!!');
-               return false;
+               console.log('error submit!!')
+               return false
             }
-         });
+         })
       },
       register() {
-         // localStorage.registerUser = JSON.stringify(this.user);
+         // localStorage.registerUser = JSON.stringify(this.user)
          utility.postData(utility.URL.register, this.user)
              .then(res => {
                 this.$notify({
@@ -117,7 +117,7 @@ export default {
                    type: 'success',
                    onClose() {
                    }
-                });
+                })
              }).catch(msg => {
             this.$notify(msg)
          })

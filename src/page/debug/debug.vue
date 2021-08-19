@@ -13,9 +13,9 @@
 
 <script>
 
-import AMapLoader from '@amap/amap-jsapi-loader';
-import ICON from "@/page/route/icons";
-import RoutePanel from "@/page/tool/route/components/RoutePanel";
+import AMapLoader from '@amap/amap-jsapi-loader'
+import ICON from "@/page/route/icons"
+import RoutePanel from "@/page/tool/route/components/RoutePanel"
 
 import { mapState } from 'vuex'
 // 显示地图行政区的深度
@@ -144,7 +144,7 @@ export default {
             })
 
         }).catch(e => {
-            console.log(e);
+            console.log(e)
         })
 
     },
@@ -154,7 +154,7 @@ export default {
     methods: {
         // 展示行政图
         initPro(code, dep) {
-            this.layerCity && this.layerCity.setMap(null);
+            this.layerCity && this.layerCity.setMap(null)
 
             let that = this
             this.layerCity = new AMap.DistrictLayer.Province({
@@ -171,16 +171,16 @@ export default {
                         if (properties.adcode_cit.toString().indexOf('370100') === 0) {
                             let {NAME_CHN, adcode, x,y} = properties
                             // console.log(`{name: ${NAME_CHN}, adcode: ${adcode}, position: [${x},${y}]}`)
-                            return this.colors[adcode].color;
+                            return this.colors[adcode].color
                         }
                     },
                     'province-stroke': 'black',
                     'city-stroke': 'black', // 中国地级市边界
                     'county-stroke': 'rgba(255,255,255,0.5)' // 中国区县边界
                 }
-            });
+            })
 
-            this.layerCity.setMap(this.map);
+            this.layerCity.setMap(this.map)
         },
 
         // 添加新标记点和圆圈
@@ -295,8 +295,8 @@ export default {
                   <div class="title">${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
-            });
-            map.add(marker);
+            })
+            map.add(marker)
         }
 
     },

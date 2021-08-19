@@ -11,8 +11,8 @@
 
 <script>
 
-import AMapLoader from '@amap/amap-jsapi-loader';
-import CirclePanel from "@/page/tool/circle/components/CirclePanel";
+import AMapLoader from '@amap/amap-jsapi-loader'
+import CirclePanel from "@/page/tool/circle/components/CirclePanel"
 
 import { mapState } from 'vuex'
 
@@ -89,7 +89,7 @@ export default {
             })
 
         }).catch(e => {
-            console.log(e);
+            console.log(e)
         })
 
     },
@@ -141,8 +141,8 @@ export default {
                 strokeColor: borderColor, // 描边颜色
                 strokeOpacity: 1,         // 描边透明度
                 strokeWeight: 2,          // 描边宽度
-            });
-            map.add(circle);
+            })
+            map.add(circle)
         },
         addMarker(map, item) {
             let marker = new AMap.Marker({
@@ -152,8 +152,8 @@ export default {
                   <div class="title">${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
-            });
-            map.add(marker);
+            })
+            map.add(marker)
         }
 
     },

@@ -6,9 +6,9 @@
 
 <script>
 
-import AMapLoader from '@amap/amap-jsapi-loader';
-import ICON from "@/page/route/icons";
-import {mapState} from "vuex";
+import AMapLoader from '@amap/amap-jsapi-loader'
+import ICON from "@/page/route/icons"
+import {mapState} from "vuex"
 
 const POSITION = {
     hanyu: [117.148734, 36.659771],
@@ -56,7 +56,7 @@ export default {
                 // mapStyle: 'amap://styles/45311ae996a8bea0da10ad5151f72979',
                 showBuildingBlock: true, // 显示建筑物
                 showLabel: false, // 不显示地名什么的
-            });
+            })
 
             this.loca = new Loca.Container({
                 map: this.map,
@@ -145,12 +145,12 @@ export default {
 
             this.map.on('complete', ()=> {
                 setTimeout(()=>{
-                this.loca.animate.start();
+                this.loca.animate.start()
                 }, 2000); // 给地图一个加载的时间
-            });
+            })
 
         }).catch(e => {
-            console.log(e);
+            console.log(e)
         })
     },
 
@@ -160,8 +160,8 @@ export default {
     methods: {
 
         resizeMap() {
-            let mapContainer = document.getElementById('container');
-            mapContainer.style.height = window.innerHeight + "px";
+            let mapContainer = document.getElementById('container')
+            mapContainer.style.height = window.innerHeight + "px"
             mapContainer.style.width = window.innerWidth + "px"
         },
 
@@ -226,8 +226,8 @@ export default {
                   <div class="title">${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
-            });
-            map.add(marker);
+            })
+            map.add(marker)
         }
 
     },

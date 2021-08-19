@@ -100,7 +100,7 @@ export default {
             })
 
         }).catch(e => {
-            console.log(e);
+            console.log(e)
         })
 
     },
@@ -109,7 +109,7 @@ export default {
     },
     methods: {
         initPro(code, dep) {
-            this.layerCity && this.layerCity.setMap(null);
+            this.layerCity && this.layerCity.setMap(null)
 
             let that = this
             this.layerCity = new AMap.DistrictLayer.Province({
@@ -124,16 +124,16 @@ export default {
                         // adcode_cit
                         // adcode
                         if (properties.adcode.toString().indexOf('37') === 0) {
-                            return this.colors[properties.adcode].color;
+                            return this.colors[properties.adcode].color
                         }
                     },
                     'province-stroke': 'black',
                     'city-stroke': 'white', // 中国地级市边界
                     'county-stroke': 'rgba(255,255,255,0.5)' // 中国区县边界
                 }
-            });
+            })
 
-            this.layerCity.setMap(this.map);
+            this.layerCity.setMap(this.map)
         },
 
         addMarker(map, item) {
@@ -145,8 +145,8 @@ export default {
                   <div class="title">${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
-            });
-            map.add(marker);
+            })
+            map.add(marker)
         }
     },
     beforeDestroy() {

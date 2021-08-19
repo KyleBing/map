@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import AMapLoader from '@amap/amap-jsapi-loader';
+import AMapLoader from '@amap/amap-jsapi-loader'
 import { mapState } from 'vuex'
 const MY_POSITION = [117.129533, 36.685668]
 
@@ -64,7 +64,7 @@ export default {
 
 
         }).catch(e => {
-            console.log(e);
+            console.log(e)
         })
 
     },
@@ -81,8 +81,8 @@ export default {
                   <div class="title">${item.name}</div>
                   <div class="note"><a href="tel:${item.phone}">${item.phone}</a></div>
                </div>`,
-            });
-            map.add(marker);
+            })
+            map.add(marker)
         }
     },
     beforeDestroy() {

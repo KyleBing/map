@@ -10,11 +10,11 @@
 
 <script>
 
-import AMapLoader from '@amap/amap-jsapi-loader';
+import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
-import ICON from "@/page/route/icons";
-import Detail from "./components/Detail";
-import {mapState} from "vuex";
+import ICON from "@/page/route/icons"
+import Detail from "./components/Detail"
+import {mapState} from "vuex"
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -52,10 +52,10 @@ export default {
             this.map = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
-            });
+            })
 
-            // this.map.addControl(new AMap.ToolBar());
-            this.map.addControl(new AMap.Scale());
+            // this.map.addControl(new AMap.ToolBar())
+            this.map.addControl(new AMap.Scale())
 
 
             // 定位
@@ -71,8 +71,7 @@ export default {
                 //  定位按钮的排放位置,  RB表示右下
                 buttonPosition: 'RB'
             })
-
-            geolocation.getCurrentPosition(this.setMapCenterToUserLocation);
+            geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
 
             // 获取 Route 中的路线 ID
             this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
@@ -82,7 +81,7 @@ export default {
             this.loadLine(this.map, this.activeLineObj)
             this.loadLineLabels(this.map, this.activeLineObj)
         }).catch(e => {
-            console.log(e);
+            console.log(e)
         })
     },
 
@@ -107,8 +106,8 @@ export default {
         },
 
         resizeMap() {
-            let mapContainer = document.getElementById('container');
-            mapContainer.style.height = window.innerHeight + "px";
+            let mapContainer = document.getElementById('container')
+            mapContainer.style.height = window.innerHeight + "px"
             mapContainer.style.width = window.innerWidth + "px"
         },
 
@@ -189,8 +188,8 @@ export default {
                   <div class="title">${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
-            });
-            map.add(marker);
+            })
+            map.add(marker)
         }
 
     },
@@ -214,7 +213,7 @@ export default {
 
 <style lang="scss" scoped>
 .map-container {
-    position: relative;
+    position: relative
 }
 
 </style>

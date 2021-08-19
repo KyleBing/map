@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import utility from "@/utility";
+import utility from "@/utility"
 import { mapMutations } from "vuex"
 
 export default {
@@ -44,17 +44,17 @@ export default {
       submit(){
          this.$refs['login'].validate((valid) => {
             if (valid) {
-               this.login();
+               this.login()
             } else {
-               console.log('error submit!!');
-               return false;
+               console.log('error submit!!')
+               return false
             }
-         });
+         })
       },
       login() {
          utility.postData(utility.URL.login, this.user)
              .then(res => {
-                let that = this;
+                let that = this
                 this.setUserInfo(res.data)
                 this.$notify({
                    title: res.msg,
@@ -65,8 +65,8 @@ export default {
                    onClose() {
                       that.$router.push('/code/list')
                    }
-                });
-             }).catch(msg => this.$notify(msg));
+                })
+             }).catch(msg => this.$notify(msg))
       },
    },
 }
