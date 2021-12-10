@@ -84,6 +84,10 @@ export default {
 <style lang="scss">
 @import "../scss/variables";
 
+$active-submenu-title: darken($color-main, 20%);
+$active-submenu-bg: transparentize($color-main, 0.9);
+$hover-menu-bg: transparentize($color-main, 0.4);
+
 .el-menu {
     border: none;
 }
@@ -100,23 +104,28 @@ export default {
     }
     .el-menu{
         .el-menu-item:hover{
-            background-color: transparentize($color-main, 0.8);
+            background-color: $active-submenu-bg;
         }
     }
     &.is-active{
-        background-color: transparentize($color-main, 0.95);
+        background-color: $active-submenu-bg;
+        .el-submenu__title{
+            color: $active-submenu-title;
+            &:hover{
+                color: white;
+            }
+        }
         .el-menu{
             .el-menu-item{
-                color: #bb5475;
-                background-color: transparentize($color-main, 0.95);
+                color: $active-submenu-title;
+                background-color: $active-submenu-bg;
                 &.is-active{
                     color: white;
-                    //background-color: transparentize($color-main, 0.8);
+                    //background-color: $active-submenu-bg;
                     background-color: $color-main;
                 }
                 &:hover{
                     color: white;
-                    background-color: transparentize($color-main, 0.95);
                 }
             }
         }
@@ -157,7 +166,7 @@ export default {
     }
     &:hover{
         color: white;
-        background-color: transparentize($color-main, 0.4) !important;
+        background-color: $hover-menu-bg !important;
         transition: all 0s;
     }
     &:after{
