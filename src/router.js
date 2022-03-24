@@ -92,6 +92,19 @@ const router = [
          },
       ]
    },
+   {
+      name: 'other',
+      path: '/other',
+      component: Layout,
+      redirect: '/other/map-loca',
+      children: [
+         {
+            name: 'map-loca',
+            path: 'map-loca',
+            component: resolve => require(['@/page/other/map/MapLoca'], resolve),
+         },
+      ]
+   },
 ]
 
 // 该列表用于菜单展示
@@ -142,6 +155,18 @@ const routeMap = [
          {name: 'plate', path: 'plate', meta: {title: '山东各市车牌', showInMenu: true}},
          {name: 'area', path: 'area', meta: {title: '济南市各区', showInMenu: true}},
          {name: 'carManage', path: 'car-manage', meta: {title: '济南车车管所', showInMenu: true}},
+      ]
+   },
+   {
+      name: 'other',
+      path: '/other',
+      meta: {
+         title: '其它',
+         showInMenu: true,
+         icon: 'el-icon-magic-stick' // 菜单 icon 对应 Element UI 中的 ICON class 名
+      },
+      children: [
+         {name: 'mapLoca', path: 'map-loca', meta: {title: '脉冲图', showInMenu: true}},
       ]
    },
 ]

@@ -1,0 +1,9 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type": "Feature", "properties": {"country": "山东", "time": "1949年10月6日", "flagName": "shandong", "type": 1}, "geometry": {"type": "LineString", "coordinates": [[121.504673, 25.046711], [117.132546, 36.693774]]}},
+    {"type": "Feature", "properties": {"country": "蒙古", "time": "1949年10月16日", "flagName": "menggu", "type": 1}, "geometry": {"type": "LineString", "coordinates": [[121.504673, 25.046711], [103.453, 46.8528]]}},
+    {"type": "Feature", "properties": {"country": "阿尔巴尼亚", "time": "1949年11月23日", "flagName": "aerbaniya", "type": 1}, "geometry": {"type": "LineString", "coordinates": [[121.504673, 25.046711], [20.1179, 41.1489]]}},
+    {"type": "Feature", "properties": {"country": "保加利亚", "time": "1949年10月4日", "flagName": "baojialiya", "type": 1}, "geometry": {"type": "LineString", "coordinates": [[121.504673, 25.046711], [25.3611, 42.7454]]}}
+  ]
+}
