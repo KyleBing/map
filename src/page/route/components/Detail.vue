@@ -24,7 +24,10 @@
                     <p class="info-title">行驶时间</p><p class="info-value">{{line.time}} min</p>
                 </div>
             </div>
-            <p class="note">{{line.note}}</p>
+            <div class="note">
+                <p v-for="line in line.note.split('\n')">{{line}}</p>
+            </div>
+
         </div>
     </div>
 </template>
