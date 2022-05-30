@@ -164,6 +164,7 @@ export default {
             })
         },
         addMarker(map, item) {
+            console.log(item)
             let marker = new AMap.Marker({
                 position: item.position,
                 content: `
