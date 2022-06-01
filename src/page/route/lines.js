@@ -82,7 +82,7 @@ const LINES = [
         note: '春天的时候特别好看，两边的紫叶李都开花了，白色的一片，加上左边的蓝色小湖面，甚是好看。\n如果人多，会很堵，可以走绝北路，相对车少点，但路不太好走。',
         roadType: '柏油路',
         months: '春',
-        videoLink: '',
+        videoLink: 'https://www.bilibili.com/video/BV1W44y1u7nd/',
         paths: [
             {position: [116.867337,36.647036], name: '起点', note: ''},
             {position: [116.836749,36.66289], name: '途经点', note: ''},
@@ -200,7 +200,7 @@ const LINES = [
         note: '吹吹风，拍拍视频很不错',
         roadType: '柏油路',
         months: '春、夏、秋、冬',
-        videoLink: '',
+        videoLink: 'https://www.bilibili.com/video/BV1x34y177hm/',
         paths: [
             {"name":"奥体开始","position":[117.11132,36.65929],"note":""},
             {"name":"上旅游路","position":[117.12347,36.649138],"note":""},
