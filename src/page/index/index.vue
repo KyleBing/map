@@ -31,7 +31,7 @@ export default {
             currentRouting: null,  // 当前导航路线
         }
     },
-    created() {
+    mounted() {
         this.contentHeight = window.innerHeight
 
         AMapLoader.load({
