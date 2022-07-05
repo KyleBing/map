@@ -7,8 +7,9 @@
 <script>
 
 import AMapLoader from '@amap/amap-jsapi-loader'
-import ICON from "@/page/route/icons"
+import ICON from "@/assets/icons"
 import {mapState} from "vuex"
+import mapConfig from "../../mapConfig";
 
 const POSITION = {
     hanyu: [117.148734, 36.659771],
@@ -36,7 +37,7 @@ export default {
         this.contentHeight = window.innerHeight
 
         AMapLoader.load({
-            key: "581591b581149549d9035d039e83e368", // 开发应用的 ID
+            key: mapConfig.appId, // 开发应用的 ID
             version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
             plugins: [],
             Loca:{

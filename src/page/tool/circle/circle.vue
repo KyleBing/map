@@ -15,6 +15,7 @@ import AMapLoader from '@amap/amap-jsapi-loader'
 import CirclePanel from "@/page/tool/circle/components/CirclePanel"
 
 import { mapState } from 'vuex'
+import mapConfig from "../../../mapConfig";
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -47,7 +48,7 @@ export default {
         this.contentHeight = window.innerHeight
 
         AMapLoader.load({
-            key: "581591b581149549d9035d039e83e368", // 开发应用的 ID
+            key: mapConfig.appId, // 开发应用的 ID
             version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
             plugins: [
                 // 'AMap.ToolBar', // 缩放按钮
