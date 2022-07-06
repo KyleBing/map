@@ -97,10 +97,7 @@ export default {
         loadLine(map, line) {
 
             // path 是驾车导航的起、途径和终点，最多支持16个途经点
-            let path = []
-            line.paths.forEach(point => {
-                path.push(point.position)
-            })
+            let path = line.paths.map (item => item.position)
             let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
                 startMarkerOptions: {
                     offset: new AMap.Pixel(-13, -40),
