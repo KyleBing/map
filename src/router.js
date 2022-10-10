@@ -18,12 +18,12 @@ const router = [
    {
       name: 'login',
       path: '/login',
-      component: resolve => require(['@/page/login.vue'], resolve),
+      component: resolve => require(['@/page/Login'], resolve),
    },
    {
       name: 'register',
       path: '/register',
-      component: resolve => require(['@/page/register.vue'], resolve),
+      component: resolve => require(['@/page/Register'], resolve),
    },
    {
       name: 'routeline',
@@ -34,7 +34,7 @@ const router = [
          {
             name: 'line',
             path: ':lineId',
-            component: resolve => require(['@/page/route/lines.vue'], resolve),
+            component: resolve => require(['@/page/route/RouteLine'], resolve),
          }
       ]
    },
@@ -47,12 +47,12 @@ const router = [
          {
             name: 'circle',
             path: 'circle',
-            component: resolve => require(['@/page/tool/circle/circle'], resolve),
+            component: resolve => require(['@/page/tool/circle/ToolCircle'], resolve),
          },
          {
             name: 'route',
             path: 'route',
-            component: resolve => require(['@/page/tool/route/route'], resolve),
+            component: resolve => require(['@/page/tool/route/ToolRoute'], resolve),
          }
       ]
    },
@@ -78,17 +78,17 @@ const router = [
          {
             name: 'plate',
             path: 'plate',
-            component: resolve => require(['@/page/info/plate/plate'], resolve),
+            component: resolve => require(['@/page/info/plate/InfoPlate'], resolve),
          },
          {
             name: 'area',
             path: 'area',
-            component: resolve => require(['@/page/info/area/jinan'], resolve),
+            component: resolve => require(['@/page/info/area/AreaJinan'], resolve),
          },
          {
             name: 'carManage',
             path: 'car-manage',
-            component: resolve => require(['@/page/info/carManage/carManage'], resolve),
+            component: resolve => require(['@/page/info/carManage/CarManage'], resolve),
          },
       ]
    },

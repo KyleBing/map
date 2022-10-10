@@ -8,6 +8,12 @@
             :lng="positionPicked.lng"
             :lat="positionPicked.lat"
             v-model="routeData"></route-panel>
+        <detail
+            class="detail-panel"
+            v-if="activeLineObj"
+            :line="activeLineObj"
+        ></detail>
+
     </div>
 </template>
 
@@ -19,15 +25,18 @@ import RoutePanel from "@/page/tool/route/components/RoutePanel";
 
 import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
+import Detail from "@/page/route/components/Detail";
 
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 export default {
     name: "ToolRoute",
-    components: {RoutePanel},
+    components: {Detail, RoutePanel},
     data() {
         return {
+            activeLineObj: null,
+
             isLoading: false,
             contentHeight: 400,
             map: null,
@@ -193,9 +202,29 @@ export default {
                         }),
                     },
                 })
-                // 查询导航路径并开启拖拽导航
-                route.search()
+
+                route.on('complete', res => {
+                    // 路线规划完成后，返回的路线数据：设置距离、行驶时间
+                    let lineData = res.data.routes[0]
+                    let distance =  (lineData.distance / 1000).toFixed(1) // m -> km
+                    let time = (lineData.time / 60).toFixed() // second -> min
+                    this.activeLineObj = {
+                        name: '临时路线'
+                    }
+                    this.$set(this.activeLineObj, 'distance', distance)
+                    this.$set(this.activeLineObj, 'time', time)
+                })
+
+
+                // 切换线路之前如果存在路线，销毁已存在的路线
+                if (this.currentRouting){
+                    this.currentRouting.destroy()
+                    this.currentRouting = null
+                }
                 this.currentRouting = route
+
+                // 查询导航路径并开启拖拽导航
+                this.currentRouting.search()
             })
         },
 
@@ -240,6 +269,12 @@ export default {
 @import "../../../scss/plugin";
 .map-container {
     position: relative;
+}
+
+.detail-panel{
+    right: 30px;
+    top: 30px;
+    left: auto;
 }
 
 </style>

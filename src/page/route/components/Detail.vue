@@ -8,13 +8,13 @@
         </div>
         <div class="content" v-if="showContent">
             <div class="info-list">
-                <div class="info">
+                <div class="info" v-if="line.area">
                     <p class="info-title">路线区域</p><p class="info-value">{{line.area}}</p>
                 </div>
-                <div class="info">
+                <div class="info" v-if="line.roadType">
                     <p class="info-title">路面类型</p><p class="info-value">{{line.roadType}}</p>
                 </div>
-                <div class="info">
+                <div class="info" v-if="line.months">
                     <p class="info-title">推荐季节</p><p class="info-value">{{line.months}}</p>
                 </div>
                 <div v-if="line.distance" class="info">
@@ -24,7 +24,7 @@
                     <p class="info-title">行驶时间</p><p class="info-value">{{line.time}} min</p>
                 </div>
             </div>
-            <div class="note">
+            <div class="note" v-if="line.note && line.note.length > 0">
                 <p v-for="line in line.note.split('\n')">{{line}}</p>
             </div>
 

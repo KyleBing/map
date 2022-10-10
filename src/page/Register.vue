@@ -42,7 +42,7 @@
 import utility from "@/utility"
 
 export default {
-   name: "register",
+   name: "Register",
    data() {
       const validatePasswordRepeat = (rule, value, callback) => {
          if (value !== this.user.Password){

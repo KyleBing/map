@@ -22,7 +22,7 @@ import utility from "@/utility"
 import { mapMutations } from "vuex"
 
 export default {
-   name: "login",
+   name: "Login",
    data() {
       return {
          isNewUser: false,
