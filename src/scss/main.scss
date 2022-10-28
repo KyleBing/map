@@ -14,11 +14,18 @@
 
 .marker{
     background-color: white;
-    @include border-radius(4px);
+    @include border-radius(5px);
     padding: 6px;
     line-height: 1.3;
     color: $text-main;
+    @include transition(all 0.3s);
     @include box-shadow(2px 2px 5px rgba(121, 85, 72, 0.39));
+    &:hover{
+        @include border-radius(10px);
+        @include transition(all 0.3s);
+        padding: 15px;
+        transform: scale(1.2);
+    }
     .title{
         white-space: nowrap;
         font-weight: bold;
@@ -28,6 +35,26 @@
         white-space: nowrap;
         font-size: 0.7rem;
         color: $text-subtitle;
+    }
+    &.orange{
+        background-color: $orange;
+        color: white;
+        .note{color: transparentize(white, 0.3);}
+    }
+    &.green{
+        background-color: $green;
+        color: white;
+        .note{color: transparentize(white, 0.3);}
+    }
+    &.blue{
+        background-color: $blue;
+        color: white;
+        .note{color: transparentize(white, 0.3);}
+    }
+    &.red{
+        background-color: $red;
+        color: white;
+        .note{color: transparentize(white, 0.3);}
     }
 }
 
