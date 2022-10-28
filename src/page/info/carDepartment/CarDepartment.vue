@@ -13,7 +13,7 @@ const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 
 export default {
-    name: "CarManage",
+    name: "CarDepartment",
     data() {
         return {
             isLoading: false,
@@ -51,32 +51,35 @@ export default {
     },
     created() {
         this.contentHeight = window.innerHeight
-        AMapLoader.load({
-            key: mapConfig.appId, // 开发应用的 ID
-            version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-            plugins: [
-                'AMap.ToolBar', // 缩放按钮
-                'AMap.Scale', // 比例尺
-                'AMap.DistrictLayer', // 定位
-            ],
-        }).then(map => {
-            AMap = map
-            this.map = new AMap.Map('container', {
-                center: MY_POSITION,
-                zoom: 11, // 缩放级别
+        AMapLoader
+            .load({
+                key: mapConfig.appId, // 开发应用的 ID
+                version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+                plugins: [
+                    'AMap.ToolBar', // 缩放按钮
+                    'AMap.Scale', // 比例尺
+                    'AMap.DistrictLayer', // 定位
+                ],
             })
+            .then(map => {
+                AMap = map
+                this.map = new AMap.Map('container', {
+                    center: MY_POSITION,
+                    zoom: 11, // 缩放级别
+                })
 
-            this.map.addControl(new AMap.ToolBar())
-            this.map.addControl(new AMap.Scale())
+                this.map.addControl(new AMap.ToolBar())
+                this.map.addControl(new AMap.Scale())
 
 
-            this.markers.forEach(item => {
-                this.addMarker(this.map, item)
+                this.markers.forEach(item => {
+                    this.addMarker(this.map, item)
+                })
+
             })
-
-        }).catch(e => {
-            console.log(e)
-        })
+            .catch(e => {
+                console.log(e)
+            })
 
     },
     computed: {

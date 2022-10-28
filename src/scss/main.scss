@@ -23,7 +23,7 @@
     &:hover{
         @include border-radius(10px);
         @include transition(all 0.3s);
-        padding: 15px;
+        padding: 12px 15px;
         transform: scale(1.2);
     }
     .title{
