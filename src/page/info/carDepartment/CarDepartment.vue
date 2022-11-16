@@ -20,7 +20,7 @@ export default {
             contentHeight: 400,
             map: null,
             markers: [
-                {position: [117.129533 , 36.685668] , phone: '' ,            type: "market",     name: "高新万达"} ,
+                {position: [117.129533, 36.685668]  , phone: '' ,            type: "market",     name: "高新万达"} ,
                 {position: [117.100261, 36.658804]  , phone: '' ,            type: "market",     name: "万象城"} ,
                 {position: [117.063358, 36.683155]  , phone: '' ,            type: "market",     name: "印象城"} ,
                 {position: [117.053734, 36.717434]  , phone: '' ,            type: "market",     name: "华山-环宇城"} ,
