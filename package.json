@@ -1,6 +1,6 @@
 {
   "name": "riding-map",
-  "date-update": "2022-10-28",
+  "date-update": "2023-01-07",
   "version": "0.1.0",
   "private": true,
   "author": {
@@ -21,7 +21,7 @@
     "element-ui": "^2.15.1",
     "filemanager-webpack-plugin": "^7.0.0",
     "register-service-worker": "^1.7.2",
-    "moment": "^2.29.3",
+    "moment": "^2.29.4",
     "vue": "^2.6.11",
     "vue-cookie": "^1.1.4",
     "vue-router": "^3.5.2",

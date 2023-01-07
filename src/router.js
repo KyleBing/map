@@ -88,7 +88,12 @@ const router = [
          {
             name: 'CarDepartment',
             path: 'car-department',
-            component: resolve => require(['@/page/info/carDepartment/CarDepartment'], resolve),
+            component: resolve => require(['@/page/info/car/CarDepartment'], resolve),
+         },
+         {
+            name: 'CarUsed',
+            path: 'car-used',
+            component: resolve => require(['@/page/info/car/CarUsed.vue'], resolve),
          },
       ]
    },
@@ -155,6 +160,7 @@ const routeMap = [
          {name: 'plate', path: 'plate', meta: {title: '山东各市车牌', showInMenu: true}},
          {name: 'area', path: 'area', meta: {title: '济南市各区', showInMenu: true}},
          {name: 'CarDepartment', path: 'car-department', meta: {title: '济南车管所', showInMenu: true}},
+         {name: 'CarUsed', path: 'car-used', meta: {title: '济南二手车市场', showInMenu: true}},
       ]
    },
    {
