@@ -1,9 +1,9 @@
 <template>
     <div class="circle-panel card">
         <div class="toolbar">
-            <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info">复制数据到剪贴板</el-button>
-            <el-button size="mini" type="primary" @click="$emit('showLine', null)">展示路线</el-button>
-            <el-button size="mini" type="danger" @click="$emit('setData', [])">清空</el-button>
+            <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制数据到剪贴板</el-button>
+            <el-button size="mini" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</el-button>
+            <el-button size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</el-button>
         </div>
         <table class="log">
             <thead>
@@ -20,14 +20,14 @@
                 <td><i class="el-icon-aim"></i></td>
                 <td>
                     <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
-                        <div class="lng">lng: {{lng || '--'}}</div>
-                        <div class="lat">lat: {{lat || '--'}}</div>
+                        <div class="lng">经: {{lng || '--'}}</div>
+                        <div class="lat">纬: {{lat || '--'}}</div>
                     </div>
                 </td>
                 <td><el-input @keyup.native.enter="addNewRoutePointWithKeyEnter" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
                 <td><el-input @keyup.native.enter="addNewRoutePointWithKeyEnter" clearable ref="note" size="mini" placeholder="备注" v-model="note" ></el-input></td>
                 <td>
-                    <el-button size="mini" type="primary" @click="addNewRoutePoint">添加</el-button>
+                    <el-button size="mini" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</el-button>
                 </td>
             </tr>
                 <tr v-for="(item, index) in dataLocal" :key="index">
@@ -159,9 +159,6 @@ export default {
 @import "../../../../scss/plugin";
 .circle-panel {
     width: 400px;
-    position: absolute;
-    left: 20px;
-    top: 20px;
     padding: 0;
 }
 

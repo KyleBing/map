@@ -67,9 +67,6 @@ i{
 .detail{
     padding: 0;
     width: 250px;
-    position: absolute;
-    top: 20px;
-    left: 20px;
     .title{
         position: relative;
         text-align: center;

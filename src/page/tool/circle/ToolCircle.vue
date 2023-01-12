@@ -1,11 +1,40 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
-        <circle-panel
-            @circleAdd="handleCircleAdd"
-            :lng="positionPicked.lng"
-            :lat="positionPicked.lat"
-            v-model="circleData"></circle-panel>
+        <div class="float-panel">
+            <div class="search-panel card">
+                <el-form inline  size="mini">
+                    <el-form-item class="mb-0" label="地址">
+                        <el-input style="width: 200px" placeholder="输入较完整的地址" v-model="address"></el-input>
+                    </el-form-item>
+                    <el-form-item class="mb-0" label="">
+                        <el-button  type="primary" @click="search" icon="el-icon-search">搜索</el-button>
+                    </el-form-item>
+                </el-form>
+
+                <el-form inline class="mt-1" size="mini">
+                    <el-form-item class="mb-0" label="经度">
+                        <el-input style="width:140px" placeholder="lng" v-model="positionPicked.lng"></el-input>
+                    </el-form-item>
+                    <el-form-item class="mb-0" label="纬度">
+                        <el-input style="width:140px" placeholder="lat" v-model="positionPicked.lat"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+
+            <div class="result card mt-1" v-if="resultText">
+                {{resultText}}
+            </div>
+
+            <circle-panel
+                class="mt-1"
+                @circleAdd="handleCircleAdd"
+                :lng="positionPicked.lng"
+                :lat="positionPicked.lat"
+                v-model="circleData"/>
+        </div>
+
+
     </div>
 </template>
 
@@ -16,6 +45,7 @@ import CirclePanel from "@/page/tool/circle/components/CirclePanel"
 
 import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
+import axios from "axios";
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -41,63 +71,92 @@ export default {
                 lng: 0,
                 lat: 0,
             },
+
+            address: '',  // 地址搜索关键字
+            resultText: ''
+
         }
     },
-    created() {
-
+    mounted() {
         this.contentHeight = window.innerHeight
 
-        AMapLoader.load({
-            key: mapConfig.appId, // 开发应用的 ID
-            version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-            plugins: [
-                // 'AMap.ToolBar', // 缩放按钮
-                'AMap.Scale', // 比例尺
-                'AMap.Geolocation', // 定位
-            ],
-        }).then(map => {
-            AMap = map
-            this.map = new AMap.Map('container', {
-                center: MY_POSITION,
-                zoom: 11
+        AMapLoader
+            .load({
+                key: mapConfig.appId, // 开发应用的 ID
+                version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+                plugins: [
+                    // 'AMap.ToolBar', // 缩放按钮
+                    'AMap.Scale', // 比例尺
+                    'AMap.Geolocation', // 定位
+                ],
             })
+            .then(map => {
+                AMap = map
+                this.map = new AMap.Map('container', {
+                    center: MY_POSITION,
+                    zoom: 11
+                })
 
-            // this.map.addControl(new AMap.ToolBar())
-            this.map.addControl(new AMap.Scale())
+                // this.map.addControl(new AMap.ToolBar())
+                this.map.addControl(new AMap.Scale())
 
-            // 定位
-            let geolocation = new AMap.Geolocation({
-                // 是否使用高精度定位，默认：true
-                enableHighAccuracy: true,
-                // 设置定位超时时间，默认：无穷大
-                timeout: 10000,
-                // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
-                buttonOffset: new AMap.Pixel(10, 20),
-                //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-                zoomToAccuracy: true,
-                //  定位按钮的排放位置,  RB表示右下
-                buttonPosition: 'RB'
+                // 定位
+                let geolocation = new AMap.Geolocation({
+                    // 是否使用高精度定位，默认：true
+                    enableHighAccuracy: true,
+                    // 设置定位超时时间，默认：无穷大
+                    timeout: 10000,
+                    // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+                    buttonOffset: new AMap.Pixel(10, 20),
+                    //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                    zoomToAccuracy: true,
+                    //  定位按钮的排放位置,  RB表示右下
+                    buttonPosition: 'RB'
+                })
+
+                geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
+
+                // 地图选点操作
+                this.map.on('click', res => {
+                    this.positionPicked = {
+                        lng: res.lnglat.lng,
+                        lat: res.lnglat.lat
+                    }
+                })
             })
-
-            geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
-
-            // 地图选点操作
-            this.map.on('click', res =>{
-                this.positionPicked = {
-                    lng: res.lnglat.lng,
-                    lat: res.lnglat.lat
-                }
+            .catch(e => {
+                console.log(e)
             })
-
-        }).catch(e => {
-            console.log(e)
-        })
 
     },
     computed: {
         ...mapState(['windowInsets'])
     },
     methods: {
+        search(){
+            const url = 'https://restapi.amap.com/v3/geocode/geo'
+            axios({
+                url,
+                method: 'get',
+                params: {
+                    key: mapConfig.key,
+                    address: this.address
+                }
+            })
+                .then(response => {
+                    let res = response.data
+                    let geoLocation = res.geocodes[0].location
+                    let locationInfo = res.geocodes[0]
+                    console.log(geoLocation)
+                    let locationArray = geoLocation.split(',')
+
+                    this.positionPicked = {
+                        lng: Number(locationArray[0]),
+                        lat: Number(locationArray[1])
+                    }
+                    this.resultText = `${locationInfo.level}：${locationInfo.formatted_address}`
+                })
+        },
         // 添加新标记点和圆圈
         handleCircleAdd(circle){
             this.circleData.push({
@@ -106,6 +165,7 @@ export default {
                 radius: circle.radius,
                 color: '#00b8e5',
             })
+            this.map.setCenter(circle.center) // 定位到中心位置
             this.addMarker(this.map, {
                 position: circle.center,
                 name: circle.name,
@@ -189,6 +249,19 @@ export default {
 .map-container {
     position: relative;
 }
-
+.float-panel{
+    width: 400px;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+.search-panel{
+    background-color: white;
+    padding: 10px;
+}
+.result{
+    background-color: white;
+    padding: 10px;
+}
 
 </style>

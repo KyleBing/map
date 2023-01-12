@@ -192,7 +192,7 @@ export default {
                 note: routePoint.note,
             })
             this.addMarker(this.map, {
-                position: routePoint.potition,
+                position: routePoint.position,
                 name: routePoint.name,
                 note: routePoint.note
             })

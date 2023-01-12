@@ -15,14 +15,14 @@
                 <td><i class="el-icon-aim"></i></td>
                 <td>
                     <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
-                        <div class="lng">lng: {{lng || '--'}}</div>
-                        <div class="lat">lat: {{lat || '--'}}</div>
+                        <div class="lng">经: {{lng || '--'}}</div>
+                        <div class="lat">纬: {{lat || '--'}}</div>
                     </div>
                 </td>
                 <td><el-input @keyup.native.enter="addNewCircle" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
                 <td><el-input @keyup.native.enter="addNewCircle" ref="radius" size="mini" placeholder="半径" v-model="radius" type="number"></el-input></td>
                 <td>
-                    <el-button size="mini" type="primary" @click="addNewCircle">添加</el-button>
+                    <el-button size="mini" type="success" @click="addNewCircle" icon="el-icon-plus">添加</el-button>
                 </td>
             </tr>
                 <tr v-for="(item, index) in dataLocal" :key="index">
@@ -30,8 +30,8 @@
                     <td>{{dataLocal.length - index}}</td>
                     <td>
                         <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
-                            <div class="lng">lng: {{item.center[0]}}</div>
-                            <div class="lat">lat: {{item.center[1]}}</div>
+                            <div class="lng">经: {{item.center[0]}}</div>
+                            <div class="lat">纬: {{item.center[1]}}</div>
                         </div>
                     </td>
                     <td>{{item.name}}</td>
@@ -79,7 +79,6 @@ export default {
     },
     mounted() {
         let clipboard = new ClipboardJS('.lnglat')
-
     },
     methods: {
         addNewCircle(){
@@ -147,9 +146,6 @@ export default {
 @import "../../../../scss/plugin";
 .circle-panel {
     width: 400px;
-    position: absolute;
-    left: 20px;
-    top: 20px;
     padding: 0;
 }
 
