@@ -181,7 +181,7 @@ import lines from "./page/route/lines";
 
 // 添加路线到菜单
 lines.LINES.forEach((line, index) => {
-   routeMap[1].children.push({name: `line${index + 1}`, path: `${index + 1}`, meta: {title: index + 1 + ' - ' +  line.name, showInMenu: true}},)
+   routeMap[1].children.push({name: `line${index + 1}`, path: `${index + 1}`, meta: {title: line.index + ' - ' +  line.name, showInMenu: true}},)
 })
 
 export default {
