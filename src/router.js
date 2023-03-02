@@ -21,11 +21,6 @@ const router = [
       component: resolve => require(['@/page/Login'], resolve),
    },
    {
-      name: 'register',
-      path: '/register',
-      component: resolve => require(['@/page/Register'], resolve),
-   },
-   {
       name: 'routeline',
       path: '/route',
       component: Layout,
