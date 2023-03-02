@@ -4,8 +4,18 @@ const Moment = require('moment')
 module.exports = {
   publicPath: './',
   productionSourceMap: false, // 不产出 .map 文件
-
   outputDir: '../map',
+
+  devServer: {
+    proxy: {
+      '': {
+        // target: 'http://localhost:3000',
+        target: 'http://kylebing.cn:3000',
+        changeOrigin: true
+      },
+    }
+  },
+
 
   configureWebpack: config => {
     if (process.env.NODE_ENV === 'production'){

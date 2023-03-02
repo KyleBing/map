@@ -34,6 +34,11 @@ Vue.use(Vuex)
 import store from "@/store";
 
 
+// UTILITY
+import utility from "@/utility";
+Vue.prototype.$utility = utility
+
+
 router.afterEach((to, from) => {
     if(store.getters.isInPortraitMode){ // 适配移动端 路由跳转后，隐藏菜单
         store.commit('SET_IS_SHOWING_MENU_TOGGLE_BTN', true)

@@ -1,77 +1,150 @@
 <template>
-   <div class="container mt-3 pb-5">
-      <el-form
-          :model="user"
-          :rules="userRules"
-          ref="login" label-width="100px">
-         <el-form-item label="用户名" prop="username" >
-            <el-input autocomplete="off" v-model="user.username"/>
-         </el-form-item>
-         <el-form-item label="密码" prop="password" >
-            <el-input autocomplete="off" v-model="user.password"/>
-         </el-form-item>
-         <el-form-item align="center">
-            <el-button type="primary" @click="submit">登录</el-button>
-         </el-form-item>
-      </el-form>
-   </div>
+    <div class="login-bg" :style="`height:${height}px`">
+        <div class="logo">
+            <img src="../assets/logo.png" alt="LOGO">
+        </div>
+        <div class="login-panel">
+            <div class="login-title">
+                <h2>路书</h2>
+            </div>
+            <el-form
+                :model="formLogin"
+                :rules="loginRules"
+                ref="login" label-width="0">
+                <el-form-item label="" class="mb-3" prop="email">
+                    <el-input autocomplete="off" placeholder="邮箱" v-model="formLogin.email"/>
+                </el-form-item>
+                <el-form-item label="" class="mb-5" prop="password">
+                    <el-input type="password" autocomplete="off" @keydown.enter.native="submit" placeholder="密码" v-model="formLogin.password"/>
+                </el-form-item>
+                <el-form-item align="center">
+                    <el-button :loading="isInLoginProcess" class="login-btn" type="primary" @click="submit">登录</el-button>
+                </el-form-item>
+            </el-form>
+            <div class="register-link">
+                <a target="_blank" href="https://kylebing.cn/diary/#/register">注册</a>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-import utility from "@/utility"
-import { mapMutations } from "vuex"
+import {mapMutations, mapState} from "vuex"
+import userApi from "@/api/userApi";
+import {AnimatedCanvasBG} from "animate-bg-canvas"
 
 export default {
-   name: "Login",
-   data() {
-      return {
-         isNewUser: false,
-         user: {
-            username: '',
-            password: ''
-         },
-         userRules: {
-            username:  {required: true, message: '请填写用户名', trigger: 'blur'},
-            password:  {required: true, message: '请填写密码', trigger: 'blur'},
-         }
-      }
-   },
-   mounted() {},
-   methods: {
-      ...mapMutations([
-          'setUserInfo'
-      ]),
-      submit(){
-         this.$refs['login'].validate((valid) => {
-            if (valid) {
-               this.login()
-            } else {
-               console.log('error submit!!')
-               return false
-            }
-         })
-      },
-      login() {
-         utility.postData(utility.URL.login, this.user)
-             .then(res => {
-                let that = this
-                this.setUserInfo(res.data)
-                this.$notify({
-                   title: res.msg,
-                   message: res.description,
-                   position: 'top-right',
-                   type: 'success',
-                   duration: 3,
-                   onClose() {
-                      that.$router.push('/code/list')
-                   }
+    name: "Login",
+    data() {
+        return {
+            height: 600,
+            formLogin: {
+                email: '',
+                password: ''
+            },
+            loginRules: {
+                email: {required: true, message: '请填写用户名', trigger: 'blur'},
+                password: {required: true, message: '请填写密码', trigger: 'blur'},
+            },
+            isInLoginProcess: false, // 登录中状态展示
+            animatedBg: null,
+
+        }
+    },
+    mounted() {
+        this.height = innerHeight
+        this.animatedBg = new AnimatedCanvasBG()
+    },
+    beforeDestroy() {
+        this.animatedBg.destroy()
+    },
+    methods: {
+        submit() {
+            this.$refs['login'].validate((valid) => {
+                if (valid) {
+                    this.login();
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        login() {
+            this.isInLoginProcess = true
+            userApi
+                .login(this.formLogin)
+                .then(res => {
+                    console.log(res)
+                    console.log('login success')
+                    this.isInLoginProcess = false
+                    this.$utility.setAuthorization(
+                        res.data.nickname,
+                        res.data.uid,
+                        res.data.email,
+                        res.data.phone,
+                        res.data.avatar,
+                        res.data.password,
+                        res.data.group_id,
+                        res.data.city,
+                        res.data.geolocation,
+                    )
+                    this.$message.success( '欢迎用户 ' + res.data.username)
+                    this.$router.push('/')
                 })
-             }).catch(msg => this.$notify(msg))
-      },
-   },
+                .catch(err => {
+                    this.isInLoginProcess = false
+                })
+        },
+    },
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../scss/plugin";
+.login-bg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column nowrap;
+    background-size: cover;
+    //background: url('../assets/bg.jpg') no-repeat;
+}
 
+.logo{
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    flex-flow: row nowrap;
+    img{
+        display: block;
+        height: 100px;
+    }
+    transform: translateY(-50px);
+}
+
+.login-title{
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: white;
+}
+
+.login-panel{
+    z-index: 10;
+    background-color: transparentize(white, 0.8);
+    @include backdrop-filter(saturate(110%) blur(5px));
+    padding: 30px 50px;
+    @include border-radius(15px);
+    width: 450px;
+}
+
+.login-btn{
+    display: block;
+    width: 100%;
+}
+
+.register-link{
+    font-size: 13px;
+    text-align: center;
+}
 </style>
