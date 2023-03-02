@@ -1,4 +1,139 @@
+import Vue from "vue";
+import VueRouter from "vue-router";
 import Layout from "@/layout/layout"
+
+
+import utility from "@/utility";
+
+Vue.use(VueRouter)
+
+import login from "@/page/Login.vue"
+import register from "@/page/Register.vue"
+import layout from "@/layout/Layout.vue";
+import changePassword from "@/page/ChangePassword.vue";
+import logout from "@/page/Logout.vue";
+
+import  {Message} from 'element-ui'
+
+
+const routes = [
+   {
+      name: 'statistics', path: '/statistics',
+      meta: {isAdmin: false, title: '统计', showInMenu: true, icon: 'el-icon-monitor',},
+      component: resolve => require(['@/page/statistics/StatisticMain'], resolve),
+   },
+   /*    {
+           name: 'BillList', path: '/bill',
+           meta: {isAdmin: false, title: '账单', showInMenu: true, icon: 'el-icon-document',},
+           component: resolve => require(['@/page/Bill'], resolve),
+       },*/
+   {
+      name: 'CategoryList', path: '/diary-category',
+      meta: {isAdmin: true, title: '日记类别', showInMenu: true, icon: 'el-icon-notebook-2',},
+      component: resolve => require(['@/page/diary/DiaryCategory'], resolve),
+   },
+   {
+      name: 'WubiCategory', path: '/wubi-category',
+      meta: {isAdmin: true, title: '五笔词条类别', showInMenu: true, icon: 'el-icon-price-tag',},
+      component: resolve => require(['@/page/wubi/WubiCategory'], resolve),
+   },
+   {
+      name: 'WubiWords', path: '/wubi-words',
+      meta: {isAdmin: false, title: '五笔词条', showInMenu: true, icon: 'el-icon-collection',},
+      component: resolve => require(['@/page/wubi/WubiWords'], resolve),
+   },
+   {
+      name: 'UserList', path: '/user',
+      meta: {isAdmin: false, title: '用户管理', showInMenu: true, icon: 'el-icon-user',},
+      component: resolve => require(['@/page/user/User'], resolve),
+   },
+   {
+      name: 'QrList', path: '/qr',
+      meta: {isAdmin: false, title: '二维码管理', showInMenu: true, icon: 'el-icon-s-grid',},
+      component: resolve => require(['@/page/qr/QR'], resolve),
+   },
+   {
+      name: 'ThumbsUp', path: '/thumbs-up',
+      meta: {isAdmin: true, title: "点赞管理", showInMenu: true, icon: 'el-icon-medal',},
+      component: resolve => require(['@/page/thumbsUp/ThumbsUp'], resolve),
+   },
+   {
+      name: 'Mail', path: '/mail',
+      meta: {isAdmin: true, title: 'Mail', showInMenu: true, icon: 'el-icon-message',},
+      component: resolve => require(['@/page/Mail'], resolve),
+   },
+   {
+      name: 'ChangePassword', path: '/change-password',
+      meta: {isAdmin: false, title: '修改密码', showInMenu: true, icon: 'el-icon-key',},
+      component:  changePassword,
+   },
+   {
+      name: 'about', path: '/about',
+      meta: {isAdmin: false, title: '关于', showInMenu: true, icon: 'el-icon-warning-outline',},
+      component: resolve => require(['@/page/About.vue'], resolve),
+   },
+]
+
+const routeLogout = {
+   name: 'logout', path: '/logout', meta: {title: '退出', showInMenu: true, icon: 'el-icon-switch-button',},
+   component: logout,
+}
+const ROUTE_FRAME =  [
+   {
+      name: 'index',
+      path: '/',
+      redirect: '/statistics',
+      component: layout,
+      meta: { // meta 字段用于 navMenu 显示菜单
+         title: '主页',
+         showInMenu: false,
+      },
+      children: routes
+   },
+   {
+      name: 'login', path: '/login', meta: {title: '登录', showInMenu: false, icon: 'el-icon-user-solid',},
+      component: login,
+   },
+   {
+      name: 'noPage', path: '*', meta: {title: '404', showInMenu: false, icon: 'el-icon-user-solid',},
+      component: login,
+   },
+]
+
+const router = new VueRouter({
+   // mode: 'history', // 由于该项目是二级目录，使用 history 会导致开发与布署的地址不一
+   routes: [...ROUTE_FRAME, routeLogout]
+})
+
+
+router.beforeEach((to, from, next) => {
+   if (to.name !== 'login' && to.name !== 'register' && to.name !== 'share'){
+      if (utility.getAuthorization() && utility.getAuthorization().email){
+         const isAdmin = utility.getAuthorization().email === 'kylebing@163.com'
+         if (isAdmin){
+            next()
+         } else {
+            if (to.meta.isAdmin) {
+               Message.warning('没有权限')
+            } else {
+               next()
+            }
+         }
+      } else {
+         next('/login')
+      }
+   } else {
+      next()
+   }
+})
+
+export default {
+   router,
+   routes: [...routes, routeLogout], // 需要显示在边栏的菜单
+}
+
+
+
 
 const router = [
    {
