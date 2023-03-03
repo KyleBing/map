@@ -15,15 +15,16 @@ const routes = [
       path: '/route',
       component: Layout,
       redirect: '/route/1',
-      meta: {
-         title: '路线推荐',
-         showInMenu: true,
-         icon: 'el-icon-wind-power' // 菜单 icon 对应 Element UI 中的 ICON class 名
-      },
+      meta: {title: '路线推荐', showInMenu: true, icon: 'el-icon-wind-power' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
       children: [
          {
             name: 'line',
             path: ':lineId',
+            meta: {
+               title: '路线推荐',
+               showInMenu: true,
+               icon: 'el-icon-wind-power' // 菜单 icon 对应 Element UI 中的 ICON class 名
+            },
             component: resolve => require(['@/page/route/RouteLine'], resolve),
          }
       ]
@@ -33,11 +34,7 @@ const routes = [
       path: '/tool',
       component: Layout,
       redirect: '/tool/circle',
-      meta: {
-         title: '地图工具',
-         showInMenu: true,
-         icon: 'el-icon-position' // 菜单 icon 对应 Element UI 中的 ICON class 名
-      },
+      meta: {title: '地图工具', showInMenu: true, icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
       children: [
          {
             name: 'ToolCircle', path: 'circle',
@@ -56,10 +53,12 @@ const routes = [
       path: '/debug',
       component: Layout,
       redirect: '/debug/debug',
+      meta: {title: '调试', showInMenu: true, icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
       children: [
          {
             name: 'debugIndex',
             path: 'debug',
+            meta: {title: '调试', showInMenu: true, icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
             component: resolve => require(['@/page/debug/debug'], resolve),
          }
       ]
@@ -69,11 +68,7 @@ const routes = [
       path: '/info',
       component: Layout,
       redirect: '/info/plate',
-      meta: {
-         title: '地图信息',
-         showInMenu: true,
-         icon: 'el-icon-collection' // 菜单 icon 对应 Element UI 中的 ICON class 名
-      },
+      meta: {title: '地图信息', showInMenu: true, icon: 'el-icon-collection' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
       children: [
          {
             name: 'InfoPlate', path: 'plate',
@@ -82,18 +77,19 @@ const routes = [
          },
          {
             name: 'InfoArea', path: 'area',
-            meta: {title: '济南车管所', showInMenu: true},
+            meta: {title: '济南各区', showInMenu: true},
             component: resolve => require(['@/page/info/area/AreaJinan'], resolve),
          },
          {
             name: 'InfoCarDepartment',
             path: 'car-department',
-            meta: {title: '济南二手车市场', showInMenu: true},
+            meta: {title: '济南车管所', showInMenu: true},
             component: resolve => require(['@/page/info/car/CarDepartment'], resolve),
          },
          {
             name: 'CarUsed',
             path: 'car-used',
+            meta: {title: '济南二手车市场', showInMenu: true},
             component: resolve => require(['@/page/info/car/CarUsed.vue'], resolve),
          },
       ]
@@ -139,21 +135,23 @@ const ROUTE_FRAME =  [
       // redirect: process.env.VUE_APP_DEFAULT_INDEX, // 根据环境不同，设定不同首页路径
    },
    {
-      name: 'login', path: '/Login', meta: {title: '登录', showInMenu: false, icon: 'el-icon-user-solid',},
+      name: 'Login', path: '/Login',
+      meta: {title: '登录', showInMenu: false, icon: 'el-icon-user-solid',},
       component: resolve => require(['@/page/Login'], resolve),
    },
    {
-      name: 'noPage', path: '*', meta: {title: '404', showInMenu: false, icon: 'el-icon-user-solid',},
+      name: 'NoPage', path: '*',
+      meta: {title: '404', showInMenu: false, icon: 'el-icon-user-solid',},
       component: Login,
    },
 ]
 
 const router = new VueRouter({
    // mode: 'history', // 由于该项目是二级目录，使用 history 会导致开发与布署的地址不一
-   routes: [...ROUTE_FRAME]
+   routes: [...ROUTE_FRAME, ...routes]
 })
 
-router.beforeEach((to, from, next) => {
+/*router.beforeEach((to, from, next) => {
    if (to.name !== 'Login' && to.name !== 'share'){
       if (utility.getAuthorization() && utility.getAuthorization().email){
          const isAdmin = utility.getAuthorization().email === 'kylebing@163.com'
@@ -172,7 +170,7 @@ router.beforeEach((to, from, next) => {
    } else {
       next()
    }
-})
+})*/
 
 export default {
    router,
