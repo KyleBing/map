@@ -1,7 +1,7 @@
 <template>
-    <div class="user-list p-2">
+    <div class="route-list p-2">
         <div class="tool-bar mb-2">
-            <el-button v-if="isAdmin" size="small" type="success" @click="addNewUser" icon="el-icon-plus">添加</el-button>
+            <el-button v-if="isAdmin" size="small" type="success" @click="addNewRoute" icon="el-icon-plus">添加</el-button>
         </div>
 
         <el-row :gutter="10">
@@ -9,32 +9,33 @@
                 <el-table
                     class="table-narrow"
                     size="small"
-                    :height="contentInsets.heightContent - 120"
-                    :max-height="contentInsets.heightContent - 120"
+                    :height="windowInsets.height - 120"
+                    :max-height="windowInsets.height - 120"
                     stripe
                     :data="tableData"
                     v-loading="isLoading"
                 >
-                    <el-table-column width="60" prop="uid" label="UID"/>
-                    <el-table-column width="250px" prop="email" label="Email"/>
-                    <el-table-column width="150px" prop="nickname" label="昵称"/>
-                    <el-table-column width="100" align="center" prop="username" label="用户名"/>
-                    <el-table-column width="150" align="center" prop="phone" label="手机号"/>
-                    <el-table-column align="center" prop="wx" label="微信"/>
-                    <el-table-column align="center" width="200px" prop="homepage" label="主页"/>
-                    <el-table-column align="right" prop="gaode" label="高德组队码"/>
-                    <el-table-column sortable align="right" width="80px" prop="count_diary" label="日记"/>
-                    <el-table-column sortable align="right" width="80px" prop="count_dict" label="码表"/>
-                    <el-table-column sortable align="right" width="80px" prop="count_qr" label="二维码"/>
-                    <el-table-column sortable align="right" width="80px" prop="count_words" label="词条"/>
-                    <el-table-column sortable align="right" width="100px" prop="sync_count" label="同步次数"/>
-                    <el-table-column sortable align="center" width="160px" prop="register_time" label="注册时间"/>
-                    <el-table-column align="center" width="160px" prop="last_visit_time" label="最后访问时间"/>
-                    <el-table-column align="right" width="60px" prop="group_id" label="组别">
+                    <el-table-column width="60" prop="id" label="id"/>
+                    <el-table-column width="150px" prop="name" label="路线名"/>
+                    <el-table-column width="100" align="center" prop="area" label="地域"/>
+                    <el-table-column width="150" align="center" prop="road_type" label="路线类型"/>
+                    <el-table-column align="center" prop="seasons" label="适用季节"/>
+                    <el-table-column align="center" width="200px" prop="video_link" label="视频链接"/>
+                    <el-table-column align="right" prop="paths" label="路线">
                         <template slot-scope="scope">
-                            {{ scope.row.group_id === 1 ? '管理员' : '普通' }}
+                            {{ scope.row.paths.length}}
                         </template>
                     </el-table-column>
+                    <el-table-column sortable align="right" width="80px" prop="note" label="备注"/>
+                    <el-table-column sortable align="right" width="80px" prop="thumb_up" label="点选数"/>
+                    <el-table-column sortable align="right" width="80px" prop="is_public" label="共享状态">
+                        <template slot-scope="scope">
+                            {{ scope.row.is_public === 1 ? '共享' : '私有' }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column sortable align="center" width="160px" prop="date_init" label="添加时间"/>
+                    <el-table-column sortable align="center" width="160px" prop="date_modify" label="修改时间"/>
+
                     <el-table-column align="center" width="200px" label="操作">
                         <template slot-scope="scope">
                             <el-button @click="goEdit(scope.row)" type="primary" plain size="mini">编辑</el-button>
@@ -67,45 +68,35 @@
             :before-close="closeModal">
             <el-form
                 :model="formRoute"
-                :rules="userRules"
+                :rules="routeRules"
                 size="small"
                 ref="formRoute" label-width="100px">
-                <el-form-item label="邮箱" prop="email">
-                    <el-input :disabled="!isAdmin" autocomplete="off" v-model="formRoute.email"/>
+                <el-form-item label="路线名" prop="name">
+                    <el-input v-model="formRoute.name"/>
                 </el-form-item>
-                <el-form-item label="用户名" prop="username">
-                    <el-input :disabled="!isAdmin" autocomplete="off" v-model="formRoute.name"/>
+                <el-form-item label="地域" prop="area">
+                    <el-input v-model="formRoute.area"/>
                 </el-form-item>
-                <el-form-item label="昵称" prop="nickname">
-                    <el-input autocomplete="off" v-model="formRoute.nickname"/>
+                <el-form-item label="路线类型" prop="road_type">
+                    <el-input v-model="formRoute.road_type"/>
                 </el-form-item>
-                <el-form-item label="微信" prop="wx">
-                    <el-input autocomplete="off" v-model="formRoute.wx"/>
+                <el-form-item label="适用季节" prop="seasons">
+                    <el-input v-model="formRoute.seasons"/>
                 </el-form-item>
-                <el-form-item label="手机" prop="phone">
-                    <el-input autocomplete="off" v-model="formRoute.phone"/>
+                <el-form-item label="视频链接" prop="video_link">
+                    <el-input v-model="formRoute.video_link"/>
                 </el-form-item>
-                <el-form-item label="高德组队码" prop="gaode">
-                    <el-input autocomplete="off" v-model="formRoute.gaode"/>
+                <el-form-item label="路线" prop="paths">
+                    <el-input type="textarea" v-model="formRoute.paths"/>
                 </el-form-item>
-                <el-form-item label="组别" prop="group_id">
-                    <el-select :disabled="!isAdmin" v-model="formRoute.group_id" placeholder="请选择">
-                        <el-option
-                            v-for="item in groupOptions"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="主页" prop="homepage">
-                    <el-input autocomplete="off" v-model="formRoute.homepage"/>
+                <el-form-item label="备注" prop="note">
+                    <el-input type="textarea" v-model="formRoute.note"/>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button size="small" @click="clearForm" type="warning">清空</el-button>
                 <el-button size="small" @click="closeModal">取 消</el-button>
-                <el-button size="small" type="primary" @click="submit">{{ editingUid ? '修改' : '添加' }}</el-button>
+                <el-button size="small" type="primary" @click="submit">{{ editingRouteId ? '修改' : '添加' }}</el-button>
             </div>
         </el-dialog>
 
@@ -115,7 +106,6 @@
 
 <script>
 
-import userApi from "@/api/userApi";
 import utility from "@/utility";
 import {mapState} from "vuex";
 import routeApi from "@/api/routeApi";
@@ -126,14 +116,14 @@ export default {
         return {
             isLoading: false,
 
-            editingUid: null,
+            editingRouteId: null,
 
             tableData: [],
             modalEdit: false, // modal show or not
             isAdmin: false, // is administrator
             groupOptions: [
                 {id: 1, name: '管理员'},
-                {id: 2, name: '普通用户'},
+                {id: 2, name: '普通路线'},
             ],
             formRoute: {
                 name: '', // *路线名
@@ -146,7 +136,7 @@ export default {
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否共享
             },
-            userRules: {
+            routeRules: {
                 name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
                 area: [{required: true, message: '请填写地域', trigger: 'blur'},],
                 road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
@@ -165,9 +155,9 @@ export default {
         this.isAdmin = this.$utility.getAuthorization().email === 'kylebing@163.com'
     },
     methods: {
-        addNewUser() {
+        addNewRoute() {
             this.modalEdit = true
-            this.editingUid = null
+            this.editingRouteId = null
         },
         clearForm(){
             this.formRoute = {
@@ -176,7 +166,7 @@ export default {
                 road_type: '', // *路面类型
                 seasons: '', // *适用季节
                 video_link: '', // 路径视频演示
-                paths: [], // *路径点
+                paths: '', // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否共享
@@ -185,7 +175,7 @@ export default {
         closeModal(done) {
             this.$confirm('确认关闭？')
                 .then(_ => {
-                    this.editingUid = null
+                    this.editingRouteId = null
                     this.modalEdit = false
                     done();
                 })
@@ -194,10 +184,10 @@ export default {
         submit() {
             this.$refs['formRoute'].validate((valid) => {
                 if (valid) {
-                    if (this.editingUid) {
-                        this.userModifySubmit()
+                    if (this.editingRouteId) {
+                        this.routeModifySubmit()
                     } else {
-                        this.userNewSubmit()
+                        this.routeNewSubmit()
                     }
                 } else {
                     console.log('error submit!!');
@@ -206,7 +196,7 @@ export default {
             })
         },
         // 编辑
-        userModifySubmit() {
+        routeModifySubmit() {
             routeApi
                 .modify(this.formRoute)
                 .then(res => {
@@ -217,14 +207,14 @@ export default {
                         onClose() {
                         }
                     })
-                    this.editingUid = null
+                    this.editingRouteId = null
                     this.modalEdit = false
                     this.getRouteList()
                 })
         },
         // 新增
-        userNewSubmit() {
-            userApi
+        routeNewSubmit() {
+            routeApi
                 .add(this.formRoute)
                 .then(res => {
                     this.$notify({
@@ -234,7 +224,7 @@ export default {
                         onClose() {
                         }
                     })
-                    this.editingUid = null
+                    this.editingRouteId = null
                     this.modalEdit = false
                     this.getRouteList()
                 })
@@ -253,19 +243,21 @@ export default {
             this.getRouteList()
         },
 
-        // 获取用户列表
+        // 获取路线列表
         getRouteList() {
             this.isLoading = true
-            let params = {
+            let requestData = {
                 pageNo: this.pager.pageNo,
                 pageSize: this.pager.pageSize
             }
             routeApi
-                .list(params)
+                .list(requestData)
                 .then(res => {
+                    console.log(res)
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
+                        item.paths = JSON.stringify(item.paths)
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
@@ -275,21 +267,22 @@ export default {
                     this.isLoading = false
                 })
         },
-        goEdit(user) {
-            this.editingUid = user.uid
-            this.formRoute = user
+        goEdit(route) {
+            this.editingRouteId = route.uid
+            this.formRoute = route
             this.modalEdit = true
         },
-        goDelete(user) {
-            this.$confirm(`删除用户 ${user.nickname} (${user.username})`, '删除', {
+        goDelete(route) {
+            console.log(route)
+            this.$confirm(`删除路线 ${route.name} (${route.area})`, '删除', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
                 let requestData = {
-                    uid: user.uid
+                    id: route.id
                 }
-                userApi.delete(requestData)
+                routeApi.delete(requestData)
                     .then(res => {
                             this.getRouteList();
                             this.$notify({
@@ -303,9 +296,9 @@ export default {
         }
     },
     computed: {
-        ...mapState(['contentInsets']),
+        ...mapState(['windowInsets']),
         modalTitle() {
-            return this.editingUid ? '编辑用户' : '新增用户'
+            return this.editingRouteId ? '编辑路线' : '新增路线'
         }
     }
 }

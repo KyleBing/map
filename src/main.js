@@ -3,22 +3,9 @@ import App from './App.vue'
 import Vuex from "vuex"
 
 // element ui
-import {
-   Button,
-   Menu, Submenu, MenuItem,
-   Form, FormItem, Input,
-   Container, Aside, Main,
-    Table, TableColumn,
-    Message
-} from 'element-ui';
+import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(Button);
-Vue.use(Menu);Vue.use(Submenu);Vue.use(MenuItem);
-Vue.use(Form);Vue.use(FormItem);Vue.use(Input);
-Vue.use(Container);Vue.use(Aside);Vue.use(Main);
-Vue.use(Table);Vue.use(TableColumn);
-Vue.prototype.$message = Message
-
+Vue.use(ElementUI);
 
 // VUEX
 Vue.use(Vuex)
@@ -26,13 +13,14 @@ import store from "@/store";
 
 // UTILITY
 import utility from "@/utility";
+
 Vue.prototype.$utility = utility
 
 // Router
 import router from "./router"
 
 router.router.afterEach((to, from) => {
-    if(store.getters.isInPortraitMode){ // 适配移动端 路由跳转后，隐藏菜单
+    if (store.getters.isInPortraitMode) { // 适配移动端 路由跳转后，隐藏菜单
         store.commit('SET_IS_SHOWING_MENU_TOGGLE_BTN', true)
     }
 })
@@ -40,7 +28,7 @@ router.router.afterEach((to, from) => {
 Vue.config.productionTip = false
 
 new Vue({
-   router: router.router,
-   store,
-   render: h => h(App),
+    router: router.router,
+    store,
+    render: h => h(App),
 }).$mount('#app')

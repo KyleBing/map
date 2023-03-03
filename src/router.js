@@ -149,12 +149,12 @@ const routes = [
       ]
    },
    {
-      name: 'Logout', path: 'logout',
+      name: 'Logout', path: '/logout',
       meta: {title: '退出登录', showInMenu: true, icon: 'el-icon-user-solid',},
       component: Logout,
    },
    {
-      name: 'Login', path: 'login',
+      name: 'Login', path: '/login',
       meta: {title: '登录', showInMenu: true, icon: 'el-icon-user-solid',},
       component: Login,
    },
@@ -171,7 +171,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-   console.log(to.name)
    if (to.name !== 'Login'){
       if (utility.getAuthorization() && utility.getAuthorization().email){
          const isAdmin = utility.getAuthorization().email === 'kylebing@163.com'
