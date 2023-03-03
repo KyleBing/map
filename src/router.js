@@ -8,8 +8,27 @@ import Login from "@/page/Login.vue"
 import Layout from "@/layout/Layout";
 
 import  {Message} from 'element-ui'
+import Logout from "@/page/Logout";
 
 const routes = [
+   {
+      name: 'Root', path: '/',
+      meta: {title: '主页', showInMenu: true, icon: 'el-icon-house' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
+      component: Layout,
+      redirect: '/index',
+      children: [
+         {
+            name: 'Index',
+            path: 'index',
+            meta: {
+               title: '主页',
+               showInMenu: false,
+               icon: 'el-icon-wind-power' // 菜单 icon 对应 Element UI 中的 ICON class 名
+            },
+            component: resolve => require(['@/page/index/Index'], resolve),
+         },
+      ]
+   },
    {
       name: 'RouteLine',
       path: '/route',
@@ -129,41 +148,31 @@ const routes = [
          },
       ]
    },
-]
-const ROUTE_FRAME =  [
    {
-      name: 'index', path: '/',
-      meta: {title: '主页', showInMenu: true, icon: 'el-icon-house' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
-      component: Layout,
-      redirect: '/index',
-      children: [
-         {
-            name: 'indexIndex',
-            path: 'index',
-            component: resolve => require(['@/page/index/index.vue'], resolve),
-         }
-      ]
-      // redirect: process.env.VUE_APP_DEFAULT_INDEX, // 根据环境不同，设定不同首页路径
+      name: 'Logout', path: 'logout',
+      meta: {title: '退出登录', showInMenu: true, icon: 'el-icon-user-solid',},
+      component: Logout,
    },
    {
-      name: 'Login', path: '/Login',
-      meta: {title: '登录', showInMenu: false, icon: 'el-icon-user-solid',},
-      component: resolve => require(['@/page/Login'], resolve),
+      name: 'Login', path: 'login',
+      meta: {title: '登录', showInMenu: true, icon: 'el-icon-user-solid',},
+      component: Login,
    },
    {
       name: 'NoPage', path: '*',
       meta: {title: '404', showInMenu: false, icon: 'el-icon-user-solid',},
-      component: Login,
-   },
+      component: resolve => require(['@/page/Login'], resolve),
+   }
 ]
 
 const router = new VueRouter({
    // mode: 'history', // 由于该项目是二级目录，使用 history 会导致开发与布署的地址不一
-   routes: [...ROUTE_FRAME, ...routes]
+   routes
 })
 
 router.beforeEach((to, from, next) => {
-   if (to.name !== 'Login' && to.name !== 'share'){
+   console.log(to.name)
+   if (to.name !== 'Login'){
       if (utility.getAuthorization() && utility.getAuthorization().email){
          const isAdmin = utility.getAuthorization().email === 'kylebing@163.com'
          if (isAdmin){
@@ -176,7 +185,7 @@ router.beforeEach((to, from, next) => {
             }
          }
       } else {
-         next('/Login')
+         next({name: 'Login'})
       }
    } else {
       next()
@@ -185,7 +194,7 @@ router.beforeEach((to, from, next) => {
 
 export default {
    router,
-   routes: [...routes], // 需要显示在边栏的菜单
+   routes, // 需要显示在边栏的菜单
 }
 
 // import lines from "./page/route/lines";

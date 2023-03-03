@@ -66,30 +66,30 @@
             width="30%"
             :before-close="closeModal">
             <el-form
-                :model="formUser"
+                :model="formRoute"
                 :rules="userRules"
                 size="small"
-                ref="register" label-width="100px">
+                ref="formRoute" label-width="100px">
                 <el-form-item label="邮箱" prop="email">
-                    <el-input :disabled="!isAdmin" autocomplete="off" v-model="formUser.email"/>
+                    <el-input :disabled="!isAdmin" autocomplete="off" v-model="formRoute.email"/>
                 </el-form-item>
                 <el-form-item label="用户名" prop="username">
-                    <el-input :disabled="!isAdmin" autocomplete="off" v-model="formUser.username"/>
+                    <el-input :disabled="!isAdmin" autocomplete="off" v-model="formRoute.name"/>
                 </el-form-item>
                 <el-form-item label="昵称" prop="nickname">
-                    <el-input autocomplete="off" v-model="formUser.nickname"/>
+                    <el-input autocomplete="off" v-model="formRoute.nickname"/>
                 </el-form-item>
                 <el-form-item label="微信" prop="wx">
-                    <el-input autocomplete="off" v-model="formUser.wx"/>
+                    <el-input autocomplete="off" v-model="formRoute.wx"/>
                 </el-form-item>
                 <el-form-item label="手机" prop="phone">
-                    <el-input autocomplete="off" v-model="formUser.phone"/>
+                    <el-input autocomplete="off" v-model="formRoute.phone"/>
                 </el-form-item>
                 <el-form-item label="高德组队码" prop="gaode">
-                    <el-input autocomplete="off" v-model="formUser.gaode"/>
+                    <el-input autocomplete="off" v-model="formRoute.gaode"/>
                 </el-form-item>
                 <el-form-item label="组别" prop="group_id">
-                    <el-select :disabled="!isAdmin" v-model="formUser.group_id" placeholder="请选择">
+                    <el-select :disabled="!isAdmin" v-model="formRoute.group_id" placeholder="请选择">
                         <el-option
                             v-for="item in groupOptions"
                             :key="item.id"
@@ -99,7 +99,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="主页" prop="homepage">
-                    <el-input autocomplete="off" v-model="formUser.homepage"/>
+                    <el-input autocomplete="off" v-model="formRoute.homepage"/>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -118,6 +118,7 @@
 import userApi from "@/api/userApi";
 import utility from "@/utility";
 import {mapState} from "vuex";
+import routeApi from "@/api/routeApi";
 
 export default {
     name: "RouteList",
@@ -134,39 +135,22 @@ export default {
                 {id: 1, name: '管理员'},
                 {id: 2, name: '普通用户'},
             ],
-            formUser: {
-                username: '',
-                nickname: '',
-                wx: '',
-                phone: '',
-                homepage: '',
-                gaode: '',
-                group_id: '',
+            formRoute: {
+                name: '', // *路线名
+                area: '', // *地域
+                road_type: '', // *路面类型
+                seasons: '', // *适用季节
+                video_link: '', // 路径视频演示
+                paths: [], // *路径点
+                note: '', // 备注
+                thumb_up: 0, // *点赞数
+                is_public: 1, // *是否共享
             },
             userRules: {
-                email:
-                    [
-                        {required: true, message: '请填写邮箱', trigger: 'blur'},
-                    ],
-                username:
-                    [
-                        {required: true, message: '请填写用户名', trigger: 'blur'},
-                        {
-                            validator: (rule, value, callback) => {
-                                if (!/^[a-z_]+$/.test(value)) {
-                                    callback(new Error("用户名只能是小写字母"))
-                                } else {
-                                    callback()
-                                }
-                            }
-                        }
-                    ],
-                nickname: {required: true, message: '请填写昵称', trigger: 'blur'},
-                wx: {required: true, message: '请填写微信', trigger: 'blur'},
-                phone: {required: true, message: '请填写手机号', trigger: 'blur'},
-                homepage: '',
-                gaode: '',
-                group_id: {required: true, message: '请选择组别', trigger: 'blur'},
+                name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
+                area: [{required: true, message: '请填写地域', trigger: 'blur'},],
+                road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
+                seasons: [{required: true, message: '请填写季节', trigger: 'blur'},],
             },
             // pager
             pager: {
@@ -177,7 +161,7 @@ export default {
         }
     },
     mounted() {
-        this.getUserList()
+        this.getRouteList()
         this.isAdmin = this.$utility.getAuthorization().email === 'kylebing@163.com'
     },
     methods: {
@@ -186,14 +170,16 @@ export default {
             this.editingUid = null
         },
         clearForm(){
-            this.formUser = {
-                username: '',
-                nickname: '',
-                wx: '',
-                phone: '',
-                homepage: '',
-                gaode: '',
-                group_id: '',
+            this.formRoute = {
+                name: '', // *路线名
+                area: '', // *地域
+                road_type: '', // *路面类型
+                seasons: '', // *适用季节
+                video_link: '', // 路径视频演示
+                paths: [], // *路径点
+                note: '', // 备注
+                thumb_up: 0, // *点赞数
+                is_public: 1, // *是否共享
             }
         },
         closeModal(done) {
@@ -206,7 +192,7 @@ export default {
                 .catch(_ => {});
         },
         submit() {
-            this.$refs['register'].validate((valid) => {
+            this.$refs['formRoute'].validate((valid) => {
                 if (valid) {
                     if (this.editingUid) {
                         this.userModifySubmit()
@@ -221,8 +207,8 @@ export default {
         },
         // 编辑
         userModifySubmit() {
-            userApi
-                .modify(this.formUser)
+            routeApi
+                .modify(this.formRoute)
                 .then(res => {
                     this.$notify({
                         title: res.message,
@@ -233,13 +219,13 @@ export default {
                     })
                     this.editingUid = null
                     this.modalEdit = false
-                    this.getUserList()
+                    this.getRouteList()
                 })
         },
         // 新增
         userNewSubmit() {
             userApi
-                .add(this.formUser)
+                .add(this.formRoute)
                 .then(res => {
                     this.$notify({
                         title: res.message,
@@ -250,7 +236,7 @@ export default {
                     })
                     this.editingUid = null
                     this.modalEdit = false
-                    this.getUserList()
+                    this.getRouteList()
                 })
         },
 
@@ -259,29 +245,29 @@ export default {
         pagerSizeChange(newPageSize) {
             this.pager.pageNo = 1
             this.pager.pageSize = newPageSize
-            this.getUserList()
+            this.getRouteList()
         },
         currentPageChange(newCurrentPage) {
             this.pager.pageNo = 1
             this.pager.pageNo = newCurrentPage
-            this.getUserList()
+            this.getRouteList()
         },
 
         // 获取用户列表
-        getUserList() {
+        getRouteList() {
             this.isLoading = true
             let params = {
                 pageNo: this.pager.pageNo,
                 pageSize: this.pager.pageSize
             }
-            userApi
+            routeApi
                 .list(params)
                 .then(res => {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
-                        item.register_time = utility.dateFormatter(new Date(item.register_time))
-                        item.last_visit_time = utility.dateFormatter(new Date(item.last_visit_time))
+                        item.date_init = utility.dateFormatter(new Date(item.date_init))
+                        item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
                     })
                 })
@@ -291,7 +277,7 @@ export default {
         },
         goEdit(user) {
             this.editingUid = user.uid
-            this.formUser = user
+            this.formRoute = user
             this.modalEdit = true
         },
         goDelete(user) {
@@ -305,7 +291,7 @@ export default {
                 }
                 userApi.delete(requestData)
                     .then(res => {
-                            this.getUserList();
+                            this.getRouteList();
                             this.$notify({
                                 title: res.message,
                                 position: 'top-right',

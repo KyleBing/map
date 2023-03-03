@@ -19,9 +19,6 @@ Vue.use(Container);Vue.use(Aside);Vue.use(Main);
 Vue.use(Table);Vue.use(TableColumn);
 Vue.prototype.$message = Message
 
-// Router
-import Router from "vue-router"
-Vue.use(Router)
 
 // VUEX
 Vue.use(Vuex)
@@ -47,23 +44,3 @@ new Vue({
    store,
    render: h => h(App),
 }).$mount('#app')
-
-// import axios from "axios";
-// axios.defaults.withCredentials=true
-
-
-
-// router.beforeEach((to, from, next) => {
-//    switch (to.name) {
-//       case 'Login':
-//       case 'Register':
-//          next();
-//          break;
-//       default:
-//          if (utility.hasLogined()) {
-//             next()
-//          } else {
-//             next('/Login')
-//          }
-//    }
-// })

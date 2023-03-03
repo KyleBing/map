@@ -89,7 +89,7 @@ export default {
                         res.data.geolocation,
                     )
                     this.$message.success( '欢迎用户 ' + res.data.username)
-                    this.$router.push('/')
+                    this.$router.push({name: 'Index'})
                 })
                 .catch(err => {
                     this.isInLoginProcess = false
