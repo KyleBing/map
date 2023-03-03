@@ -9,32 +9,40 @@
                 <el-table
                     class="table-narrow"
                     size="small"
-                    :height="windowInsets.height - 120"
-                    :max-height="windowInsets.height - 120"
+                    :height="windowInsets.height - 150"
+                    :max-height="windowInsets.height - 150"
                     stripe
                     :data="tableData"
                     v-loading="isLoading"
                 >
                     <el-table-column width="60" prop="id" label="id"/>
-                    <el-table-column width="150px" prop="name" label="路线名"/>
+                    <el-table-column width="100" prop="name" label="路线名"/>
                     <el-table-column width="100" align="center" prop="area" label="地域"/>
-                    <el-table-column width="150" align="center" prop="road_type" label="路线类型"/>
+                    <el-table-column width="80" align="center" prop="road_type" label="路线类型"/>
                     <el-table-column align="center" prop="seasons" label="适用季节"/>
-                    <el-table-column align="center" width="200px" prop="video_link" label="视频链接"/>
-                    <el-table-column align="right" prop="paths" label="路线">
+                    <el-table-column align="center" width="200px" prop="video_link" label="视频链接">
                         <template slot-scope="scope">
-                            {{ scope.row.paths.length}}
+                            <a class="link" target="_blank" :href="scope.row.video_link">{{ scope.row.video_link }}</a>
                         </template>
                     </el-table-column>
-                    <el-table-column sortable align="right" width="80px" prop="note" label="备注"/>
-                    <el-table-column sortable align="right" width="80px" prop="thumb_up" label="点选数"/>
-                    <el-table-column sortable align="right" width="80px" prop="is_public" label="共享状态">
+                    <el-table-column align="right" prop="paths" label="路线">
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.paths">{{ JSON.parse(scope.row.paths).length }}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column sortable align="right" width="180px" prop="note" label="备注"/>
+                    <el-table-column sortable align="right" width="80px" prop="thumb_up" label="点赞数"/>
+                    <el-table-column sortable align="right" width="80px" prop="is_public" label="状态">
                         <template slot-scope="scope">
                             {{ scope.row.is_public === 1 ? '共享' : '私有' }}
                         </template>
                     </el-table-column>
-                    <el-table-column sortable align="center" width="160px" prop="date_init" label="添加时间"/>
-                    <el-table-column sortable align="center" width="160px" prop="date_modify" label="修改时间"/>
+                    <el-table-column sortable align="center" width="160px" prop="date_init" label="时间">
+                        <template slot-scope="scope">
+                            <div>{{ scope.row.date_init }}</div>
+                            <div>{{ scope.row.date_modify }}</div>
+                        </template>
+                    </el-table-column>
 
                     <el-table-column align="center" width="200px" label="操作">
                         <template slot-scope="scope">
@@ -158,8 +166,9 @@ export default {
         addNewRoute() {
             this.modalEdit = true
             this.editingRouteId = null
+            this.clearForm()
         },
-        clearForm(){
+        clearForm() {
             this.formRoute = {
                 name: '', // *路线名
                 area: '', // *地域
@@ -179,7 +188,8 @@ export default {
                     this.modalEdit = false
                     done();
                 })
-                .catch(_ => {});
+                .catch(_ => {
+                });
         },
         submit() {
             this.$refs['formRoute'].validate((valid) => {
@@ -257,7 +267,6 @@ export default {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
-                        item.paths = JSON.stringify(item.paths)
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
@@ -305,6 +314,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.tool-bar{}
+.tool-bar {
+}
 
 </style>

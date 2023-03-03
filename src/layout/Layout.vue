@@ -29,12 +29,12 @@
 import {mapGetters, mapMutations, mapState} from "vuex"
 
 import Aside from "@/layout/Aside";
+
 export default {
     name: 'Layout',
     components: {Aside},
     data() {
-        return {
-        }
+        return {}
     },
     created() {
         this.onResize()
@@ -51,13 +51,13 @@ export default {
             'SET_WINDOW_INSETS',
             'SET_IS_IN_MOBILE',
         ]),
-        onResize(){
+        onResize() {
             this.SET_WINDOW_INSETS({
                 height: window.innerHeight,
                 width: window.innerWidth
             })
         },
-        toggleMenu(){
+        toggleMenu() {
             this.SET_IS_SHOWING_MENU_TOGGLE_BTN(!this.isShowingMenuToggleBtn)
         }
     }
@@ -71,9 +71,10 @@ export default {
 .el-main {
     padding: 0;
 }
+
 $height-menu-btn: 40px;
-.menu-btn{
-    @include box-shadow(1px 1px 3px rgba(0,0,0,0.1));
+.menu-btn {
+    @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.1));
     background-color: white;
     overflow: hidden;
     padding: 6px;
@@ -84,11 +85,13 @@ $height-menu-btn: 40px;
     width: $height-menu-btn;
     @include border-radius(100px);
     z-index: 999;
-    img{
+
+    img {
         width: 100%;
         display: block;
     }
-    &.active{
+
+    &.active {
         transform: translateY(2px);
     }
 }

@@ -17,13 +17,22 @@
 </template>
 <script>
 import packageInfo from "../../../package.json"
+import {AnimatedCanvasBG} from "animate-bg-canvas";
+
 export default {
     name: 'About',
     data(){
         return {
             copName: '我的后台系统',
-            email: packageInfo.author.email
+            email: packageInfo.author.email,
+            animatedBg: null
         }
+    },
+    mounted() {
+        this.animatedBg = new AnimatedCanvasBG()
+    },
+    beforeDestroy() {
+        this.animatedBg.destroy()
     }
 }
 </script>
@@ -60,7 +69,8 @@ $text-about: #666;
 }
 .card {
     color: $text-about;
-    background-color: white;
+    background-color: transparentize(white, 0.4);
+    backdrop-filter: blur(5px) saturate(180%);
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.18);
     padding: 20px;
     -webkit-border-radius: 6px;
