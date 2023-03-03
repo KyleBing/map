@@ -17,7 +17,7 @@ export default {
             default: 100
         }
     },
-    name: "logo",
+    name: "Logo",
     computed: {
         ...mapState(['navWidth', 'navMenuIsClosed'])
     },

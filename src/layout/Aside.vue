@@ -10,10 +10,10 @@
 
 <script>
 
-import navbar from "@/layout/navbar"
+import navbar from "@/layout/Navbar"
 import {mapState, mapGetters, mapMutations} from "vuex"
-import Copyright from "@/layout/copyright";
-import Logo from "@/layout/logo";
+import Copyright from "@/layout/Copyright";
+import Logo from "@/layout/Logo";
 
 export default {
     name: 'Aside',

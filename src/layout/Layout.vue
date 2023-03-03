@@ -28,9 +28,9 @@
 <script>
 import {mapGetters, mapMutations, mapState} from "vuex"
 
-import Aside from "@/layout/aside";
+import Aside from "@/layout/Aside";
 export default {
-    name: 'layout',
+    name: 'Layout',
     components: {Aside},
     data() {
         return {

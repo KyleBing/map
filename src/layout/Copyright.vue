@@ -21,7 +21,7 @@ export default {
             packageInfo: packageInfo
         }
     },
-    name: "copyright"
+    name: "Copyright"
 }
 </script>
 

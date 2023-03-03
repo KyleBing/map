@@ -9,22 +9,36 @@
             :collapse="navMenuIsClosed"
             :collapse-transition="false"
         >
-          <template  v-for="(submenu,index) in menus">
-            <el-submenu v-if="submenu.children" :index="submenu.path">
-              <template slot="title">
-                <i :class="submenu.meta.icon"></i>
-                <span slot="title">{{ submenu.meta.title }}</span>
-              </template>
-              <el-menu-item
-                  v-for="menuItem in submenu.children"
-                  :key="menuItem.path"
-                  :index="`${submenu.path}/${menuItem.path}`">{{ menuItem.meta.title }}</el-menu-item>
-            </el-submenu>
-            <el-menu-item v-else :index="submenu.path">
-                <i :class="submenu.meta.icon"></i>
-                <span slot="title">{{ submenu.meta.title }}</span>
+            <template v-for="(submenu,index) in menus">
+                <el-submenu v-if="submenu.children && submenu.children.length > 0" :index="submenu.path">
+                    <template slot="title">
+                        <i :class="submenu.meta.icon"></i>
+                        <span slot="title">{{ submenu.meta.title }}</span>
+                    </template>
+                    <el-menu-item
+                        :class="{'is-active': menuItem.name === $route.name}"
+                        v-for="menuItem in submenu.children"
+                        :key="menuItem.path"
+                        :index="`${submenu.path}/${menuItem.path}`">{{ menuItem.meta.title }}
+                    </el-menu-item>
+                </el-submenu>
+                <!--                显示所有名不为 CategoryLink 的-->
+                <el-menu-item
+                    v-else-if="submenu.name !== 'CategoryLink'"
+                    :index="submenu.path"
+                >
+                    <i :class="submenu.meta.icon"></i>
+                    <span slot="title">{{ submenu.meta.title }}</span>
                 </el-menu-item>
-          </template>
+                <!--                如果名为 CategoryLink，需要 email === 管理员账户才显示 -->
+                <el-menu-item
+                    v-else-if="$utility.getAuthorization().group_id === 1"
+                    :index="submenu.path"
+                >
+                    <i :class="submenu.meta.icon"></i>
+                    <span slot="title">{{ submenu.meta.title }}</span>
+                </el-menu-item>
+            </template>
 
         </el-menu>
     </nav>
@@ -32,10 +46,11 @@
 
 <script>
 import {mapGetters, mapState} from "vuex"
-import route from "../router"
+import router from "../router"
+import utility from "@/utility";
 
 export default {
-    name: "navbar",
+    name: "Navbar",
     props: {
         height:{
             type: Number,
@@ -43,10 +58,22 @@ export default {
     },
     created() {
         this.activeMenu = this.$route.path
+        const isAdmin = utility.getAuthorization().email === 'kylebing@163.com'
+
         // 过滤 Router 中的路由，去除 showInMenu === false 的菜单
-        let submenuShow = route.routeMap.filter(submenu => submenu.meta.showInMenu)
-        submenuShow.map(menu => {
-            if (menu.children){
+        let submenuShow = router.routes.filter(submenu => {
+            if (submenu.meta.showInMenu){
+                if (submenu.meta.isAdmin){
+                    return isAdmin
+                } else {
+                    return true
+                }
+            } else {
+                return false
+            }
+        })
+        submenuShow.forEach(menu => {
+            if (menu.children){ // 有子菜单才进行筛选
                 menu.children = menu.children.filter(menuItem => menuItem.meta.showInMenu)
             }
             return menu

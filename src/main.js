@@ -18,28 +18,23 @@ Vue.use(Form);Vue.use(FormItem);Vue.use(Input);
 Vue.use(Container);Vue.use(Aside);Vue.use(Main);
 Vue.use(Table);Vue.use(TableColumn);
 Vue.prototype.$message = Message
+
 // Router
-import route from "@/router";
 import Router from "vue-router"
-
-let router = new Router({
-   routes: route.router
-})
-
 Vue.use(Router)
-
 
 // VUEX
 Vue.use(Vuex)
 import store from "@/store";
 
-
 // UTILITY
 import utility from "@/utility";
 Vue.prototype.$utility = utility
 
+// Router
+import router from "./router"
 
-router.afterEach((to, from) => {
+router.router.afterEach((to, from) => {
     if(store.getters.isInPortraitMode){ // 适配移动端 路由跳转后，隐藏菜单
         store.commit('SET_IS_SHOWING_MENU_TOGGLE_BTN', true)
     }
@@ -48,7 +43,7 @@ router.afterEach((to, from) => {
 Vue.config.productionTip = false
 
 new Vue({
-   router,
+   router: router.router,
    store,
    render: h => h(App),
 }).$mount('#app')
@@ -60,15 +55,15 @@ new Vue({
 
 // router.beforeEach((to, from, next) => {
 //    switch (to.name) {
-//       case 'login':
-//       case 'register':
+//       case 'Login':
+//       case 'Register':
 //          next();
 //          break;
 //       default:
 //          if (utility.hasLogined()) {
 //             next()
 //          } else {
-//             next('/login')
+//             next('/Login')
 //          }
 //    }
 // })

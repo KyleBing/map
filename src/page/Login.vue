@@ -75,7 +75,7 @@ export default {
                 .login(this.formLogin)
                 .then(res => {
                     console.log(res)
-                    console.log('login success')
+                    console.log('Login success')
                     this.isInLoginProcess = false
                     this.$utility.setAuthorization(
                         res.data.nickname,
