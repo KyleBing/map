@@ -14,9 +14,19 @@ const routes = [
       name: 'RouteLine',
       path: '/route',
       component: Layout,
-      redirect: '/route/1',
+      redirect: '/route/list',
       meta: {title: '路线推荐', showInMenu: true, icon: 'el-icon-wind-power' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
       children: [
+         {
+            name: 'RouteList',
+            path: 'list',
+            meta: {
+               title: '路线列表',
+               showInMenu: true,
+               icon: 'el-icon-wind-power' // 菜单 icon 对应 Element UI 中的 ICON class 名
+            },
+            component: resolve => require(['@/page/route/RouteList'], resolve),
+         },
          {
             name: 'line',
             path: ':lineId',
@@ -111,12 +121,13 @@ const routes = [
             meta: {title: '脉冲图', showInMenu: true},
             component: resolve => require(['@/page/other/map/MapLoca'], resolve),
          },
+         {
+            name: 'About',
+            path: 'about',
+            meta: {isAdmin: false, title: '关于', showInMenu: true, icon: 'el-icon-warning-outline',},
+            component: resolve => require(['@/page/other/About'], resolve),
+         },
       ]
-   },
-   {
-      name: 'About', path: '/about',
-      meta: {isAdmin: false, title: '关于', showInMenu: true, icon: 'el-icon-warning-outline',},
-      component: resolve => require(['@/page/About.vue'], resolve),
    },
 ]
 const ROUTE_FRAME =  [
@@ -151,7 +162,7 @@ const router = new VueRouter({
    routes: [...ROUTE_FRAME, ...routes]
 })
 
-/*router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
    if (to.name !== 'Login' && to.name !== 'share'){
       if (utility.getAuthorization() && utility.getAuthorization().email){
          const isAdmin = utility.getAuthorization().email === 'kylebing@163.com'
@@ -170,7 +181,7 @@ const router = new VueRouter({
    } else {
       next()
    }
-})*/
+})
 
 export default {
    router,

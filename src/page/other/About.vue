@@ -3,7 +3,7 @@
             <div class="card">
                 <div class="company">
                     <div class="company-logo">
-                        <img src="../assets/logo.png" alt="logo"/>
+                        <img src="../../assets/logo.png" alt="logo"/>
                         <h2>{{ copName }}</h2>
                     </div>
 
@@ -16,7 +16,7 @@
         </div>
 </template>
 <script>
-import packageInfo from "../../package.json"
+import packageInfo from "../../../package.json"
 export default {
     name: 'About',
     data(){
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../scss/plugin";
+@import "../../scss/plugin";
 $text-about: #666;
 .bg{
     background-color: $color-border;
