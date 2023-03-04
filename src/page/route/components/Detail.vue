@@ -4,18 +4,18 @@
             <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i>
             </h1>
-            <a v-if="line.videoLink" target="_blank" class="video-link" :href="line.videoLink"><i class="el-icon-video-camera"></i></a>
+            <a v-if="line.video_link" target="_blank" class="video-link" :href="line.video_link"><i class="el-icon-video-camera"></i></a>
         </div>
         <div class="content" v-if="showContent">
             <div class="info-list">
                 <div class="info" v-if="line.area">
                     <p class="info-title">路线区域</p><p class="info-value">{{line.area}}</p>
                 </div>
-                <div class="info" v-if="line.roadType">
-                    <p class="info-title">路面类型</p><p class="info-value">{{line.roadType}}</p>
+                <div class="info" v-if="line.road_type">
+                    <p class="info-title">路面类型</p><p class="info-value">{{line.road_type}}</p>
                 </div>
-                <div class="info" v-if="line.months">
-                    <p class="info-title">推荐季节</p><p class="info-value">{{line.months}}</p>
+                <div class="info" v-if="line.seasons">
+                    <p class="info-title">推荐季节</p><p class="info-value">{{line.seasons}}</p>
                 </div>
                 <div v-if="line.distance" class="info">
                     <p class="info-title">距离/时间</p><p class="info-value">{{line.distance}} km</p>

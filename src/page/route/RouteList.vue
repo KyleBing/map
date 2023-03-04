@@ -27,7 +27,7 @@
                     </el-table-column>
                     <el-table-column align="right" prop="paths" label="路线">
                         <template slot-scope="scope">
-                            <div v-if="scope.row.paths">{{ JSON.parse(scope.row.paths).length }}</div>
+                            <div v-if="scope.row.paths">{{ scope.row.paths.length }}</div>
                         </template>
                     </el-table-column>
                     <el-table-column sortable align="right" width="180px" prop="note" label="备注"/>
@@ -44,8 +44,9 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" width="200px" label="操作">
+                    <el-table-column align="center" width="250px" label="操作">
                         <template slot-scope="scope">
+                            <el-button @click="showRoute(scope.row)" type="success" plain size="mini">查看</el-button>
                             <el-button @click="goEdit(scope.row)" type="primary" plain size="mini">编辑</el-button>
                             <el-button @click="goDelete(scope.row)" type="danger" plain size="mini">删除</el-button>
                         </template>
@@ -72,7 +73,7 @@
         <el-dialog
             :title="modalTitle"
             :visible.sync="modalEdit"
-            width="30%"
+            width="50%"
             :before-close="closeModal">
             <el-form
                 :model="formRoute"
@@ -95,10 +96,10 @@
                     <el-input v-model="formRoute.video_link"/>
                 </el-form-item>
                 <el-form-item label="路线" prop="paths">
-                    <el-input type="textarea" v-model="formRoute.paths"/>
+                    <el-input type="textarea" :rows="20" v-model="formRoute.paths"/>
                 </el-form-item>
                 <el-form-item label="备注" prop="note">
-                    <el-input type="textarea" v-model="formRoute.note"/>
+                    <el-input type="textarea" :rows="5" v-model="formRoute.note"/>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -117,6 +118,7 @@
 import utility from "@/utility";
 import {mapState} from "vuex";
 import routeApi from "@/api/routeApi";
+import {Base64} from "js-base64"
 
 export default {
     name: "RouteList",
@@ -163,6 +165,15 @@ export default {
         this.isAdmin = this.$utility.getAuthorization().email === 'kylebing@163.com'
     },
     methods: {
+        // 跳转到路经展示页面
+        showRoute(routeInfo){
+            this.$router.push({
+                name: "RouteLine",
+                query: {
+                    routeId: routeInfo.id
+                }
+            })
+        },
         addNewRoute() {
             this.modalEdit = true
             this.editingRouteId = null
@@ -207,6 +218,7 @@ export default {
         },
         // 编辑
         routeModifySubmit() {
+            this.formRoute.paths = Base64.encode(this.formRoute.paths)
             routeApi
                 .modify(this.formRoute)
                 .then(res => {
@@ -224,6 +236,7 @@ export default {
         },
         // 新增
         routeNewSubmit() {
+            this.formRoute.paths = Base64.encode(this.formRoute.paths)
             routeApi
                 .add(this.formRoute)
                 .then(res => {
@@ -267,6 +280,7 @@ export default {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
+                        item.paths = Base64.decode(item.paths)
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
@@ -276,9 +290,9 @@ export default {
                     this.isLoading = false
                 })
         },
-        goEdit(route) {
-            this.editingRouteId = route.uid
-            this.formRoute = route
+        goEdit(routeLine) {
+            this.editingRouteId = routeLine.uid
+            this.formRoute = routeLine
             this.modalEdit = true
         },
         goDelete(route) {

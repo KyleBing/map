@@ -26,7 +26,8 @@
     "vue": "^2.6.11",
     "vue-cookie": "^1.1.4",
     "vue-router": "^3.5.2",
-    "vuex": "^3.6.0"
+    "vuex": "^3.6.0",
+    "js-base64": "^3.7.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

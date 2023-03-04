@@ -55,10 +55,10 @@ const routes = [
                 component: resolve => require(['@/page/route/RouteList'], resolve),
             },
             {
-                name: 'line',
-                path: ':lineId',
+                name: 'RouteLine',
+                path: 'route-line',
                 meta: {
-                    title: '路线推荐',
+                    title: '路线展示',
                     showInMenu: true,
                     icon: 'el-icon-wind-power' // 菜单 icon 对应 Element UI 中的 ICON class 名
                 },

@@ -14,6 +14,9 @@ import ICON from "@/assets/icons"
 import Detail from "./components/Detail"
 import {mapState} from "vuex"
 import mapConfig from "../../mapConfig";
+import routeApi from "@/api/routeApi";
+
+import {Base64} from "js-base64"
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -24,17 +27,14 @@ export default {
     data() {
         return {
             isLoading: false,
-            contentHeight: 400,
             map: null,
-            lines: mapData.LINES,
             colors: mapData.COLORS,
             currentLineId: 0,
             activeLineObj: null, // 当前 Line 对象
             currentRouting: null,  // 当前导航路线
         }
     },
-    created() {
-        this.contentHeight = window.innerHeight
+    mounted() {
 
         AMapLoader.load({
             key: mapConfig.appId, // 开发应用的 ID
@@ -44,24 +44,15 @@ export default {
                 'AMap.Scale', // 比例尺
                 'AMap.DragRoute', // 定位
             ],
-
         }).then(map => {
             AMap = map
             this.map = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
             })
-
             this.map.addControl(new AMap.ToolBar())
             this.map.addControl(new AMap.Scale())
-
-            // 获取 Route 中的路线 ID
-            this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
-            console.log(this.activeLineObj, this.$route.params.lineId)
-
-            // 载入默认路线和标记
-            this.loadLine(this.map, this.activeLineObj)
-            this.loadLineLabels(this.map, this.activeLineObj)
+            this.getLineInfo()
         }).catch(e => {
             console.log(e)
         })
@@ -71,6 +62,22 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
+        getLineInfo(){
+            if (this.$route.query.routeId) {
+                routeApi
+                    .detail({
+                        id: this.$route.query.routeId
+                    })
+                    .then(res => {
+                        this.activeLineObj = res.data
+                        this.activeLineObj.pathArray = JSON.parse(Base64.decode(this.activeLineObj.paths))
+                        this.loadLine(this.map, this.activeLineObj)
+                        this.loadLineLabels(this.map, this.activeLineObj)
+                    })
+            } else {
+                this.$message.warning('没有指定路线 ID ')
+            }
+        },
 
         // 设置地图中心点：用户坐标
         setMapCenterToUserLocation(status, res){
@@ -97,7 +104,7 @@ export default {
         loadLine(map, line) {
 
             // path 是驾车导航的起、途径和终点，最多支持16个途经点
-            let path = line.paths.map (item => item.position)
+            let path = line.pathArray.map (item => item.position)
             let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
                 startMarkerOptions: {
                     offset: new AMap.Pixel(-13, -40),
@@ -152,10 +159,9 @@ export default {
             this.currentRouting.search()
         },
 
-
         // 添加路线 Label
         loadLineLabels(map, line) {
-            line.paths.forEach(item => {
+            line.pathArray.forEach(item => {
                 this.addMarker(map, item)
             })
         },
@@ -179,7 +185,6 @@ export default {
                 this.currentRouting.destroy() // 清除当前路线
                 this.map.clearMap() // 删除所有 Marker
             }
-            this.activeLineObj = this.lines[parseInt(this.$route.params.lineId) - 1]
             this.loadLine(this.map, this.activeLineObj)
             this.loadLineLabels(this.map, this.activeLineObj)
         },
