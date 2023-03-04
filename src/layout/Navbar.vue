@@ -30,7 +30,7 @@
                     <i :class="submenu.meta.icon"></i>
                     <span slot="title">{{ submenu.meta.title }}</span>
                 </el-menu-item>
-                <!--                如果名为 CategoryLink，需要 email === 管理员账户才显示 -->
+                <!--如果名为 CategoryLink，需要 email === 管理员账户才显示 -->
                 <el-menu-item
                     v-else-if="$utility.getAuthorization().group_id === 1"
                     :index="submenu.path"
@@ -105,6 +105,11 @@ export default {
             }
         },
     },
+    watch: {
+        '$route'(newValue){
+            this.activeMenu = newValue.path
+        }
+    }
 };
 </script>
 

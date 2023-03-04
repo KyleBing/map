@@ -75,7 +75,7 @@ export default {
                         this.loadLineLabels(this.map, this.activeLineObj)
                     })
             } else {
-                this.$message.warning('没有指定路线 ID ')
+                this.$message.success('没有指定路线 ID，将不展示任何路线')
             }
         },
 
