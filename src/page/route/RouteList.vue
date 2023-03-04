@@ -18,21 +18,33 @@
                     <el-table-column width="60" prop="id" label="id"/>
                     <el-table-column width="100" prop="name" label="路线名"/>
                     <el-table-column width="100" align="center" prop="area" label="地域"/>
-                    <el-table-column width="80" align="center" prop="road_type" label="路线类型"/>
+                    <el-table-column width="200" align="left" prop="road_type" label="路线类型"/>
                     <el-table-column align="center" prop="seasons" label="适用季节"/>
-                    <el-table-column align="center" width="200px" prop="video_link" label="视频链接">
+                    <el-table-column align="center" width="200" prop="video_link" label="视频链接">
                         <template slot-scope="scope">
                             <a class="link" target="_blank" :href="scope.row.video_link">{{ scope.row.video_link }}</a>
                         </template>
                     </el-table-column>
-                    <el-table-column align="right" prop="paths" label="路线">
+                    <el-table-column align="center" prop="paths" label="路线节点">
                         <template slot-scope="scope">
-                            <div v-if="scope.row.paths">{{ scope.row.paths.length }}</div>
+                            <div v-if="scope.row.paths">{{ scope.row.pathArray.length }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column sortable align="right" width="180px" prop="note" label="备注"/>
+                    <el-table-column align="left" width="180px" prop="note" label="备注">
+                        <template slot-scope="scope">
+                            <i class="el-icon-minus" v-if="scope.row.note === ''"></i>
+                            <el-popover v-else
+                                        placement="left"
+                                        title=""
+                                        width="400"
+                                        trigger="hover"
+                                        :content="scope.row.note">
+                                <span class="table-description" slot="reference" ><i class="el-icon-tickets"></i> {{scope.row.note}}</span>
+                            </el-popover>
+                        </template>
+                    </el-table-column>
                     <el-table-column sortable align="right" width="80px" prop="thumb_up" label="点赞数"/>
-                    <el-table-column sortable align="right" width="80px" prop="is_public" label="状态">
+                    <el-table-column sortable align="center" width="80px" prop="is_public" label="状态">
                         <template slot-scope="scope">
                             {{ scope.row.is_public === 1 ? '共享' : '私有' }}
                         </template>
@@ -281,6 +293,7 @@ export default {
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
                         item.paths = Base64.decode(item.paths)
+                        item.pathArray = JSON.parse(item.paths)
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
@@ -328,7 +341,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.tool-bar {
+.table-description{
+    white-space: nowrap;
+
 }
 
 </style>
