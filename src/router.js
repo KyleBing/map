@@ -89,7 +89,7 @@ const routes = [
             }
         ]
     },
-    {
+   /* {
         name: 'Debug',
         path: '/debug',
         component: Layout,
@@ -97,7 +97,7 @@ const routes = [
         meta: {
             title: '调试',
             showInMenu: true,
-            icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
+            icon: 'el-icon-position' /!* 菜单 icon 对应 Element UI 中的 ICON class 名 *!/
         },
         children: [
             {
@@ -106,12 +106,12 @@ const routes = [
                 meta: {
                     title: '调试',
                     showInMenu: true,
-                    icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
+                    icon: 'el-icon-position' /!* 菜单 icon 对应 Element UI 中的 ICON class 名 *!/
                 },
                 component: resolve => require(['@/page/debug/debug'], resolve),
             }
         ]
-    },
+    },*/
     {
         name: 'Info',
         path: '/info',
