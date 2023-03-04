@@ -102,7 +102,13 @@
                     <el-input v-model="formRoute.road_type"/>
                 </el-form-item>
                 <el-form-item label="适用季节" prop="seasons">
-                    <el-input v-model="formRoute.seasons"/>
+<!--                    <el-input v-model="formRoute.seasons"/>-->
+                    <el-checkbox-group v-model="formRoute.seasonsArray">
+                        <el-checkbox border label="春"></el-checkbox>
+                        <el-checkbox border label="夏"></el-checkbox>
+                        <el-checkbox border label="秋"></el-checkbox>
+                        <el-checkbox border label="冬"></el-checkbox>
+                    </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="视频链接" prop="video_link">
                     <el-input v-model="formRoute.video_link"/>
@@ -151,7 +157,7 @@ export default {
                 name: '', // *路线名
                 area: '', // *地域
                 road_type: '', // *路面类型
-                seasons: '', // *适用季节
+                seasonsArray: [], // *[适用季节]
                 video_link: '', // 路径视频演示
                 paths: [], // *路径点
                 note: '', // 备注
@@ -162,7 +168,7 @@ export default {
                 name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
                 area: [{required: true, message: '请填写地域', trigger: 'blur'},],
                 road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
-                seasons: [{required: true, message: '请填写季节', trigger: 'blur'},],
+                seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
             },
             // pager
             pager: {
@@ -175,6 +181,11 @@ export default {
     mounted() {
         this.getRouteList()
         this.isAdmin = this.$utility.getAuthorization().email === 'kylebing@163.com'
+    },
+    watch: {
+        'formRoute.seasonsArray'(newValue){
+            this.formRoute.seasons = newValue.join('、')
+        }
     },
     methods: {
         // 跳转到路经展示页面
@@ -196,7 +207,7 @@ export default {
                 name: '', // *路线名
                 area: '', // *地域
                 road_type: '', // *路面类型
-                seasons: '', // *适用季节
+                seasonsArray: [], // *适用季节
                 video_link: '', // 路径视频演示
                 paths: '', // *路径点
                 note: '', // 备注
@@ -294,6 +305,7 @@ export default {
                     this.tableData = res.data.list.map(item => {
                         item.paths = Base64.decode(item.paths)
                         item.pathArray = JSON.parse(item.paths)
+                        item.seasonsArray = item.seasons.split('、')
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
