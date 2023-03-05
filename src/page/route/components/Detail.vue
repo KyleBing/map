@@ -67,7 +67,7 @@ i{
 .detail{
     position: absolute;
     top: 20px;
-    left: 20px;
+    right: 20px;
     padding: 0;
     width: 250px;
     .title{

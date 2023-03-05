@@ -30,9 +30,9 @@
                     <el-button size="mini" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</el-button>
                 </td>
             </tr>
-                <tr v-for="(item, index) in dataLocal" :key="index">
+                <tr v-for="(item, index) in routePathLocal" :key="index">
 
-                    <td>{{dataLocal.length - index}}</td>
+                    <td>{{routePathLocal.length - index}}</td>
                     <td>
                         <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
                             <div class="lng">lng: {{item.position[0]}}</div>
@@ -79,7 +79,7 @@ export default {
         }
     },
     computed: {
-        dataLocal(){
+        routePathLocal(){
             return [...this.data]
         }
     },

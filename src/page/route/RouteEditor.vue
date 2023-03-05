@@ -1,9 +1,18 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+
+        <detail
+            class="detail-panel mt-1"
+            v-if="activeLineObj"
+            :line="activeLineObj"
+        />
+
         <div class="float-panel">
+
+            <!-- 编辑面板 -->
             <div class="search-panel card">
-                <el-form inline  size="mini">
+                <el-form inline @submit="search" size="mini">
                     <el-form-item class="mb-0" label="地址">
                         <el-input style="width: 200px" placeholder="输入较完整的地址" v-model="address"></el-input>
                     </el-form-item>
@@ -22,6 +31,7 @@
                 </el-form>
             </div>
 
+            <!-- 结果面板 -->
             <div class="result card mt-1" v-if="resultText">
                 {{resultText}}
             </div>
@@ -34,11 +44,6 @@
                 :lng="positionPicked.lng"
                 :lat="positionPicked.lat"
                 v-model="routeData"/>
-            <detail
-                class="detail-panel mt-1"
-                v-if="activeLineObj"
-                :line="activeLineObj"
-            />
         </div>
 
     </div>
@@ -48,12 +53,14 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
-import RoutePanel from "@/page/tool/route/components/RoutePanel";
+import RoutePanel from "@/page/tool/route/components/RoutePanel.vue";
 
 import { mapState } from 'vuex'
-import mapConfig from "../../../mapConfig";
-import Detail from "@/page/route/components/Detail";
+import mapConfig from "../../mapConfig";
+import Detail from "@/page/route/components/Detail.vue";
 import axios from "axios";
+import routeApi from "@/api/routeApi";
+import {Base64} from "js-base64";
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -66,7 +73,6 @@ export default {
             activeLineObj: null,
 
             isLoading: false,
-            contentHeight: 400,
             map: null,
             currentRouting: null,  // 当前导航路线
             routeData: [
@@ -87,9 +93,7 @@ export default {
         }
     },
     mounted() {
-
-        this.contentHeight = window.innerHeight
-
+        this.getLineInfo()
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID
@@ -144,6 +148,22 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
+        getLineInfo(){
+            if (this.$route.query.routeId) {
+                routeApi
+                    .detail({
+                        id: this.$route.query.routeId
+                    })
+                    .then(res => {
+                        this.activeLineObj = res.data
+                        this.routeData = JSON.parse(Base64.decode(this.activeLineObj.paths)).reverse()
+                        this.loadLine(this.map, this.activeLineObj)
+                        this.loadLineLabels(this.map, this.activeLineObj)
+                    })
+            } else {
+                this.$message.success('没有指定路线 ID，将不展示任何路线')
+            }
+        },
         search(){
             const url = 'https://restapi.amap.com/v3/geocode/geo'
             axios({
@@ -289,29 +309,28 @@ export default {
 
         // 添加路线 label 线路信息
         loadLineLabels(map, line) {
-            line.paths.forEach(item => {
-                this.addMarker(map, item)
+            line.paths.forEach((item, index) => {
+                this.addMarker(map, item, line.paths.length - index)
             })
         },
-        addMarker(map, item) {
+        addMarker(map, item, index) {
             let marker = new AMap.Marker({
                 position: item.position,
                 content: `
                <div class="marker">
-                  <div class="title">${item.name}</div>
+                  <div class="title">${index} - ${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
             });
             map.add(marker);
         }
-
     },
     watch: {
         routeData(newValue){
             if (newValue.length <= 0) return
             this.map.clearMap()
-            newValue.forEach(item => {
-                this.addMarker(this.map, item)
+            newValue.forEach((item, index) => {
+                this.addMarker(this.map, item, line.paths.length - index)
             })
         }
     },
@@ -325,20 +344,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../../scss/plugin";
+@import "../../scss/plugin";
 .map-container {
     position: relative;
 }
 .float-panel{
-    width: 400px;
     position: absolute;
     left: 20px;
     top: 20px;
+    width: 400px;
+    .search-panel{
+        background-color: white;
+        padding: 10px;
+    }
 }
-.search-panel{
-    background-color: white;
-    padding: 10px;
-}
+
 .result{
     background-color: white;
     padding: 10px;
