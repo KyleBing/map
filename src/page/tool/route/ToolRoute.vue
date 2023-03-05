@@ -66,7 +66,6 @@ export default {
             activeLineObj: null,
 
             isLoading: false,
-            contentHeight: 400,
             map: null,
             currentRouting: null,  // 当前导航路线
             routeData: [
@@ -87,9 +86,6 @@ export default {
         }
     },
     mounted() {
-
-        this.contentHeight = window.innerHeight
-
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID

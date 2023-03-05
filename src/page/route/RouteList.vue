@@ -56,10 +56,11 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" width="250px" label="操作">
+                    <el-table-column align="center" width="350px" label="操作">
                         <template slot-scope="scope">
                             <el-button @click="showRoute(scope.row)" type="success" plain size="mini">查看</el-button>
                             <el-button @click="goEdit(scope.row)" type="primary" plain size="mini">编辑</el-button>
+                            <el-button @click="editRouteLine(scope.row)" type="primary" plain size="mini">编辑路线</el-button>
                             <el-button @click="goDelete(scope.row)" type="danger" plain size="mini">删除</el-button>
                         </template>
                     </el-table-column>
@@ -139,7 +140,7 @@ import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64"
 
 export default {
-    name: "RouteList",
+    name: "RouterEditor",
     data() {
         return {
             isLoading: false,
@@ -188,6 +189,14 @@ export default {
         }
     },
     methods: {
+        editRouteLine(routeInfo){
+            this.$router.push({
+                name: "RouteEditor",
+                query: {
+                    routeId: routeInfo.id
+                }
+            })
+        },
         // 跳转到路经展示页面
         showRoute(routeInfo){
             this.$router.push({

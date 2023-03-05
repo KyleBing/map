@@ -17,7 +17,6 @@ export default {
     data() {
         return {
             isLoading: false,
-            contentHeight: 400,
             map: null,
             markers: [
                 {position: [117.129533, 36.685668]  , phone: '' ,            type: "market",     name: "高新万达"} ,
@@ -50,7 +49,6 @@ export default {
         }
     },
     created() {
-        this.contentHeight = window.innerHeight
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID

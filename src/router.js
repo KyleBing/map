@@ -27,7 +27,7 @@ const routes = [
                 meta: {
                     title: '主页',
                     showInMenu: false,
-                    icon: 'el-icon-wind-power' // 菜单 icon 对应 Element UI 中的 ICON class 名
+                    icon: 'el-icon-wind-power'
                 },
                 component: resolve => require(['@/page/index/Index'], resolve),
             },
@@ -50,7 +50,7 @@ const routes = [
                 meta: {
                     title: '路线列表',
                     showInMenu: true,
-                    icon: 'el-icon-wind-power' // 菜单 icon 对应 Element UI 中的 ICON class 名
+                    icon: 'el-icon-wind-power'
                 },
                 component: resolve => require(['@/page/route/RouteList'], resolve),
             },
@@ -60,9 +60,19 @@ const routes = [
                 meta: {
                     title: '路线展示',
                     showInMenu: true,
-                    icon: 'el-icon-wind-power' // 菜单 icon 对应 Element UI 中的 ICON class 名
+                    icon: 'el-icon-wind-power'
                 },
                 component: resolve => require(['@/page/route/RouteLine'], resolve),
+            },
+            {
+                name: 'RouteEditor',
+                path: 'route-editor',
+                meta: {
+                    title: '路线编辑',
+                    showInMenu: true,
+                    icon: 'el-icon-wind-power'
+                },
+                component: resolve => require(['@/page/route/RouteEditor.vue'], resolve),
             }
         ]
     },
@@ -89,15 +99,15 @@ const routes = [
             }
         ]
     },
-   /* {
+    {
         name: 'Debug',
         path: '/debug',
         component: Layout,
         redirect: '/debug/debug',
         meta: {
             title: '调试',
-            showInMenu: true,
-            icon: 'el-icon-position' /!* 菜单 icon 对应 Element UI 中的 ICON class 名 *!/
+            showInMenu: false,
+            icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
         },
         children: [
             {
@@ -106,12 +116,12 @@ const routes = [
                 meta: {
                     title: '调试',
                     showInMenu: true,
-                    icon: 'el-icon-position' /!* 菜单 icon 对应 Element UI 中的 ICON class 名 *!/
+                    icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
                 },
                 component: resolve => require(['@/page/debug/debug'], resolve),
             }
         ]
-    },*/
+    },
     {
         name: 'Info',
         path: '/info',
@@ -155,7 +165,7 @@ const routes = [
         meta: {
             title: '其它',
             showInMenu: true,
-            icon: 'el-icon-magic-stick' // 菜单 icon 对应 Element UI 中的 ICON class 名
+            icon: 'el-icon-magic-stick'
         },
         children: [
             {

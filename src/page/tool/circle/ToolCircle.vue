@@ -56,7 +56,6 @@ export default {
     data() {
         return {
             isLoading: false,
-            contentHeight: 400,
             map: null,
             circleData: [
 /*                {
@@ -78,8 +77,6 @@ export default {
         }
     },
     mounted() {
-        this.contentHeight = window.innerHeight
-
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID

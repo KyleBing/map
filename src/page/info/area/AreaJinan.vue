@@ -24,7 +24,6 @@ export default {
     data() {
         return {
             isLoading: false,
-            contentHeight: 400,
             map: null,
             circleData: [
 /*                {
@@ -71,9 +70,6 @@ export default {
         }
     },
     created() {
-
-        this.contentHeight = window.innerHeight
-
         AMapLoader.load({
             key: mapConfig.appId, // 开发应用的 ID
             version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
