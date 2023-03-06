@@ -75,7 +75,8 @@ export default {
         return {
             name: '', // 当前点的地名
             note: '', // 标记note
-            clipboardRouteData: '' // 要复制的所有路线点的数据
+            clipboardRouteData: '', // 要复制的所有路线点的数据
+            clipboard: null
         }
     },
     computed: {
@@ -88,8 +89,23 @@ export default {
             this.clipboardRouteData = JSON.stringify(newValue)
         }
     },
+    beforeDestroy() {
+        this.clipboard.destroy()
+    },
     mounted() {
-        let clipboard = new ClipboardJS('.lnglat')
+        // 1. 绑定剪贴板操作方法
+        this.clipboard = new ClipboardJS('.lnglat', {
+            text: function (trigger) {
+                // 2. trigger 就是点击的 dom 元素，所以就可以通过它来获取到它的属性 'dataClipboard' 的值了
+                // 3. 从这个方法返回的 string 就是会复制到剪贴板中的内容，所以可以复制任何内容了，也可以在这里处理一些逻辑
+                // 4. 我在这里就只是单纯的输出了事先绑定好的值
+                return trigger.getAttribute('data-clipboard-text')
+            },
+        })
+        // 5. 当复制成功的时候提示复制成功
+        this.clipboard.on('success', ()=>{  // 还可以添加监听事件，如：复制成功后提示
+            this.$message.success('复制成功')
+        })
     },
     methods: {
         // enter 时触发的方法

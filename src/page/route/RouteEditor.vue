@@ -43,7 +43,7 @@
                 @showLine="showLine"
                 :lng="positionPicked.lng"
                 :lat="positionPicked.lat"
-                v-model="routeData"/>
+                v-model="pathPointers"/>
         </div>
 
     </div>
@@ -75,7 +75,7 @@ export default {
             isLoading: false,
             map: null,
             currentRouting: null,  // 当前导航路线
-            routeData: [
+            pathPointers: [
 /*                {
                     name: '',
                     position: [lng,lat]
@@ -93,7 +93,6 @@ export default {
         }
     },
     mounted() {
-        this.getLineInfo()
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID
@@ -137,7 +136,8 @@ export default {
                         lat: res.lnglat.lat
                     }
                 })
-
+                // 地图准备好之后，获取路线信息
+                this.getLineInfo()
             })
             .catch(e => {
                 console.log(e);
@@ -156,9 +156,9 @@ export default {
                     })
                     .then(res => {
                         this.activeLineObj = res.data
-                        this.routeData = JSON.parse(Base64.decode(this.activeLineObj.paths)).reverse()
-                        this.loadLine(this.map, this.activeLineObj)
-                        this.loadLineLabels(this.map, this.activeLineObj)
+                        this.pathPointers = JSON.parse(Base64.decode(this.activeLineObj.paths)).reverse()
+                        this.loadLine(this.map, this.pathPointers)
+                        this.loadLineLabels(this.map, this.pathPointers)
                     })
             } else {
                 this.$message.success('没有指定路线 ID，将不展示任何路线')
@@ -190,7 +190,7 @@ export default {
         },
         // 添加新标记点和圆圈
         handleAddRoutePoint(routePoint){
-            this.routeData.unshift({
+            this.pathPointers.unshift({
                 name: routePoint.name,
                 position: [this.positionPicked.lng, this.positionPicked.lat],
                 note: routePoint.note,
@@ -225,7 +225,7 @@ export default {
 
         // 打印 路线数据
         printRoute(){
-            console.log(JSON.stringify([...this.routeData].reverse()))
+            console.log(JSON.stringify([...this.pathPointers].reverse()))
         },
 
         // 展示规划的路线
@@ -234,19 +234,16 @@ export default {
             if (this.currentRouting){
                 this.currentRouting.destroy() // 删除之前的路线
             }
-            let lineData = {
-                paths: this.routeData,
-            }
-            this.loadLine(this.map, lineData)
-            this.loadLineLabels(this.map, lineData)
+            this.loadLine(this.map, this.pathPointers)
+            this.loadLineLabels(this.map, this.pathPointers)
         },
 
         // 载入线路信息
-        loadLine(map, line) {
+        loadLine(map, pathPointers) {
             map.plugin('AMap.DragRoute', () => {
                 // path 是驾车导航的起、途径和终点，最多支持16个途经点
                 let path = []
-                line.paths.forEach(point => {
+                pathPointers.forEach(point => {
                     path.unshift(point.position) // 之前存入的是倒序的，所以现在给正过来
                 })
                 let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
@@ -308,9 +305,9 @@ export default {
         },
 
         // 添加路线 label 线路信息
-        loadLineLabels(map, line) {
-            line.paths.forEach((item, index) => {
-                this.addMarker(map, item, line.paths.length - index)
+        loadLineLabels(map, pathPointers) {
+            pathPointers.forEach((item, index) => {
+                this.addMarker(map, item, pathPointers.length - index)
             })
         },
         addMarker(map, item, index) {
@@ -330,7 +327,7 @@ export default {
             if (newValue.length <= 0) return
             this.map.clearMap()
             newValue.forEach((item, index) => {
-                this.addMarker(this.map, item, line.paths.length - index)
+                this.addMarker(this.map, item, this.pathPointers.paths.length - index)
             })
         }
     },
