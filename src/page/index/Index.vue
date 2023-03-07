@@ -19,7 +19,7 @@ const POSITION = {
 let AMap = null
 
 export default {
-    name: "RouteLine",
+    name: "Index",
     data() {
         return {
             isLoading: false,

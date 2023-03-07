@@ -15,7 +15,7 @@
                     :data="tableData"
                     v-loading="isLoading"
                 >
-                    <el-table-column width="60" prop="id" label="id"/>
+                    <el-table-column width="80" prop="id" label="id"/>
                     <el-table-column width="100" prop="name" label="路线名"/>
                     <el-table-column width="100" align="center" prop="area" label="地域"/>
                     <el-table-column width="200" align="left" prop="road_type" label="路线类型">
@@ -115,7 +115,6 @@
                     <el-radio :label="0" v-model="formRoute.is_public">私有</el-radio>
                 </el-form-item>
                 <el-form-item label="适用季节" prop="seasons">
-<!--                    <el-input v-model="formRoute.seasons"/>-->
                     <el-checkbox-group v-model="formRoute.seasonsArray">
                         <el-checkbox-button label="春"></el-checkbox-button>
                         <el-checkbox-button label="夏"></el-checkbox-button>
@@ -152,7 +151,7 @@ import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64"
 
 export default {
-    name: "RouterEditor",
+    name: "RouteList",
     data() {
         return {
             isLoading: false,
@@ -323,8 +322,9 @@ export default {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
-                        item.paths = Base64.decode(item.paths)
-                        item.pathArray = JSON.parse(item.paths)
+                        item.paths = Base64.decode(item.paths) || ''
+
+                        item.pathArray = item.paths && JSON.parse(item.paths)
                         item.seasonsArray = item.seasons.split('、')
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))

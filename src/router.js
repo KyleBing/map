@@ -34,10 +34,10 @@ const routes = [
         ]
     },
     {
-        name: 'RouteLine',
+        name: 'Route',
         path: '/route',
         component: Layout,
-        redirect: '/route/list',
+        redirect: '/route/route-list',
         meta: {
             title: '路线推荐',
             showInMenu: true,
@@ -46,7 +46,7 @@ const routes = [
         children: [
             {
                 name: 'RouteList',
-                path: 'list',
+                path: 'route-list',
                 meta: {
                     title: '路线列表',
                     showInMenu: true,

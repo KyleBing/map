@@ -232,7 +232,7 @@ export default {
         submit() {
             this.$refs['formLine'].validate((valid) => {
                 if (valid) {
-                    if (this.editingRouteId) {
+                    if (this.isEditingLineInfo) {
                         this.routeModifySubmit()
                     } else {
                         this.routeNewSubmit()
@@ -245,7 +245,11 @@ export default {
         },
         // 编辑
         routeModifySubmit() {
-            this.formLine.paths = Base64.encode(this.formLine.paths)
+            if (this.pathPointers.length < 1){
+                this.$message.warning('没有任何途经点')
+                return
+            }
+            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers))
             routeApi
                 .modify(this.formLine)
                 .then(res => {
@@ -256,14 +260,16 @@ export default {
                         onClose() {
                         }
                     })
-                    this.editingRouteId = null
                     this.modalEdit = false
-                    this.getRouteList()
                 })
         },
         // 新增
         routeNewSubmit() {
-            this.formLine.paths = Base64.encode(this.formLine.paths)
+            if (this.pathPointers.length < 1){
+                this.$message.warning('没有任何途经点')
+                return
+            }
+            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers))
             routeApi
                 .add(this.formLine)
                 .then(res => {
@@ -274,9 +280,7 @@ export default {
                         onClose() {
                         }
                     })
-                    this.editingRouteId = null
                     this.modalEdit = false
-                    this.getRouteList()
                 })
         },
         // 获取路线信息
