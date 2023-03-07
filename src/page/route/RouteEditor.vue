@@ -8,6 +8,7 @@
             :line="activeLineObj"
         />
 
+        <!-- 路线信息编辑面板-->
         <div class="card editor-form">
             <el-form
                 ref="formLine"
@@ -59,9 +60,8 @@
             </el-form>
         </div>
 
-
         <div class="float-panel">
-            <!-- 编辑面板 -->
+            <!-- 搜索面板 -->
             <div class="search-panel card">
                 <el-form inline @submit="search" size="mini">
                     <el-form-item class="mb-0" label="地址">
@@ -249,7 +249,7 @@ export default {
                 this.$message.warning('没有任何途经点')
                 return
             }
-            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers))
+            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers.reverse()))
             routeApi
                 .modify(this.formLine)
                 .then(res => {
@@ -269,7 +269,7 @@ export default {
                 this.$message.warning('没有任何途经点')
                 return
             }
-            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers))
+            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers.reverse()))
             routeApi
                 .add(this.formLine)
                 .then(res => {
@@ -343,7 +343,6 @@ export default {
 
         // 设置地图中心点：用户坐标
         setMapCenterToUserLocation(status, res) {
-            console.log(res)
             if (status === 'complete') {
                 let center = [res.position.lng, res.position.lat]
                 this.map.setCenter(center)
