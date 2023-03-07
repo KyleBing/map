@@ -142,5 +142,25 @@ body{
     padding: 7px;
 }
 
+.input-focus{
+    input{
+        &:focus{
+            animation-name: focus;
+        }
+    }
+}
+
+@-webkit-keyframes focus {
+    from {outline-width: 5px;}
+    to {outline-width: 0;}
+}
+@keyframes focus {
+    from {outline-width: 5px;}
+    to {outline-width: 0;}
+}
+
+
+
+
 @import "overwrite-el-ui";
 @import "overwrite-amap";

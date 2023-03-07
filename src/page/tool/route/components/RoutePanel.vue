@@ -2,8 +2,8 @@
     <div class="circle-panel card">
         <div class="toolbar">
             <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制数据到剪贴板</el-button>
-            <el-button size="mini" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</el-button>
             <el-button size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</el-button>
+            <el-button size="mini" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</el-button>
         </div>
         <table class="log">
             <thead>
@@ -24,8 +24,22 @@
                         <div class="lat">纬: {{lat || '--'}}</div>
                     </div>
                 </td>
-                <td><el-input @keyup.native.enter="addNewRoutePointWithKeyEnter" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
-                <td><el-input @keyup.native.enter="addNewRoutePointWithKeyEnter" clearable ref="note" size="mini" placeholder="备注" v-model="note" ></el-input></td>
+                <td>
+                    <el-input
+                        @keyup.native.enter="addNewRoutePointWithKeyEnter"
+                        clearable
+                        ref="inputName" class="input-focus" size="mini"
+                        placeholder="标记名"
+                        v-model="pointerName"/>
+                </td>
+                <td>
+                    <el-input
+                        @keyup.native.enter="addNewRoutePointWithKeyEnter"
+                        clearable
+                        ref="inputNote" class="input-focus" size="mini"
+                        placeholder="备注" type="textarea" :rows="1"
+                        v-model="pointerNote"/>
+                </td>
                 <td>
                     <el-button size="mini" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</el-button>
                 </td>
@@ -63,6 +77,7 @@ import ClipboardJS from 'clipboard'
 export default {
     name: "RoutePanel",
     props: {
+        searchLocation: {type: String},
         data: {type: Array},
         lng: {type: Number},
         lat: {type: Number},
@@ -73,8 +88,9 @@ export default {
     },
     data() {
         return {
-            name: '', // 当前点的地名
-            note: '', // 标记note
+            pointerName: '', // 当前点的地名
+            pointerNote: '', // 标记note
+
             clipboardRouteData: '', // 要复制的所有路线点的数据
             clipboard: null
         }
@@ -87,7 +103,10 @@ export default {
     watch:{
         data(newValue){
             this.clipboardRouteData = JSON.stringify(newValue)
-        }
+        },
+        searchLocation(newValue){
+            this.pointerName = newValue
+        },
     },
     beforeDestroy() {
         this.clipboard.destroy()
@@ -113,15 +132,15 @@ export default {
             if(this.validateInput()){
                 this.$emit('pointAdd', {
                     position: [this.lng, this.lat],
-                    note: this.note,
-                    name: this.name
+                    note: this.pointerNote,
+                    name: this.pointerName
                 })
-                this.name = ''
-                this.note = ''
+                this.pointerName = ''
+                this.pointerNote = ''
             }
 
             this.$nextTick(()=>{
-                this.$refs.name.focus()
+                this.$refs.inputName.focus()
             })
         },
         // 点击时触发的方法
@@ -129,8 +148,8 @@ export default {
             if(this.validateInput()){
                 this.$emit('pointAdd', {
                     position: [this.lng, this.lat],
-                    note: this.note,
-                    name: this.name
+                    note: this.pointerNote,
+                    name: this.pointerName
                 })
             }
         },
@@ -142,12 +161,12 @@ export default {
                 })
                 return false
             }
-            if (!this.name){
+            if (!this.pointerName){
                 this.$message({
                     message: '地名未填写',
                     type: 'warning'
                 })
-                this.$refs.name.focus()
+                this.$refs.inputName.focus()
                 return false
             }
             return true
@@ -198,6 +217,10 @@ $height-btn: 28px;
             transform: translateY(2px);
         }
     }
+    &:hover{
+        color: white;
+        background-color: $color-danger;
+    }
 }
 
 
@@ -216,13 +239,17 @@ $height-btn: 28px;
         margin: 0 auto;
         cursor: pointer;
         text-align: center;
-        font-size: 0.5rem;
+        font-size: 12px;
         display: block;
         height: math.div(( $height-btn - 2 ), 2);
         width: math.div(( $height-btn - 2 ), 2) + 6;
         line-height: math.div(( $height-btn - 2 ), 2);
-        background-color: $color-border;
-
+        border: 1px solid $color-border;
+        &:hover{
+            color: white;
+            background-color: $color-primary;
+            border-color: $color-primary;
+        }
         &:active{
             transform: translateY(2px);
         }
@@ -274,16 +301,6 @@ thead{
     }
 }
 tbody{
-    tr:hover{
-        .move i{
-            color: white;
-            background: $color-main;
-        }
-        .delete i{
-            color: white;
-            background-color: $color-danger;
-        }
-    }
     tr:nth-child(2n + 1){
         background-color: #f2f2f2;
     }

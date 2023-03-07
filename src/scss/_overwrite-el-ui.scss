@@ -5,7 +5,12 @@ input[type=number] {
 .el-input__inner{
   padding: 0 0 0 6px !important;
 }
+.el-textarea__inner{
+  padding: 5px 8px;
+}
 
 .el-table .cell {
   line-height: 18px;
 }
+
+

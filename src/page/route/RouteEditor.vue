@@ -13,9 +13,13 @@
                 ref="formLine"
                 v-if="formLine"
                 :model="formLine"
+                :rules="formLineRules"
                 size="mini"
                 label-width="100px"
             >
+                <h3 class="form-title center" v-if="isEditingLineInfo">编辑路线 {{ formLine.name }}</h3>
+                <h3 class="form-title" v-else>新建路线 {{ lineId }}</h3>
+
                 <el-form-item label="路线名" prop="name">
                     <el-input v-model="formLine.name"/>
                 </el-form-item>
@@ -50,7 +54,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="submit" type="primary">保存</el-button>
+                    <el-button @click="submit" type="primary" icon="el-icon-check">保存</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -61,10 +65,10 @@
             <div class="search-panel card">
                 <el-form inline @submit="search" size="mini">
                     <el-form-item class="mb-0" label="地址">
-                        <el-input style="width: 200px" placeholder="输入较完整的地址" v-model="address"></el-input>
+                        <el-input style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></el-input>
                     </el-form-item>
                     <el-form-item class="mb-0" label="">
-                        <el-button  type="primary" @click="search" icon="el-icon-search">搜索</el-button>
+                        <el-button type="primary" @click="search" icon="el-icon-search">搜索</el-button>
                     </el-form-item>
                 </el-form>
 
@@ -79,17 +83,18 @@
             </div>
 
             <!-- 结果面板 -->
-            <div class="result card mt-1" v-if="resultText">
-                {{resultText}}
+            <div class="result card mt-1" v-if="searchResultText">
+                {{ searchResultText }}
             </div>
 
             <route-panel
                 class="mt-1"
+                :search-location="searchAddress"
                 @pointAdd="handleAddRoutePoint"
                 @print="printRoute"
                 @showLine="showLine"
-                :lng="positionPicked.lng"
-                :lat="positionPicked.lat"
+                :lng="Number(positionPicked.lng)"
+                :lat="Number(positionPicked.lat)"
                 v-model="pathPointers"/>
         </div>
 
@@ -102,7 +107,7 @@ import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
 import RoutePanel from "@/page/tool/route/components/RoutePanel.vue";
 
-import { mapState } from 'vuex'
+import {mapState} from 'vuex'
 import mapConfig from "../../mapConfig";
 import Detail from "@/page/route/components/Detail.vue";
 import axios from "axios";
@@ -117,11 +122,14 @@ export default {
     components: {Detail, RoutePanel},
     data() {
         return {
+
             activeLineObj: null,
 
             isLoading: false,
             map: null,
-            currentRouting: null,  // 当前导航路线
+
+            currentDragRouting: null,  // 当前导航路线，拖拽导航路径对象
+
             pathPointers: [
                 /*                {
                     name: '',
@@ -135,8 +143,9 @@ export default {
                 lat: 0,
             },
 
-            address: '',  // 地址搜索关键字
-            resultText: '',
+            // SEARCH
+            searchAddress: '',  // 地址搜索关键字
+            searchResultText: '',
 
             // FORM
             formLine: { // 路线信息
@@ -149,7 +158,13 @@ export default {
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否共享
-            }
+            },
+            formLineRules: {
+                name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
+                area: [{required: true, message: '请填写地域', trigger: 'blur'},],
+                road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
+                seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
+            },
         }
     },
     mounted() {
@@ -206,9 +221,12 @@ export default {
     },
     computed: {
         ...mapState(['windowInsets']),
-        lineId(){
-            return this.$route.query.lineId
+        isEditingLineInfo() {
+            return !isNaN(Number(this.$route.query.lineId))
         },
+        lineId() {
+            return this.$route.query.lineId
+        }
     },
     methods: {
         submit() {
@@ -262,7 +280,7 @@ export default {
                 })
         },
         // 获取路线信息
-        getLineInfo(){
+        getLineInfo() {
             if (this.$route.query.lineId) {
                 routeApi
                     .detail({
@@ -280,14 +298,14 @@ export default {
                 this.$message.success('没有指定路线 ID，将不展示任何路线')
             }
         },
-        search(){
+        search() {
             const url = 'https://restapi.amap.com/v3/geocode/geo'
             axios({
                 url,
                 method: 'get',
                 params: {
                     key: mapConfig.key,
-                    address: this.address
+                    address: this.searchAddress
                 }
             })
                 .then(response => {
@@ -301,11 +319,11 @@ export default {
                         lng: Number(locationArray[0]),
                         lat: Number(locationArray[1])
                     }
-                    this.resultText = `${locationInfo.level}：${locationInfo.formatted_address}`
+                    this.searchResultText = `${locationInfo.level}：${locationInfo.formatted_address}`
                 })
         },
         // 添加新标记点和圆圈
-        handleAddRoutePoint(routePoint){
+        handleAddRoutePoint(routePoint) {
             this.pathPointers.unshift({
                 name: routePoint.name,
                 position: [this.positionPicked.lng, this.positionPicked.lat],
@@ -316,11 +334,11 @@ export default {
                 position: routePoint.position,
                 name: routePoint.name,
                 note: routePoint.note
-            })
+            }, 0)
         },
 
         // 设置地图中心点：用户坐标
-        setMapCenterToUserLocation(status, res){
+        setMapCenterToUserLocation(status, res) {
             console.log(res)
             if (status === 'complete') {
                 let center = [res.position.lng, res.position.lat]
@@ -340,15 +358,15 @@ export default {
         },
 
         // 打印 路线数据
-        printRoute(){
+        printRoute() {
             console.log(JSON.stringify([...this.pathPointers].reverse()))
         },
 
         // 展示规划的路线
-        showLine(){
+        showLine() {
             this.map.clearMap() // 删除地图上的所有标记
-            if (this.currentRouting){
-                this.currentRouting.destroy() // 删除之前的路线
+            if (this.currentDragRouting) {
+                this.currentDragRouting.destroy() // 删除之前的路线
             }
             this.loadLine(this.map, this.pathPointers)
             this.loadLineLabels(this.map, this.pathPointers)
@@ -356,13 +374,18 @@ export default {
 
         // 载入线路信息
         loadLine(map, pathPointers) {
+            // 切换线路之前如果存在路线，销毁已存在的路线
+            if (this.currentDragRouting) {
+                this.currentDragRouting.destroy()
+                this.currentDragRouting = null
+            }
             map.plugin('AMap.DragRoute', () => {
                 // path 是驾车导航的起、途径和终点，最多支持16个途经点
                 let path = []
                 pathPointers.forEach(point => {
                     path.unshift(point.position) // 之前存入的是倒序的，所以现在给正过来
                 })
-                let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
+                this.currentDragRouting = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
                     startMarkerOptions: {
                         offset: new AMap.Pixel(-13, -40),
                         icon: new AMap.Icon({ // 设置途经点的图标
@@ -384,39 +407,43 @@ export default {
                         }),
                     },
                     midMarkerOptions: {
-                        offset: new AMap.Pixel(-5, -10),
+                        offset: new AMap.Pixel(-9, -9),
                         icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(15, 15),
+                            size: new AMap.Size(30, 30),
                             image: ICON.midIcon,
                             // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(15, 15) // 指定图标的大小，可以压缩图片
+                            imageSize: new AMap.Size(18, 18) // 指定图标的大小，可以压缩图片
 
                         }),
                     },
                 })
 
-                route.on('complete', res => {
+                // 添加途经点时
+                this.currentDragRouting.on('addway', res => {
+                    if (res.lnglat){
+                        this.positionPicked = {
+                            lng: res.lnglat.lng,
+                            lat: res.lnglat.lat
+                        }
+                    }
+                })
+
+                // 路线规划完成时
+                this.currentDragRouting.on('complete', res => {
                     // 路线规划完成后，返回的路线数据：设置距离、行驶时间
                     let lineData = res.data.routes[0]
-                    let distance =  (lineData.distance / 1000).toFixed(1) // m -> km
+                    let distance = (lineData.distance / 1000).toFixed(1) // m -> km
                     let time = (lineData.time / 60).toFixed() // second -> min
                     this.activeLineObj = {
                         name: '临时路线'
                     }
                     this.$set(this.formLine, 'distance', distance)
                     this.$set(this.formLine, 'time', time)
+
                 })
 
-
-                // 切换线路之前如果存在路线，销毁已存在的路线
-                if (this.currentRouting){
-                    this.currentRouting.destroy()
-                    this.currentRouting = null
-                }
-                this.currentRouting = route
-
                 // 查询导航路径并开启拖拽导航
-                this.currentRouting.search()
+                this.currentDragRouting.search()
             })
         },
 
@@ -439,15 +466,18 @@ export default {
         }
     },
     watch: {
-        routeData(newValue){
+        routeData(newValue) {
             if (newValue.length <= 0) return
             this.map.clearMap()
+            this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
             newValue.forEach((item, index) => {
                 this.addMarker(this.map, item, this.pathPointers.paths.length - index)
             })
         }
     },
     beforeDestroy() {
+        this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
+        this.map.clearInfoWindow() // 清除地图上的信息窗体
         this.map.destroy() // 销毁地图，释放内存
         this.map = null
     }
@@ -458,29 +488,38 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../scss/plugin";
+
 .map-container {
     position: relative;
 }
-.float-panel{
+
+.float-panel {
     position: absolute;
     left: 20px;
     top: 20px;
     width: 400px;
-    .search-panel{
+
+    .search-panel {
         background-color: white;
         padding: 10px;
     }
 }
 
-.result{
+.result {
     background-color: white;
     padding: 10px;
 }
 
-.editor-form{
+.editor-form {
     position: absolute;
     right: 20px;
     top: 20px;
     width: 400px;
+}
+
+.form-title {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 </style>
