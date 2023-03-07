@@ -35,27 +35,29 @@ export default {
         }
     },
     mounted() {
-
-        AMapLoader.load({
-            key: mapConfig.appId, // 开发应用的 ID
-            version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-            plugins: [
-                'AMap.ToolBar', // 缩放按钮
-                'AMap.Scale', // 比例尺
-                'AMap.DragRoute', // 定位
-            ],
-        }).then(map => {
-            AMap = map
-            this.map = new AMap.Map('container', {
-                center: MY_POSITION,
-                zoom: 11
+        AMapLoader
+            .load({
+                key: mapConfig.appId, // 开发应用的 ID
+                version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+                plugins: [
+                    'AMap.ToolBar', // 缩放按钮
+                    'AMap.Scale', // 比例尺
+                    'AMap.DragRoute', // 定位
+                ],
             })
-            this.map.addControl(new AMap.ToolBar())
-            this.map.addControl(new AMap.Scale())
-            this.getLineInfo()
-        }).catch(e => {
-            console.log(e)
-        })
+            .then(map => {
+                AMap = map
+                this.map = new AMap.Map('container', {
+                    center: MY_POSITION,
+                    zoom: 11
+                })
+                this.map.addControl(new AMap.ToolBar())
+                this.map.addControl(new AMap.Scale())
+                this.getLineInfo()
+            })
+            .catch(e => {
+                console.log(e)
+            })
     },
 
     computed: {
@@ -63,10 +65,10 @@ export default {
     },
     methods: {
         getLineInfo(){
-            if (this.$route.query.routeId) {
+            if (this.$route.query.lineId) {
                 routeApi
                     .detail({
-                        id: this.$route.query.routeId
+                        id: this.$route.query.lineId
                     })
                     .then(res => {
                         this.activeLineObj = res.data

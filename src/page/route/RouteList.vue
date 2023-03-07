@@ -18,11 +18,17 @@
                     <el-table-column width="60" prop="id" label="id"/>
                     <el-table-column width="100" prop="name" label="路线名"/>
                     <el-table-column width="100" align="center" prop="area" label="地域"/>
-                    <el-table-column width="200" align="left" prop="road_type" label="路线类型"/>
-                    <el-table-column align="center" prop="seasons" label="适用季节"/>
-                    <el-table-column align="center" width="200" prop="video_link" label="视频链接">
+                    <el-table-column width="200" align="left" prop="road_type" label="路线类型">
                         <template slot-scope="scope">
-                            <a class="link" target="_blank" :href="scope.row.video_link">{{ scope.row.video_link }}</a>
+                            <el-tag size="mini"
+                            v-for="item in scope.row.road_type.split('，')">{{item}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="130" align="center" prop="seasons" label="适用季节"/>
+                    <el-table-column align="center" width="50" prop="video_link" label="视频">
+                        <template slot-scope="scope">
+                            <a class="link" v-if="scope.row.video_link" target="_blank" :href="scope.row.video_link"><i class="el-icon-video-camera"></i></a>
+                            <span v-else>-</span>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" prop="paths" label="路线节点">
@@ -30,7 +36,7 @@
                             <div v-if="scope.row.paths">{{ scope.row.pathArray.length }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column align="left" width="180px" prop="note" label="备注">
+                    <el-table-column align="left" width="250" prop="note" label="备注">
                         <template slot-scope="scope">
                             <i class="el-icon-minus" v-if="scope.row.note === ''"></i>
                             <el-popover v-else
@@ -39,12 +45,14 @@
                                         width="400"
                                         trigger="hover"
                                         :content="scope.row.note">
-                                <span class="table-description" slot="reference" ><i class="el-icon-tickets"></i> {{scope.row.note}}</span>
+                                <span class="table-description" slot="reference" >
+                                    <i class="el-icon-tickets"></i> {{scope.row.note}}
+                                </span>
                             </el-popover>
                         </template>
                     </el-table-column>
-                    <el-table-column sortable align="right" width="80px" prop="thumb_up" label="点赞数"/>
-                    <el-table-column sortable align="center" width="80px" prop="is_public" label="状态">
+                    <el-table-column sortable align="right" width="60px" prop="thumb_up" label="赞"/>
+                    <el-table-column align="center" width="80px" prop="is_public" label="状态">
                         <template slot-scope="scope">
                             {{ scope.row.is_public === 1 ? '共享' : '私有' }}
                         </template>
@@ -52,16 +60,16 @@
                     <el-table-column sortable align="center" width="160px" prop="date_init" label="时间">
                         <template slot-scope="scope">
                             <div>{{ scope.row.date_init }}</div>
-                            <div>{{ scope.row.date_modify }}</div>
+<!--                            <div>{{ scope.row.date_modify }}</div>-->
                         </template>
                     </el-table-column>
 
                     <el-table-column align="center" width="350px" label="操作">
                         <template slot-scope="scope">
-                            <el-button @click="showRoute(scope.row)" type="success" plain size="mini">查看</el-button>
-                            <el-button @click="goEdit(scope.row)" type="primary" plain size="mini">编辑</el-button>
-                            <el-button @click="editRouteLine(scope.row)" type="primary" plain size="mini">编辑路线</el-button>
-                            <el-button @click="goDelete(scope.row)" type="danger" plain size="mini">删除</el-button>
+                            <el-button class="btn-narrow" @click="showRoute(scope.row)" type="success" plain size="mini" icon="el-icon-position">查看</el-button>
+                            <el-button class="btn-narrow" @click="goEdit(scope.row)" type="primary" plain size="mini" icon="el-icon-edit">编辑</el-button>
+                            <el-button class="btn-narrow" @click="editRouteLine(scope.row)" type="primary" plain size="mini" icon="el-icon-place">编辑路线</el-button>
+                            <el-button class="btn-narrow" @click="goDelete(scope.row)" type="danger" plain size="mini" icon="el-icon-delete">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -102,20 +110,24 @@
                 <el-form-item label="路线类型" prop="road_type">
                     <el-input v-model="formRoute.road_type"/>
                 </el-form-item>
+                <el-form-item label="是否公开" prop="is_public">
+                    <el-radio :label="1" v-model="formRoute.is_public">公开</el-radio>
+                    <el-radio :label="0" v-model="formRoute.is_public">私有</el-radio>
+                </el-form-item>
                 <el-form-item label="适用季节" prop="seasons">
 <!--                    <el-input v-model="formRoute.seasons"/>-->
                     <el-checkbox-group v-model="formRoute.seasonsArray">
-                        <el-checkbox border label="春"></el-checkbox>
-                        <el-checkbox border label="夏"></el-checkbox>
-                        <el-checkbox border label="秋"></el-checkbox>
-                        <el-checkbox border label="冬"></el-checkbox>
+                        <el-checkbox-button label="春"></el-checkbox-button>
+                        <el-checkbox-button label="夏"></el-checkbox-button>
+                        <el-checkbox-button label="秋"></el-checkbox-button>
+                        <el-checkbox-button label="冬"></el-checkbox-button>
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="视频链接" prop="video_link">
                     <el-input v-model="formRoute.video_link"/>
                 </el-form-item>
                 <el-form-item label="路线" prop="paths">
-                    <el-input type="textarea" :rows="20" v-model="formRoute.paths"/>
+                    <el-input type="textarea" :rows="6" v-model="formRoute.paths"/>
                 </el-form-item>
                 <el-form-item label="备注" prop="note">
                     <el-input type="textarea" :rows="5" v-model="formRoute.note"/>
@@ -193,7 +205,7 @@ export default {
             this.$router.push({
                 name: "RouteEditor",
                 query: {
-                    routeId: routeInfo.id
+                    lineId: routeInfo.id
                 }
             })
         },
@@ -202,7 +214,7 @@ export default {
             this.$router.push({
                 name: "RouteLine",
                 query: {
-                    routeId: routeInfo.id
+                    lineId: routeInfo.id
                 }
             })
         },
@@ -308,7 +320,6 @@ export default {
             routeApi
                 .list(requestData)
                 .then(res => {
-                    console.log(res)
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
@@ -326,7 +337,7 @@ export default {
         },
         goEdit(routeLine) {
             this.editingRouteId = routeLine.uid
-            this.formRoute = routeLine
+            Object.assign(this.formRoute, routeLine)
             this.modalEdit = true
         },
         goDelete(route) {

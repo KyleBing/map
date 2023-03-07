@@ -10,10 +10,12 @@
 
         <div class="card editor-form">
             <el-form
+                ref="formLine"
                 v-if="formLine"
                 :model="formLine"
                 size="mini"
-                ref="lineInfo" label-width="100px">
+                label-width="100px"
+            >
                 <el-form-item label="路线名" prop="name">
                     <el-input v-model="formLine.name"/>
                 </el-form-item>
@@ -46,6 +48,9 @@
                     <el-input disabled readonly v-model="formLine.time">
                         <template slot="append">分钟</template>
                     </el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="submit" type="primary">保存</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -200,15 +205,68 @@ export default {
 
     },
     computed: {
-        ...mapState(['windowInsets'])
+        ...mapState(['windowInsets']),
+        lineId(){
+            return this.$route.query.lineId
+        },
     },
     methods: {
+        submit() {
+            this.$refs['formLine'].validate((valid) => {
+                if (valid) {
+                    if (this.editingRouteId) {
+                        this.routeModifySubmit()
+                    } else {
+                        this.routeNewSubmit()
+                    }
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            })
+        },
+        // 编辑
+        routeModifySubmit() {
+            this.formLine.paths = Base64.encode(this.formLine.paths)
+            routeApi
+                .modify(this.formLine)
+                .then(res => {
+                    this.$notify({
+                        title: res.message,
+                        position: 'top-right',
+                        type: 'success',
+                        onClose() {
+                        }
+                    })
+                    this.editingRouteId = null
+                    this.modalEdit = false
+                    this.getRouteList()
+                })
+        },
+        // 新增
+        routeNewSubmit() {
+            this.formLine.paths = Base64.encode(this.formLine.paths)
+            routeApi
+                .add(this.formLine)
+                .then(res => {
+                    this.$notify({
+                        title: res.message,
+                        position: 'top-right',
+                        type: 'success',
+                        onClose() {
+                        }
+                    })
+                    this.editingRouteId = null
+                    this.modalEdit = false
+                    this.getRouteList()
+                })
+        },
         // 获取路线信息
         getLineInfo(){
-            if (this.$route.query.routeId) {
+            if (this.$route.query.lineId) {
                 routeApi
                     .detail({
-                        id: this.$route.query.routeId
+                        id: this.$route.query.lineId
                     })
                     .then(res => {
                         this.formLine = res.data
