@@ -1,7 +1,9 @@
 const FileManagerPlugin = require('filemanager-webpack-plugin')
 const Moment = require('moment')
 
-module.exports = {
+const { defineConfig } = require('@vue/cli-service')
+module.exports = defineConfig({
+    transpileDependencies: true,
     publicPath: './',
     productionSourceMap: false, // 不产出 .map 文件
     outputDir: '../map',
@@ -46,4 +48,4 @@ module.exports = {
             config.plugins = config.plugins.concat(plugins) // 将新建的 plugin 添加到原 config 中的 plugin 中
         }
     }
-}
+})
