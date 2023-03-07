@@ -1,5 +1,9 @@
 <template>
     <div class="map-container">
+        <div class="driving-info">
+            <div class="distance">{{drivingInfo.distance}} km</div>
+            <div class="time">{{drivingInfo.time}} min</div>
+        </div>
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
         <detail v-if="activeLineObj" :line="activeLineObj"></detail>
         <!-- 在有 activeLineObj 对象之后再显示 -->
@@ -32,6 +36,12 @@ export default {
             currentLineId: 0,
             activeLineObj: null, // 当前 Line 对象
             currentDragRouting: null,  // 当前导航路线
+
+            // Driving Info
+            drivingInfo: {
+                distance: '',
+                time: ''
+            }
         }
     },
     mounted() {
@@ -152,8 +162,13 @@ export default {
                     let lineData = res.data.routes[0]
                     let distance =  (lineData.distance / 1000).toFixed(1) // m -> km
                     let time = (lineData.time / 60).toFixed() // second -> min
+
                     this.$set(this.activeLineObj, 'distance', distance)
                     this.$set(this.activeLineObj, 'time', time)
+
+                    this.$set(this.drivingInfo, 'distance', distance)
+                    this.$set(this.drivingInfo, 'time', time)
+
                 })
 
                 // 查询导航路径并开启拖拽导航
@@ -212,8 +227,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/plugin";
+
 .map-container {
     position: relative
+}
+
+.driving-info{
+    color: $text-subtitle;
+    z-index: 1000;
+    font-family: 'Impact', sans-serif;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    font-size: $fz-info;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    //background-image: linear-gradient(to top right, #ff31d1, #00ceff);
+    background-image: linear-gradient(70deg,#2ca2b4,#5598de 24%,#7f87ff 45%,#f65aad 76%,#ec3d43);
+    .distance{
+
+    }
+    .time{
+
+    }
 }
 
 </style>
