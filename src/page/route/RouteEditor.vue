@@ -8,8 +8,50 @@
             :line="activeLineObj"
         />
 
-        <div class="float-panel">
+        <div class="card editor-form">
+            <el-form
+                v-if="formLine"
+                :model="formLine"
+                size="mini"
+                ref="lineInfo" label-width="100px">
+                <el-form-item label="路线名" prop="name">
+                    <el-input v-model="formLine.name"/>
+                </el-form-item>
+                <el-form-item label="地域" prop="area">
+                    <el-input v-model="formLine.area"/>
+                </el-form-item>
+                <el-form-item label="路线类型" prop="road_type">
+                    <el-input v-model="formLine.road_type"/>
+                </el-form-item>
+                <el-form-item label="适用季节" prop="seasons">
+                    <el-checkbox-group v-model="formLine.seasonsArray">
+                        <el-checkbox-button label="春"></el-checkbox-button>
+                        <el-checkbox-button label="夏"></el-checkbox-button>
+                        <el-checkbox-button label="秋"></el-checkbox-button>
+                        <el-checkbox-button label="冬"></el-checkbox-button>
+                    </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="视频链接" prop="video_link">
+                    <el-input v-model="formLine.video_link"/>
+                </el-form-item>
+                <el-form-item label="备注" prop="note">
+                    <el-input type="textarea" :rows="5" v-model="formLine.note"/>
+                </el-form-item>
+                <el-form-item label="总里程" prop="distance">
+                    <el-input disabled readonly v-model="formLine.distance">
+                        <template slot="append">km</template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="用时" prop="time">
+                    <el-input disabled readonly v-model="formLine.time">
+                        <template slot="append">分钟</template>
+                    </el-input>
+                </el-form-item>
+            </el-form>
+        </div>
 
+
+        <div class="float-panel">
             <!-- 编辑面板 -->
             <div class="search-panel card">
                 <el-form inline @submit="search" size="mini">
@@ -76,7 +118,7 @@ export default {
             map: null,
             currentRouting: null,  // 当前导航路线
             pathPointers: [
-/*                {
+                /*                {
                     name: '',
                     position: [lng,lat]
                     note: '', // 备注
@@ -89,7 +131,20 @@ export default {
             },
 
             address: '',  // 地址搜索关键字
-            resultText: ''
+            resultText: '',
+
+            // FORM
+            formLine: { // 路线信息
+                name: '', // *路线名
+                area: '', // *地域
+                road_type: '', // *路面类型
+                seasonsArray: [], // *[适用季节]
+                video_link: '', // 路径视频演示
+                paths: [], // *路径点
+                note: '', // 备注
+                thumb_up: 0, // *点赞数
+                is_public: 1, // *是否共享
+            }
         }
     },
     mounted() {
@@ -148,6 +203,7 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
+        // 获取路线信息
         getLineInfo(){
             if (this.$route.query.routeId) {
                 routeApi
@@ -155,6 +211,8 @@ export default {
                         id: this.$route.query.routeId
                     })
                     .then(res => {
+                        this.formLine = res.data
+                        this.$set(this.formLine, 'seasonsArray', this.formLine.seasons.split('、'))
                         this.activeLineObj = res.data
                         this.pathPointers = JSON.parse(Base64.decode(this.activeLineObj.paths)).reverse()
                         this.loadLine(this.map, this.pathPointers)
@@ -287,8 +345,8 @@ export default {
                     this.activeLineObj = {
                         name: '临时路线'
                     }
-                    this.$set(this.activeLineObj, 'distance', distance)
-                    this.$set(this.activeLineObj, 'time', time)
+                    this.$set(this.formLine, 'distance', distance)
+                    this.$set(this.formLine, 'time', time)
                 })
 
 
@@ -361,4 +419,10 @@ export default {
     padding: 10px;
 }
 
+.editor-form{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 400px;
+}
 </style>
