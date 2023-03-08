@@ -19,7 +19,7 @@ export default new Vuex.Store({
             return state.windowInsets.height > state.windowInsets.width
         },
         isAdmin: state => {
-            return utility.getAuthorization().group_id === 1
+            return utility.getAuthorization() && utility.getAuthorization().group_id === 1
         },
         authorization: state => {
             return utility.getAuthorization()

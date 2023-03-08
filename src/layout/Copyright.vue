@@ -5,7 +5,7 @@
         <dl><dt>更新：</dt><dd>{{ packageInfo['date-update'] }}</dd></dl>
         <dl><dt>版本：</dt><dd>{{ packageInfo['version'] }}</dd></dl>
         <dl><dt>API：</dt><dd><a href="https://lbs.amap.com/api/javascript-api/summary/">高德地图</a></dd></dl>
-        <dl><dt>首页：</dt><dd><a href="https://kylebing.cn">kylebing.cn</a></dd></dl>
+        <dl><dd>如果页面卡死，请手动刷新</dd></dl>
     </div>
 </template>
 

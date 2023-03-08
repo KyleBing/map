@@ -189,7 +189,7 @@ const routes = [
     },
     {
         name: 'Login', path: '/login',
-        meta: {title: '登录', showInMenu: true, icon: 'el-icon-user-solid',},
+        meta: {title: '登录', showInMenu: false, icon: 'el-icon-user-solid',},
         component: Login,
     },
     {

@@ -55,7 +55,8 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button v-if="isAdmin" @click="submit" type="primary" icon="el-icon-check">保存</el-button>
+                    <el-button v-if="authorization" @click="submit" type="primary" icon="el-icon-check">保存</el-button>
+                    <el-button v-else @click="$router.push({name: 'Login'})" type="primary" icon="el-icon-user">请先登录</el-button>
                 </el-form-item>
             </el-form>
         </div>

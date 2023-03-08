@@ -11,6 +11,7 @@
                         感谢您使用{{ productName }}，请将疑问和建议发送邮件至
                         <a :href="`mailto:${email}`">{{ email }}</a>
                     </p>
+                    <p>我的主页： <a :href="`mailto:${homepage}`">{{ homepage }}</a></p>
                 </div>
             </div>
         </div>
@@ -25,7 +26,8 @@ export default {
         return {
             copName: '我的后台系统',
             email: packageInfo.author.email,
-            animatedBg: null
+            animatedBg: null,
+            homepage: packageInfo.author.homepage
         }
     },
     mounted() {

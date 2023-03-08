@@ -4,7 +4,7 @@
             <el-form size="small" inline>
                 <el-form-item>
                     <el-button type="success" @click="addNewRoute" icon="el-icon-plus">添加</el-button>
-                    <el-button type="success" @click="addNewRouteWidthMap" icon="el-icon-plus">地图添加</el-button>
+                    <el-button type="success" @click="addNewRouteWidthMap" icon="el-icon-plus">从地图添加</el-button>
                 </el-form-item>
                 <el-form-item label="关键字" class="ml-4">
                     <el-input clearable placeholder="检索词条、编码、注释" v-model="formSearch.keyword"></el-input>
@@ -83,13 +83,13 @@
                         <template slot-scope="scope">
                             <el-button class="btn-narrow" @click="showRoute(scope.row)" type="text" plain size="mini" icon="el-icon-position">查看</el-button>
                             <el-button class="btn-narrow"
-                                        v-if="isAdmin || authorization.uid === scope.row.uid"
+                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
                                        @click="goEdit(scope.row)" type="text" plain size="mini" icon="el-icon-edit">编辑</el-button>
                             <el-button class="btn-narrow"
-                                        v-if="isAdmin || authorization.uid === scope.row.uid"
+                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
                                        @click="editRouteLine(scope.row)" type="text" plain size="mini" icon="el-icon-place">编辑路线</el-button>
                             <el-button class="btn-narrow"
-                                        v-if="isAdmin || authorization.uid === scope.row.uid"
+                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
                                        @click="goDelete(scope.row)" type="text" plain size="mini" icon="el-icon-delete">删除</el-button>
                         </template>
                     </el-table-column>
