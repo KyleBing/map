@@ -11,10 +11,10 @@
                 :model="formLogin"
                 :rules="loginRules"
                 ref="login" label-width="0">
-                <el-form-item label="" class="mb-3" prop="email">
+                <el-form-item label="" prop="email">
                     <el-input autocomplete="off" placeholder="邮箱" v-model="formLogin.email"/>
                 </el-form-item>
-                <el-form-item label="" class="mb-5" prop="password">
+                <el-form-item label="" prop="password">
                     <el-input type="password" autocomplete="off" @keydown.enter.native="submit" placeholder="密码" v-model="formLogin.password"/>
                 </el-form-item>
                 <el-form-item align="center">
@@ -31,7 +31,7 @@
 <script>
 import {mapMutations, mapState} from "vuex"
 import userApi from "@/api/userApi";
-import {AnimatedCanvasBG} from "animate-bg-canvas"
+import {AnimateHeartCanvas} from "animate-heart-canvas";
 
 export default {
     name: "Login",
@@ -131,7 +131,7 @@ export default {
 
 .login-panel{
     z-index: 10;
-    background-color: transparentize(white, 0.8);
+    background-color: transparentize(white, 0.9);
     @include backdrop-filter(saturate(110%) blur(5px));
     padding: 30px 50px;
     @include border-radius(15px);
