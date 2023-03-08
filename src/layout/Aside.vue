@@ -27,7 +27,7 @@ export default {
             heightAside: 0,
             heightNavbar: 0,
             heightLogo: 100,
-            heightCopyright: 120
+            heightCopyright: 150
         }
     },
     created() {

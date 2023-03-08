@@ -1,6 +1,9 @@
 <template>
     <div class="copyright" :style="`height: ${height}px`">
+
+        <dl v-if="authorization.nickname"><dt>用户：</dt><dd>{{ authorization.nickname }}<span @click="logout" class="btn-logout">退出</span></dd></dl>
         <dl><dt>更新：</dt><dd>{{ packageInfo['date-update'] }}</dd></dl>
+        <dl><dt>版本：</dt><dd>{{ packageInfo['version'] }}</dd></dl>
         <dl><dt>API：</dt><dd><a href="https://lbs.amap.com/api/javascript-api/summary/">高德地图</a></dd></dl>
         <dl><dt>首页：</dt><dd><a href="https://kylebing.cn">kylebing.cn</a></dd></dl>
     </div>
@@ -8,6 +11,7 @@
 
 <script>
 import packageInfo from "@/../package.json"
+import {mapGetters} from "vuex";
 
 export default {
     name: "Copyright",
@@ -22,6 +26,16 @@ export default {
             packageInfo: packageInfo
         }
     },
+    methods: {
+        logout(){
+            this.$router.push({
+                name: 'Logout'
+            })
+        }
+    },
+    computed: {
+        ...mapGetters(['authorization'])
+    }
 
 }
 </script>
@@ -42,6 +56,14 @@ export default {
         justify-content: space-between;
         dd{
         }
+    }
+}
+.btn-logout{
+    text-decoration: underline;
+    margin-left: 10px;
+    @extend .btn-like;
+    &:hover{
+        color: $color-main;
     }
 }
 a{
