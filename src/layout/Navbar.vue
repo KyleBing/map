@@ -58,8 +58,6 @@ export default {
     },
     created() {
         this.activeMenu = this.$route.path
-        const isAdmin = utility.getAuthorization().email === 'kylebing@163.com'
-
         // 过滤 Router 中的路由，去除 showInMenu === false 的菜单
         let submenuShow = router.routes.filter(submenu => {
             if (submenu.meta.showInMenu){
@@ -88,7 +86,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['isInPortraitMode']),
+        ...mapGetters(['isInPortraitMode', 'isAdmin']),
         ...mapState(['navMenuIsClosed'])
     },
     methods: {

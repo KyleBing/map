@@ -1,7 +1,7 @@
 <template>
     <div class="copyright" :style="`height: ${height}px`">
 
-        <dl v-if="authorization.nickname"><dt>用户：</dt><dd>{{ authorization.nickname }}<span @click="logout" class="btn-logout">退出</span></dd></dl>
+        <dl v-if="authorization && authorization.nickname"><dt>用户：</dt><dd>{{ authorization.nickname }}<span @click="logout" class="btn-logout">退出</span></dd></dl>
         <dl><dt>更新：</dt><dd>{{ packageInfo['date-update'] }}</dd></dl>
         <dl><dt>版本：</dt><dd>{{ packageInfo['version'] }}</dd></dl>
         <dl><dt>API：</dt><dd><a href="https://lbs.amap.com/api/javascript-api/summary/">高德地图</a></dd></dl>

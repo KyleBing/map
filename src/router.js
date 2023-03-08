@@ -205,24 +205,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    if (to.name !== 'Login') {
-        if (utility.getAuthorization() && utility.getAuthorization().email) {
-            const isAdmin = utility.getAuthorization().email === 'kylebing@163.com'
-            if (isAdmin) {
-                next()
-            } else {
-                if (to.meta.isAdmin) {
-                    Message.warning('没有权限')
-                } else {
-                    next()
-                }
-            }
-        } else {
-            next({name: 'Login'})
-        }
-    } else {
-        next()
-    }
+    next()
 })
 
 export default {
