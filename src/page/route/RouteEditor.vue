@@ -122,7 +122,6 @@ export default {
     components: {Detail, RoutePanel},
     data() {
         return {
-
             activeLineObj: null,
 
             isLoading: false,
@@ -298,8 +297,6 @@ export default {
                         this.loadLine(this.map, this.pathPointers)
                         this.loadLineLabels(this.map, this.pathPointers)
                     })
-            } else {
-                this.$message.success('没有指定路线 ID，将不展示任何路线')
             }
         },
         search() {

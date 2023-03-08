@@ -75,11 +75,19 @@
   user-select: none;
 }
 
-
-
-.link{
-  &:hover{
-
+.btn-like{
+  cursor: pointer;
+  @extend .unselectable;
+  &:active{
+    @include transform(translateY(2px))
   }
+}
+
+.card{
+  padding: 6px 8px;
+  overflow: hidden;
+  background-color: white;
+  @include border-radius(8px);
+  @include box-shadow(1px 1px 3px rgba(0,0,0,0.2));
 }
 

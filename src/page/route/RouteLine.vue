@@ -1,12 +1,22 @@
 <template>
     <div class="map-container">
+
+        <!-- 左上角路线导航 -->
         <div class="driving-info">
-            <div class="distance">{{drivingInfo.distance}} km</div>
-            <div class="time">{{drivingInfo.time}} min</div>
+            <div v-if="drivingInfo.distance" class="distance">{{drivingInfo.distance}} km</div>
+            <div v-if=drivingInfo.time class="time">{{drivingInfo.time}} min</div>
         </div>
+
+        <!-- 路线列表 -->
+        <route-line-list
+            @choseLine="changeLine"
+            :route-line-list="routeLineList"/>
+
+        <!-- 地图 -->
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+
+        <!-- DETAIL INFO -->
         <detail v-if="activeLineObj" :line="activeLineObj"></detail>
-        <!-- 在有 activeLineObj 对象之后再显示 -->
     </div>
 </template>
 
@@ -21,13 +31,15 @@ import mapConfig from "../../mapConfig";
 import routeApi from "@/api/routeApi";
 
 import {Base64} from "js-base64"
+import utility from "@/utility";
+import RouteLineList from "@/page/route/components/RouteLineList";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 
 export default {
     name: "RouteLine",
-    components: {Detail},
+    components: {RouteLineList, Detail},
     data() {
         return {
             isLoading: false,
@@ -41,10 +53,19 @@ export default {
             drivingInfo: {
                 distance: '',
                 time: ''
-            }
+            },
+
+            routeLineList: [], // 路线数组
+            // pager
+            pager: {
+                pageSize: 30,
+                pageNo: 1,
+                total: 0
+            },
         }
     },
     mounted() {
+        this.getRouteList()
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID
@@ -63,7 +84,9 @@ export default {
                 })
                 this.map.addControl(new AMap.ToolBar())
                 this.map.addControl(new AMap.Scale())
-                this.getLineInfo()
+                if (this.$route.query.lineId) {
+                    this.getLineInfo(this.$route.query.lineId)
+                }
             })
             .catch(e => {
                 console.log(e)
@@ -74,21 +97,55 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
-        getLineInfo() {
-            if (this.$route.query.lineId) {
-                routeApi
-                    .detail({
-                        id: this.$route.query.lineId
-                    })
-                    .then(res => {
-                        this.activeLineObj = res.data
-                        this.activeLineObj.pathArray = JSON.parse(Base64.decode(this.activeLineObj.paths))
-                        this.loadLine(this.map, this.activeLineObj)
-                        this.loadLineLabels(this.map, this.activeLineObj)
-                    })
-            } else {
-                this.$message.success('没有指定路线 ID，将不展示任何路线')
+        // 获取路线列表
+        getRouteList() {
+            this.isLoading = true
+            let requestData = {
+                pageNo: this.pager.pageNo,
+                pageSize: this.pager.pageSize
             }
+            routeApi
+                .list(requestData)
+                .then(res => {
+                    this.isLoading = false
+                    this.pager = res.data.pager
+                    this.routeLineList = res.data.list.map(item => {
+                        item.paths = Base64.decode(item.paths) || ''
+
+                        item.pathArray = item.paths && JSON.parse(item.paths)
+                        item.seasonsArray = item.seasons.split('、')
+                        item.date_init = utility.dateFormatter(new Date(item.date_init))
+                        item.date_modify = utility.dateFormatter(new Date(item.date_modify))
+                        return item
+                    })
+                })
+                .catch(err => {
+                    this.isLoading = false
+                })
+        },
+
+        // change line
+        changeLine(lineId){
+
+            this.$router.push({
+                name: 'RouteLine',
+                query: {
+                    lineId
+                }
+            })
+        },
+
+        getLineInfo(lineId) {
+            routeApi
+                .detail({
+                    id: lineId
+                })
+                .then(res => {
+                    this.activeLineObj = res.data
+                    this.activeLineObj.pathArray = JSON.parse(Base64.decode(this.activeLineObj.paths))
+                    this.loadLine(this.map, this.activeLineObj)
+                    this.loadLineLabels(this.map, this.activeLineObj)
+                })
         },
 
         // 设置地图中心点：用户坐标
@@ -196,24 +253,11 @@ export default {
 
     },
     watch: {
-        '$route'(to, from) {
-            if (this.currentDragRouting) {
-                this.currentDragRouting.destroy() // 清除当前路线
-                this.currentDragRouting = null
-                this.map.clearMap() // 删除所有 Marker
-                this.map.clearInfoWindow() // 清除地图上的信息窗体
-            }
-            this.loadLine(this.map, this.activeLineObj)
-            this.loadLineLabels(this.map, this.activeLineObj)
-        },
         '$route.query.lineId'(newValue){
-            if (this.currentDragRouting) {
-                this.currentDragRouting.destroy() // 清除当前路线
-                this.currentDragRouting = null
-                this.map.clearMap() // 删除所有 Marker
-                this.map.clearInfoWindow() // 清除地图上的信息窗体
-            }
-            this.getLineInfo()
+            this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
+            this.map.clearInfoWindow() // 清除地图上的信息窗体
+            this.map.clearMap() // 删除所有 Marker
+            this.getLineInfo(newValue)
         }
     },
     beforeDestroy() {

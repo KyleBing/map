@@ -184,7 +184,7 @@ const routes = [
     },
     {
         name: 'Logout', path: '/logout',
-        meta: {title: '退出登录', showInMenu: true, icon: 'el-icon-user-solid',},
+        meta: {title: '退出登录', showInMenu: false, icon: 'el-icon-user-solid',},
         component: Logout,
     },
     {

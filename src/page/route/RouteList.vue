@@ -1,7 +1,20 @@
 <template>
     <div class="route-list p-2">
         <div class="tool-bar mb-2">
-            <el-button v-if="isAdmin" size="small" type="success" @click="addNewRoute" icon="el-icon-plus">添加</el-button>
+            <el-form size="small" inline>
+                <el-form-item>
+                    <el-button type="success" @click="addNewRoute" icon="el-icon-plus">添加</el-button>
+                </el-form-item>
+                <el-form-item label="关键字" class="ml-4">
+                    <el-input clearable placeholder="检索词条、编码、注释" v-model="formSearch.keyword"></el-input>
+                </el-form-item>
+                <el-form-item label="添加时间区间">
+                    <el-date-picker type="datetimerange" v-model="formSearch.dateRange"></el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="search" icon="el-icon-search">查询</el-button>
+                </el-form-item>
+            </el-form>
         </div>
 
         <el-row :gutter="10">
@@ -89,7 +102,6 @@
             </el-col>
         </el-row>
 
-
         <!-- 编辑窗口-->
         <el-dialog
             :title="modalTitle"
@@ -138,13 +150,9 @@
                 <el-button size="small" type="primary" @click="submit">{{ editingRouteId ? '修改' : '添加' }}</el-button>
             </div>
         </el-dialog>
-
     </div>
-
 </template>
-
 <script>
-
 import utility from "@/utility";
 import {mapState} from "vuex";
 import routeApi from "@/api/routeApi";
@@ -188,6 +196,12 @@ export default {
                 pageNo: 1,
                 total: 0
             },
+
+
+            formSearch: {
+                keyword: '',
+                dateRange: []
+            }
         }
     },
     mounted() {
@@ -200,6 +214,9 @@ export default {
         }
     },
     methods: {
+        search(){
+            this.getRouteList()
+        },
         editRouteLine(routeInfo){
             this.$router.push({
                 name: "RouteEditor",
@@ -314,7 +331,9 @@ export default {
             this.isLoading = true
             let requestData = {
                 pageNo: this.pager.pageNo,
-                pageSize: this.pager.pageSize
+                pageSize: this.pager.pageSize,
+                keyword: this.formSearch.keyword,
+                dateRange: this.formSearch.dateRange
             }
             routeApi
                 .list(requestData)

@@ -12,8 +12,11 @@ $gray             : #8E8E93;
 //ELEMTENT COLORS
 $color-main       : $magenta;
 $border-color-nav: transparentize($color-main, 0.8);
-
+$border-light: #f2f2f2;
 $fz-info: 40px;
+$fz-normal: 13px;
+
+$bg-active: transparentize($color-main, 0.9);
 
 $color-primary    : #409EFF;
 $color-success    : #67C23A;
@@ -24,6 +27,7 @@ $color-info       : #909399;
 $color-border: #eee;
 
 $text-main      : #333;
+$text-description: #666;
 $text-subtitle  : #848484;
 
 // USER CENTER
@@ -36,3 +40,6 @@ $gradient-purple  : $purple, darken($purple, 15%);
 $gradient-magenta : $magenta, darken($magenta, 15%);
 $gradient-yellow  : $yellow, darken($yellow, 15%);
 $gradient-time    : #79C1F0, #7E87EF;
+
+
+$radius: 5px;
