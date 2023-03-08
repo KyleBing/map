@@ -40,7 +40,7 @@ export default {
             ]
         }
     },
-    created() {
+    mounted() {
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID

@@ -6,7 +6,7 @@
 
 <script>
 import AMapLoader from '@amap/amap-jsapi-loader'
-import { mapState } from 'vuex'
+import {mapState} from 'vuex'
 import mapConfig from "../../../mapConfig";
 
 // 显示地图行政区的深度
@@ -26,12 +26,12 @@ export default {
             isLoading: false,
             map: null,
             circleData: [
-/*                {
-                    name: '',
-                    center: [lng,lat]
-                    radius: 2.4, // 半径
-                    color: '#000000' //
-                },*/
+                /*                {
+                                    name: '',
+                                    center: [lng,lat]
+                                    radius: 2.4, // 半径
+                                    color: '#000000' //
+                                },*/
             ], // 对应点的范围数据
 
             positionPicked: {
@@ -54,75 +54,77 @@ export default {
                 '370105': {color: 'rgba(242,242,218,0.8)', name: "天桥区"},
             },
             markers: [
-                {"name": "平阴县" , "position": [116.375526, 36.190518], "note": "370124"},
-                {"name": "商河县" , "position": [117.201343, 37.319686], "note": "370126"},
-                {"name": "济阳区" , "position": [117.085361, 37.002617], "note": "370115"},
-                {"name": "钢城区" , "position": [117.825907, 36.127458], "note": "370117"},
-                {"name": "莱芜区" , "position": [117.617702, 36.344708], "note": "370116"},
-                {"name": "章丘区" , "position": [117.517144, 36.706865], "note": "370114"},
-                {"name": "历城区" , "position": [117.250039, 36.639125], "note": "370112"},
+                {"name": "平阴县", "position": [116.375526, 36.190518], "note": "370124"},
+                {"name": "商河县", "position": [117.201343, 37.319686], "note": "370126"},
+                {"name": "济阳区", "position": [117.085361, 37.002617], "note": "370115"},
+                {"name": "钢城区", "position": [117.825907, 36.127458], "note": "370117"},
+                {"name": "莱芜区", "position": [117.617702, 36.344708], "note": "370116"},
+                {"name": "章丘区", "position": [117.517144, 36.706865], "note": "370114"},
+                {"name": "历城区", "position": [117.250039, 36.639125], "note": "370112"},
                 {"name": " 市中区", "position": [116.953408, 36.586214], "note": "370103"},
-                {"name": "长清区" , "position": [116.775567, 36.434444], "note": "370113"},
-                {"name": "槐荫区" , "position": [116.885431, 36.683741], "note": "370104"},
-                {"name": "历下区" , "position": [117.099664, 36.657856], "note": "370102"},
-                {"name": "天桥区" , "position": [116.985681, 36.769594], "note": "370105"},
+                {"name": "长清区", "position": [116.775567, 36.434444], "note": "370113"},
+                {"name": "槐荫区", "position": [116.885431, 36.683741], "note": "370104"},
+                {"name": "历下区", "position": [117.099664, 36.657856], "note": "370102"},
+                {"name": "天桥区", "position": [116.985681, 36.769594], "note": "370105"},
             ]
         }
     },
-    created() {
-        AMapLoader.load({
-            key: mapConfig.appId, // 开发应用的 ID
-            version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-            plugins: [
-                // 'AMap.ToolBar', // 缩放按钮
-                'AMap.Scale', // 比例尺
-                'AMap.Geolocation', // 定位
-                'AMap.DistrictLayer', // 定位
-            ],
-            AMapUI: {             // 是否加载 AMapUI，缺省不加载
-                version: '1.1',   // AMapUI 缺省 1.1
-                plugins: [],       // 需要加载的 AMapUI ui插件
-            },
-        }).then(map => {
-            AMap = map
-            this.map = new AMap.Map('container', {
-                center:  [117.129533, 36.685668],
-                zoom: 9, // 缩放级别
-                mapStyle: 'amap://styles/whitesmoke'
+    mounted() {
+        AMapLoader
+            .load({
+                key: mapConfig.appId, // 开发应用的 ID
+                version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+                plugins: [
+                    // 'AMap.ToolBar', // 缩放按钮
+                    'AMap.Scale', // 比例尺
+                    'AMap.Geolocation', // 定位
+                    'AMap.DistrictLayer', // 定位
+                ],
+                AMapUI: {             // 是否加载 AMapUI，缺省不加载
+                    version: '1.1',   // AMapUI 缺省 1.1
+                    plugins: [],       // 需要加载的 AMapUI ui插件
+                },
             })
+            .then(map => {
+                AMap = map
+                this.map = new AMap.Map('container', {
+                    center: [117.129533, 36.685668],
+                    zoom: 9, // 缩放级别
+                    mapStyle: 'amap://styles/whitesmoke'
+                })
 
-            this.map.setFeatures(['bg', 'point', 'road', 'building'])
-            // bg 区域面
-            // point 兴趣点
-            // road 道路和道路标记
-            // building 建筑物
+                this.map.setFeatures(['bg', 'point', 'road', 'building'])
+                // bg 区域面
+                // point 兴趣点
+                // road 道路和道路标记
+                // building 建筑物
 
-            // this.map.addControl(new AMap.ToolBar())
-            this.map.addControl(new AMap.Scale())
+                // this.map.addControl(new AMap.ToolBar())
+                this.map.addControl(new AMap.Scale())
 
-            // 定位
-            let geolocation = new AMap.Geolocation({
-                // 是否使用高精度定位，默认：true
-                enableHighAccuracy: true,
-                // 设置定位超时时间，默认：无穷大
-                timeout: 10000,
-                // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
-                buttonOffset: new AMap.Pixel(10, 20),
-                //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-                zoomToAccuracy: true,
-                //  定位按钮的排放位置,  RB表示右下
-                buttonPosition: 'RB'
-            })
+                // 定位
+                let geolocation = new AMap.Geolocation({
+                    // 是否使用高精度定位，默认：true
+                    enableHighAccuracy: true,
+                    // 设置定位超时时间，默认：无穷大
+                    timeout: 10000,
+                    // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+                    buttonOffset: new AMap.Pixel(10, 20),
+                    //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                    zoomToAccuracy: true,
+                    //  定位按钮的排放位置,  RB表示右下
+                    buttonPosition: 'RB'
+                })
 
-            geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
+                geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
 
-            let CodeShandong = 370000
-            this.initPro(CodeShandong, DEPTH.country)
-            this.markers.forEach(item => {
-                this.addMarker(this.map, item)
-            })
+                let CodeShandong = 370000
+                this.initPro(CodeShandong, DEPTH.country)
+                this.markers.forEach(item => {
+                    this.addMarker(this.map, item)
+                })
 
-        }).catch(e => {
+            }).catch(e => {
             console.log(e)
         })
 
@@ -147,7 +149,7 @@ export default {
                         // adcode_cit
                         // adcode
                         if (properties.adcode_cit.toString().indexOf('370100') === 0) {
-                            let {NAME_CHN, adcode, x,y} = properties
+                            let {NAME_CHN, adcode, x, y} = properties
                             // console.log(`{name: ${NAME_CHN}, adcode: ${adcode}, position: [${x},${y}]}`)
                             return this.colors[adcode].color
                         }
@@ -162,7 +164,7 @@ export default {
         },
 
         // 设置地图中心点：用户坐标
-        setMapCenterToUserLocation(status, res){
+        setMapCenterToUserLocation(status, res) {
             if (status === 'complete') {
                 let center = [res.position.lng, res.position.lat]
                 this.map.setCenter(center)
@@ -179,7 +181,7 @@ export default {
         addMarker(map, item) {
             let marker = new AMap.Marker({
                 position: item.position,
-                offset: new AMap.Pixel(-10,-20),
+                offset: new AMap.Pixel(-10, -20),
                 content: `
                <div class="marker">
                   <div class="title">${item.name}</div>
@@ -200,6 +202,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../../scss/plugin";
+
 .map-container {
     position: relative;
 }

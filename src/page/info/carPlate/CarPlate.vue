@@ -20,7 +20,7 @@ let AMap = null
 
 
 export default {
-    name: "InfoPlate",
+    name: "CarPlate",
     data() {
         return {
             isLoading: false,
@@ -64,7 +64,7 @@ export default {
 
         }
     },
-    created() {
+    mounted() {
         AMapLoader.load({
             key: mapConfig.appId, // 开发应用的 ID
             version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15

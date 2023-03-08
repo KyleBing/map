@@ -136,7 +136,7 @@ const routes = [
             {
                 name: 'InfoPlate', path: 'plate',
                 meta: {title: '山东各市车牌', showInMenu: true},
-                component: resolve => require(['@/page/info/plate/InfoPlate'], resolve),
+                component: resolve => require(['@/page/info/carPlate/CarPlate.vue'], resolve),
             },
             {
                 name: 'InfoArea', path: 'area',
