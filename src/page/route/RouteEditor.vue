@@ -55,7 +55,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="submit" type="primary" icon="el-icon-check">保存</el-button>
+                    <el-button v-if="isAdmin" @click="submit" type="primary" icon="el-icon-check">保存</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -107,7 +107,7 @@ import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
 import RoutePanel from "@/page/tool/route/components/RoutePanel.vue";
 
-import {mapState} from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 import mapConfig from "../../mapConfig";
 import Detail from "@/page/route/components/Detail.vue";
 import axios from "axios";
@@ -156,7 +156,7 @@ export default {
                 paths: [], // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
-                is_public: 1, // *是否共享
+                is_public: 1, // *是否公开
             },
             formLineRules: {
                 name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
@@ -219,7 +219,8 @@ export default {
 
     },
     computed: {
-        ...mapState(['windowInsets']),
+        ...mapGetters(["isAdmin", 'authorization']),
+        ...mapState(["windowInsets"]),
         isEditingLineInfo() {
             return !isNaN(Number(this.$route.query.lineId))
         },
@@ -473,6 +474,9 @@ export default {
             newValue.forEach((item, index) => {
                 this.addMarker(this.map, item, this.pathPointers.paths.length - index)
             })
+        },
+        'formLine.seasonsArray'(newValue){
+            this.formLine.seasons = newValue.join('、')
         }
     },
     beforeDestroy() {

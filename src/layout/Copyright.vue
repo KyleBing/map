@@ -10,6 +10,7 @@
 import packageInfo from "@/../package.json"
 
 export default {
+    name: "Copyright",
     props: {
         height: { // 高度
             type: Number,
@@ -21,7 +22,7 @@ export default {
             packageInfo: packageInfo
         }
     },
-    name: "Copyright"
+
 }
 </script>
 

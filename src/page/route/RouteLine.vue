@@ -26,7 +26,7 @@ import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
 import ICON from "@/assets/icons"
 import Detail from "./components/Detail"
-import {mapState} from "vuex"
+import {mapGetters, mapState} from "vuex"
 import mapConfig from "../../mapConfig";
 import routeApi from "@/api/routeApi";
 
@@ -94,6 +94,7 @@ export default {
     },
 
     computed: {
+        ...mapGetters(["isAdmin", 'authorization']),
         ...mapState(['windowInsets'])
     },
     methods: {

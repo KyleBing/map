@@ -1,5 +1,6 @@
 import Vue from "vue"
 import Vuex from 'vuex'
+import utility from "@/utility";
 
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -16,6 +17,12 @@ export default new Vuex.Store({
     getters: {
         isInPortraitMode: state => {
             return state.windowInsets.height > state.windowInsets.width
+        },
+        isAdmin: state => {
+            return utility.getAuthorization().group_id === 1
+        },
+        authorization: state => {
+            return utility.getAuthorization()
         }
     },
     mutations: {

@@ -27,13 +27,14 @@
             <div class="note" v-if="line.note && line.note.length > 0">
                 <p v-for="line in line.note.split('\n')">{{line}}</p>
             </div>
-            <div class="button-center">
+            <div class="button-center"
+                 v-if="isAdmin || authorization.uid === line.uid"
+            >
                 <el-button
                     type="text" size="mini"
                     @click="goToEditCurrentLine"
                     icon="el-icon-edit-outline">编辑</el-button>
             </div>
-
         </div>
     </div>
 </template>
@@ -54,21 +55,19 @@ export default {
         }
     },
     computed:{
-        ...mapGetters(['isInPortraitMode']),
+        ...mapGetters(['isInPortraitMode', 'isAdmin', 'authorization']),
     },
     methods: {
         toggleContent(){
             this.showContent = !this.showContent
         },
         goToEditCurrentLine(){
-            if (Number(this.line.id) !== Number(this.$route.query.lineId)){
-                this.$router.push({
-                    name: 'RouteEditor',
-                    query: {
-                        lineId: this.line.id
-                    }
-                })
-            }
+            this.$router.push({
+                name: 'RouteEditor',
+                query: {
+                    lineId: this.line.id
+                }
+            })
         }
     }
 }

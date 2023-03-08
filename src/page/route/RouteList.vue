@@ -4,6 +4,7 @@
             <el-form size="small" inline>
                 <el-form-item>
                     <el-button type="success" @click="addNewRoute" icon="el-icon-plus">添加</el-button>
+                    <el-button type="success" @click="addNewRouteWidthMap" icon="el-icon-plus">地图添加</el-button>
                 </el-form-item>
                 <el-form-item label="关键字" class="ml-4">
                     <el-input clearable placeholder="检索词条、编码、注释" v-model="formSearch.keyword"></el-input>
@@ -67,9 +68,10 @@
                     <el-table-column sortable align="right" width="60px" prop="thumb_up" label="赞"/>
                     <el-table-column align="center" width="80px" prop="is_public" label="状态">
                         <template slot-scope="scope">
-                            {{ scope.row.is_public === 1 ? '共享' : '私有' }}
+                            {{ scope.row.is_public === 1 ? '公开' : '私有' }}
                         </template>
                     </el-table-column>
+                    <el-table-column sortable align="right" width="60px" prop="thumb_up" label="赞"/>
                     <el-table-column sortable align="center" width="160px" prop="date_init" label="时间">
                         <template slot-scope="scope">
                             <div>{{ scope.row.date_init }}</div>
@@ -80,9 +82,15 @@
                     <el-table-column align="center" width="350px" label="操作">
                         <template slot-scope="scope">
                             <el-button class="btn-narrow" @click="showRoute(scope.row)" type="text" plain size="mini" icon="el-icon-position">查看</el-button>
-                            <el-button class="btn-narrow" @click="goEdit(scope.row)" type="text" plain size="mini" icon="el-icon-edit">编辑</el-button>
-                            <el-button class="btn-narrow" @click="editRouteLine(scope.row)" type="text" plain size="mini" icon="el-icon-place">编辑路线</el-button>
-                            <el-button class="btn-narrow" @click="goDelete(scope.row)" type="text" plain size="mini" icon="el-icon-delete">删除</el-button>
+                            <el-button class="btn-narrow"
+                                        v-if="isAdmin || authorization.uid === scope.row.uid"
+                                       @click="goEdit(scope.row)" type="text" plain size="mini" icon="el-icon-edit">编辑</el-button>
+                            <el-button class="btn-narrow"
+                                        v-if="isAdmin || authorization.uid === scope.row.uid"
+                                       @click="editRouteLine(scope.row)" type="text" plain size="mini" icon="el-icon-place">编辑路线</el-button>
+                            <el-button class="btn-narrow"
+                                        v-if="isAdmin || authorization.uid === scope.row.uid"
+                                       @click="goDelete(scope.row)" type="text" plain size="mini" icon="el-icon-delete">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -154,7 +162,7 @@
 </template>
 <script>
 import utility from "@/utility";
-import {mapState} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64"
 
@@ -168,7 +176,6 @@ export default {
 
             tableData: [],
             modalEdit: false, // modal show or not
-            isAdmin: false, // is administrator
             groupOptions: [
                 {id: 1, name: '管理员'},
                 {id: 2, name: '普通路线'},
@@ -182,7 +189,7 @@ export default {
                 paths: [], // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
-                is_public: 1, // *是否共享
+                is_public: 1, // *是否公开
             },
             routeRules: {
                 name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
@@ -206,7 +213,6 @@ export default {
     },
     mounted() {
         this.getRouteList()
-        this.isAdmin = this.$utility.getAuthorization().email === 'kylebing@163.com'
     },
     watch: {
         'formRoute.seasonsArray'(newValue){
@@ -234,6 +240,12 @@ export default {
                 }
             })
         },
+        // route to line editor
+        addNewRouteWidthMap(){
+            this.$router.push({
+                name: 'RouteEditor'
+            })
+        },
         addNewRoute() {
             this.modalEdit = true
             this.editingRouteId = null
@@ -249,7 +261,7 @@ export default {
                 paths: '', // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
-                is_public: 1, // *是否共享
+                is_public: 1, // *是否公开
             }
         },
         closeModal(done) {
@@ -344,7 +356,7 @@ export default {
                         item.paths = Base64.decode(item.paths) || ''
 
                         item.pathArray = item.paths && JSON.parse(item.paths)
-                        item.seasonsArray = item.seasons.split('、')
+                        item.seasonsArray = item.seasons.split('、').filter(item => item !== '')
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
@@ -383,6 +395,7 @@ export default {
         }
     },
     computed: {
+        ...mapGetters(["isAdmin", 'authorization']),
         ...mapState(['windowInsets']),
         modalTitle() {
             return this.editingRouteId ? '编辑路线' : '新增路线'

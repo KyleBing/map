@@ -71,7 +71,7 @@ export default {
             padding: 0 10px;
             text-align: right;
             color: $text-description;
-            width: 50px;
+            width: 70px;
         }
         .name{
             padding-left: 10px;
