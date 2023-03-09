@@ -9,7 +9,7 @@ const LOADING_OPTION = {
     background: "rgba(0, 0, 0, 0.7)"
 }
 
-const BASE_URL = process.env.NODE_ENV === 'development' ? '': '../portal/' // 生产环境时是 ../portal
+const BASE_URL = process.env.NODE_ENV === 'development' ? '': '../../portal/' // 生产环境时是 ../portal
 
 
 function request(method, params, requestData, showLoading = false, cancelToken, url) {
