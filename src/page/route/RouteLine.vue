@@ -79,7 +79,8 @@ export default {
                 plugins: [
                     'AMap.ToolBar', // 缩放按钮
                     'AMap.Scale', // 比例尺
-                    'AMap.DragRoute', // 定位
+                    'AMap.DragRoute', // 拖拽路线
+                    'AMap.Driving', // 导航
                 ],
             })
             .then(map => {
@@ -109,7 +110,12 @@ export default {
             let originLnglat = this.activeLineObj.pathArray[0].position // [lng, lat]
             let destLnglat = this.activeLineObj.pathArray[this.activeLineObj.pathArray.length - 1].position // [lng, lat]
             this.map.plugin('AMap.Driving', () => {
-                let currentDriving = new AMap.Driving(this.map,)
+                this.currentDragRouting.destroy()
+                this.map.clear()
+                let currentDriving = new AMap.Driving({
+                    map: this.map,
+                    policy: AMap.DrivingPolicy.LEAST_TIME
+                })
                 currentDriving.search(
                     new AMap.LngLat(...originLnglat),
                     new AMap.LngLat(...destLnglat),
