@@ -1,7 +1,9 @@
 <template>
     <div class="map-container">
 
-        <div class="float-panel">
+        <div class="float-panel"
+             v-if="!isInPortraitMode"
+        >
             <!-- 左上角路线导航 -->
             <driving-info v-if="drivingInfo" :driving-info="drivingInfo"/>
 
@@ -15,7 +17,11 @@
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
 
         <!-- DETAIL INFO -->
-        <detail v-if="activeLineObj" :line="activeLineObj"></detail>
+        <detail
+            v-if="activeLineObj"
+            :line="activeLineObj"
+            @openInGaodeApp="openInGaodeApp"
+        ></detail>
     </div>
 </template>
 
@@ -94,10 +100,37 @@ export default {
     },
 
     computed: {
-        ...mapGetters(["isAdmin", 'authorization']),
-        ...mapState(['windowInsets'])
+        ...mapGetters(["isAdmin", 'authorization', 'isInPortraitMode']),
+        ...mapState(['windowInsets']),
     },
     methods: {
+
+        openInGaodeApp(){
+            let originLnglat = this.activeLineObj.pathArray[0].position // [lng, lat]
+            let destLnglat = this.activeLineObj.pathArray[this.activeLineObj.pathArray.length - 1].position // [lng, lat]
+            this.map.plugin('AMap.Driving', () => {
+                let currentDriving = new AMap.Driving(this.map,)
+                currentDriving.search(
+                    new AMap.LngLat(...originLnglat),
+                    new AMap.LngLat(...destLnglat),
+                    function (status, result) {
+                        // result 即是对应的驾车导航信息，相关数据结构文档请参考
+                        // https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
+                        if (status === 'complete') {
+                            currentDriving.searchOnAMAP({
+                                origin:result.origin,
+                                destination:result.destination
+                            });
+                            console.log(status, result)
+                            console.log('绘制驾车路线完成')
+                        } else {
+                            console.log('获取驾车数据失败')
+                        }
+                    });
+            })
+
+        },
+
         // 获取路线列表
         getRouteList() {
             this.isLoading = true

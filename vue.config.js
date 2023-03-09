@@ -53,17 +53,17 @@ module.exports = defineConfig({
      */
     pwa: {
         name: '路书', // 名字
-        themeColor: "white", // 背景颜色
+        themeColor: "#ffffff", // 背景颜色
         appleMobileWebAppCapable: true, // 苹果 WebApp 支持
 
         // manifest 设置
         manifestOptions: {
             name: '路书',
             short_name: "路书",
-            theme_color: "white",
+            theme_color: "#ffffff",
             start_url: "./index.html",
             display: "standalone",
-            background_color: "white",
+            background_color: "#ffffff",
             icons: [
                 {
                     src: "logo.svg",

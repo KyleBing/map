@@ -28,12 +28,23 @@
                 <p v-for="line in line.note.split('\n')">{{line}}</p>
             </div>
             <div class="button-center"
-                 v-if="isAdmin || authorization.uid === line.uid"
+                 v-if="isAdmin || (authorization && authorization.uid) === line.uid"
             >
                 <el-button
                     type="text" size="mini"
                     @click="goToEditCurrentLine"
                     icon="el-icon-edit-outline">编辑</el-button>
+            </div>
+            <div class="button-center">
+                <el-button
+                    type="text" size="mini"
+                    @click="$emit('openInGaodeApp')"
+                    icon="el-icon-edit-outline">打开高德导航</el-button>
+            </div>
+
+            <div class="qr">
+                <img :src="qrImg" alt="">
+                <p>扫一扫，打开该页面</p>
             </div>
         </div>
     </div>
@@ -41,7 +52,7 @@
 
 <script>
 import {mapGetters} from "vuex";
-
+import QRCode from "./qr.js"
 export default {
     name: "Detail",
     props:{
@@ -51,8 +62,13 @@ export default {
     },
     data(){
         return {
-            showContent: true
+            showContent: true,
+            qrImg: ''
         }
+    },
+    mounted() {
+        this.qrImg = QRCode.generatePNG(window.location.href)
+
     },
     computed:{
         ...mapGetters(['isInPortraitMode', 'isAdmin', 'authorization']),
@@ -177,6 +193,21 @@ i{
     border-top: 1px solid $color-border;
     line-height: 1.5;
     color: $text-main;
+}
+
+.qr{
+    flex-flow: column nowrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 15px;
+    img{
+        display: block;
+        width: 120px;
+    }
+    p{
+        font-size: $fz-small;
+    }
 }
 
 </style>
