@@ -47,5 +47,48 @@ module.exports = defineConfig({
             )
             config.plugins = config.plugins.concat(plugins) // 将新建的 plugin 添加到原 config 中的 plugin 中
         }
+    },
+    /**
+     * PWA 设置
+     */
+    pwa: {
+        name: '路书', // 名字
+        themeColor: "white", // 背景颜色
+        appleMobileWebAppCapable: true, // 苹果 WebApp 支持
+
+        // manifest 设置
+        manifestOptions: {
+            name: '路书',
+            short_name: "路书",
+            theme_color: "white",
+            start_url: "./index.html",
+            display: "standalone",
+            background_color: "white",
+            icons: [
+                {
+                    src: "logo.svg",
+                    sizes: "512x512",
+                    type: "image/svg+xml",
+                    purpose: "any",
+                },
+                {
+                    src: "appicon-apple.png",
+                    sizes: "512x512",
+                    type: "image/png",
+                    purpose: "any",
+                },
+            ],
+        },
+
+        // 图标
+        iconPaths: {
+            // 这里是项目外的路径，对应 public 目录
+            faviconSVG: 'logo.svg',
+            favicon32: 'favicon.png',
+            favicon16: 'favicon.png',
+            appleTouchIcon: 'appicon-apple.png',
+            maskIcon: null,
+            msTileImage: null
+        }
     }
 })
