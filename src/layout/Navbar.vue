@@ -5,7 +5,7 @@
             @select="handleMenu"
             @open="handleOpen"
             @close="handleClose"
-            :unique-opened="true"
+            :unique-opened="false"
             :collapse="navMenuIsClosed"
             :collapse-transition="false"
         >
@@ -22,6 +22,7 @@
                         :index="`${submenu.path}/${menuItem.path}`">{{ menuItem.meta.title }}
                     </el-menu-item>
                 </el-submenu>
+
                 <!-- 显示所有名不为 CategoryLink 的-->
                 <el-menu-item
                     v-else-if="submenu.name !== 'CategoryLink'"

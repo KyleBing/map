@@ -1,5 +1,15 @@
 <template>
     <div class="map-container">
+        <el-dialog
+            center
+            title="提示"
+            :visible.sync="modalTip"
+            width="400px">
+            <p>如果界面卡死，不要大惊小怪，刷新页面即可</p>
+            <div slot="footer" class="dialog-footer">
+                <el-button size="small" type="primary" @click="checkTip">OK</el-button>
+            </div>
+        </el-dialog>
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
     </div>
 </template>
@@ -28,14 +38,17 @@ export default {
             currentLineId: 0,
             activeLineObj: null, // 当前 Line 对象
             currentRouting: null,  // 当前导航路线
+            modalTip: false,
         }
     },
     mounted() {
+        this.modalTip = !localStorage.getItem('map-has-checked-tip')
+
         AMapLoader.load({
             key: mapConfig.appId, // 开发应用的 ID
             version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
             plugins: [],
-            Loca:{
+            Loca: {
                 version: '2.0.0',
             },
             AMapUI: {             // 是否加载 AMapUI，缺省不加载
@@ -56,33 +69,33 @@ export default {
 
             this.loca = new Loca.Container({
                 map: this.map,
-/*                ambLight: {
-                    intensity: 2.2,
-                    color: '#babedc',
-                },
-                dirLight: {
-                    intensity: 0.46,
-                    color: '#d4d4d4',
-                    target: [0, 0, 0],
-                    position: [0, -1, 1],
-                },
-                pointLight: {
-                    color: 'rgb(15,19,40)',
-                    position: [MY_POSITION[0], MY_POSITION[1], 2600],
-                    intensity: 25,
-                    // 距离表示从光源到光照强度为 0 的位置，0 就是光不会消失。
-                    distance: 3900,
-                }*/
+                /*                ambLight: {
+                                    intensity: 2.2,
+                                    color: '#babedc',
+                                },
+                                dirLight: {
+                                    intensity: 0.46,
+                                    color: '#d4d4d4',
+                                    target: [0, 0, 0],
+                                    position: [0, -1, 1],
+                                },
+                                pointLight: {
+                                    color: 'rgb(15,19,40)',
+                                    position: [MY_POSITION[0], MY_POSITION[1], 2600],
+                                    intensity: 25,
+                                    // 距离表示从光源到光照强度为 0 的位置，0 就是光不会消失。
+                                    distance: 3900,
+                                }*/
             })
 
 
             this.loca.viewControl.addAnimates([{
-/*                center: {
-                    value: POSITION.quanChengGuangChang, // 动画终点的经纬度
-                    control: [POSITION.quanChengGuangChangEast, POSITION.quanChengGuangChang], // 过渡中的轨迹控制点，地图上的经纬度
-                    timing: [0.42, 0, 0.4, 1], // 动画时间控制点
-                    duration: 2000, // 过渡时间，毫秒（ms）
-                },*/
+                /*                center: {
+                                    value: POSITION.quanChengGuangChang, // 动画终点的经纬度
+                                    control: [POSITION.quanChengGuangChangEast, POSITION.quanChengGuangChang], // 过渡中的轨迹控制点，地图上的经纬度
+                                    timing: [0.42, 0, 0.4, 1], // 动画时间控制点
+                                    duration: 2000, // 过渡时间，毫秒（ms）
+                                },*/
                 // 俯仰角动画
                 pitch: {
                     value: 45, // 动画终点的俯仰角度
@@ -90,13 +103,13 @@ export default {
                     timing: [0.5, 0.2, 0.5, 0.8], // 这个值是线性过渡
                     duration: 8000,
                 },
-/*                // 缩放等级动画
-                zoom: {
-                    value: 18, // 动画终点的地图缩放等级
-                    control: [[0, 17], [1, 18]], // 控制器，x是0～1的起始区间，y是zoom值
-                    timing: [0, 0, 1, 1],
-                    duration: 8000,
-                },*/
+                /*                // 缩放等级动画
+                                zoom: {
+                                    value: 18, // 动画终点的地图缩放等级
+                                    control: [[0, 17], [1, 18]], // 控制器，x是0～1的起始区间，y是zoom值
+                                    timing: [0, 0, 1, 1],
+                                    duration: 8000,
+                                },*/
                 // 旋转动画
                 rotation: {
                     value: 90, // 动画终点的地图旋转角度
@@ -104,7 +117,7 @@ export default {
                     timing: [0, 0, 1, 1],
                     duration: 8000,
                 }
-            }],()=>{
+            }], () => {
                 this.loca.viewControl.addAnimates([{
                     center: {
                         value: POSITION.quanChengGuangChang, // 动画终点的经纬度
@@ -113,7 +126,7 @@ export default {
                         duration: 8000, // 过渡时间，毫秒（ms）
                     },
 
-                }],()=>{
+                }], () => {
                     this.loca.viewControl.addAnimates([{
                         center: {
                             value: POSITION.daMingHu, // 动画终点的经纬度
@@ -133,9 +146,9 @@ export default {
 
             })
 
-            this.map.on('complete', ()=> {
-                setTimeout(()=>{
-                this.loca.animate.start()
+            this.map.on('complete', () => {
+                setTimeout(() => {
+                    this.loca.animate.start()
                 }, 2000); // 给地图一个加载的时间
             })
 
@@ -148,6 +161,10 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
+        checkTip(){
+            localStorage.setItem('map-has-checked-tip', 'true')
+            this.modalTip = false
+        },
 
         resizeMap() {
             let mapContainer = document.getElementById('container')
@@ -222,7 +239,7 @@ export default {
 
     },
     watch: {
-        '$route'(to, from){
+        '$route'(to, from) {
             if (this.currentRouting) {
                 this.currentRouting.destroy() // 清除当前路线
                 this.map.clearMap() // 删除所有 Marker
