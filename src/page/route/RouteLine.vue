@@ -1,16 +1,15 @@
 <template>
     <div class="map-container">
 
-        <!-- 左上角路线导航 -->
-        <div class="driving-info">
-            <div v-if="drivingInfo.distance" class="distance">{{drivingInfo.distance}} km</div>
-            <div v-if=drivingInfo.time class="time">{{drivingInfo.time}} min</div>
-        </div>
+        <div class="float-panel">
+            <!-- 左上角路线导航 -->
+            <driving-info v-if="drivingInfo" :driving-info="drivingInfo"/>
 
-        <!-- 路线列表 -->
-        <route-line-list
-            @choseLine="changeLine"
-            :route-line-list="routeLineList"/>
+            <!-- 路线列表 -->
+            <route-line-list
+                @choseLine="changeLine"
+                :route-line-list="routeLineList"/>
+        </div>
 
         <!-- 地图 -->
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
@@ -33,13 +32,14 @@ import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64"
 import utility from "@/utility";
 import RouteLineList from "@/page/route/components/RouteLineList";
+import DrivingInfo from "@/page/route/components/DrivingInfo";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 
 export default {
     name: "RouteLine",
-    components: {RouteLineList, Detail},
+    components: {DrivingInfo, RouteLineList, Detail},
     data() {
         return {
             isLoading: false,
@@ -278,25 +278,12 @@ export default {
     position: relative
 }
 
-.driving-info{
-    color: $text-subtitle;
-    z-index: 1000;
-    font-family: 'Impact', sans-serif;
+.float-panel{
     position: absolute;
-    left: 20px;
+    z-index: 1000;
     top: 20px;
-    font-size: $fz-info;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    //background-image: linear-gradient(to top right, #ff31d1, #00ceff);
-    background-image: linear-gradient(70deg,#2ca2b4,#5598de 24%,#7f87ff 45%,#f65aad 76%,#ec3d43);
-    .distance{
-
-    }
-    .time{
-
-    }
+    left: 20px;
 }
+
 
 </style>

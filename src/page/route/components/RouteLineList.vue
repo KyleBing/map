@@ -43,10 +43,6 @@ export default {
 
 .route-line-list{
     @extend .card;
-    position: absolute;
-    z-index: 1000;
-    top: 20px;
-    left: 20px;
     padding: 10px 0;
     @include border-radius($radius);
     overflow: hidden;
