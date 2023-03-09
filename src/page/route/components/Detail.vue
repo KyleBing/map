@@ -35,12 +35,12 @@
                     @click="goToEditCurrentLine"
                     icon="el-icon-edit-outline">编辑</el-button>
             </div>
-            <div class="button-center">
+<!--            <div class="button-center">
                 <el-button
                     type="text" size="mini"
                     @click="$emit('openInGaodeApp')"
                     icon="el-icon-position">打开高德导航</el-button>
-            </div>
+            </div>-->
 
             <div class="qr">
                 <img :src="qrImg" alt="">

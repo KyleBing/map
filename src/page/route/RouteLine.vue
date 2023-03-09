@@ -110,8 +110,6 @@ export default {
             let originLnglat = this.activeLineObj.pathArray[0].position // [lng, lat]
             let destLnglat = this.activeLineObj.pathArray[this.activeLineObj.pathArray.length - 1].position // [lng, lat]
             this.map.plugin('AMap.Driving', () => {
-                this.currentDragRouting.destroy()
-                this.map.clear()
                 let currentDriving = new AMap.Driving({
                     map: this.map,
                     policy: AMap.DrivingPolicy.LEAST_TIME
