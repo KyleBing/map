@@ -5,7 +5,7 @@
             title="提示"
             :visible.sync="modalTip"
             width="400px">
-            <p>如果界面卡死，不要大惊小怪，刷新页面即可</p>
+            <p>如果界面卡死，稍安勿躁，刷新页面即可</p>
             <div slot="footer" class="dialog-footer">
                 <el-button size="small" type="primary" @click="checkTip">OK</el-button>
             </div>
