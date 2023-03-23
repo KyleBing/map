@@ -341,5 +341,10 @@ export default {
     left: 20px;
 }
 
+@media (max-width: 500px) {
+    .float-panel{
+        position: relative;
+    }
+}
 
 </style>

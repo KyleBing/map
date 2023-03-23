@@ -1,6 +1,5 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
 
         <detail
             class="detail-panel mt-1"
@@ -9,7 +8,7 @@
         />
 
         <!-- 路线信息编辑面板-->
-        <div class="card editor-form">
+        <div class="card editor-panel">
             <el-form
                 ref="formLine"
                 v-if="formLine"
@@ -98,6 +97,9 @@
                 :lat="Number(positionPicked.lat)"
                 v-model="pathPointers"/>
         </div>
+
+
+        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
 
     </div>
 </template>
@@ -514,6 +516,7 @@ export default {
 <style lang="scss" scoped>
 @import "../../scss/plugin";
 
+
 .map-container {
     position: relative;
 }
@@ -523,6 +526,7 @@ export default {
     left: 20px;
     top: 20px;
     width: 400px;
+    z-index: 100;
 
     .search-panel {
         background-color: white;
@@ -535,7 +539,8 @@ export default {
     padding: 10px;
 }
 
-.editor-form {
+.editor-panel {
+    z-index: 100;
     position: absolute;
     right: 20px;
     top: 20px;
@@ -546,5 +551,24 @@ export default {
     margin-top: 10px;
     margin-bottom: 20px;
     text-align: center;
+}
+
+@media (max-width: 500px) {
+    .float-panel{
+        left: auto;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        position: relative;
+    }
+    .editor-panel{
+        left: auto;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        position: relative;
+    }
 }
 </style>

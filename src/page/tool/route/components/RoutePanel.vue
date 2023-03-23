@@ -425,4 +425,9 @@ tbody{
     }
 }
 
+@media (max-width: 500px) {
+    .circle-panel{
+        width: 100%;
+    }
+}
 </style>
