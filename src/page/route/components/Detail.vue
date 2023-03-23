@@ -1,12 +1,12 @@
 <template>
-    <div :class="['detail', 'card', {'closed': !showContent}, {'center': isInPortraitMode}]"
-         v-if="isShowingMenuToggleBtn">
+    <div :class="['detail', 'card', {'closed': !showContent}, {'center': isInPortraitMode}]">
         <div class="title">
             <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i>
             </h1>
             <a v-if="line.video_link" target="_blank" class="video-link" :href="line.video_link"><i class="el-icon-video-camera"></i></a>
         </div>
+
         <div class="content" v-if="showContent">
             <div class="info-list">
                 <div class="info" v-if="line.area">
@@ -18,12 +18,12 @@
                 <div class="info" v-if="line.seasons">
                     <p class="info-title">推荐季节</p><p class="info-value">{{line.seasons}}</p>
                 </div>
-<!--                <div v-if="line.distance" class="info">-->
-<!--                    <p class="info-title">距离/时间</p><p class="info-value">{{line.distance}} km</p>-->
-<!--                </div>-->
-<!--                <div v-if="line.time" class="info">-->
-<!--                    <p class="info-title">行驶时间</p><p class="info-value">{{line.time}} min</p>-->
-<!--                </div>-->
+                <div v-if="line.distance" class="info">
+                    <p class="info-title">距离/时间</p><p class="info-value">{{line.distance}} km</p>
+                </div>
+                <div v-if="line.time" class="info">
+                    <p class="info-title">行驶时间</p><p class="info-value">{{line.time}} min</p>
+                </div>
             </div>
             <div class="note" v-if="line.note && line.note.length > 0">
                 <p v-for="line in line.note.split('\n')">{{line}}</p>
@@ -54,12 +54,17 @@
 <script>
 import {mapGetters, mapState} from "vuex";
 import QRCode from "./qr.js"
+import DrivingInfo from "@/page/route/components/DrivingInfo.vue";
 export default {
     name: "Detail",
+    components: {DrivingInfo},
     props:{
         line:{
             type: Object
         },
+        drivingInfo: {
+            type: Object
+        }
     },
     data(){
         return {

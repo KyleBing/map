@@ -1,6 +1,6 @@
 <template>
     <div class="route-list p-2">
-        <div class="tool-bar mb-2">
+        <div class="tool-bar mb-2" v-if="!isInPortraitMode">
             <el-form size="small" inline>
                 <el-form-item>
                     <el-button type="success" @click="addNewRoute" icon="el-icon-plus">添加</el-button>
@@ -214,6 +214,13 @@ export default {
     mounted() {
         this.getRouteList()
     },
+    computed: {
+        ...mapGetters(["isAdmin", 'isInPortraitMode']),
+        ...mapState(['windowInsets','authorization']),
+        modalTitle() {
+            return this.editingRouteId ? '编辑路线' : '新增路线'
+        }
+    },
     watch: {
         'formRoute.seasonsArray'(newValue){
             this.formRoute.seasons = newValue.join('、')
@@ -394,13 +401,7 @@ export default {
             })
         }
     },
-    computed: {
-        ...mapGetters(["isAdmin"]),
-        ...mapState(['windowInsets','authorization']),
-        modalTitle() {
-            return this.editingRouteId ? '编辑路线' : '新增路线'
-        }
-    }
+
 }
 </script>
 

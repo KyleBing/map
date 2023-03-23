@@ -3,13 +3,12 @@
 
         <div class="button-float btn-router-list"
              @click="isRouteListShowed = true"
-             v-if="!isRouteListShowed && isShowingMenuToggleBtn">
+             v-if="!isRouteListShowed">
             <i class="el-icon-tickets"></i>
         </div>
 
-        <div class="float-route-list-panel" v-if="isRouteListShowed && isShowingMenuToggleBtn">
+        <div class="float-route-list-panel" v-if="isRouteListShowed">
             <!-- 左上角路线导航信息 -->
-            <driving-info  v-if="drivingInfo && !isInPortraitMode" :driving-info="drivingInfo"/>
 
             <!-- 路线列表 -->
             <route-line-list
@@ -24,6 +23,7 @@
         <detail
             v-if="activeLineObj && !isRouteListShowed"
             :line="activeLineObj"
+            :drivingInfo="drivingInfo"
             @openInGaodeApp="openInGaodeApp"
         />
     </div>
@@ -340,8 +340,8 @@ export default {
 
 .btn-router-list{
     position: fixed;
-    top: 10px;
-    right: 10px;
+    top: 20px;
+    right: 280px;
 }
 
 .map-container {
@@ -352,13 +352,16 @@ export default {
     position: absolute;
     z-index: 1000;
     top: 20px;
-    left: 20px;
+    right: 20px;
 }
 
 @media (max-width: $screen-width-threshold) {
     .float-route-list-panel{
         left: auto;
-        right: 20px;
+    }
+    .btn-router-list{
+        top: 10px;
+        right: 10px;
     }
 }
 
