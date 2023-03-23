@@ -7,7 +7,7 @@
             <i class="el-icon-tickets"></i>
         </div>
 
-        <div class="float-route-list-panel" v-if="isRouteListShowed">
+        <div class="float-route-list-panel" v-if="isRouteListShowed && isShowingMenuToggleBtn">
             <!-- 左上角路线导航信息 -->
             <driving-info  v-if="drivingInfo && !isInPortraitMode" :driving-info="drivingInfo"/>
 
@@ -109,7 +109,7 @@ export default {
 
     computed: {
         ...mapGetters(["isAdmin", 'isInPortraitMode']),
-        ...mapState(['windowInsets', 'authorization']),
+        ...mapState(['windowInsets', 'authorization', 'isShowingMenuToggleBtn']),
     },
     methods: {
 
