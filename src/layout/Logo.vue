@@ -19,13 +19,17 @@ export default {
     },
     name: "Logo",
     computed: {
-        ...mapState(['navWidth', 'navMenuIsClosed'])
+        ...mapState(['navWidth', 'navMenuIsClosed', 'isShowingMenuToggleBtn'])
     },
     methods: {
-        ...mapMutations(['SET_NAV_WIDTH', 'SET_NAV_MENU_STATUS']),
+        ...mapMutations(['SET_NAV_WIDTH', 'SET_NAV_MENU_STATUS', 'SET_IS_SHOWING_MENU_TOGGLE_BTN']),
         handleCollapseToggle() {
-            this.SET_NAV_MENU_STATUS(!this.navMenuIsClosed)
-            this.SET_NAV_WIDTH(this.navMenuIsClosed ? 64 : 200)
+            if (innerHeight < innerWidth){
+                this.SET_NAV_MENU_STATUS(!this.navMenuIsClosed)
+                this.SET_NAV_WIDTH(this.navMenuIsClosed ? 64 : 200)
+            } else {
+                this.SET_IS_SHOWING_MENU_TOGGLE_BTN(!this.isShowingMenuToggleBtn)
+            }
         },
     }
 }

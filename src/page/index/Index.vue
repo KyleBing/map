@@ -4,12 +4,13 @@
             center
             title="提示"
             :visible.sync="modalTip"
-            width="400px">
+            width="50%">
             <p>如果界面卡死，稍安勿躁，刷新页面即可</p>
             <div slot="footer" class="dialog-footer">
                 <el-button size="small" type="primary" @click="checkTip">OK</el-button>
             </div>
         </el-dialog>
+
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
     </div>
 </template>

@@ -1,5 +1,7 @@
 <template>
-    <el-aside :class="{mobile: isInPortraitMode}" :style="`min-height: ${heightAside}px`" :width="`${navWidth}px`">
+    <el-aside :class="{mobile: isInPortraitMode}"
+              :style="`min-height: ${heightAside}px`"
+              :width="`${navWidth}px`">
        <div class="navbar">
            <logo :height="heightLogo"></logo>
            <navbar class="side-menu" :height="heightNavbar"/>
@@ -68,7 +70,7 @@ $border-color: #ddd;
         top: 0;
         left: 0;
         width: 100% !important;
-        padding: 25px;
+        padding: 40px;
         background-color: transparent;
         .navbar{
             //border: 1px solid $border-color;
