@@ -196,7 +196,7 @@ $height-btn: 28px;
         height: math.div(($height-btn - 2), 2);
         width: math.div(($height-btn - 2), 2) + 6;
         line-height: math.div(($height-btn - 2), 2);
-        background-color: $color-border;
+        background-color: $border-normal;
 
         &:hover{
             color: white;
@@ -229,7 +229,7 @@ $height-btn: 28px;
 }
 
 .toolbar{
-    border-top: 1px solid $color-border;
+    border-top: 1px solid $border-normal;
     padding: 6px;
 }
 
@@ -241,7 +241,7 @@ thead{
         font-size: 0.8rem;
         color: $text-main;
         padding: 8px 2px 3px 5px;
-        border-bottom: 1px solid $color-border;
+        border-bottom: 1px solid $border-normal;
         &:last-child, &:first-child {
             text-align: center;
         }

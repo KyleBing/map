@@ -553,7 +553,7 @@ export default {
     text-align: center;
 }
 
-@media (max-width: 500px) {
+@media (max-width: $screen-width-threshold) {
     .float-panel{
         left: auto;
         top: auto;

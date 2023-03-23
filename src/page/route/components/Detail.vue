@@ -108,7 +108,7 @@ i{
         padding: 10px 0 15px;
         font-size: 1rem;
         color: $text-main;
-        border-bottom: 1px solid $color-border;
+        border-bottom: 1px solid $border-normal;
         .video-link{
             display: block;
             position: absolute;
@@ -146,7 +146,6 @@ i{
     }
     &.center{
         left: 50%;
-        top: 20px;
         transform: translateX(-50%);
     }
 }
@@ -186,12 +185,12 @@ i{
         bottom: 50%;
         left: 0;
         content: '';
-        border-bottom: 1px dashed $color-border;
+        border-bottom: 1px dashed $border-normal;
     }
 }
 .note{
     padding: 10px 20px;
-    border-top: 1px solid $color-border;
+    border-top: 1px solid $border-normal;
     line-height: 1.5;
     color: $text-main;
 }
@@ -211,4 +210,11 @@ i{
     }
 }
 
+@media (max-width: $screen-width-threshold) {
+    .detail{
+        &.center{
+            top: 10px;
+        }
+    }
+}
 </style>

@@ -72,7 +72,6 @@ export default {
     padding: 0;
 }
 
-$height-menu-btn: 40px;
 .menu-btn {
     @include box-shadow(1px 1px 3px rgba(0, 0, 0, 0.1));
     background-color: white;
@@ -81,8 +80,8 @@ $height-menu-btn: 40px;
     position: fixed;
     top: 10px;
     left: 10px;
-    height: $height-menu-btn;
-    width: $height-menu-btn;
+    height: $width-float-btn;
+    width: $width-float-btn;
     @include border-radius(100px);
     z-index: 999;
 

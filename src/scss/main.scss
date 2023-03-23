@@ -136,7 +136,7 @@ body{
 .menu-item{
     @extend .unselectable;
     cursor: pointer;
-    border-bottom: 1px solid $color-border;
+    border-bottom: 1px solid $border-normal;
     padding: 5px 10px 5px 30px;
     &:last-child{
         border: none;
@@ -176,6 +176,24 @@ body{
 @keyframes focus {
     from {outline-width: 5px;}
     to {outline-width: 0;}
+}
+
+.button-float{
+    z-index: 1000;
+    background-color: white;
+    width: $width-float-btn;
+    font-size: 25px;
+    line-height: $width-float-btn;
+    text-align: center;
+    height: $width-float-btn;
+    @include border-radius($width-float-btn);
+    border: 1px solid $border-normal;
+    @extend .btn-like;
+    &:hover{
+        border-color: $color-primary;
+        color: $color-primary;
+        @include box-shadow(1px 2px 2px transparentize(black, 0.8))
+    }
 }
 
 

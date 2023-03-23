@@ -27,7 +27,7 @@ $color-warning    : #E6A23C;
 $color-danger     : #F56C6C;
 $color-info       : #909399;
 
-$color-border: #eee;
+$border-normal: #eee;
 
 $text-main      : #333;
 $text-description: #666;
@@ -46,3 +46,8 @@ $gradient-time    : #79C1F0, #7E87EF;
 
 
 $radius: 5px;
+
+
+$screen-width-threshold: 500px;
+
+$width-float-btn: 45px; // 悬浮的按钮宽度

@@ -355,7 +355,7 @@ $height-btn: 28px;
         height: math.div(( $height-btn - 2 ), 2);
         width: math.div(( $height-btn - 2 ), 2) + 6;
         line-height: math.div(( $height-btn - 2 ), 2);
-        border: 1px solid $color-border;
+        border: 1px solid $border-normal;
         &:hover{
             color: white;
             background-color: $color-primary;
@@ -389,7 +389,7 @@ $height-btn: 28px;
 }
 
 .toolbar{
-    border-top: 1px solid $color-border;
+    border-top: 1px solid $border-normal;
     padding: 6px;
 }
 
@@ -401,7 +401,7 @@ thead{
         font-size: 0.8rem;
         color: $text-main;
         padding: 8px 2px 3px 5px;
-        border-bottom: 1px solid $color-border;
+        border-bottom: 1px solid $border-normal;
         &:last-child, &:first-child {
             text-align: center;
         }
@@ -425,7 +425,7 @@ tbody{
     }
 }
 
-@media (max-width: 500px) {
+@media (max-width: $screen-width-threshold) {
     .circle-panel{
         width: 100%;
     }

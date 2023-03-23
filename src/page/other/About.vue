@@ -43,7 +43,7 @@ export default {
 
 $text-about: #666;
 .bg {
-    background-color: $color-border;
+    background-color: $border-normal;
 }
 
 .product-logo {
