@@ -296,7 +296,7 @@ export default {
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                   <div class="view">
                       <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix }">
-                        <img src="${item.img + '-' + mapConfig.thumbnail600_suffix}" alt="view">
+                        <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
                       </a>
                   </div>
                </div>`,

@@ -409,8 +409,5 @@ export default {
 .table-description{
     white-space: nowrap;
 }
-td{
-    white-space: nowrap;
-}
 
 </style>
