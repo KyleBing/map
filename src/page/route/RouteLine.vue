@@ -3,14 +3,12 @@
 
         <div class="button-float btn-router-list"
              @click="isRouteListShowed = true"
-             v-if="!isRouteListShowed">
+             v-if="!isRouteListShowed && isInPortraitMode">
             <i class="el-icon-tickets"></i>
         </div>
 
+        <!-- 路线列表 -->
         <div class="float-route-list-panel" v-if="isRouteListShowed">
-            <!-- 左上角路线导航信息 -->
-
-            <!-- 路线列表 -->
             <route-line-list
                 @choseLine="changeLine"
                 :route-line-list="routeLineList"/>
@@ -21,7 +19,7 @@
 
         <!-- DETAIL INFO -->
         <detail
-            v-if="activeLineObj && !isRouteListShowed"
+            v-if="activeLineObj && (!isInPortraitMode || !isRouteListShowed)"
             :line="activeLineObj"
             :drivingInfo="drivingInfo"
             @openInGaodeApp="openInGaodeApp"
@@ -178,7 +176,9 @@ export default {
                     lineId
                 }
             })
-            this.isRouteListShowed = false
+            if (innerWidth < 500){
+                this.isRouteListShowed = false
+            }
         },
 
         getLineInfo(lineId) {
@@ -339,9 +339,9 @@ export default {
 @import "../../scss/plugin";
 
 .btn-router-list{
-    position: fixed;
+    position: absolute;
     top: 20px;
-    right: 280px;
+    left: 280px;
 }
 
 .map-container {
@@ -352,14 +352,16 @@ export default {
     position: absolute;
     z-index: 1000;
     top: 20px;
-    right: 20px;
+    left: 20px;
 }
 
 @media (max-width: $screen-width-threshold) {
     .float-route-list-panel{
-        left: auto;
+        left: 50%;
+        transform: translateX(-50%);
     }
     .btn-router-list{
+        left: auto;
         top: 10px;
         right: 10px;
     }
