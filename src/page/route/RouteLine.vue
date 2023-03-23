@@ -4,7 +4,7 @@
         <div class="float-panel"
              v-if="!isInPortraitMode"
         >
-            <!-- 左上角路线导航 -->
+            <!-- 左上角路线导航信息 -->
             <driving-info v-if="drivingInfo" :driving-info="drivingInfo"/>
 
             <!-- 路线列表 -->
@@ -287,7 +287,7 @@ export default {
                   <div class="title">${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                   <div class="view">
-                      <a target="_blank" href="${item.img}">
+                      <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix }">
                         <img src="${item.img + '-' + mapConfig.thumbnail600_suffix}" alt="view">
                       </a>
                   </div>

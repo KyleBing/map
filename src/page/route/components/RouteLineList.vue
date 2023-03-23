@@ -47,7 +47,7 @@ export default {
     @include border-radius($radius);
     overflow: hidden;
     background-color: white;
-    width: 250px;
+    width: 200px;
     .route-line-list-item{
         &:last-child{
             border-bottom: none;
@@ -67,7 +67,7 @@ export default {
             padding: 0 10px;
             text-align: right;
             color: $text-description;
-            width: 70px;
+            width: 50px;
         }
         .name{
             padding-left: 10px;
