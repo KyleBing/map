@@ -3,7 +3,7 @@
 
         <div class="button-float btn-router-list"
              @click="isRouteListShowed = true"
-             v-if="!isRouteListShowed">
+             v-if="!isRouteListShowed && isShowingMenuToggleBtn">
             <i class="el-icon-tickets"></i>
         </div>
 

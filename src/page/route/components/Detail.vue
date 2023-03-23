@@ -1,5 +1,6 @@
 <template>
-    <div :class="['detail', 'card', {'closed': !showContent}, {'center': isInPortraitMode}]">
+    <div :class="['detail', 'card', {'closed': !showContent}, {'center': isInPortraitMode}]"
+         v-if="isShowingMenuToggleBtn">
         <div class="title">
             <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i>
@@ -72,7 +73,7 @@ export default {
     },
     computed:{
         ...mapGetters(['isInPortraitMode', 'isAdmin', ]),
-        ...mapState(['authorization'])
+        ...mapState(['authorization', 'isShowingMenuToggleBtn'])
     },
     methods: {
         toggleContent(){
