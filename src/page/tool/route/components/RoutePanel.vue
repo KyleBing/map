@@ -13,6 +13,7 @@
                     <td>经纬</td>
                     <td>地点</td>
                     <td>备注</td>
+                    <td>图片</td>
                     <td>操作</td>
                 </tr>
             </thead>
@@ -42,6 +43,15 @@
                         v-model="pointerNote"/>
                 </td>
                 <td>
+                    <div class="img-wrapper">
+                        <img v-if="pointerImg" :src="`${pointerImg}-${imgSuffix}`" alt="图片">
+                        <label class="logo avatar" for="avatar">
+                            <i class="el-icon-picture-outline"></i>
+                        </label>
+                        <input type="file" @change="uploadAvatar" id="avatar">
+                    </div>
+                </td>
+                <td>
                     <el-button size="mini" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</el-button>
                 </td>
             </tr>
@@ -56,6 +66,14 @@
                     </td>
                     <td>{{item.name}}</td>
                     <td>{{item.note}}</td>
+                    <td>
+                        <div class="img-wrapper">
+                            <img v-if="item.img" :src="`${item.img}-${imgSuffix}`" alt="图片">
+                            <label class="logo avatar" for="avatar" @click="currentPointIndex = index">
+                                <i class="el-icon-picture-outline"></i>
+                            </label>
+                        </div>
+                    </td>
                     <td>
                         <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < data.length - 1}]">
                             <div class="move">
@@ -75,6 +93,10 @@
 
 <script>
 import ClipboardJS from 'clipboard'
+import mapConfig from "@/mapConfig";
+import * as qiniu from "qiniu-js";
+import fileApi from "@/api/fileApi";
+import utility from "@/utility";
 export default {
     name: "RoutePanel",
     props: {
@@ -91,9 +113,13 @@ export default {
         return {
             pointerName: '', // 当前点的地名
             pointerNote: '', // 标记note
+            pointerImg: '', // 标记图片地址
 
             clipboardRouteData: '', // 要复制的所有路线点的数据
-            clipboard: null
+            clipboard: null,
+
+            imgSuffix: mapConfig.thumbnail200_suffix,
+            currentPointIndex: null, // 当前图片需要放到哪个点位上
         }
     },
     computed: {
@@ -128,6 +154,59 @@ export default {
         })
     },
     methods: {
+        uploadAvatar(event){
+            if (!utility.getAuthorization()){
+                this.$message.error('请登录后操作')
+                return
+            }
+            if (event.target.files.length > 0){
+                this.avatarFile = event.target.files[0]
+                if (!/image\/.*/.test(this.avatarFile.type)){
+                    this.$message.warning('请选择图片文件')
+                    event.target.value = '' // 清空 Input 内容
+                    return
+                }
+                if (this.avatarFile.size > 1024 * 1024 * 5){
+                    this.$message.warning('图片应小于 5 mb')
+                    event.target.value = '' // 清空 Input 内容
+                    return
+                }
+
+                fileApi
+                    .getUploadToken({
+                        bucket: mapConfig.qiniu_bucket_name
+                    })
+                    .then(res => {
+                        console.log('get token success')
+                        // 上传文件
+                        const observer = {
+                            next: res => {
+                                console.log('next: ',res)
+                            },
+                            error: err => {
+                                console.log(err)
+                            },
+                            complete: res => {
+                                // res = {hash: 'hash', key: 'key'}
+                                console.log('complete: ',res)
+                                if (this.currentPointIndex !== null){
+                                    let tempData = this.data // 临时数组
+                                    tempData[this.currentPointIndex].img = mapConfig.qiniu_img_base_url + res.key
+                                    this.$emit('setData', [...tempData])
+                                } else {
+                                    this.pointerImg = mapConfig.qiniu_img_base_url + res.key
+                                }
+                            }
+                        }
+                        const observable = qiniu.upload(this.avatarFile, null, res.data, {}, {})
+                        const subscription = observable.subscribe(observer) // 上传开始
+                        // subscription.unsubscribe() // 上传取消
+                    })
+                    .catch(err => {
+                        utility.popMessage('danger', '获取上传 token 失败', null, 3)
+                    })
+            }
+        },
         // enter 时触发的方法
         addNewRoutePointWithKeyEnter(){
             if(this.validateInput()){
@@ -150,7 +229,8 @@ export default {
                 this.$emit('pointAdd', {
                     position: [this.lng, this.lat],
                     note: this.pointerNote,
-                    name: this.pointerName
+                    name: this.pointerName,
+                    img: this.pointerImg
                 })
             }
         },
@@ -194,7 +274,7 @@ export default {
 
 @import "../../../../scss/plugin";
 .circle-panel {
-    width: 400px;
+    width: 500px;
     padding: 0;
 }
 
@@ -232,6 +312,36 @@ $height-btn: 28px;
     align-items: flex-end;
 }
 
+.img-wrapper{
+    display: flex;
+    justify-content: flex-start;
+    input[type=file]{
+        display: none;
+    }
+    img{
+        height: 30px;
+        display: block;
+        margin-right: 5px;
+    }
+    label{
+        display: flex;
+        justify-content: flex-start;
+        background-color: white;
+        cursor: pointer;
+        i{
+            border: 1px solid $green;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            &:hover{
+                border-color: $color-main;
+            }
+        }
+
+    }
+}
+
 .move{
     display: flex;
     flex-flow: column nowrap;
@@ -267,6 +377,7 @@ $height-btn: 28px;
     cursor: pointer;
     flex-shrink: 0;
     .lng, .lat{
+        white-space: nowrap;
         font-size: 10px;
         height: math.div(( $height-btn - 2 ), 2);
         line-height: math.div(( $height-btn - 2 ), 2);

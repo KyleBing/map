@@ -395,8 +395,8 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["isAdmin", 'authorization']),
-        ...mapState(['windowInsets']),
+        ...mapGetters(["isAdmin"]),
+        ...mapState(['windowInsets','authorization']),
         modalTitle() {
             return this.editingRouteId ? '编辑路线' : '新增路线'
         }

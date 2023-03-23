@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import QRCode from "./qr.js"
 export default {
     name: "Detail",
@@ -71,7 +71,8 @@ export default {
 
     },
     computed:{
-        ...mapGetters(['isInPortraitMode', 'isAdmin', 'authorization']),
+        ...mapGetters(['isInPortraitMode', 'isAdmin', ]),
+        ...mapState(['authorization'])
     },
     methods: {
         toggleContent(){

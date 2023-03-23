@@ -101,8 +101,8 @@ export default {
     },
 
     computed: {
-        ...mapGetters(["isAdmin", 'authorization', 'isInPortraitMode']),
-        ...mapState(['windowInsets']),
+        ...mapGetters(["isAdmin", 'isInPortraitMode']),
+        ...mapState(['windowInsets', 'authorization']),
     },
     methods: {
 
@@ -278,15 +278,34 @@ export default {
             })
         },
         addMarker(map, item) {
-            let marker = new AMap.Marker({
-                position: item.position,
-                content: `
+
+            if (item.img){
+                let marker = new AMap.Marker({
+                    position: item.position,
+                    content: `
+               <div class="marker">
+                  <div class="title">${item.name}</div>
+                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  <div class="view">
+                      <a target="_blank" href="${item.img}">
+                        <img src="${item.img + '-' + mapConfig.thumbnail600_suffix}" alt="view">
+                      </a>
+                  </div>
+               </div>`,
+                })
+                map.add(marker)
+            } else {
+                let marker = new AMap.Marker({
+                    position: item.position,
+                    content: `
                <div class="marker">
                   <div class="title">${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
-            })
-            map.add(marker)
+                })
+                map.add(marker)
+            }
+
         }
 
     },

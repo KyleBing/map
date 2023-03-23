@@ -220,8 +220,8 @@ export default {
 
     },
     computed: {
-        ...mapGetters(["isAdmin", 'authorization']),
-        ...mapState(["windowInsets"]),
+        ...mapGetters(["isAdmin"]),
+        ...mapState(["windowInsets", "authorization"]),
         isEditingLineInfo() {
             return !isNaN(Number(this.$route.query.lineId))
         },
@@ -336,7 +336,8 @@ export default {
             this.addMarker(this.map, {
                 position: routePoint.position,
                 name: routePoint.name,
-                note: routePoint.note
+                note: routePoint.note,
+                img: routePoint.img
             }, 0)
         },
 
@@ -455,16 +456,35 @@ export default {
                 this.addMarker(map, item, pathPointers.length - index)
             })
         },
-        addMarker(map, item, index) {
-            let marker = new AMap.Marker({
-                position: item.position,
-                content: `
+        addMarker(map, item) {
+
+            if (item.img){
+                let marker = new AMap.Marker({
+                    position: item.position,
+                    content: `
                <div class="marker">
-                  <div class="title">${index} - ${item.name}</div>
+                  <div class="title">${item.name}</div>
+                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  <div class="view">
+                      <a target="_blank" href="${item.img}">
+                        <img src="${item.img + '-' + mapConfig.thumbnail600_suffix}" alt="view">
+                      </a>
+                  </div>
+               </div>`,
+                })
+                map.add(marker)
+            } else {
+                let marker = new AMap.Marker({
+                    position: item.position,
+                    content: `
+               <div class="marker">
+                  <div class="title">${item.name}</div>
                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                </div>`,
-            });
-            map.add(marker);
+                })
+                map.add(marker)
+            }
+
         }
     },
     watch: {

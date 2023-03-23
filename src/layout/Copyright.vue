@@ -1,7 +1,14 @@
 <template>
     <div class="copyright" :style="`height: ${height}px`">
 
-        <dl v-if="authorization && authorization.nickname"><dt>用户：</dt><dd>{{ authorization.nickname }}<span @click="logout" class="btn-logout">退出</span></dd></dl>
+        <dl><dt>用户：</dt>
+            <dd v-if="authorization && authorization.nickname">{{ authorization.nickname }}
+                <span @click="logout" class="btn-logout">退出</span>
+            </dd>
+            <dd v-else>
+                <span @click="login" class="btn-logout">登录</span>
+            </dd>
+        </dl>
         <dl><dt>更新：</dt><dd>{{ packageInfo['date-update'] }}</dd></dl>
         <dl><dt>版本：</dt><dd>v{{ packageInfo['version'] }}</dd></dl>
         <dl><dt>API：</dt><dd><a href="https://lbs.amap.com/api/javascript-api/summary/">高德地图 v2.0.0</a></dd></dl>
@@ -10,7 +17,7 @@
 
 <script>
 import packageInfo from "@/../package.json"
-import {mapGetters} from "vuex";
+import {mapGetters, mapState} from "vuex";
 
 export default {
     name: "Copyright",
@@ -30,10 +37,15 @@ export default {
             this.$router.push({
                 name: 'Logout'
             })
+        },
+        login(){
+            this.$router.push({
+                name: 'Login'
+            })
         }
     },
     computed: {
-        ...mapGetters(['authorization'])
+        ...mapState(['authorization'])
     }
 
 }

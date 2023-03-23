@@ -27,10 +27,16 @@ body{
     @include transition(all 0.3s);
     @include box-shadow(2px 2px 5px rgba(121, 85, 72, 0.39));
     &:hover{
+        z-index: 9999;
         @include border-radius(10px);
         @include transition(all 0.3s);
-        padding: 12px 15px;
+        padding: 8px 6px;
         transform: scale(1.2);
+        .view{
+            margin-top: 10px;
+            @include transition(all, 0.3s);
+            width: 200px;
+        }
     }
     .title{
         white-space: nowrap;
@@ -41,6 +47,17 @@ body{
         white-space: nowrap;
         font-size: 0.7rem;
         color: $text-subtitle;
+    }
+    .view{
+        @include transition(all, 0.3s);
+        margin-top: 5px;
+        width: 60px;
+        @include border-radius($radius);
+        overflow: hidden;
+        img{
+            display: block;
+            width: 100%;
+        }
     }
     &.orange{
         background-color: $orange;

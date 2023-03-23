@@ -59,6 +59,7 @@ export default {
         this.animatedBg.destroy()
     },
     methods: {
+        ...mapMutations(['SET_AUTHORIZATION']),
         submit() {
             this.$refs['login'].validate((valid) => {
                 if (valid) {
@@ -88,6 +89,7 @@ export default {
                         res.data.city,
                         res.data.geolocation,
                     )
+                    this.SET_AUTHORIZATION(this.$utility.getAuthorization())
                     this.$message.success( '欢迎用户 ' + res.data.username)
                     this.$router.push({name: 'Index'})
                 })
