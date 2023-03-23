@@ -405,10 +405,12 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .table-description{
     white-space: nowrap;
-
+}
+td{
+    white-space: nowrap;
 }
 
 </style>

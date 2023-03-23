@@ -45,16 +45,6 @@ const routes = [
         },
         children: [
             {
-                name: 'RouteList',
-                path: 'route-list',
-                meta: {
-                    title: '路线列表',
-                    showInMenu: true,
-                    icon: 'el-icon-wind-power'
-                },
-                component: resolve => require(['@/page/route/RouteList'], resolve),
-            },
-            {
                 name: 'RouteLine',
                 path: 'route-line',
                 meta: {
@@ -63,6 +53,16 @@ const routes = [
                     icon: 'el-icon-wind-power'
                 },
                 component: resolve => require(['@/page/route/RouteLine'], resolve),
+            },
+            {
+                name: 'RouteList',
+                path: 'route-list',
+                meta: {
+                    title: '路线列表',
+                    showInMenu: true,
+                    icon: 'el-icon-wind-power'
+                },
+                component: resolve => require(['@/page/route/RouteList'], resolve),
             },
             {
                 name: 'RouteEditor',
