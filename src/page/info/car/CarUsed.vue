@@ -90,6 +90,7 @@ export default {
         }
     },
     beforeDestroy() {
+        this.map.clearInfoWindow() // 清除地图上的信息窗体
         this.map.destroy() // 销毁地图，释放内存
         this.map = null
     }
