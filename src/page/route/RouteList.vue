@@ -38,7 +38,7 @@
                             v-for="item in scope.row.road_type.split('，')">{{item}}</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column width="130" align="center" prop="seasons" label="适用季节"/>
+                    <el-table-column width="130" align="left" prop="seasons" label="适用季节"/>
                     <el-table-column align="center" width="50" prop="video_link" label="视频">
                         <template slot-scope="scope">
                             <a class="link" v-if="scope.row.video_link" target="_blank" :href="scope.row.video_link"><i class="el-icon-video-camera"></i></a>
