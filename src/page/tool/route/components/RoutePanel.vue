@@ -1,7 +1,7 @@
 <template>
     <div class="circle-panel card">
         <div class="toolbar">
-            <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制数据</el-button>
+            <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制 JSON 数据</el-button>
             <el-button size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</el-button>
             <el-button size="mini" type="warning" @click="$emit('setData', routePathLocal.reverse())" icon="el-icon-sort">倒序</el-button>
             <el-button size="mini" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</el-button>
@@ -330,13 +330,13 @@ $height-btn: 28px;
         background-color: white;
         cursor: pointer;
         i{
-            border: 1px solid $green;
+            border: 1px solid $border-light;
             width: 30px;
             height: 30px;
             line-height: 30px;
             text-align: center;
             &:hover{
-                border-color: $color-main;
+                border-color: $green;
             }
         }
 
@@ -356,7 +356,6 @@ $height-btn: 28px;
         height: math.div(( $height-btn - 2 ), 2);
         width: math.div(( $height-btn - 2 ), 2) + 6;
         line-height: math.div(( $height-btn - 2 ), 2);
-        border: 1px solid $border-normal;
         &:hover{
             color: white;
             background-color: $color-primary;
@@ -414,6 +413,11 @@ thead{
     }
 }
 tbody{
+    tr{
+        &:hover{
+            outline: 1px solid $color-main;
+        }
+    }
     tr:nth-child(2n + 1){
         background-color: #f2f2f2;
     }

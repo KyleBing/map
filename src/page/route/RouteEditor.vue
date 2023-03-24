@@ -252,7 +252,7 @@ export default {
                 this.$message.warning('没有任何途经点')
                 return
             }
-            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers.reverse()))
+            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers))
             routeApi
                 .modify(this.formLine)
                 .then(res => {
@@ -272,7 +272,7 @@ export default {
                 this.$message.warning('没有任何途经点')
                 return
             }
-            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers.reverse()))
+            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers))
             routeApi
                 .add(this.formLine)
                 .then(res => {
