@@ -169,7 +169,6 @@ export default {
 
         // change line
         changeLine(lineId){
-
             this.$router.push({
                 name: 'RouteLine',
                 query: {

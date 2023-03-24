@@ -219,7 +219,6 @@ export default {
             .catch(e => {
                 console.log(e);
             })
-
     },
     computed: {
         ...mapGetters(["isAdmin"]),
@@ -297,7 +296,7 @@ export default {
                         this.formLine = res.data
                         this.$set(this.formLine, 'seasonsArray', this.formLine.seasons.split('、'))
                         this.activeLineObj = res.data
-                        this.pathPointers = JSON.parse(Base64.decode(this.activeLineObj.paths)).reverse()
+                        this.pathPointers = JSON.parse(Base64.decode(this.activeLineObj.paths))
                         this.loadLine(this.map, this.pathPointers)
                         this.loadLineLabels(this.map, this.pathPointers)
                     })
@@ -343,7 +342,6 @@ export default {
                 img: routePoint.img
             }, 0)
         },
-
         // 设置地图中心点：用户坐标
         setMapCenterToUserLocation(status, res) {
             if (status === 'complete') {
@@ -362,12 +360,10 @@ export default {
         pickLocationStop() {
             this.map.off('click', this.showLocation)
         },
-
         // 打印 路线数据
         printRoute() {
             console.log(JSON.stringify([...this.pathPointers].reverse()))
         },
-
         // 展示规划的路线
         showLine() {
             this.map.clearMap() // 删除地图上的所有标记
@@ -377,7 +373,6 @@ export default {
             this.loadLine(this.map, this.pathPointers)
             this.loadLineLabels(this.map, this.pathPointers)
         },
-
         // 载入线路信息
         loadLine(map, pathPointers) {
             // 切换线路之前如果存在路线，销毁已存在的路线
@@ -387,10 +382,7 @@ export default {
             }
             map.plugin('AMap.DragRoute', () => {
                 // path 是驾车导航的起、途径和终点，最多支持16个途经点
-                let path = []
-                pathPointers.forEach(point => {
-                    path.unshift(point.position) // 之前存入的是倒序的，所以现在给正过来
-                })
+                let path = pathPointers.map(point => point.position)
                 this.currentDragRouting = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
                     startMarkerOptions: {
                         offset: new AMap.Pixel(-13, -40),
@@ -452,7 +444,6 @@ export default {
                 this.currentDragRouting.search()
             })
         },
-
         // 添加路线 label 线路信息
         loadLineLabels(map, pathPointers) {
             pathPointers.forEach((item, index) => {
@@ -496,7 +487,7 @@ export default {
             this.map.clearMap()
             this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
             newValue.forEach((item, index) => {
-                this.addMarker(this.map, item, this.pathPointers.paths.length - index)
+                this.addMarker(this.map, item, index)
             })
         },
         'formLine.seasonsArray'(newValue){
