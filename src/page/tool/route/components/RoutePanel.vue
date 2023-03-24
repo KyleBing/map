@@ -167,7 +167,7 @@ export default {
                     return
                 }
                 if (this.avatarFile.size > 1024 * 1024 * 5){
-                    this.$message.warning('图片应小于 5 mb')
+                    this.$message.warning('图片应小于 5MB')
                     event.target.value = '' // 清空 Input 内容
                     return
                 }
@@ -193,6 +193,7 @@ export default {
                                     let tempData = this.data // 临时数组
                                     tempData[this.currentPointIndex].img = mapConfig.qiniu_img_base_url + res.key
                                     this.$emit('setData', [...tempData])
+                                    this.currentPointIndex = null // 指向归位
                                 } else {
                                     this.pointerImg = mapConfig.qiniu_img_base_url + res.key
                                 }

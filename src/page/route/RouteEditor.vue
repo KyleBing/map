@@ -333,6 +333,7 @@ export default {
                 name: routePoint.name,
                 position: [this.positionPicked.lng, this.positionPicked.lat],
                 note: routePoint.note,
+                img: routePoint.img
             })
             this.map.setCenter(routePoint.position) // 定位到中心位置
             this.addMarker(this.map, {
