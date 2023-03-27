@@ -10,7 +10,7 @@
                 <p class="description">请将疑问和建议发送邮件至
                     <a :href="`mailto:${email}`">{{ email }}</a>
                 </p>
-                <p>我的主页： <a :href="`mailto:${homepage}`">{{ homepage }}</a></p>
+                <p>我的主页： <a :href="homepage">{{ homepage }}</a></p>
             </div>
         </div>
     </div>

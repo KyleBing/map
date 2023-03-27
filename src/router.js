@@ -165,7 +165,7 @@ const routes = [
         meta: {
             title: '其它',
             showInMenu: true,
-            icon: 'el-icon-magic-stick'
+            icon: 'el-icon-paperclip'
         },
         children: [
             {
@@ -174,10 +174,23 @@ const routes = [
                 meta: {title: '脉冲图', showInMenu: true},
                 component: resolve => require(['@/page/other/map/MapLoca'], resolve),
             },
+        ]
+    },
+    {
+        name: 'About',
+        path: '/about',
+        component: Layout,
+        redirect: '/about/about',
+        meta: {
+            title: '关于',
+            showInMenu: true,
+            icon: 'el-icon-magic-stick'
+        },
+        children: [
             {
                 name: 'About',
                 path: 'about',
-                meta: {isAdmin: false, title: '关于', showInMenu: true, icon: 'el-icon-warning-outline',},
+                meta: {isAdmin: false, title: '关于', showInMenu: false, icon: 'el-icon-warning-outline',},
                 component: resolve => require(['@/page/other/About'], resolve),
             },
         ]
