@@ -93,6 +93,8 @@
                 @pointAdd="handleAddRoutePoint"
                 @print="printRoute"
                 @showLine="showLine"
+                @changeCurrentPolicy="changePolicy"
+                :policy="drivingPolicy"
                 :lng="Number(positionPicked.lng)"
                 :lat="Number(positionPicked.lat)"
                 v-model="pathPointers"/>
@@ -145,6 +147,20 @@ export default {
                 lat: 0,
             },
 
+            drivingPolicy: [
+                {label: '不选择规划策略', value: '',},
+                {label: 'FEE_HIGHWAY', value: 7,},
+                {label: 'FEE_TRAFFIC', value: 8,},
+                {label: 'HIGHWAY', value: 6,},
+                {label: 'LEAST_DISTANCE', value: 2,},
+                {label: 'LEAST_FEE', value: 1,},
+                {label: 'LEAST_TIME', value: 0,},
+                {label: 'MULTI_POLICIES', value: 5,},
+                {label: 'REAL_TRAFFIC', value: 4,},
+                {label: 'TRAFFIC_HIGHWAY', value: 9,},
+            ], // 路径规划策略
+            currentPolicy: '', // 当前路径规则策略
+
             // SEARCH
             searchAddress: '',  // 地址搜索关键字
             searchResultText: '',
@@ -182,6 +198,7 @@ export default {
             })
             .then(map => {
                 AMap = map
+
                 this.map = new AMap.Map('container', {
                     center: MY_POSITION,
                     zoom: 11
@@ -231,6 +248,9 @@ export default {
         }
     },
     methods: {
+        changePolicy(policy){
+            this.currentPolicy = policy
+        },
         submit() {
             this.$refs['formLine'].validate((valid) => {
                 if (valid) {
@@ -375,6 +395,7 @@ export default {
         },
         // 载入线路信息
         loadLine(map, pathPointers) {
+
             // 切换线路之前如果存在路线，销毁已存在的路线
             if (this.currentDragRouting) {
                 this.currentDragRouting.destroy()
@@ -383,7 +404,7 @@ export default {
             map.plugin('AMap.DragRoute', () => {
                 // path 是驾车导航的起、途径和终点，最多支持16个途经点
                 let path = pathPointers.map(point => point.position)
-                this.currentDragRouting = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
+                this.currentDragRouting = new AMap.DragRoute(map, path, this.currentPolicy, {
                     startMarkerOptions: {
                         offset: new AMap.Pixel(-13, -40),
                         icon: new AMap.Icon({ // 设置途经点的图标

@@ -3,9 +3,20 @@
         <div class="toolbar">
             <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制 JSON 数据</el-button>
             <el-button size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</el-button>
-            <el-button size="mini" type="warning" @click="$emit('setData', routePathLocal.reverse())" icon="el-icon-sort">倒序</el-button>
-            <el-button size="mini" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</el-button>
         </div>
+        <div class="toolbar">
+            <el-button size="mini" type="warning" @click="$emit('setData', routePathLocal.reverse())" icon="el-icon-sort">倒序</el-button>
+            <el-select size="mini" class="ml-1" v-model="currentPolicy" placeholder="请选择">
+                <el-option
+                    v-for="item in policy"
+                    :key="item.label"
+                    :label="item.label"
+                    :value="item.value">
+                </el-option>
+            </el-select>
+            <el-button class="ml-1" size="mini" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</el-button>
+        </div>
+
         <table class="log">
             <thead>
                 <tr>
@@ -104,6 +115,7 @@ export default {
         data: {type: Array},
         lng: {type: Number},
         lat: {type: Number},
+        policy: {type: Array}
     },
     model: {
         prop: 'data',
@@ -114,6 +126,8 @@ export default {
             pointerName: '', // 当前点的地名
             pointerNote: '', // 标记note
             pointerImg: '', // 标记图片地址
+
+            currentPolicy: '',
 
             clipboardRouteData: '', // 要复制的所有路线点的数据
             clipboard: null,
@@ -134,6 +148,10 @@ export default {
         searchLocation(newValue){
             this.pointerName = newValue
         },
+        currentPolicy(newValue){
+            this.$emit('changeCurrentPolicy', newValue)
+        },
+
     },
     beforeDestroy() {
         this.clipboard.destroy()
@@ -389,7 +407,6 @@ $height-btn: 28px;
 }
 
 .toolbar{
-    border-top: 1px solid $border-normal;
     padding: 6px;
 }
 
