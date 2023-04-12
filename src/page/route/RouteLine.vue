@@ -225,7 +225,7 @@ export default {
             map.plugin('AMap.DragRoute', () => {
                 // path 是驾车导航的起、途径和终点，最多支持16个途经点
                 let path = line.pathArray.map (item => item.position)
-                this.currentDragRouting = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
+                this.currentDragRouting = new AMap.DragRoute(map, path, line.policy, {
                     startMarkerOptions: {
                         offset: new AMap.Pixel(-13, -40),
                         icon: new AMap.Icon({ // 设置途经点的图标

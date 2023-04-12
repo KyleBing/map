@@ -8,7 +8,7 @@
             <el-button size="mini" type="warning" @click="$emit('setData', routePathLocal.reverse())" icon="el-icon-sort">倒序</el-button>
             <el-select size="mini" class="ml-1" v-model="currentPolicy" placeholder="请选择">
                 <el-option
-                    v-for="item in policy"
+                    v-for="item in policyArray"
                     :key="item.label"
                     :label="item.label"
                     :value="item.value">
@@ -108,6 +108,8 @@ import mapConfig from "@/mapConfig";
 import * as qiniu from "qiniu-js";
 import fileApi from "@/api/fileApi";
 import utility from "@/utility";
+import {policyArray} from "@/page/route/DrivingPolicy";
+
 export default {
     name: "RoutePanel",
     props: {
@@ -115,7 +117,7 @@ export default {
         data: {type: Array},
         lng: {type: Number},
         lat: {type: Number},
-        policy: {type: Array}
+        policy: {type: Number}
     },
     model: {
         prop: 'data',
@@ -126,8 +128,9 @@ export default {
             pointerName: '', // 当前点的地名
             pointerNote: '', // 标记note
             pointerImg: '', // 标记图片地址
+            policyArray,
 
-            currentPolicy: '',
+            currentPolicy: 2,
 
             clipboardRouteData: '', // 要复制的所有路线点的数据
             clipboard: null,
@@ -151,12 +154,16 @@ export default {
         currentPolicy(newValue){
             this.$emit('changeCurrentPolicy', newValue)
         },
+        policy(newValue){
+            this.currentPolicy = newValue
+        },
 
     },
     beforeDestroy() {
         this.clipboard.destroy()
     },
     mounted() {
+        this.currentPolicy = this.policy
         // 1. 绑定剪贴板操作方法
         this.clipboard = new ClipboardJS('.lnglat', {
             text: function (trigger) {

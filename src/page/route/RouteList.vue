@@ -3,8 +3,8 @@
         <div class="tool-bar mb-2" v-if="!isInPortraitMode">
             <el-form size="small" inline>
                 <el-form-item>
-                    <el-button type="success" @click="addNewRoute" icon="el-icon-plus">添加</el-button>
-                    <el-button type="success" @click="addNewRouteWidthMap" icon="el-icon-plus">从地图添加</el-button>
+                    <el-button type="success" @click="addNewRoute" icon="el-icon-plus">新增路线</el-button>
+                    <el-button type="primary" @click="addNewRouteWidthMap" icon="el-icon-s-promotion">从地图添加新路线</el-button>
                 </el-form-item>
                 <el-form-item label="关键字" class="ml-4">
                     <el-input clearable placeholder="检索词条、编码、注释" v-model="formSearch.keyword"></el-input>
@@ -32,6 +32,11 @@
                     <el-table-column width="80" prop="id" label="id"/>
                     <el-table-column width="100" prop="name" label="路线名"/>
                     <el-table-column width="100" align="center" prop="area" label="地域"/>
+                    <el-table-column width="100" align="center" prop="policy" label="策略">
+                        <template slot-scope="scope">
+                            {{policyMap.get(scope.row.policy)}}
+                        </template>
+                    </el-table-column>
                     <el-table-column width="200" align="left" prop="road_type" label="路线类型">
                         <template slot-scope="scope">
                             <el-tag size="mini"
@@ -130,6 +135,16 @@
                 <el-form-item label="路线类型" prop="road_type">
                     <el-input v-model="formRoute.road_type"/>
                 </el-form-item>
+                <el-form-item label="规划策略" prop="policy">
+                    <el-select v-model="formRoute.policy" placeholder="请选择">
+                        <el-option
+                            v-for="item in policyArray"
+                            :key="item.label"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="是否公开" prop="is_public">
                     <el-radio :label="1" v-model="formRoute.is_public">公开</el-radio>
                     <el-radio :label="0" v-model="formRoute.is_public">私有</el-radio>
@@ -165,6 +180,7 @@ import utility from "@/utility";
 import {mapGetters, mapState} from "vuex";
 import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64"
+import { policyArray, policyMap } from './DrivingPolicy'
 
 export default {
     name: "RouteList",
@@ -184,6 +200,7 @@ export default {
                 name: '', // *路线名
                 area: '', // *地域
                 road_type: '', // *路面类型
+                policy: 2, // 路线规划策略 默认为最短距离
                 seasonsArray: [], // *[适用季节]
                 video_link: '', // 路径视频演示
                 paths: [], // *路径点
@@ -194,6 +211,7 @@ export default {
             routeRules: {
                 name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
                 area: [{required: true, message: '请填写地域', trigger: 'blur'},],
+                policy: [{required: true, message: '请选择路线规划策略', trigger: 'blur'},],
                 road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
                 seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
             },
@@ -204,6 +222,8 @@ export default {
                 total: 0
             },
 
+            policyArray, // 路线规划策略
+            policyMap, // 路线规划策略
 
             formSearch: {
                 keyword: '',
@@ -263,9 +283,10 @@ export default {
                 name: '', // *路线名
                 area: '', // *地域
                 road_type: '', // *路面类型
-                seasonsArray: [], // *适用季节
+                policy: '', // 路线规划策略
+                seasonsArray: [], // *[适用季节]
                 video_link: '', // 路径视频演示
-                paths: '', // *路径点
+                paths: [], // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否公开

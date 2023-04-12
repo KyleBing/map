@@ -94,7 +94,8 @@
                 @print="printRoute"
                 @showLine="showLine"
                 @changeCurrentPolicy="changePolicy"
-                :policy="drivingPolicy"
+                :policyArray="policyArray"
+                :policy="currentPolicy"
                 :lng="Number(positionPicked.lng)"
                 :lat="Number(positionPicked.lat)"
                 v-model="pathPointers"/>
@@ -118,6 +119,8 @@ import Detail from "@/page/route/components/Detail.vue";
 import axios from "axios";
 import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64";
+
+import {policyArray} from "./DrivingPolicy"
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -147,19 +150,8 @@ export default {
                 lat: 0,
             },
 
-            drivingPolicy: [
-                {label: '不选择规划策略', value: '',},
-                {label: 'FEE_HIGHWAY', value: 7,},
-                {label: 'FEE_TRAFFIC', value: 8,},
-                {label: 'HIGHWAY', value: 6,},
-                {label: 'LEAST_DISTANCE', value: 2,},
-                {label: 'LEAST_FEE', value: 1,},
-                {label: 'LEAST_TIME', value: 0,},
-                {label: 'MULTI_POLICIES', value: 5,},
-                {label: 'REAL_TRAFFIC', value: 4,},
-                {label: 'TRAFFIC_HIGHWAY', value: 9,},
-            ], // 路径规划策略
-            currentPolicy: '', // 当前路径规则策略
+            policyArray, // 路径规划策略
+            currentPolicy: 2, // 当前路径规则策略
 
             // SEARCH
             searchAddress: '',  // 地址搜索关键字
@@ -170,6 +162,7 @@ export default {
                 name: '', // *路线名
                 area: '', // *地域
                 road_type: '', // *路面类型
+                policy: 2, // 路线规划策略 默认为最短距离
                 seasonsArray: [], // *[适用季节]
                 video_link: '', // 路径视频演示
                 paths: [], // *路径点
@@ -180,6 +173,7 @@ export default {
             formLineRules: {
                 name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
                 area: [{required: true, message: '请填写地域', trigger: 'blur'},],
+                policy: [{required: true, message: '请选择路线规划策略', trigger: 'blur'},],
                 road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
                 seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
             },
@@ -314,6 +308,7 @@ export default {
                     })
                     .then(res => {
                         this.formLine = res.data
+                        this.currentPolicy = res.data.policy
                         this.$set(this.formLine, 'seasonsArray', this.formLine.seasons.split('、'))
                         this.activeLineObj = res.data
                         this.pathPointers = JSON.parse(Base64.decode(this.activeLineObj.paths))
@@ -348,7 +343,7 @@ export default {
         },
         // 添加新标记点和圆圈
         handleAddRoutePoint(routePoint) {
-            this.pathPointers.unshift({
+            this.pathPointers.push({
                 name: routePoint.name,
                 position: [this.positionPicked.lng, this.positionPicked.lat],
                 note: routePoint.note,
@@ -513,6 +508,9 @@ export default {
         },
         'formLine.seasonsArray'(newValue){
             this.formLine.seasons = newValue.join('、')
+        },
+        currentPolicy(newValue){
+            this.showLine()
         }
     },
     beforeDestroy() {

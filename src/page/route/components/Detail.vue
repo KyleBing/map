@@ -12,6 +12,9 @@
                 <div class="info" v-if="line.area">
                     <p class="info-title">路线区域</p><p class="info-value">{{line.area}}</p>
                 </div>
+                <div class="info">
+                    <p class="info-title">路线策略</p><p class="info-value">{{policyMap.get(line.policy)}}</p>
+                </div>
                 <div class="info" v-if="line.road_type">
                     <p class="info-title">路面类型</p><p class="info-value">{{line.road_type}}</p>
                 </div>
@@ -55,6 +58,7 @@
 import {mapGetters, mapState} from "vuex";
 import QRCode from "./qr.js"
 import DrivingInfo from "@/page/route/components/DrivingInfo.vue";
+import {policyMap} from "@/page/route/DrivingPolicy"
 export default {
     name: "Detail",
     components: {DrivingInfo},
@@ -69,7 +73,8 @@ export default {
     data(){
         return {
             showContent: true,
-            qrImg: ''
+            qrImg: '',
+            policyMap,
         }
     },
     mounted() {

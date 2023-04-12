@@ -31,15 +31,18 @@
                 @pointAdd="handleAddRoutePoint"
                 @print="printRoute"
                 @showLine="showLine"
+                @changeCurrentPolicy="changePolicy"
+                :policyArray="policyArray"
+                :policy="currentPolicy"
                 :lng="positionPicked.lng"
                 :lat="positionPicked.lat"
                 v-model="routeData"/>
-            <detail
-                class="detail-panel mt-1"
-                v-if="activeLineObj"
-                :line="activeLineObj"
-            />
         </div>
+        <detail
+            class="detail-panel mt-1"
+            v-if="activeLineObj"
+            :line="activeLineObj"
+        />
 
     </div>
 </template>
@@ -54,7 +57,7 @@ import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
 import Detail from "@/page/route/components/Detail";
 import axios from "axios";
-
+import {policyArray} from "@/page/route/DrivingPolicy";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -75,6 +78,9 @@ export default {
                     note: '', // 备注
                 },*/
             ], // 对应点的范围数据
+
+            policyArray,
+            currentPolicy: 2, // 当前路径规则策略
 
             positionPicked: {
                 lng: 0,
@@ -140,6 +146,9 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
+        changePolicy(policy){
+            this.currentPolicy = policy
+        },
         search(){
             const url = 'https://restapi.amap.com/v3/geocode/geo'
             axios({
@@ -225,7 +234,7 @@ export default {
                 line.paths.forEach(point => {
                     path.unshift(point.position) // 之前存入的是倒序的，所以现在给正过来
                 })
-                let route = new AMap.DragRoute(map, path, AMap.DrivingPolicy.LEAST_FEE, {
+                let route = new AMap.DragRoute(map, path, this.currentPolicy, {
                     startMarkerOptions: {
                         offset: new AMap.Pixel(-13, -40),
                         icon: new AMap.Icon({ // 设置途经点的图标
@@ -309,6 +318,9 @@ export default {
             newValue.forEach(item => {
                 this.addMarker(this.map, item)
             })
+        },
+        currentPolicy(newValue){
+            this.showLine()
         }
     },
     beforeDestroy() {
