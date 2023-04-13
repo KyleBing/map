@@ -10,6 +10,7 @@
         >
             <div class="id">{{line.id}}</div>
             <div class="name">{{line.name}}</div>
+            <div class="area">{{line.area}}</div>
         </div>
     </div>
 </template>
@@ -47,7 +48,7 @@ export default {
     @include border-radius($radius);
     overflow: hidden;
     background-color: white;
-    width: 200px;
+    width: 300px;
     .route-line-list-item{
         &:last-child{
             border-bottom: none;
@@ -69,6 +70,9 @@ export default {
             color: $text-description;
             width: 50px;
         }
+        .area{
+            color: $text-subtitle;
+        }
         .name{
             padding-left: 10px;
             width: 150px;
@@ -80,6 +84,9 @@ export default {
             background-color: $color-main;
             color: white;
             .id{
+                color: white;
+            }
+            .area{
                 color: white;
             }
         }
