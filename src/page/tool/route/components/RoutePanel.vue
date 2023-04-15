@@ -191,8 +191,8 @@ export default {
                     event.target.value = '' // 清空 Input 内容
                     return
                 }
-                if (this.avatarFile.size > 1024 * 1024 * 5){
-                    this.$message.warning('图片应小于 5MB')
+                if (this.avatarFile.size > 1024 * 1024 * 8){
+                    this.$message.warning('图片应小于 8MB')
                     event.target.value = '' // 清空 Input 内容
                     return
                 }
