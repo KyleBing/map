@@ -18,9 +18,9 @@ import utility from "@/utility";
 Vue.prototype.$utility = utility
 
 // Router
-import router from "./router"
+import {router} from "./router"
 
-router.router.afterEach((to, from) => {
+router.afterEach((to, from) => {
     if (store.getters.isInPortraitMode) { // 适配移动端 路由跳转后，隐藏菜单
         store.commit('SET_IS_SHOWING_MENU_TOGGLE_BTN', true)
     }
@@ -29,7 +29,7 @@ router.router.afterEach((to, from) => {
 Vue.config.productionTip = false
 
 new Vue({
-    router: router.router,
+    router,
     store,
     render: h => h(App),
 }).$mount('#app')

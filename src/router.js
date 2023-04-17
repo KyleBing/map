@@ -13,24 +13,11 @@ import Logout from "@/page/Logout";
 const routes = [
     {
         name: 'Root', path: '/',
-        meta: {
-            title: '主页',
-            showInMenu: true,
-            icon: 'el-icon-house' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
-        },
+        meta: {title: '主页', showInMenu: true, icon: 'el-icon-house'},
         component: Layout,
         redirect: '/index',
         children: [
-            {
-                name: 'Index',
-                path: 'index',
-                meta: {
-                    title: '主页',
-                    showInMenu: false,
-                    icon: 'el-icon-wind-power'
-                },
-                component: resolve => require(['@/page/index/Index'], resolve),
-            },
+            {name: 'Index', path: 'index', meta: {title: '主页', showInMenu: false, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/index/Index'], resolve),},
         ]
     },
     {
@@ -38,42 +25,11 @@ const routes = [
         path: '/route',
         component: Layout,
         redirect: '/route/route-list',
-        meta: {
-            title: '路线推荐',
-            showInMenu: true,
-            icon: 'el-icon-wind-power' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
-        },
+        meta: {title: '路线推荐', showInMenu: true, icon: 'el-icon-wind-power' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
-            {
-                name: 'RouteLine',
-                path: 'route-line',
-                meta: {
-                    title: '路线展示',
-                    showInMenu: true,
-                    icon: 'el-icon-wind-power'
-                },
-                component: resolve => require(['@/page/route/RouteLine'], resolve),
-            },
-            {
-                name: 'RouteList',
-                path: 'route-list',
-                meta: {
-                    title: '路线列表',
-                    showInMenu: true,
-                    icon: 'el-icon-wind-power'
-                },
-                component: resolve => require(['@/page/route/RouteList'], resolve),
-            },
-            {
-                name: 'RouteEditor',
-                path: 'route-editor',
-                meta: {
-                    title: '路线编辑',
-                    showInMenu: true,
-                    icon: 'el-icon-wind-power'
-                },
-                component: resolve => require(['@/page/route/RouteEditor.vue'], resolve),
-            }
+            {name: 'RouteLine',   path: 'route-line',   meta: {title: '路线展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteLine'], resolve),},
+            {name: 'RouteList',   path: 'route-list',   meta: {title: '路线列表', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteList'], resolve),},
+            {name: 'RouteEditor', path: 'route-editor', meta: {title: '路线编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteEditor.vue'], resolve),}
         ]
     },
     {
@@ -81,22 +37,10 @@ const routes = [
         path: '/tool',
         component: Layout,
         redirect: '/tool/circle',
-        meta: {
-            title: '地图工具',
-            showInMenu: true,
-            icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
-        },
+        meta: {title: '地图工具', showInMenu: true, icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
-            {
-                name: 'ToolCircle', path: 'circle',
-                meta: {title: '范围标记', showInMenu: true},
-                component: resolve => require(['@/page/tool/circle/ToolCircle'], resolve),
-            },
-            {
-                name: 'ToolRoute', path: 'route',
-                meta: {title: '路线标记', showInMenu: true},
-                component: resolve => require(['@/page/tool/route/ToolRoute'], resolve),
-            }
+            {name: 'ToolCircle', path: 'circle', meta: {title: '范围标记', showInMenu: true}, component: resolve => require(['@/page/tool/circle/ToolCircle'], resolve),},
+            {name: 'ToolRoute',  path: 'route',  meta: {title: '路线标记', showInMenu: true}, component: resolve => require(['@/page/tool/route/ToolRoute'], resolve),}
         ]
     },
     {
@@ -104,22 +48,9 @@ const routes = [
         path: '/debug',
         component: Layout,
         redirect: '/debug/debug',
-        meta: {
-            title: '调试',
-            showInMenu: false,
-            icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
-        },
+        meta: {title: '调试', showInMenu: false, icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
-            {
-                name: 'debugIndex',
-                path: 'debug',
-                meta: {
-                    title: '调试',
-                    showInMenu: true,
-                    icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
-                },
-                component: resolve => require(['@/page/debug/debug'], resolve),
-            }
+            {name: 'debugIndex', path: 'debug', meta: {title: '调试', showInMenu: true, icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */}, component: resolve => require(['@/page/debug/debug'], resolve),}
         ]
     },
     {
@@ -127,34 +58,12 @@ const routes = [
         path: '/info',
         component: Layout,
         redirect: '/info/plate',
-        meta: {
-            title: '地图信息',
-            showInMenu: true,
-            icon: 'el-icon-collection' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */
-        },
+        meta: {title: '地图信息', showInMenu: true, icon: 'el-icon-collection' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
-            {
-                name: 'InfoPlate', path: 'plate',
-                meta: {title: '山东各市车牌', showInMenu: true},
-                component: resolve => require(['@/page/info/carPlate/CarPlate.vue'], resolve),
-            },
-            {
-                name: 'InfoArea', path: 'area',
-                meta: {title: '济南各区', showInMenu: true},
-                component: resolve => require(['@/page/info/area/AreaJinan'], resolve),
-            },
-            {
-                name: 'InfoCarDepartment',
-                path: 'car-department',
-                meta: {title: '济南车管所', showInMenu: true},
-                component: resolve => require(['@/page/info/car/CarDepartment'], resolve),
-            },
-            {
-                name: 'CarUsed',
-                path: 'car-used',
-                meta: {title: '济南二手车市场', showInMenu: true},
-                component: resolve => require(['@/page/info/car/CarUsed.vue'], resolve),
-            },
+            {name: 'InfoPlate'         , path: 'plate'          , meta: {title: '山东各市车牌'  , showInMenu: true} , component: resolve => require(['@/page/info/carPlate/CarPlate.vue'] , resolve) , } ,
+            {name: 'InfoArea'          , path: 'area'           , meta: {title: '济南各区'    , showInMenu: true} , component: resolve => require(['@/page/info/area/AreaJinan']        , resolve) , } ,
+            {name: 'InfoCarDepartment' , path: 'car-department' , meta: {title: '济南车管所'   , showInMenu: true} , component: resolve => require(['@/page/info/car/CarDepartment']     , resolve) , } ,
+            {name: 'CarUsed'           , path: 'car-used'       , meta: {title: '济南二手车市场' , showInMenu: true} , component: resolve => require(['@/page/info/car/CarUsed.vue']       , resolve) , } ,
         ]
     },
     {
@@ -162,18 +71,9 @@ const routes = [
         path: '/other',
         component: Layout,
         redirect: '/other/map-loca',
-        meta: {
-            title: '其它',
-            showInMenu: true,
-            icon: 'el-icon-paperclip'
-        },
+        meta: {title: '其它', showInMenu: true, icon: 'el-icon-paperclip'},
         children: [
-            {
-                name: 'MapLoca',
-                path: 'map-loca',
-                meta: {title: '脉冲图', showInMenu: true},
-                component: resolve => require(['@/page/other/map/MapLoca'], resolve),
-            },
+            {name: 'MapLoca', path: 'map-loca', meta: {title: '脉冲图', showInMenu: true}, component: resolve => require(['@/page/other/map/MapLoca'], resolve),},
         ]
     },
     {
@@ -181,18 +81,9 @@ const routes = [
         path: '/about',
         component: Layout,
         redirect: '/about/about',
-        meta: {
-            title: '关于',
-            showInMenu: true,
-            icon: 'el-icon-magic-stick'
-        },
+        meta: {title: '关于', showInMenu: true, icon: 'el-icon-magic-stick'},
         children: [
-            {
-                name: 'About',
-                path: 'about',
-                meta: {isAdmin: false, title: '关于', showInMenu: false, icon: 'el-icon-warning-outline',},
-                component: resolve => require(['@/page/other/About'], resolve),
-            },
+            {name: 'About', path: 'about', meta: {isAdmin: false, title: '关于', showInMenu: false, icon: 'el-icon-warning-outline',}, component: resolve => require(['@/page/other/About'], resolve),},
         ]
     },
     {
@@ -213,7 +104,6 @@ const routes = [
 ]
 
 const router = new VueRouter({
-    // mode: 'history', // 由于该项目是二级目录，使用 history 会导致开发与布署的地址不一
     routes
 })
 
@@ -221,14 +111,7 @@ router.beforeEach((to, from, next) => {
     next()
 })
 
-export default {
+export {
     router,
     routes, // 需要显示在边栏的菜单
 }
-
-// import lines from "./page/route/lines";
-//
-// // 添加路线到菜单
-// lines.LINES.forEach((line, index) => {
-//    routeMap[1].children.push({name: `line${index + 1}`, path: `${index + 1}`, meta: {title: line.index + ' - ' +  line.name, showInMenu: true}},)
-// })

@@ -47,7 +47,7 @@
 
 <script>
 import {mapGetters, mapState} from "vuex"
-import router from "../router"
+import {routes} from "../router"
 import utility from "@/utility";
 
 export default {
@@ -60,7 +60,7 @@ export default {
     created() {
         this.activeMenu = this.$route.path
         // 过滤 Router 中的路由，去除 showInMenu === false 的菜单
-        let submenuShow = router.routes.filter(submenu => {
+        let submenuShow = routes.filter(submenu => {
             if (submenu.meta.showInMenu){
                 if (submenu.meta.isAdmin){
                     return isAdmin

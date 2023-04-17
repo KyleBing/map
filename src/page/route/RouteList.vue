@@ -40,7 +40,8 @@
                     <el-table-column width="200" align="left" prop="road_type" label="路线类型">
                         <template slot-scope="scope">
                             <el-tag size="mini"
-                            v-for="item in scope.row.road_type.split('，')">{{item}}</el-tag>
+                                    v-for="item in scope.row.road_type.split('，')" :key="item">{{ item }}
+                            </el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column width="130" align="left" prop="seasons" label="适用季节"/>
