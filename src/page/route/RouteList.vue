@@ -22,7 +22,7 @@
             <el-col :span="24">
                 <el-table
                     class="table-narrow"
-                    size="small"
+                    size="mini"
                     :height="windowInsets.height - 150"
                     :max-height="windowInsets.height - 150"
                     stripe
@@ -30,7 +30,7 @@
                     v-loading="isLoading"
                 >
                     <el-table-column width="80" prop="id" label="id"/>
-                    <el-table-column width="100" prop="name" label="路线名"/>
+                    <el-table-column width="150" prop="name" label="路线名"/>
                     <el-table-column width="100" align="center" prop="area" label="地域"/>
                     <el-table-column width="100" align="center" prop="policy" label="策略">
                         <template slot-scope="scope">
@@ -42,6 +42,20 @@
                             <el-tag size="mini"
                                     v-for="item in scope.row.road_type.split('，')" :key="item">{{ item }}
                             </el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" width="350px" label="操作">
+                        <template slot-scope="scope">
+                            <el-button class="btn-narrow" @click="showRoute(scope.row)" type="text" plain size="mini" icon="el-icon-position">查看</el-button>
+                            <el-button class="btn-narrow"
+                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
+                                       @click="goEdit(scope.row)" type="text" plain size="mini" icon="el-icon-edit">编辑</el-button>
+                            <el-button class="btn-narrow"
+                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
+                                       @click="editRouteLine(scope.row)" type="text" plain size="mini" icon="el-icon-place">编辑路线</el-button>
+                            <el-button class="btn-narrow"
+                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
+                                       @click="goDelete(scope.row)" type="text" plain size="mini" icon="el-icon-delete">删除</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column width="130" align="left" prop="seasons" label="适用季节"/>
@@ -85,20 +99,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column align="center" width="350px" label="操作">
-                        <template slot-scope="scope">
-                            <el-button class="btn-narrow" @click="showRoute(scope.row)" type="text" plain size="mini" icon="el-icon-position">查看</el-button>
-                            <el-button class="btn-narrow"
-                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
-                                       @click="goEdit(scope.row)" type="text" plain size="mini" icon="el-icon-edit">编辑</el-button>
-                            <el-button class="btn-narrow"
-                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
-                                       @click="editRouteLine(scope.row)" type="text" plain size="mini" icon="el-icon-place">编辑路线</el-button>
-                            <el-button class="btn-narrow"
-                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
-                                       @click="goDelete(scope.row)" type="text" plain size="mini" icon="el-icon-delete">删除</el-button>
-                        </template>
-                    </el-table-column>
+
                 </el-table>
 
                 <!--  PAGINATION  -->
