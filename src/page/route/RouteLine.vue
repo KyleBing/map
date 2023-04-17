@@ -280,23 +280,28 @@ export default {
 
         // 添加路线 Label
         loadLineLabels(map, line) {
-            line.pathArray.forEach(item => {
-                this.addMarker(map, item)
+            line.pathArray.forEach((item, index) => {
+                this.addMarker(map, item, index)
             })
         },
-        addMarker(map, item) {
+        addMarker(map, item, index) {
 
             if (item.img){
                 let marker = new AMap.Marker({
                     position: item.position,
                     content: `
                <div class="marker">
-                  <div class="title">${item.name}</div>
-                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
-                  <div class="view">
-                      <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix }">
-                        <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
-                      </a>
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="title">${item.name}</div>
+                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                       <div class="view">
+                           <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
+                              <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
+                           </a>
+                       </div>
                   </div>
                </div>`,
                 })
@@ -306,8 +311,13 @@ export default {
                     position: item.position,
                     content: `
                <div class="marker">
-                  <div class="title">${item.name}</div>
-                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="title">${item.name}</div>
+                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  </div>
                </div>`,
                 })
                 map.add(marker)

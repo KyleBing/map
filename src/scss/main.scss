@@ -32,33 +32,49 @@ body{
         @include transition(all 0.3s);
         padding: 8px 6px;
         transform: scale(1.2);
+        .marker-content{
+            .view{
+                margin-top: 10px;
+                @include transition(all, 0.3s);
+                width: 400px;
+            }
+        }
+    }
+
+    display: flex;
+    align-items: center;
+    flex-flow: row nowrap;
+    .marker-index{
+        margin-right: 10px;
+        .index{
+            color: $text-subtitle;
+            font-size: $fz-small;
+        }
+    }
+    .marker-content{
+        .title{
+            white-space: nowrap;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        .note{
+            white-space: nowrap;
+            font-size: 0.7rem;
+            color: $text-subtitle;
+        }
         .view{
-            margin-top: 10px;
             @include transition(all, 0.3s);
-            width: 400px;
+            margin-top: 5px;
+            width: 60px;
+            @include border-radius($radius);
+            overflow: hidden;
+            img{
+                display: block;
+                width: 100%;
+            }
         }
     }
-    .title{
-        white-space: nowrap;
-        font-weight: bold;
-        font-size: 0.8rem;
-    }
-    .note{
-        white-space: nowrap;
-        font-size: 0.7rem;
-        color: $text-subtitle;
-    }
-    .view{
-        @include transition(all, 0.3s);
-        margin-top: 5px;
-        width: 60px;
-        @include border-radius($radius);
-        overflow: hidden;
-        img{
-            display: block;
-            width: 100%;
-        }
-    }
+
     &.orange{
         background-color: $orange;
         color: white;
