@@ -23,6 +23,10 @@
                 <el-form-item label="路线名" prop="name">
                     <el-input v-model="formLine.name"/>
                 </el-form-item>
+                <el-form-item label="是否公开" prop="is_public">
+                    <el-radio :label="1" v-model="formLine.is_public">公开</el-radio>
+                    <el-radio :label="0" v-model="formLine.is_public">私有</el-radio>
+                </el-form-item>
                 <el-form-item label="地域" prop="area">
                     <el-input v-model="formLine.area"/>
                 </el-form-item>

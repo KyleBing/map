@@ -46,13 +46,13 @@
                     </el-table-column>
                     <el-table-column align="center" width="350px" label="操作">
                         <template slot-scope="scope">
-                            <el-button class="btn-narrow" @click="showRoute(scope.row)" type="text" plain size="mini" icon="el-icon-position">查看</el-button>
+                            <el-button class="btn-narrow" @click="showRoute(scope.row)" type="text" plain size="mini" icon="el-icon-view">查看</el-button>
                             <el-button class="btn-narrow"
                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
                                        @click="goEdit(scope.row)" type="text" plain size="mini" icon="el-icon-edit">编辑</el-button>
                             <el-button class="btn-narrow"
                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
-                                       @click="editRouteLine(scope.row)" type="text" plain size="mini" icon="el-icon-place">编辑路线</el-button>
+                                       @click="editRouteLine(scope.row)" type="text" plain size="mini" icon="el-icon-position">地图中编辑</el-button>
                             <el-button class="btn-narrow"
                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
                                        @click="goDelete(scope.row)" type="text" plain size="mini" icon="el-icon-delete">删除</el-button>
