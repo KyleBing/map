@@ -243,6 +243,7 @@ export default {
     },
     methods: {
         changePolicy(policy){
+            console.log('最新的 policy', policy)
             this.currentPolicy = policy
         },
         submit() {
@@ -285,6 +286,7 @@ export default {
                 this.$message.warning('没有任何途经点')
                 return
             }
+            this.formLine.policy = this.currentPolicy
             this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers))
             routeApi
                 .add(this.formLine)
@@ -463,24 +465,30 @@ export default {
         // 添加路线 label 线路信息
         loadLineLabels(map, pathPointers) {
             pathPointers.forEach((item, index) => {
-                this.addMarker(map, item, pathPointers.length - index)
+                this.addMarker(map, item, index)
             })
         },
-        addMarker(map, item) {
+        addMarker(map, item, index) {
 
             if (item.img){
                 let marker = new AMap.Marker({
                     position: item.position,
                     content: `
                <div class="marker">
-                  <div class="title">${item.name}</div>
-                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
-                  <div class="view">
-                      <a target="_blank" href="${item.img}">
-                        <img src="${item.img + '-' + mapConfig.thumbnail600_suffix}" alt="view">
-                      </a>
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                      <div class="title">${item.name}</div>
                   </div>
-               </div>`,
+                  <div class="marker-content">
+                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                       <div class="view">
+                           <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
+                              <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
+                           </a>
+                       </div>
+                  </div>
+               </div>
+`,
                 })
                 map.add(marker)
             } else {
@@ -488,8 +496,13 @@ export default {
                     position: item.position,
                     content: `
                <div class="marker">
-                  <div class="title">${item.name}</div>
-                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                      <div class="title">${item.name}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  </div>
                </div>`,
                 })
                 map.add(marker)

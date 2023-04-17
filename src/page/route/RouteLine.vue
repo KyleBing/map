@@ -285,7 +285,6 @@ export default {
             })
         },
         addMarker(map, item, index) {
-
             if (item.img){
                 let marker = new AMap.Marker({
                     position: item.position,
@@ -293,9 +292,9 @@ export default {
                <div class="marker">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
+                      <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="title">${item.name}</div>
                        <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                        <div class="view">
                            <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
@@ -313,16 +312,15 @@ export default {
                <div class="marker">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
+                       <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="title">${item.name}</div>
                        <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                   </div>
                </div>`,
                 })
                 map.add(marker)
             }
-
         }
 
     },

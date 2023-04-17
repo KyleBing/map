@@ -40,23 +40,27 @@ body{
             }
         }
     }
-
     display: flex;
-    align-items: center;
-    flex-flow: row nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: column nowrap;
     .marker-index{
-        margin-right: 10px;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: flex-start;
         .index{
+            margin-right: 10px;
             color: $text-subtitle;
             font-size: $fz-small;
         }
-    }
-    .marker-content{
         .title{
             white-space: nowrap;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 15px;
         }
+    }
+    .marker-content{
         .note{
             white-space: nowrap;
             font-size: 0.7rem;
