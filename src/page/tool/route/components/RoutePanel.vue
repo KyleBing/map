@@ -1,5 +1,26 @@
 <template>
     <div class="circle-panel card">
+
+        <el-dialog
+            center
+            title=""
+            append-to-body
+            :visible.sync="isModalShowing"
+            :before-close="closeModal"
+            width="50%">
+            <div>
+                <el-form>
+                    <el-form-item label="修改">
+                        <el-input v-model="currentModifyingString"/>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button size="small" type="default" @click="isModalShowing = false">取消</el-button>
+                <el-button size="small" type="primary" @click="submitStringChange">确定</el-button>
+            </div>
+        </el-dialog>
+
         <div class="toolbar">
             <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制 JSON 数据</el-button>
             <el-button size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</el-button>
@@ -70,19 +91,19 @@
             <tr v-for="(item, index) in routePathLocal" :key="index">
 
                 <td>{{index + 1}}</td>
-                <td>
+                <td @click="modifyString(item.position, index, 'position')">
                     <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
                         <div class="lng">lng: {{item.position[0]}}</div>
                         <div class="lat">lat: {{item.position[1]}}</div>
                     </div>
                 </td>
-                <td>{{item.name}}</td>
-                <td>{{item.note}}</td>
+                <td @click="modifyString(item.name, index, 'name')">{{item.name}}</td>
+                <td @click="modifyString(item.note, index, 'note')">{{item.note}}</td>
                 <td>
                     <div class="img-wrapper">
                         <img v-if="item.img" :src="`${item.img}-${imgSuffix}`" alt="图片">
                         <label class="logo avatar" for="avatar" @click="currentPointIndex = index">
-                            <i class="el-icon-picture-outline"></i>
+                            <i class="el-icon-upload2"></i>
                         </label>
                     </div>
                 </td>
@@ -131,6 +152,8 @@ export default {
             pointerImg: '', // 标记图片地址
             policyArray,
 
+            routePathLocal: [],
+
             currentPolicy: 2,
 
             clipboardRouteData: '', // 要复制的所有路线点的数据
@@ -138,15 +161,18 @@ export default {
 
             imgSuffix: mapConfig.thumbnail200_suffix,
             currentPointIndex: null, // 当前图片需要放到哪个点位上
+
+            isModalShowing: false,
+            currentModifyingString: '', //
+            modifyingArrayIndex: null, // 编辑的 index
+            modifyingParamName: '' // 编辑的字段名
         }
     },
     computed: {
-        routePathLocal(){
-            return [...this.data]
-        }
     },
     watch:{
         data(newValue){
+            this.routePathLocal = [...this.data]
             this.clipboardRouteData = JSON.stringify(newValue)
         },
         searchLocation(newValue){
@@ -180,6 +206,22 @@ export default {
         })
     },
     methods: {
+        closeModal(){
+            this.isModalShowing = false
+            this.currentModifyingString = ''
+        },
+        modifyString(str, index, paramName){
+            this.modifyingParamName = paramName
+            this.modifyingArrayIndex = index
+            this.currentModifyingString = str
+            this.isModalShowing =  true
+        },
+        // 提交对字符串的修改
+        submitStringChange(){
+            this.$set(this.routePathLocal[this.modifyingArrayIndex], this.modifyingParamName, this.currentModifyingString)
+            this.isModalShowing = false
+            this.currentModifyingString = ''
+        },
         uploadAvatar(event){
             if (!utility.getAuthorization()){
                 this.$message.error('请登录后操作')
