@@ -1,16 +1,5 @@
 <template>
     <div class="map-container">
-        <el-dialog
-            center
-            title="提示"
-            :visible.sync="modalTip"
-            width="50%">
-            <p class="text-center">如果界面卡死，稍安勿躁，刷新页面即可</p>
-            <div slot="footer" class="dialog-footer">
-                <el-button size="small" type="primary" @click="checkTip">OK</el-button>
-            </div>
-        </el-dialog>
-
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
     </div>
 </template>
@@ -39,11 +28,9 @@ export default {
             currentLineId: 0,
             activeLineObj: null, // 当前 Line 对象
             currentRouting: null,  // 当前导航路线
-            modalTip: false,
         }
     },
     mounted() {
-        this.modalTip = !localStorage.getItem('map-has-checked-tip')
 
         AMapLoader.load({
             key: mapConfig.appId, // 开发应用的 ID
@@ -162,11 +149,6 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
-        checkTip(){
-            localStorage.setItem('map-has-checked-tip', 'true')
-            this.modalTip = false
-        },
-
         resizeMap() {
             let mapContainer = document.getElementById('container')
             mapContainer.style.height = window.innerHeight + "px"
