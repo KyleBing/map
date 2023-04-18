@@ -91,7 +91,8 @@
             <tr v-for="(item, index) in routePathLocal" :key="index">
 
                 <td>{{index + 1}}</td>
-                <td @click="modifyString(item.position, index, 'position')">
+<!--                <td @click="modifyString(item.position, index, 'position')">-->
+                <td>
                     <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
                         <div class="lng">lng: {{item.position[0]}}</div>
                         <div class="lat">lat: {{item.position[1]}}</div>
