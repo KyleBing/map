@@ -29,17 +29,18 @@
                     :data="tableData"
                     v-loading="isLoading"
                 >
-                    <el-table-column width="80" prop="id" label="id"/>
+                    <el-table-column width="50" prop="id" label="#"/>
                     <el-table-column width="150" prop="name" label="路线名"/>
-                    <el-table-column width="100" align="center" prop="area" label="地域"/>
-                    <el-table-column width="100" align="center" prop="policy" label="策略">
+                    <el-table-column width="150" align="center" prop="area" label="地域"/>
+                    <el-table-column width="100" align="center" prop="policy" label="规划策略">
                         <template slot-scope="scope">
                             {{policyMap.get(scope.row.policy)}}
                         </template>
                     </el-table-column>
+                    <el-table-column width="100" align="center" prop="nickname" label="用户"/>
                     <el-table-column width="200" align="left" prop="road_type" label="路线类型">
                         <template slot-scope="scope">
-                            <el-tag size="mini"
+                            <el-tag class="mr-1" size="mini"
                                     v-for="item in scope.row.road_type.split('，')" :key="item">{{ item }}
                             </el-tag>
                         </template>
@@ -90,7 +91,7 @@
                             {{ scope.row.is_public === 1 ? '公开' : '私有' }}
                         </template>
                     </el-table-column>
-                    <el-table-column sortable align="right" width="60px" prop="thumb_up" label="赞"/>
+                    <el-table-column sortable align="center" width="60px" prop="thumb_up" label="赞"/>
                     <el-table-column sortable align="center" width="160px" prop="date_init" label="时间">
                         <template slot-scope="scope">
                             <div>{{ scope.row.date_init }}</div>

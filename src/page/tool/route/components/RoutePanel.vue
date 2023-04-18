@@ -66,37 +66,38 @@
                     <el-button size="mini" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</el-button>
                 </td>
             </tr>
-                <tr v-for="(item, index) in routePathLocal" :key="index">
 
-                    <td>{{routePathLocal.length - index}}</td>
-                    <td>
-                        <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
-                            <div class="lng">lng: {{item.position[0]}}</div>
-                            <div class="lat">lat: {{item.position[1]}}</div>
+            <tr v-for="(item, index) in routePathLocal" :key="index">
+
+                <td>{{index + 1}}</td>
+                <td>
+                    <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
+                        <div class="lng">lng: {{item.position[0]}}</div>
+                        <div class="lat">lat: {{item.position[1]}}</div>
+                    </div>
+                </td>
+                <td>{{item.name}}</td>
+                <td>{{item.note}}</td>
+                <td>
+                    <div class="img-wrapper">
+                        <img v-if="item.img" :src="`${item.img}-${imgSuffix}`" alt="图片">
+                        <label class="logo avatar" for="avatar" @click="currentPointIndex = index">
+                            <i class="el-icon-picture-outline"></i>
+                        </label>
+                    </div>
+                </td>
+                <td>
+                    <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < data.length - 1}]">
+                        <div class="move">
+                            <i class="el-icon-caret-top" v-if="index > 0"  @click="move(index, 'up')"></i>
+                            <i class="el-icon-caret-bottom" v-if="index < data.length - 1" @click="move(index, 'down')"></i>
                         </div>
-                    </td>
-                    <td>{{item.name}}</td>
-                    <td>{{item.note}}</td>
-                    <td>
-                        <div class="img-wrapper">
-                            <img v-if="item.img" :src="`${item.img}-${imgSuffix}`" alt="图片">
-                            <label class="logo avatar" for="avatar" @click="currentPointIndex = index">
-                                <i class="el-icon-picture-outline"></i>
-                            </label>
+                        <div class="delete">
+                            <i class="el-icon-circle-close" @click="routePointDelete(index)"></i>
                         </div>
-                    </td>
-                    <td>
-                        <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < data.length - 1}]">
-                            <div class="move">
-                                <i class="el-icon-caret-top" v-if="index > 0"  @click="move(index, 'up')"></i>
-                                <i class="el-icon-caret-bottom" v-if="index < data.length - 1" @click="move(index, 'down')"></i>
-                            </div>
-                            <div class="delete">
-                                <i class="el-icon-circle-close" @click="routePointDelete(index)"></i>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
