@@ -85,7 +85,6 @@
                             </el-popover>
                         </template>
                     </el-table-column>
-                    <el-table-column sortable align="right" width="60px" prop="thumb_up" label="赞"/>
                     <el-table-column align="center" width="80px" prop="is_public" label="状态">
                         <template slot-scope="scope">
                             {{ scope.row.is_public === 1 ? '公开' : '私有' }}

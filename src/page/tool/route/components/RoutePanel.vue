@@ -57,7 +57,7 @@
                     <div class="img-wrapper">
                         <img v-if="pointerImg" :src="`${pointerImg}-${imgSuffix}`" alt="图片">
                         <label class="logo avatar" for="avatar">
-                            <i class="el-icon-picture-outline"></i>
+                            <i class="el-icon-upload2"></i>
                         </label>
                         <input type="file" @change="uploadAvatar" id="avatar">
                     </div>

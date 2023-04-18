@@ -183,9 +183,13 @@ export default {
                 position: item.position,
                 offset: new AMap.Pixel(-10, -20),
                 content: `
-               <div class="marker">
-                  <div class="title">${item.name}</div>
-                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                <div class="marker">
+                  <div class="marker-index">
+                      <div class="title">${item.name}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  </div>
                </div>`,
             })
             map.add(marker)

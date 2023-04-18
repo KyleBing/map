@@ -89,10 +89,15 @@ export default {
                 position: item.position,
                 offset: new AMap.Pixel(0,-20),
                 content: `
-               <div class="marker ${item.type === 'market'? 'orange': ''}">
-                  <div class="title">${item.name}</div>
-                  <div class="note"><a href="tel:${item.phone}">${item.phone}</a></div>
-               </div>`,
+                <div class="marker  ${item.type === 'market'? 'orange': ''}">
+                  <div class="marker-index">
+                      <div class="title">${item.name}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="note"><a href="tel:${item.phone}">${item.phone}</a></div>
+                  </div>
+               </div>
+`,
             })
             map.add(marker)
         }
