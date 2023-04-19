@@ -294,20 +294,47 @@ export default {
 
         // 添加路线 label 线路信息
         loadLineLabels(map, line) {
-            line.paths.forEach(item => {
-                this.addMarker(map, item)
+            line.paths.forEach((item, index) => {
+                this.addMarker(map, item, index)
             })
         },
-        addMarker(map, item) {
-            let marker = new AMap.Marker({
-                position: item.position,
-                content: `
+        addMarker(map, item, index) {
+            if (item.img){
+                let marker = new AMap.Marker({
+                    position: item.position,
+                    content: `
                <div class="marker">
-                  <div class="title">${item.name}</div>
-                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                      <div class="title">${item.name}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                       <div class="view">
+                           <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
+                              <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
+                           </a>
+                       </div>
+                  </div>
                </div>`,
-            });
-            map.add(marker);
+                })
+                map.add(marker)
+            } else {
+                let marker = new AMap.Marker({
+                    position: item.position,
+                    content: `
+               <div class="marker">
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                       <div class="title">${item.name}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  </div>
+               </div>`,
+                })
+                map.add(marker)
+            }
         }
 
     },
@@ -315,8 +342,8 @@ export default {
         routeData(newValue){
             if (newValue.length <= 0) return
             this.map.clearMap()
-            newValue.forEach(item => {
-                this.addMarker(this.map, item)
+            newValue.forEach((item,index) => {
+                this.addMarker(this.map, item, index)
             })
         },
         currentPolicy(newValue){

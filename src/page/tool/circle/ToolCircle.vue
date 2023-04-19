@@ -207,8 +207,12 @@ export default {
                 position: item.position,
                 content: `
                <div class="marker">
-                  <div class="title">${item.name}</div>
-                  <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  <div class="marker-index">
+                      <div class="title">${item.name}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                  </div>
                </div>`,
             })
             map.add(marker)
