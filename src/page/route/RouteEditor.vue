@@ -8,61 +8,77 @@
         />
 
         <!-- 路线信息编辑面板-->
-        <div class="card editor-panel">
-            <el-form
-                ref="formLine"
-                v-if="formLine"
-                :model="formLine"
-                :rules="formLineRules"
-                size="mini"
-                label-width="100px"
-            >
-                <h3 class="form-title center" v-if="isEditingLineInfo">编辑路线 {{ formLine.name }}</h3>
-                <h3 class="form-title" v-else>新建路线 {{ lineId }}</h3>
-
-                <el-form-item label="路线名" prop="name">
-                    <el-input v-model="formLine.name"/>
-                </el-form-item>
-                <el-form-item label="是否公开" prop="is_public">
-                    <el-radio :label="1" v-model="formLine.is_public">公开</el-radio>
-                    <el-radio :label="0" v-model="formLine.is_public">私有</el-radio>
-                </el-form-item>
-                <el-form-item label="地域" prop="area">
-                    <el-input v-model="formLine.area"/>
-                </el-form-item>
-                <el-form-item label="路线类型" prop="road_type">
-                    <el-input v-model="formLine.road_type"/>
-                </el-form-item>
-                <el-form-item label="适用季节" prop="seasons">
-                    <el-checkbox-group v-model="formLine.seasonsArray">
-                        <el-checkbox-button label="春"></el-checkbox-button>
-                        <el-checkbox-button label="夏"></el-checkbox-button>
-                        <el-checkbox-button label="秋"></el-checkbox-button>
-                        <el-checkbox-button label="冬"></el-checkbox-button>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="视频链接" prop="video_link">
-                    <el-input v-model="formLine.video_link"/>
-                </el-form-item>
-                <el-form-item label="备注" prop="note">
-                    <el-input type="textarea" :rows="5" v-model="formLine.note"/>
-                </el-form-item>
-                <el-form-item label="总里程" prop="distance">
-                    <el-input disabled readonly v-model="formLine.distance">
-                        <template slot="append">km</template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="用时" prop="time">
-                    <el-input disabled readonly v-model="formLine.time">
-                        <template slot="append">分钟</template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button v-if="authorization" @click="submit" type="primary" icon="el-icon-check">保存</el-button>
-                    <el-button v-else @click="$router.push({name: 'Login'})" type="primary" icon="el-icon-user">请先登录</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
+        <transition
+            enter-active-class="animate__bounceInDown"
+            leave-active-class="animate__bounceOutUp"
+        >
+            <div class="card editor-panel">
+                <div class="form-title">
+                    <div :span="8">
+                        <el-button size="mini" @click="toggleEditPanel">
+                            <i v-if="isShowingEdit" class="el-icon-arrow-up"></i>
+                            <i v-else class="el-icon-arrow-down"></i>
+                            折叠面板
+                        </el-button>
+                    </div>
+                    <div :span="16">
+                        <p v-if="isEditingLineInfo">编辑路线 {{ formLine.name }}</p>
+                        <p v-else>新建路线 {{ lineId }}</p>
+                    </div>
+                </div>
+                <el-form
+                    class="mt-2"
+                    ref="formLine"
+                    v-if="formLine && isShowingEdit"
+                    :model="formLine"
+                    :rules="formLineRules"
+                    size="mini"
+                    label-width="100px"
+                >
+                    <el-form-item label="路线名" prop="name">
+                        <el-input v-model="formLine.name"/>
+                    </el-form-item>
+                    <el-form-item label="是否公开" prop="is_public">
+                        <el-radio :label="1" v-model="formLine.is_public">公开</el-radio>
+                        <el-radio :label="0" v-model="formLine.is_public">私有</el-radio>
+                    </el-form-item>
+                    <el-form-item label="地域" prop="area">
+                        <el-input v-model="formLine.area"/>
+                    </el-form-item>
+                    <el-form-item label="路线类型" prop="road_type">
+                        <el-input v-model="formLine.road_type"/>
+                    </el-form-item>
+                    <el-form-item label="适用季节" prop="seasons">
+                        <el-checkbox-group v-model="formLine.seasonsArray">
+                            <el-checkbox-button label="春"></el-checkbox-button>
+                            <el-checkbox-button label="夏"></el-checkbox-button>
+                            <el-checkbox-button label="秋"></el-checkbox-button>
+                            <el-checkbox-button label="冬"></el-checkbox-button>
+                        </el-checkbox-group>
+                    </el-form-item>
+                    <el-form-item label="视频链接" prop="video_link">
+                        <el-input v-model="formLine.video_link"/>
+                    </el-form-item>
+                    <el-form-item label="备注" prop="note">
+                        <el-input type="textarea" :rows="5" v-model="formLine.note"/>
+                    </el-form-item>
+                    <el-form-item label="总里程" prop="distance">
+                        <el-input disabled readonly v-model="formLine.distance">
+                            <template slot="append">km</template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item label="用时" prop="time">
+                        <el-input disabled readonly v-model="formLine.time">
+                            <template slot="append">分钟</template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button v-if="authorization" @click="submit" type="primary" icon="el-icon-check">保存</el-button>
+                        <el-button v-else @click="$router.push({name: 'Login'})" type="primary" icon="el-icon-user">请先登录</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </transition>
 
         <div class="float-panel">
             <!-- 搜索面板 -->
@@ -181,9 +197,12 @@ export default {
                 road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
                 seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
             },
+
+            isShowingEdit: false,
         }
     },
     mounted() {
+        this.isShowingEdit = true
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID
@@ -246,6 +265,9 @@ export default {
         }
     },
     methods: {
+        toggleEditPanel(){
+            this.isShowingEdit = !this.isShowingEdit
+        },
         changePolicy(policy){
             console.log('最新的 policy', policy)
             this.currentPolicy = policy
@@ -575,10 +597,12 @@ export default {
     width: 400px;
 }
 
+
+
 .form-title {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 @media (max-width: $screen-width-threshold) {
