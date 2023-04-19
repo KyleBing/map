@@ -8,7 +8,7 @@
         </div>
 
         <!-- 路线列表 -->
-        <div class="float-route-list-panel" v-if="isRouteListShowed">
+        <div class="float-route-list-panel" v-if="isRouteListShowed && !isLoading">
             <route-line-list
                 @choseLine="changeLine"
                 :route-line-list="routeLineList"/>
