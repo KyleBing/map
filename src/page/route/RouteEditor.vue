@@ -60,7 +60,7 @@
                         <el-input v-model="formLine.video_link"/>
                     </el-form-item>
                     <el-form-item label="备注" prop="note">
-                        <el-input type="textarea" :rows="5" v-model="formLine.note"/>
+                        <el-input type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formLine.note"/>
                     </el-form-item>
                     <el-form-item label="总里程" prop="distance">
                         <el-input disabled readonly v-model="formLine.distance">

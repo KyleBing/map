@@ -31,9 +31,7 @@
                     <p class="info-title">创建用户</p><p class="info-value">{{line.nickname}}</p>
                 </div>
             </div>
-            <div class="note" v-if="line.note && line.note.length > 0">
-                <p v-for="line in line.note.split('\n')">{{line}}</p>
-            </div>
+            <div class="note markdown" v-if="line.note" v-html="contentHtml"></div>
             <div class="button-center"
                  v-if="isAdmin || (authorization && authorization.uid) === line.uid"
             >
@@ -49,7 +47,6 @@
                     @click="$emit('openInGaodeApp')"
                     icon="el-icon-position">打开高德导航</el-button>
             </div>-->
-
             <div class="qr">
                 <img :src="qrImg" alt="">
                 <p>扫一扫，打开该页面</p>
@@ -63,6 +60,8 @@ import {mapGetters, mapState} from "vuex";
 import QRCode from "./qr.js"
 import DrivingInfo from "@/page/route/components/DrivingInfo.vue";
 import {policyMap} from "@/page/route/DrivingPolicy"
+import {marked} from "marked";
+
 export default {
     name: "Detail",
     components: {DrivingInfo},
@@ -87,7 +86,10 @@ export default {
     },
     computed:{
         ...mapGetters(['isInPortraitMode', 'isAdmin', ]),
-        ...mapState(['authorization', 'isShowingMenuToggleBtn'])
+        ...mapState(['authorization', 'isShowingMenuToggleBtn']),
+        contentHtml(){
+            return marked.parse(this.line.note)
+        }
     },
     methods: {
         toggleContent(){

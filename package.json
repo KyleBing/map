@@ -1,6 +1,6 @@
 {
   "name": "riding-map",
-  "date-update": "2023.04.18",
+  "date-update": "2023.04.23",
   "version": "0.1.6",
   "private": true,
   "author": {
@@ -26,6 +26,7 @@
     "moment": "^2.29.4",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1",
+    "marked": "^4.2.4",
     "vuex": "^3.6.2",
     "js-base64": "^3.7.5",
     "qiniu-js": "^3.4.1"

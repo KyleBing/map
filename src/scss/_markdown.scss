@@ -1,0 +1,123 @@
+$gap: 15px;
+
+.markdown{
+    line-height: 1.6;
+    color: $text-main;
+    font-size: 12px;
+
+    hr{
+        height: 1px;
+        background-color: $border-normal;
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    p{
+        line-height: 1.5;
+        margin-bottom: 5px;
+    }
+
+    img{
+        border: 1px solid $border-normal;
+        max-width: 100%;
+        background-color: white;
+        @include border-radius(3px);
+    }
+
+    @for $item from 1 through 7 {
+        h#{$item}{
+            margin-top: (7-$item)*5px;
+            margin-bottom: (7-$item)*2px;
+            font-size: 14px + (7-$item)*1.5;
+        }
+    }
+
+    pre{
+        margin-bottom: $gap;
+        font-size: $fz-small;
+        padding: $gap $gap + 5;
+        background-color: $bg-active;
+        code{
+            padding: 0;
+            background-color: $bg-active;
+        }
+    }
+
+    code{
+        padding: 2px 5px;
+        font-size: 13.5px;
+        color: #333;
+        background-color: $bg-active;
+        @include border-radius(2px);
+    }
+
+    table{
+        margin-bottom: $gap;
+        border: 1px solid $border-normal;
+        tr{
+            th{
+                text-align: left;
+                min-width: 50px;
+                padding: 4px 10px;
+                border: 1px solid $border-normal;
+                background-color: $bg-active;
+                &[align=left]{
+                    text-align: left;
+                }
+                &[align=right]{
+                    text-align: right;
+                }
+                &[align=center]{
+                    text-align: center;
+                }
+            }
+            td{
+                text-align: left;
+                border: 1px solid $border-normal;
+                padding: 3px 10px;
+                &[align=left]{
+                    text-align: left;
+                }
+                &[align=right]{
+                    text-align: right;
+                }
+                &[align=center]{
+                    text-align: center;
+                }
+            }
+        }
+    }
+
+    input[type=checkbox]{
+        display: inline-block;
+        -webkit-appearance: checkbox !important;
+    }
+
+    ol, ul{
+        margin-left: $gap;
+        margin-bottom: $gap;
+        li{
+            margin-left: 20px;
+            line-height: 1.5;
+            margin-bottom: 2px;
+        }
+    }
+    blockquote{
+        margin-top: 15px;
+        margin-bottom: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-left: 3px solid transparentize(black, 0.8);
+        padding-left: 18px;
+        background-color: #f5f5f5;
+        > *:last-child{
+            margin-bottom: 0;
+        }
+    }
+
+    a{
+        color: $orange;
+        text-decoration: underline;
+    }
+}
+

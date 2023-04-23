@@ -166,7 +166,7 @@
                     <el-input type="textarea" :rows="6" v-model="formRoute.paths"/>
                 </el-form-item>
                 <el-form-item label="备注" prop="note">
-                    <el-input type="textarea" :rows="5" v-model="formRoute.note"/>
+                    <el-input type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formRoute.note"/>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">

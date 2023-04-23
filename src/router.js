@@ -33,17 +33,6 @@ const routes = [
         ]
     },
     {
-        name: 'Tool',
-        path: '/tool',
-        component: Layout,
-        redirect: '/tool/circle',
-        meta: {title: '地图工具', showInMenu: true, icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
-        children: [
-            {name: 'ToolCircle', path: 'circle', meta: {title: '范围标记', showInMenu: true}, component: resolve => require(['@/page/tool/circle/ToolCircle'], resolve),},
-            {name: 'ToolRoute',  path: 'route',  meta: {title: '路线标记', showInMenu: true}, component: resolve => require(['@/page/tool/route/ToolRoute'], resolve),}
-        ]
-    },
-    {
         name: 'Debug',
         path: '/debug',
         component: Layout,
@@ -65,6 +54,17 @@ const routes = [
             {name: 'InfoCarDepartment' , path: 'car-department' , meta: {title: '济南车管所'   , showInMenu: true} , component: resolve => require(['@/page/info/car/CarDepartment']     , resolve) , } ,
             {name: 'CarUsed'           , path: 'car-used'       , meta: {title: '济南二手车市场' , showInMenu: true} , component: resolve => require(['@/page/info/car/CarUsed.vue']       , resolve) , } ,
             {name: 'HighwayXueye'      , path: 'highway-xueye'  , meta: {title: '济南籍车辆高速免费' , showInMenu: true} , component: resolve => require(['@/page/info/highwayXueye/HighwayXueye.vue']       , resolve) , } ,
+        ]
+    },
+    {
+        name: 'Tool',
+        path: '/tool',
+        component: Layout,
+        redirect: '/tool/circle',
+        meta: {title: '地图工具', showInMenu: true, icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
+        children: [
+            {name: 'ToolCircle', path: 'circle', meta: {title: '范围标记', showInMenu: true}, component: resolve => require(['@/page/tool/circle/ToolCircle'], resolve),},
+            {name: 'ToolRoute',  path: 'route',  meta: {title: '路线标记', showInMenu: true}, component: resolve => require(['@/page/tool/route/ToolRoute'], resolve),}
         ]
     },
     {
