@@ -227,22 +227,22 @@ export default {
                 let path = line.pathArray.map (item => item.position)
                 this.currentDragRouting = new AMap.DragRoute(map, path, line.policy, {
                     startMarkerOptions: {
-                        offset: new AMap.Pixel(-13, -40),
+                        offset: new AMap.Pixel(-13, -43),
                         icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26, 40),
+                            size: new AMap.Size(26, 43),
                             image: ICON.start,
                             // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
+                            imageSize: new AMap.Size(26, 43) // 指定图标的大小，可以压缩图片
 
                         }),
                     },
                     endMarkerOptions: {
-                        offset: new AMap.Pixel(-13, -40),
+                        offset: new AMap.Pixel(-13, -43),
                         icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26, 40),
+                            size: new AMap.Size(26, 43),
                             image: ICON.end,
                             // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
+                            imageSize: new AMap.Size(26, 43) // 指定图标的大小，可以压缩图片
 
                         }),
                     },
