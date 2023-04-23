@@ -12,13 +12,13 @@
                 <div class="info" v-if="line.area">
                     <p class="info-title">路线区域</p><p class="info-value">{{line.area}}</p>
                 </div>
-                <div class="info">
+                <div v-if="line.policy !== undefined" class="info">
                     <p class="info-title">路线策略</p><p class="info-value">{{policyMap.get(line.policy)}}</p>
                 </div>
-                <div class="info" v-if="line.road_type">
+                <div v-if="line.road_type" class="info">
                     <p class="info-title">路面类型</p><p class="info-value">{{line.road_type}}</p>
                 </div>
-                <div class="info" v-if="line.seasons">
+                <div v-if="line.seasons" class="info">
                     <p class="info-title">推荐季节</p><p class="info-value">{{line.seasons}}</p>
                 </div>
                 <div v-if="line.distance" class="info">
@@ -27,7 +27,7 @@
                 <div v-if="line.time" class="info">
                     <p class="info-title">行驶时间</p><p class="info-value">{{line.time}} min</p>
                 </div>
-                <div class="info">
+                <div v-if="line.nickname" class="info">
                     <p class="info-title">创建用户</p><p class="info-value">{{line.nickname}}</p>
                 </div>
             </div>
@@ -38,6 +38,7 @@
                  v-if="isAdmin || (authorization && authorization.uid) === line.uid"
             >
                 <el-button
+                    v-if="line.id !== undefined"
                     type="text" size="mini"
                     @click="goToEditCurrentLine"
                     icon="el-icon-edit-outline">编辑</el-button>

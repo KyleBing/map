@@ -200,7 +200,7 @@ export default {
                 this.map.setCenter(center)
                 this.addMarker(this.map, {
                     position: center,
-                    name: '你的位置',
+                    name: '我的位置',
                     note: ''
                 })
             } else {

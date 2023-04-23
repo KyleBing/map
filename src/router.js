@@ -64,6 +64,7 @@ const routes = [
             {name: 'InfoArea'          , path: 'area'           , meta: {title: '济南各区'    , showInMenu: true} , component: resolve => require(['@/page/info/area/AreaJinan']        , resolve) , } ,
             {name: 'InfoCarDepartment' , path: 'car-department' , meta: {title: '济南车管所'   , showInMenu: true} , component: resolve => require(['@/page/info/car/CarDepartment']     , resolve) , } ,
             {name: 'CarUsed'           , path: 'car-used'       , meta: {title: '济南二手车市场' , showInMenu: true} , component: resolve => require(['@/page/info/car/CarUsed.vue']       , resolve) , } ,
+            {name: 'HighwayXueye'      , path: 'highway-xueye'  , meta: {title: '济南籍车辆高速免费' , showInMenu: true} , component: resolve => require(['@/page/info/highwayXueye/HighwayXueye.vue']       , resolve) , } ,
         ]
     },
     {
