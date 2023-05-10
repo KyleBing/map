@@ -50,7 +50,6 @@ export default {
                 viewMode: '3D',
                 zoom: 17,
                 center: POSITION.daMingHu,
-                // mapStyle: 'amap://styles/45311ae996a8bea0da10ad5151f72979',
                 showBuildingBlock: true, // 显示建筑物
                 showLabel: false, // 不显示地名什么的
             })
@@ -78,31 +77,25 @@ export default {
 
 
             this.loca.viewControl.addAnimates([{
-                /*                center: {
-                                    value: POSITION.quanChengGuangChang, // 动画终点的经纬度
-                                    control: [POSITION.quanChengGuangChangEast, POSITION.quanChengGuangChang], // 过渡中的轨迹控制点，地图上的经纬度
-                                    timing: [0.42, 0, 0.4, 1], // 动画时间控制点
-                                    duration: 2000, // 过渡时间，毫秒（ms）
-                                },*/
                 // 俯仰角动画
                 pitch: {
                     value: 45, // 动画终点的俯仰角度
                     control: [[0, -60], [1, 45]], // 控制器，x是0～1的起始区间，y是pitch值
-                    timing: [0.5, 0.2, 0.5, 0.8], // 这个值是线性过渡
+                    timing: [0.2, 0.2, 0.8, 0.8], // 这个值是线性过渡
                     duration: 8000,
                 },
-                /*                // 缩放等级动画
-                                zoom: {
-                                    value: 18, // 动画终点的地图缩放等级
-                                    control: [[0, 17], [1, 18]], // 控制器，x是0～1的起始区间，y是zoom值
-                                    timing: [0, 0, 1, 1],
-                                    duration: 8000,
-                                },*/
+                // 缩放等级动画
+                zoom: {
+                    value: 18, // 动画终点的地图缩放等级
+                    control: [[0, 17], [1, 18]], // 控制器，x是0～1的起始区间，y是zoom值
+                    timing: [0, 0, 1, 1],
+                    duration: 8000,
+                },
                 // 旋转动画
                 rotation: {
                     value: 90, // 动画终点的地图旋转角度
                     control: [[0, 0], [1, 90]], // 控制器，x是0～1的起始区间，y是rotation值
-                    timing: [0, 0, 1, 1],
+                    timing: [0.4, 0.2, 0.5, 1],
                     duration: 8000,
                 }
             }], () => {
@@ -110,7 +103,7 @@ export default {
                     center: {
                         value: POSITION.quanChengGuangChang, // 动画终点的经纬度
                         control: [POSITION.daMingHu, POSITION.quanChengGuangChang], // 过渡中的轨迹控制点，地图上的经纬度
-                        timing: [0, 0, 1, 1], // 动画时间控制点
+                        timing: [0.4, 0.2, 0.8, 1], // 动画时间控制点
                         duration: 8000, // 过渡时间，毫秒（ms）
                     },
 
@@ -126,13 +119,21 @@ export default {
                         rotation: {
                             value: 0, // 动画终点的地图旋转角度
                             control: [[0, -90], [1, 0]], // 控制器，x是0～1的起始区间，y是rotation值
-                            timing: [0.5, 0.2, 0.5, 0.8], // 这个值是线性过渡
+                            timing: [0.6, 0.1, 0.2, 0.8], // 这个值是线性过渡
                             duration: 8000,
-                        }
+                        },
+                        // 缩放等级动画
+                        zoom: {
+                            value: 17, // 动画终点的地图缩放等级
+                            control: [[0, 17], [1, 18]], // 控制器，x是0～1的起始区间，y是zoom值
+                            timing: [0.4, 0.1, 0.4, 1],
+                            duration: 8000,
+                        },
                     }])
                 })
-
             })
+
+
 
             this.map.on('complete', () => {
                 setTimeout(() => {
