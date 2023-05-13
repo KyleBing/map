@@ -33,11 +33,14 @@ body{
         @include transition(all 0.3s);
         padding: 8px 6px;
         transform: scale(1.2);
+        transform-origin: center center;
         .marker-content{
             .view{
+                @include box-shadow(3px 3px 5px transparentize(black, 0.7));
+                transform: scale(5);
+                transform-origin: center center;
                 margin-top: 10px;
                 @include transition(all, 0.3s);
-                width: 400px;
             }
         }
     }
