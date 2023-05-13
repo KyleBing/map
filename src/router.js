@@ -68,7 +68,7 @@ const routes = [
             {name: 'ToolRoute',  path: 'route',  meta: {title: '路线标记', showInMenu: true}, component: resolve => require(['@/page/tool/route/ToolRoute'], resolve),}
         ]
     },
-    {
+/*    {
         name: 'Other',
         path: '/other',
         component: Layout,
@@ -77,7 +77,7 @@ const routes = [
         children: [
             {name: 'MapLoca', path: 'map-loca', meta: {title: '脉冲图', showInMenu: true}, component: resolve => require(['@/page/other/map/MapLoca'], resolve),},
         ]
-    },
+    },*/
     {
         name: 'About',
         path: '/about',
