@@ -6,8 +6,6 @@
 export default {
     name: "Logout",
     mounted() {
-        this.$utility.deleteAuthorization()
-        this.$router.push({name: 'Login'})
     }
 }
 </script>

@@ -53,7 +53,7 @@ export default {
     },
     mounted() {
         this.height = innerHeight
-        this.animatedBg = new AnimateHeartCanvas(0, 360, 250, 20, 50, '#3d3d3d')
+        this.animatedBg = new AnimateHeartCanvas(0, 360, 250, 20, 50, '#eee')
     },
     beforeDestroy() {
         this.animatedBg.destroy()
@@ -128,12 +128,12 @@ export default {
     text-align: center;
     font-size: 1.2rem;
     margin-bottom: 40px;
-    color: white;
+    color: $text-main;
 }
 
 .login-panel{
     z-index: 10;
-    background-color: transparentize(white, 0.9);
+    background-color: white;
     @include backdrop-filter(saturate(110%) blur(5px));
     padding: 30px 50px;
     @include border-radius(15px);

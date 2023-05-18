@@ -17,7 +17,7 @@
 
 <script>
 import packageInfo from "@/../package.json"
-import {mapGetters, mapState} from "vuex";
+import {mapGetters, mapMutations, mapState} from "vuex";
 
 export default {
     name: "Copyright",
@@ -33,10 +33,10 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(['SET_AUTHORIZATION']),
         logout(){
-            this.$router.push({
-                name: 'Logout'
-            })
+            this.$utility.deleteAuthorization()
+            this.SET_AUTHORIZATION({})
         },
         login(){
             this.$router.push({
