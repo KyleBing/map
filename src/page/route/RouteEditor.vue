@@ -14,14 +14,14 @@
         >
             <div class="card editor-panel">
                 <div class="form-title">
-                    <div :span="8">
+                    <div class="collapse-btn">
                         <el-button size="mini" @click="toggleEditPanel">
                             <i v-if="isShowingEdit" class="el-icon-arrow-up"></i>
                             <i v-else class="el-icon-arrow-down"></i>
                             折叠面板
                         </el-button>
                     </div>
-                    <div :span="16">
+                    <div class="title">
                         <p v-if="isEditingLineInfo">编辑路线 {{ formLine.name }}</p>
                         <p v-else>新建路线 {{ lineId }}</p>
                     </div>
@@ -292,9 +292,12 @@ export default {
                 this.$message.warning('没有任何途经点')
                 return
             }
-            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers))
+            this.formLine.policy = this.currentPolicy
+            let requestData = {}
+            Object.assign(requestData, this.formLine)
+            requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
             routeApi
-                .modify(this.formLine)
+                .modify(requestData)
                 .then(res => {
                     this.$notify({
                         title: res.message,
@@ -313,9 +316,11 @@ export default {
                 return
             }
             this.formLine.policy = this.currentPolicy
-            this.formLine.paths = Base64.encode(JSON.stringify(this.pathPointers))
+            let requestData = {}
+            Object.assign(requestData, this.formLine)
+            requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
             routeApi
-                .add(this.formLine)
+                .add(requestData)
                 .then(res => {
                     this.$notify({
                         title: res.message,
@@ -601,8 +606,17 @@ export default {
 
 .form-title {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    .collapse-btn{
+        flex-shrink: 0;
+    }
+    .title{
+        font-weight: bold;
+        text-align: center;
+        flex-grow: 1;
+
+    }
 }
 
 @media (max-width: $screen-width-threshold) {

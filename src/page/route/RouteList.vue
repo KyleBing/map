@@ -4,7 +4,7 @@
             <el-form size="small" inline>
                 <el-form-item>
                     <el-button type="success" @click="addNewRoute" icon="el-icon-plus">新增路线</el-button>
-                    <el-button type="primary" @click="addNewRouteWidthMap" icon="el-icon-s-promotion">从地图添加新路线</el-button>
+                    <el-button type="primary" @click="addNewRouteWidthMap" icon="el-icon-s-promotion">从地图中规划路线</el-button>
                 </el-form-item>
                 <el-form-item label="关键字" class="ml-4">
                     <el-input clearable placeholder="检索词条、编码、注释" v-model="formSearch.keyword"></el-input>
@@ -31,13 +31,35 @@
                 >
                     <el-table-column width="50" prop="id" label="#"/>
                     <el-table-column width="150" prop="name" label="路线名"/>
+                    <el-table-column align="center" width="50" prop="is_public" label="状态">
+                        <template slot-scope="scope">
+                            {{ scope.row.is_public === 1 ? '公开' : '私有' }}
+                        </template>
+                    </el-table-column>
                     <el-table-column width="150" align="center" prop="area" label="地域"/>
-                    <el-table-column width="100" align="center" prop="policy" label="规划策略">
+                    <el-table-column width="70" align="center" prop="policy" label="规划策略">
                         <template slot-scope="scope">
                             {{policyMap.get(scope.row.policy)}}
                         </template>
                     </el-table-column>
                     <el-table-column width="100" align="center" prop="nickname" label="用户"/>
+
+                    <el-table-column align="center" width="450px" label="操作">
+                        <template slot-scope="scope">
+                            <el-button class="btn-narrow" type="success"
+                                       @click="showRoute(scope.row)" size="mini" plain icon="el-icon-view">地图中查看</el-button>
+                            <el-button class="btn-narrow" type="success"
+                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
+                                       @click="editRouteLine(scope.row)" plain size="mini" icon="el-icon-position">地图中编辑</el-button>
+                            <el-button class="btn-narrow" type="primary"
+                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
+                                       @click="goEdit(scope.row)" plain size="mini" icon="el-icon-edit">编辑</el-button>
+                            <el-button class="btn-narrow" type="danger"
+                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
+                                       @click="goDelete(scope.row)" plain size="mini" icon="el-icon-delete">删除</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="130" align="left" prop="seasons" label="适用季节"/>
                     <el-table-column width="200" align="left" prop="road_type" label="路线类型">
                         <template slot-scope="scope">
                             <el-tag class="mr-1" size="mini"
@@ -45,21 +67,6 @@
                             </el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" width="350px" label="操作">
-                        <template slot-scope="scope">
-                            <el-button class="btn-narrow" @click="showRoute(scope.row)" type="text" plain size="mini" icon="el-icon-view">查看</el-button>
-                            <el-button class="btn-narrow"
-                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
-                                       @click="goEdit(scope.row)" type="text" plain size="mini" icon="el-icon-edit">编辑</el-button>
-                            <el-button class="btn-narrow"
-                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
-                                       @click="editRouteLine(scope.row)" type="text" plain size="mini" icon="el-icon-position">地图中编辑</el-button>
-                            <el-button class="btn-narrow"
-                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
-                                       @click="goDelete(scope.row)" type="text" plain size="mini" icon="el-icon-delete">删除</el-button>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="130" align="left" prop="seasons" label="适用季节"/>
                     <el-table-column align="center" width="50" prop="video_link" label="视频">
                         <template slot-scope="scope">
                             <a class="link" v-if="scope.row.video_link" target="_blank" :href="scope.row.video_link"><i class="el-icon-video-camera"></i></a>
@@ -86,12 +93,8 @@
                             </el-popover>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" width="80px" prop="is_public" label="状态">
-                        <template slot-scope="scope">
-                            {{ scope.row.is_public === 1 ? '公开' : '私有' }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column sortable align="center" width="60px" prop="thumb_up" label="赞"/>
+
+<!--                    <el-table-column sortable align="center" width="60px" prop="thumb_up" label="赞"/>-->
                     <el-table-column sortable align="center" width="160px" prop="date_init" label="时间">
                         <template slot-scope="scope">
                             <div>{{ scope.row.date_init }}</div>
@@ -111,7 +114,7 @@
                     @current-change="currentPageChange"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="pager.total"
-                    :page-sizes="[30, 50, 100]"
+                    :page-sizes="[10, 15, 20, 25, 30, 40, 100]"
                     :current-page="pager.pageNo"
                     :page-size="pager.pageSize"/>
             </el-col>
@@ -121,7 +124,7 @@
         <el-dialog
             :title="modalTitle"
             :visible.sync="modalEdit"
-            width="50%"
+            width="40%"
             :before-close="closeModal">
             <el-form
                 :model="formRoute"
@@ -205,7 +208,7 @@ export default {
                 policy: 2, // 路线规划策略 默认为最短距离
                 seasonsArray: [], // *[适用季节]
                 video_link: '', // 路径视频演示
-                paths: [], // *路径点
+                paths: '', // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否公开
@@ -219,7 +222,7 @@ export default {
             },
             // pager
             pager: {
-                pageSize: 30,
+                pageSize: 15,
                 pageNo: 1,
                 total: 0
             },
@@ -288,7 +291,7 @@ export default {
                 policy: '', // 路线规划策略
                 seasonsArray: [], // *[适用季节]
                 video_link: '', // 路径视频演示
-                paths: [], // *路径点
+                paths: '', // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否公开
@@ -320,9 +323,12 @@ export default {
         },
         // 编辑
         routeModifySubmit() {
-            this.formRoute.paths = Base64.encode(this.formRoute.paths)
+            // 为了断开最终数据与 formRoute 的关联
+            let requestData = {}
+            Object.assign(requestData, this.formRoute)
+            requestData.paths = Base64.encode(this.formRoute.paths)
             routeApi
-                .modify(this.formRoute)
+                .modify(requestData)
                 .then(res => {
                     this.$notify({
                         title: res.message,
@@ -335,12 +341,17 @@ export default {
                     this.modalEdit = false
                     this.getRouteList()
                 })
+                .catch(err => {
+                })
         },
         // 新增
         routeNewSubmit() {
-            this.formRoute.paths = Base64.encode(this.formRoute.paths)
+            // 为了断开最终数据与 formRoute 的关联
+            let requestData = {}
+            Object.assign(requestData, this.formRoute)
+            requestData.paths = Base64.encode(this.formRoute.paths)
             routeApi
-                .add(this.formRoute)
+                .add(requestData)
                 .then(res => {
                     this.$notify({
                         title: res.message,

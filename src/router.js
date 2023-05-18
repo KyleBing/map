@@ -27,9 +27,9 @@ const routes = [
         redirect: '/route/route-list',
         meta: {title: '路线规划', showInMenu: true, icon: 'el-icon-wind-power' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
-            {name: 'RouteLine',   path: 'route-line',   meta: {title: '路线展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteLine'], resolve),},
-            {name: 'RouteList',   path: 'route-list',   meta: {title: '路线列表', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteList'], resolve),},
-            {name: 'RouteEditor', path: 'route-editor', meta: {title: '路线编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteEditor.vue'], resolve),}
+            {name: 'RouteLine',   path: 'route-line',   meta: {title: '展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteLine'], resolve),},
+            {name: 'RouteList',   path: 'route-list',   meta: {title: '列表', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteList'], resolve),},
+            {name: 'RouteEditor', path: 'route-editor', meta: {title: '编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteEditor.vue'], resolve),}
         ]
     },
     {
@@ -79,7 +79,7 @@ const routes = [
         ]
     },*/
     {
-        name: 'About',
+        name: 'AboutFramework',
         path: '/about',
         component: Layout,
         redirect: '/about/about',
