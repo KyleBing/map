@@ -24,18 +24,18 @@ export default {
                 {position: [117.063358, 36.683155]  , phone: '' ,            type: "market",     name: "印象城"} ,
                 {position: [117.053734, 36.717434]  , phone: '' ,            type: "market",     name: "华山-环宇城"} ,
                 {position: [117.109686, 36.667901]  , phone: '' ,            type: "market",     name: "龙湖天街"} ,
-                {position: [117.063358, 36.683155] ,  phone: '' ,            type: "market",     name: "恒隆广场"} ,
+                {position: [117.023753, 36.663806] ,  phone: '' ,            type: "market",     name: "恒隆广场"} ,
                 {position: [117.197677, 36.671258] ,  phone: '' ,            type: "market",     name: "融创茂"} ,
                 {position: [117.003035, 36.662559] ,  phone: '' ,            type: "market",     name: "经四万达"} ,
                 {position: [117.002642, 36.593224] ,  phone: '' ,            type: "market",     name: "贵和"} ,
                 {position: [116.981724, 36.612771] ,  phone: '' ,            type: "market",     name: "中海-环宇城"} ,
                 {position: [116.978032, 36.649693] ,  phone: '' ,            type: "market",     name: "和谐广场"} ,
-                {position: [117.23,36.73] , phone: '' , type: "department", name: "济东二手车市场" } ,
+                {position: [117.228819, 36.725181] , phone: '' , type: "department", name: "济东二手车市场" } ,
                 {position: [117.21,36.72] , phone: '' , type: "department", name: "济钢二手车市场" } ,
-                {position: [116.83,36.63] , phone: '' , type: "department", name: "济西二手车市场" } ,
+                {position: [116.829921, 36.626101] , phone: '' , type: "department", name: "济西二手车市场" } ,
                 {position: [116.95,36.70] , phone: '' , type: "department", name: "蓝翔路机动车交易市场" } ,
-                {position: [116.98,36.72] , phone: '' , type: "department", name: "泺口二手车市场" } ,
-                {position: [117.05,36.70] , phone: '' , type: "department", name: "华瑞源二手车网" } ,
+                {position: [116.989477, 36.712772] , phone: '' , type: "department", name: "泺口二手车市场" } ,
+                {position: [117.049659, 36.695429] , phone: '' , type: "department", name: "华瑞源二手车网" } ,
 
             ]
         }

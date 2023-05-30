@@ -24,7 +24,7 @@ export default {
                 {position: [117.063358, 36.683155]  , phone: '' ,            type: "market",     name: "印象城"} ,
                 {position: [117.053734, 36.717434]  , phone: '' ,            type: "market",     name: "华山-环宇城"} ,
                 {position: [117.109686, 36.667901]  , phone: '' ,            type: "market",     name: "龙湖天街"} ,
-                {position: [117.063358, 36.683155] ,  phone: '' ,            type: "market",     name: "恒隆广场"} ,
+                {position: [117.023753, 36.663806] ,  phone: '' ,            type: "market",     name: "恒隆广场"} ,
                 {position: [117.197677, 36.671258] ,  phone: '' ,            type: "market",     name: "融创茂"} ,
                 {position: [117.003035, 36.662559] ,  phone: '' ,            type: "market",     name: "经四万达"} ,
                 {position: [117.002642, 36.593224] ,  phone: '' ,            type: "market",     name: "贵和"} ,
