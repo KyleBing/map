@@ -372,6 +372,10 @@ export default {
                         lat: Number(locationArray[1])
                     }
                     this.searchResultText = `${locationInfo.level}：${locationInfo.formatted_address}`
+
+                    // 定位地图中心到搜索的地点
+                    this.map.setCenter(locationArray, false, 1000)
+
                 })
         },
         // 添加新标记点和圆圈

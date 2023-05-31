@@ -6,7 +6,8 @@
                     <img src="../../assets/logo.png" alt="logo"/>
                     <h2>{{ copName }}</h2>
                 </div>
-                <p class="mt-2">一个可以分享行车路线的网站</p>
+                <p class="mt-2">一个可以分享行车路线的网站。</p>
+                <p class="mt-1">建议电脑端浏览该网站。</p>
                 <p class="description">请将疑问和建议发送邮件至
                     <a :href="`mailto:${email}`">{{ email }}</a>
                 </p>

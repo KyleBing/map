@@ -27,6 +27,7 @@
             </div>
 
             <circle-panel
+                ref="circlePanel"
                 class="mt-1"
                 @circleAdd="handleCircleAdd"
                 :lng="positionPicked.lng"
@@ -152,6 +153,11 @@ export default {
                         lat: Number(locationArray[1])
                     }
                     this.resultText = `${locationInfo.level}：${locationInfo.formatted_address}`
+
+                    // 定位地图中心到搜索的地点
+                    this.map.setCenter(locationArray, false, 1000)
+
+                    this.$refs.circlePanel.name = this.address
                 })
         },
         // 添加新标记点和圆圈

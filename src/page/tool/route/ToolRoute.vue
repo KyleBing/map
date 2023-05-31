@@ -27,6 +27,7 @@
             </div>
 
             <route-panel
+                ref="routePanel"
                 class="mt-1"
                 @pointAdd="handleAddRoutePoint"
                 @print="printRoute"
@@ -171,6 +172,12 @@ export default {
                         lat: Number(locationArray[1])
                     }
                     this.resultText = `${locationInfo.level}：${locationInfo.formatted_address}`
+
+                    // 定位地图中心到搜索的地点
+                    this.map.setCenter(locationArray, false, 1000)
+
+                    this.$refs.routePanel.pointerName = this.address
+
                 })
         },
         // 添加新标记点和圆圈

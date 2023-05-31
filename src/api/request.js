@@ -6,7 +6,7 @@ import utility from "@/utility";
 const LOADING_OPTION = {
     lock: true,
     text: "载入中，请稍候...",
-    background: "rgba(0, 0, 0, 0.7)"
+    background: "rgba(0, 0, 0, 0.3)"
 }
 
 const BASE_URL = process.env.NODE_ENV === 'development' ? '': '../../portal/' // 生产环境时是 ../portal
