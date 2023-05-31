@@ -31,7 +31,15 @@ export default {
         }
     },
     mounted() {
-        this.animatedBg = new AnimateHeartCanvas(0, 360, 250, 20, 50, '')
+        this.animatedBg =
+            new AnimateHeartCanvas(
+                0,
+                360,
+                100,
+                30,
+                80,
+                ''
+            )
     },
     beforeDestroy() {
         this.animatedBg.destroy()
