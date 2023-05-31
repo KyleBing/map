@@ -30,18 +30,18 @@
                     v-loading="isLoading"
                 >
                     <el-table-column width="50" prop="id" label="#"/>
-                    <el-table-column width="150" prop="name" label="路线名"/>
+                    <el-table-column width="150" prop="title" label="路线名"/>
                     <el-table-column align="center" width="50" prop="is_public" label="状态">
                         <template slot-scope="scope">
                             {{ scope.row.is_public === 1 ? '公开' : '私有' }}
                         </template>
                     </el-table-column>
                     <el-table-column width="150" align="center" prop="area" label="地域"/>
-                    <el-table-column width="70" align="center" prop="policy" label="规划策略">
+<!--                    <el-table-column width="70" align="center" prop="policy" label="规划策略">
                         <template slot-scope="scope">
                             {{policyMap.get(scope.row.policy)}}
                         </template>
-                    </el-table-column>
+                    </el-table-column>-->
                     <el-table-column width="100" align="center" prop="nickname" label="用户"/>
 
                     <el-table-column align="center" width="450px" label="操作">
@@ -75,7 +75,7 @@
                     </el-table-column>
                     <el-table-column align="center" prop="paths" label="路线节点">
                         <template slot-scope="scope">
-                            <div v-if="scope.row.paths">{{ scope.row.pathArray.length }}</div>
+                            <div v-if="scope.row.paths">{{ scope.row.pointersArray.length }}</div>
                         </template>
                     </el-table-column>
                     <el-table-column align="left" width="250" prop="note" label="备注">
@@ -237,7 +237,7 @@ export default {
         }
     },
     mounted() {
-        this.getRouteList()
+        this.getPointerList()
     },
     computed: {
         ...mapGetters(["isAdmin", 'isInPortraitMode']),
@@ -253,7 +253,7 @@ export default {
     },
     methods: {
         search(){
-            this.getRouteList()
+            this.getPointerList()
         },
         editRouteLine(routeInfo){
             this.$router.push({
@@ -339,7 +339,7 @@ export default {
                     })
                     this.editingRouteId = null
                     this.modalEdit = false
-                    this.getRouteList()
+                    this.getPointerList()
                 })
                 .catch(err => {
                 })
@@ -362,7 +362,7 @@ export default {
                     })
                     this.editingRouteId = null
                     this.modalEdit = false
-                    this.getRouteList()
+                    this.getPointerList()
                 })
         },
 
@@ -371,16 +371,16 @@ export default {
         pagerSizeChange(newPageSize) {
             this.pager.pageNo = 1
             this.pager.pageSize = newPageSize
-            this.getRouteList()
+            this.getPointerList()
         },
         currentPageChange(newCurrentPage) {
             this.pager.pageNo = 1
             this.pager.pageNo = newCurrentPage
-            this.getRouteList()
+            this.getPointerList()
         },
 
         // 获取路线列表
-        getRouteList() {
+        getPointerList() {
             this.isLoading = true
             let requestData = {
                 pageNo: this.pager.pageNo,
@@ -394,10 +394,8 @@ export default {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
-                        item.paths = Base64.decode(item.paths) || ''
-
-                        item.pathArray = item.paths && JSON.parse(item.paths)
-                        item.seasonsArray = item.seasons.split('、').filter(item => item !== '')
+                        item.pointers = Base64.decode(item.pointers) || ''
+                        item.pointersArray = item.pointers && JSON.parse(item.pointers)
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
@@ -424,7 +422,7 @@ export default {
                 }
                 pointerApi.delete(requestData)
                     .then(res => {
-                            this.getRouteList();
+                            this.getPointerList();
                             this.$notify({
                                 title: res.message,
                                 position: 'top-right',
