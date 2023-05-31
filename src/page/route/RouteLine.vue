@@ -8,7 +8,7 @@
         </div>
 
         <!-- 路线列表 -->
-        <div class="float-route-list-panel" v-if="isRouteListShowed && !isLoading">
+        <div class="float-route-list-panel" v-loading="isLoading" v-if="isRouteListShowed">
             <route-line-list
                 @choseLine="changeLine"
                 :route-line-list="routeLineList"/>
@@ -368,6 +368,7 @@ export default {
 }
 
 .float-route-list-panel{
+    min-height: 300px;
     position: absolute;
     z-index: 1000;
     top: 20px;

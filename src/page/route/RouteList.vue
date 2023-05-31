@@ -23,8 +23,8 @@
                 <el-table
                     class="table-narrow"
                     size="mini"
-                    :height="windowInsets.height - 150"
-                    :max-height="windowInsets.height - 150"
+                    :height="windowInsets.height - 170"
+                    :max-height="windowInsets.height - 170"
                     stripe
                     :data="tableData"
                     v-loading="isLoading"
