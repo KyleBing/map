@@ -35,7 +35,7 @@ import ICON from "@/assets/icons"
 import Detail from "./components/Detail"
 import {mapGetters, mapState} from "vuex"
 import mapConfig from "../../mapConfig";
-import routeApi from "@/api/routeApi";
+import pointerApi from "@/api/pointerApi";
 
 import {Base64} from "js-base64"
 import utility from "@/utility";
@@ -147,7 +147,7 @@ export default {
                 pageNo: this.pager.pageNo,
                 pageSize: this.pager.pageSize
             }
-            routeApi
+            pointerApi
                 .list(requestData)
                 .then(res => {
                     this.isLoading = false
@@ -181,7 +181,7 @@ export default {
         },
 
         getLineInfo(lineId) {
-            routeApi
+            pointerApi
                 .detail({
                     id: lineId
                 })

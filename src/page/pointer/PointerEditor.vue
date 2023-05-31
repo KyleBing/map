@@ -137,7 +137,7 @@ import {mapGetters, mapState} from 'vuex'
 import mapConfig from "../../mapConfig";
 import Detail from "@/page/route/components/Detail.vue";
 import axios from "axios";
-import routeApi from "@/api/routeApi";
+import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64";
 
 import {policyArray} from "./DrivingPolicy"
@@ -296,7 +296,7 @@ export default {
             let requestData = {}
             Object.assign(requestData, this.formLine)
             requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
-            routeApi
+            pointerApi
                 .modify(requestData)
                 .then(res => {
                     this.$notify({
@@ -319,7 +319,7 @@ export default {
             let requestData = {}
             Object.assign(requestData, this.formLine)
             requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
-            routeApi
+            pointerApi
                 .add(requestData)
                 .then(res => {
                     this.$notify({
@@ -335,7 +335,7 @@ export default {
         // 获取路线信息
         getLineInfo() {
             if (this.$route.query.lineId) {
-                routeApi
+                pointerApi
                     .detail({
                         id: this.$route.query.lineId
                     })

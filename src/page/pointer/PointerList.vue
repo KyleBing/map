@@ -183,7 +183,7 @@
 <script>
 import utility from "@/utility";
 import {mapGetters, mapState} from "vuex";
-import routeApi from "@/api/routeApi";
+import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64"
 import { policyArray, policyMap } from './DrivingPolicy'
 
@@ -327,7 +327,7 @@ export default {
             let requestData = {}
             Object.assign(requestData, this.formRoute)
             requestData.paths = Base64.encode(this.formRoute.paths)
-            routeApi
+            pointerApi
                 .modify(requestData)
                 .then(res => {
                     this.$notify({
@@ -350,7 +350,7 @@ export default {
             let requestData = {}
             Object.assign(requestData, this.formRoute)
             requestData.paths = Base64.encode(this.formRoute.paths)
-            routeApi
+            pointerApi
                 .add(requestData)
                 .then(res => {
                     this.$notify({
@@ -388,7 +388,7 @@ export default {
                 keyword: this.formSearch.keyword,
                 dateRange: this.formSearch.dateRange
             }
-            routeApi
+            pointerApi
                 .list(requestData)
                 .then(res => {
                     this.isLoading = false
@@ -422,7 +422,7 @@ export default {
                 let requestData = {
                     id: route.id
                 }
-                routeApi.delete(requestData)
+                pointerApi.delete(requestData)
                     .then(res => {
                             this.getRouteList();
                             this.$notify({
