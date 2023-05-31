@@ -24,12 +24,22 @@ const routes = [
         name: 'Route',
         path: '/route',
         component: Layout,
-        redirect: '/route/route-list',
         meta: {title: '路线规划', showInMenu: true, icon: 'el-icon-wind-power' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
             {name: 'RouteLine',   path: 'route-line',   meta: {title: '展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteLine'], resolve),},
             {name: 'RouteList',   path: 'route-list',   meta: {title: '列表', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteList'], resolve),},
             {name: 'RouteEditor', path: 'route-editor', meta: {title: '编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteEditor.vue'], resolve),}
+        ]
+    },
+    {
+        name: 'Pointer',
+        path: '/pointer',
+        component: Layout,
+        meta: {title: '地域信息', showInMenu: true, icon: 'el-icon-wind-power' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
+        children: [
+            {name: 'PointerViewer',   path: 'pointer-viewer',   meta: {title: '展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerViewer'], resolve),},
+            {name: 'PointerList',   path: 'pointer-list',   meta: {title: '列表', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerList'], resolve),},
+            {name: 'PointerEditor', path: 'pointer-editor', meta: {title: '编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerEditor.vue'], resolve),}
         ]
     },
     {
@@ -47,7 +57,7 @@ const routes = [
         path: '/info',
         component: Layout,
         redirect: '/info/plate',
-        meta: {title: '地图信息', showInMenu: true, icon: 'el-icon-collection' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
+        meta: {title: '济南本地信息', showInMenu: true, icon: 'el-icon-postcard' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
             {name: 'InfoPlate'         , path: 'plate'          , meta: {title: '山东各市车牌'  , showInMenu: true} , component: resolve => require(['@/page/info/carPlate/CarPlate.vue'] , resolve) , } ,
             {name: 'InfoArea'          , path: 'area'           , meta: {title: '济南各区'    , showInMenu: true} , component: resolve => require(['@/page/info/area/AreaJinan']        , resolve) , } ,
@@ -62,7 +72,7 @@ const routes = [
         path: '/tool',
         component: Layout,
         redirect: '/tool/circle',
-        meta: {title: '地图工具', showInMenu: true, icon: 'el-icon-position' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
+        meta: {title: '地图工具', showInMenu: true, icon: 'el-icon-place' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
             {name: 'ToolCircle', path: 'circle', meta: {title: '范围标记', showInMenu: true}, component: resolve => require(['@/page/tool/circle/ToolCircle'], resolve),},
             {name: 'ToolRoute',  path: 'route',  meta: {title: '路线标记', showInMenu: true}, component: resolve => require(['@/page/tool/route/ToolRoute'], resolve),}

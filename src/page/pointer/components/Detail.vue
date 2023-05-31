@@ -57,7 +57,7 @@
 
 <script>
 import {mapGetters, mapState} from "vuex";
-import QRCode from "../../../lib/qr.js"
+import QRCode from "./qr.js"
 import DrivingInfo from "@/page/route/components/DrivingInfo.vue";
 import {policyMap} from "@/page/route/DrivingPolicy"
 import {marked} from "marked";

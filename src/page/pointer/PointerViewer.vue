@@ -46,7 +46,7 @@ const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 
 export default {
-    name: "RouteLine",
+    name: "PointerViewer",
     components: {DrivingInfo, RouteLineList, Detail},
     data() {
         return {
