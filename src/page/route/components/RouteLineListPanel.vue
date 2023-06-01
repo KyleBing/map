@@ -1,18 +1,22 @@
 <template>
-    <div class="route-line-list">
-        <div
-            @click="$emit('choseLine', line.id)"
-            :class="[
+    <div class="list-panel">
+        <div class="list-title">路径列表</div>
+        <div class="route-line-list">
+            <div
+                @click="$emit('choseLine', line.id)"
+                :class="[
                 'route-line-list-item',
                 {active: Number($route.query.lineId) === line.id}
             ]"
-            v-for="line in routeLineList" :key="line.id"
-        >
-            <div class="id">{{line.id}}</div>
-            <div class="name">{{line.name}}</div>
-            <div class="area">{{line.area}}</div>
+                v-for="line in routeLineList" :key="line.id"
+            >
+                <div class="id">{{line.id}}</div>
+                <div class="name">{{line.name}}</div>
+                <div class="area">{{line.area}}</div>
+            </div>
         </div>
     </div>
+
 </template>
 
 <script>
@@ -42,10 +46,21 @@ export default {
 <style lang="scss" scoped>
 @import "../../../scss/plugin";
 
-.route-line-list{
+.list-panel{
     @extend .card;
-    padding: 10px 0;
-    @include border-radius($radius);
+    padding: 0 0 10px;
+}
+.list-title{
+    padding: 8px 10px;
+    border-bottom: 1px solid $border-normal;
+    //background-color: $bg-second;
+    font-weight: bold;
+    text-align: center;
+    font-size: $fz-title;
+}
+.route-line-list{
+    min-height: 100px;
+    //@include border-radius($radius);
     overflow: hidden;
     background-color: white;
     width: 300px;

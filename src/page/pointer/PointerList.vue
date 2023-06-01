@@ -7,7 +7,7 @@
                     <el-button type="primary" @click="addNewPointerWidthMap" icon="el-icon-s-promotion">从地图中规划点图</el-button>
                 </el-form-item>
                 <el-form-item label="关键字" class="ml-4">
-                    <el-input clearable placeholder="点位名" v-model="formSearch.keyword"></el-input>
+                    <el-input clearable placeholder="点图名" v-model="formSearch.keyword"></el-input>
                 </el-form-item>
                 <el-form-item label="添加时间区间">
                     <el-date-picker type="datetimerange" v-model="formSearch.dateRange"></el-date-picker>

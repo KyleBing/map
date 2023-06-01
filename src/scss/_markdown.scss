@@ -5,6 +5,8 @@ $gap: 15px;
     color: $text-main;
     font-size: 12px;
 
+
+
     hr{
         height: 1px;
         background-color: $border-normal;
@@ -28,7 +30,7 @@ $gap: 15px;
         h#{$item}{
             margin-top: (7-$item)*5px;
             margin-bottom: (7-$item)*2px;
-            font-size: 14px + (7-$item)*1.5;
+            font-size: 12px + (7-$item)*1.5;
         }
     }
 

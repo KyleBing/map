@@ -16,7 +16,7 @@
                     <p class="info-title">创建用户</p><p class="info-value">{{pointer.nickname}}</p>
                 </div>
             </div>
-            <div class="note markdown" v-if="pointer.note" v-html="contentHtml"></div>
+            <div class="note markdown" :style="`max-height: ${height}px`" v-if="pointer.note" v-html="contentHtml"></div>
             <div class="button-center"
                  v-if="isAdmin || (authorization && authorization.uid) === pointer.uid"
             >
@@ -56,6 +56,7 @@ export default {
         return {
             showContent: true,
             qrImg: '',
+            height: innerHeight * 0.5
         }
     },
     mounted() {
@@ -184,6 +185,7 @@ i{
     }
 }
 .note{
+    overflow-y: auto;
     padding: 10px 20px;
     border-top: 1px solid $border-normal;
     line-height: 1.5;

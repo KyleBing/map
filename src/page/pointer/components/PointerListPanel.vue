@@ -1,18 +1,24 @@
 <template>
-    <div class="route-line-list">
-        <div
-            @click="$emit('chosePointer', pointer.id)"
-            :class="[
+    <div class="list-panel">
+        <div class="list-title">点图列表</div>
+        <div class="route-line-list">
+            <div
+                v-if="pointerList.length > 0"
+                v-for="pointer in pointerList" :key="pointer.id"
+                @click="$emit('chosePointer', pointer.id)"
+                :class="[
                 'route-line-list-item',
                 {active: Number($route.query.pointerId) === pointer.id}
             ]"
-            v-for="pointer in pointerList" :key="pointer.id"
-        >
-            <div class="id">{{pointer.id}}</div>
-            <div class="name">{{pointer.name}}</div>
-            <div class="area">{{pointer.area}}</div>
+            >
+                <div class="id">{{pointer.id}}</div>
+                <div class="name">{{pointer.name}}</div>
+                <div class="area">{{pointer.area}}</div>
+            </div>
+            <div v-else> 暂无数据</div>
         </div>
     </div>
+
 </template>
 
 <script>
@@ -42,10 +48,21 @@ export default {
 <style lang="scss" scoped>
 @import "../../../scss/plugin";
 
-.route-line-list{
+.list-panel{
     @extend .card;
-    padding: 10px 0;
-    @include border-radius($radius);
+    padding: 0 0 10px;
+}
+.list-title{
+    padding: 8px 10px;
+    border-bottom: 1px solid $border-normal;
+    //background-color: $bg-second;
+    font-weight: bold;
+    text-align: center;
+    font-size: $fz-title;
+}
+.route-line-list{
+    min-height: 100px;
+    //@include border-radius($radius);
     overflow: hidden;
     background-color: white;
     width: 300px;

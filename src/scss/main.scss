@@ -34,14 +34,14 @@ body{
         padding: 8px 6px;
         transform: scale(1.2);
         transform-origin: center center;
-        .marker-content{
-            .view{
-                @include box-shadow(3px 3px 5px transparentize(black, 0.7));
-                transform: scale(5);
-                transform-origin: center center;
-                margin-top: 10px;
-                @include transition(all, 0.3s);
+        .marker-index{
+            .index{
+                color: $color-main;
+                text-shadow: 1px 2px 1px transparentize($color-main, 0.6);
             }
+        }
+        .marker-content{
+
         }
     }
     display: flex;
@@ -54,9 +54,10 @@ body{
         align-items: center;
         justify-content: flex-start;
         .index{
-            margin-right: 10px;
-            color: $text-subtitle;
-            font-size: $fz-small;
+            font-weight: bold;
+            padding: 0 10px 0 5px;
+            color: transparentize(black, 0.6);
+            font-size: 20px;
         }
         .title{
             white-space: nowrap;
@@ -79,6 +80,13 @@ body{
             img{
                 display: block;
                 width: 100%;
+            }
+            &:hover{
+                    @include box-shadow(3px 3px 5px transparentize(black, 0.7));
+                    transform: scale(5);
+                    transform-origin: center center;
+                    margin-top: 10px;
+                    @include transition(all, 0.3s);
             }
         }
     }
