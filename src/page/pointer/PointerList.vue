@@ -3,11 +3,11 @@
         <div class="tool-bar mb-2" v-if="!isInPortraitMode">
             <el-form size="small" inline>
                 <el-form-item>
-                    <el-button type="success" @click="addNewRoute" icon="el-icon-plus">新增路线</el-button>
+                    <el-button type="success" @click="addNewPointer" icon="el-icon-plus">新增路线</el-button>
                     <el-button type="primary" @click="addNewRouteWidthMap" icon="el-icon-s-promotion">从地图中规划路线</el-button>
                 </el-form-item>
                 <el-form-item label="关键字" class="ml-4">
-                    <el-input clearable placeholder="检索词条、编码、注释" v-model="formSearch.keyword"></el-input>
+                    <el-input clearable placeholder="点位名" v-model="formSearch.keyword"></el-input>
                 </el-form-item>
                 <el-form-item label="添加时间区间">
                     <el-date-picker type="datetimerange" v-model="formSearch.dateRange"></el-date-picker>
@@ -30,7 +30,7 @@
                     v-loading="isLoading"
                 >
                     <el-table-column width="50" prop="id" label="#"/>
-                    <el-table-column width="150" prop="title" label="数据名"/>
+                    <el-table-column width="150" prop="name" label="数据名"/>
                     <el-table-column align="center" width="50" prop="is_public" label="状态">
                         <template slot-scope="scope">
                             {{ scope.row.is_public === 1 ? '公开' : '私有' }}
@@ -47,10 +47,10 @@
                     <el-table-column align="center" width="450px" label="操作">
                         <template slot-scope="scope">
                             <el-button class="btn-narrow" type="success"
-                                       @click="showRoute(scope.row)" size="mini" plain icon="el-icon-view">地图中查看</el-button>
+                                       @click="showPointer(scope.row)" size="mini" plain icon="el-icon-view">地图中查看</el-button>
                             <el-button class="btn-narrow" type="success"
                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
-                                       @click="editRouteLine(scope.row)" plain size="mini" icon="el-icon-position">地图中编辑</el-button>
+                                       @click="editPointer(scope.row)" plain size="mini" icon="el-icon-position">地图中编辑</el-button>
                             <el-button class="btn-narrow" type="primary"
                                        v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
                                        @click="goEdit(scope.row)" plain size="mini" icon="el-icon-edit">编辑</el-button>
@@ -65,7 +65,7 @@
                             <span v-else>-</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="paths" label="数据点数量">
+                    <el-table-column align="center" prop="pointers" label="数据点数量">
                         <template slot-scope="scope">
                             <div v-if="scope.row.pointers">{{ scope.row.pointersArray.length }}</div>
                         </template>
@@ -125,49 +125,28 @@
             width="40%"
             :before-close="closeModal">
             <el-form
-                :model="formRoute"
-                :rules="routeRules"
+                :model="formPointer"
+                :rules="formPointerRules"
                 size="small"
                 ref="formRoute" label-width="100px">
-                <el-form-item label="路线名" prop="name">
-                    <el-input v-model="formRoute.name"/>
+                <el-form-item label="点图名" prop="name">
+                    <el-input v-model="formPointer.name"/>
                 </el-form-item>
                 <el-form-item label="地域" prop="area">
-                    <el-input v-model="formRoute.area"/>
-                </el-form-item>
-                <el-form-item label="路线类型" prop="road_type">
-                    <el-input v-model="formRoute.road_type"/>
-                </el-form-item>
-                <el-form-item label="规划策略" prop="policy">
-                    <el-select v-model="formRoute.policy" placeholder="请选择">
-                        <el-option
-                            v-for="item in policyArray"
-                            :key="item.label"
-                            :label="item.label"
-                            :value="item.value">
-                        </el-option>
-                    </el-select>
+                    <el-input v-model="formPointer.area"/>
                 </el-form-item>
                 <el-form-item label="是否公开" prop="is_public">
-                    <el-radio :label="1" v-model="formRoute.is_public">公开</el-radio>
-                    <el-radio :label="0" v-model="formRoute.is_public">私有</el-radio>
-                </el-form-item>
-                <el-form-item label="适用季节" prop="seasons">
-                    <el-checkbox-group v-model="formRoute.seasonsArray">
-                        <el-checkbox-button label="春"></el-checkbox-button>
-                        <el-checkbox-button label="夏"></el-checkbox-button>
-                        <el-checkbox-button label="秋"></el-checkbox-button>
-                        <el-checkbox-button label="冬"></el-checkbox-button>
-                    </el-checkbox-group>
+                    <el-radio :label="1" v-model="formPointer.is_public">公开</el-radio>
+                    <el-radio :label="0" v-model="formPointer.is_public">私有</el-radio>
                 </el-form-item>
                 <el-form-item label="视频链接" prop="video_link">
-                    <el-input v-model="formRoute.video_link"/>
+                    <el-input v-model="formPointer.video_link"/>
                 </el-form-item>
-                <el-form-item label="路线" prop="paths">
-                    <el-input type="textarea" :rows="6" v-model="formRoute.paths"/>
+                <el-form-item label="点位 json" prop="pointers">
+                    <el-input type="textarea" :rows="6" v-model="formPointer.pointers"/>
                 </el-form-item>
                 <el-form-item label="备注" prop="note">
-                    <el-input type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formRoute.note"/>
+                    <el-input type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formPointer.note"/>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -199,23 +178,20 @@ export default {
                 {id: 1, name: '管理员'},
                 {id: 2, name: '普通路线'},
             ],
-            formRoute: {
-                name: '', // *路线名
+            // FORM
+            formPointer: { // 点图信息
+                name: '', // *点图名
                 area: '', // *地域
-                road_type: '', // *路面类型
-                policy: 2, // 路线规划策略 默认为最短距离
-                seasonsArray: [], // *[适用季节]
                 video_link: '', // 路径视频演示
-                paths: '', // *路径点
+                pointers: [], // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否公开
             },
-            routeRules: {
-                name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
+            formPointerRules: {
+                name: [{required: true, message: '请填写点图钱', trigger: 'blur'},],
                 area: [{required: true, message: '请填写地域', trigger: 'blur'},],
-                policy: [{required: true, message: '请选择路线规划策略', trigger: 'blur'},],
-                road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
+                policy: [{required: true, message: '请选择点图规划策略', trigger: 'blur'},],
                 seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
             },
             // pager
@@ -246,50 +222,47 @@ export default {
     },
     watch: {
         'formRoute.seasonsArray'(newValue){
-            this.formRoute.seasons = newValue.join('、')
+            this.formPointer.seasons = newValue.join('、')
         }
     },
     methods: {
         search(){
             this.getPointerList()
         },
-        editRouteLine(routeInfo){
+        editPointer(routeInfo){
             this.$router.push({
-                name: "RouteEditor",
+                name: "PointerEditor",
                 query: {
-                    lineId: routeInfo.id
+                    pointerId: routeInfo.id
                 }
             })
         },
         // 跳转到路经展示页面
-        showRoute(routeInfo){
+        showPointer(routeInfo){
             this.$router.push({
-                name: "RouteLine",
+                name: "PointerViewer",
                 query: {
-                    lineId: routeInfo.id
+                    pointerId: routeInfo.id
                 }
             })
         },
         // route to line editor
         addNewRouteWidthMap(){
             this.$router.push({
-                name: 'RouteEditor'
+                name: 'PointerEditor'
             })
         },
-        addNewRoute() {
+        addNewPointer() {
             this.modalEdit = true
             this.editingRouteId = null
             this.clearForm()
         },
         clearForm() {
-            this.formRoute = {
+            this.formPointer = {
                 name: '', // *路线名
                 area: '', // *地域
-                road_type: '', // *路面类型
-                policy: '', // 路线规划策略
-                seasonsArray: [], // *[适用季节]
                 video_link: '', // 路径视频演示
-                paths: '', // *路径点
+                pointers: '', // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否公开
@@ -321,10 +294,10 @@ export default {
         },
         // 编辑
         routeModifySubmit() {
-            // 为了断开最终数据与 formRoute 的关联
+            // 为了断开最终数据与 formPointer 的关联
             let requestData = {}
-            Object.assign(requestData, this.formRoute)
-            requestData.paths = Base64.encode(this.formRoute.paths)
+            Object.assign(requestData, this.formPointer)
+            requestData.pointers = Base64.encode(this.formPointer.pointers)
             pointerApi
                 .modify(requestData)
                 .then(res => {
@@ -344,10 +317,10 @@ export default {
         },
         // 新增
         routeNewSubmit() {
-            // 为了断开最终数据与 formRoute 的关联
+            // 为了断开最终数据与 formPointer 的关联
             let requestData = {}
-            Object.assign(requestData, this.formRoute)
-            requestData.paths = Base64.encode(this.formRoute.paths)
+            Object.assign(requestData, this.formPointer)
+            requestData.pointers = Base64.encode(this.formPointer.pointers)
             pointerApi
                 .add(requestData)
                 .then(res => {
@@ -392,6 +365,7 @@ export default {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
+                        item.pointers = Base64.decode(item.pointers) || ''
                         item.pointersArray = item.pointers && JSON.parse(item.pointers)
                         item.date_create = utility.dateFormatter(new Date(item.date_create))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
@@ -404,7 +378,7 @@ export default {
         },
         goEdit(routeLine) {
             this.editingRouteId = routeLine.uid
-            Object.assign(this.formRoute, routeLine)
+            Object.assign(this.formPointer, routeLine)
             this.modalEdit = true
         },
         goDelete(route) {

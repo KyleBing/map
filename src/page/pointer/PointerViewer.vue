@@ -9,9 +9,9 @@
 
         <!-- 路线列表 -->
         <div class="float-route-list-panel" v-loading="isLoading" v-if="isRouteListShowed">
-            <route-line-list
+            <PointerListPanel
                 @choseLine="changeLine"
-                :route-line-list="routeLineList"/>
+                :route-line-list="pointerList"/>
         </div>
 
         <!-- 地图 -->
@@ -39,15 +39,14 @@ import pointerApi from "@/api/pointerApi";
 
 import {Base64} from "js-base64"
 import utility from "@/utility";
-import RouteLineList from "@/page/route/components/RouteLineListPanel";
-import DrivingInfo from "@/page/route/components/DrivingInfo";
+import PointerListPanel from "./components/PointerListPanel";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 
 export default {
     name: "PointerViewer",
-    components: {DrivingInfo, RouteLineList, Detail},
+    components: {PointerListPanel, Detail},
     data() {
         return {
             isLoading: false,
@@ -63,7 +62,7 @@ export default {
                 time: ''
             },
 
-            routeLineList: [], // 路线数组
+            pointerList: [], // 路线数组
             // pager
             pager: {
                 pageSize: 30,
@@ -76,7 +75,7 @@ export default {
         }
     },
     mounted() {
-        this.getRouteList()
+        this.getPointerList()
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID
@@ -141,7 +140,7 @@ export default {
         },
 
         // 获取路线列表
-        getRouteList() {
+        getPointerList() {
             this.isLoading = true
             let requestData = {
                 pageNo: this.pager.pageNo,
@@ -152,7 +151,7 @@ export default {
                 .then(res => {
                     this.isLoading = false
                     this.pager = res.data.pager
-                    this.routeLineList = res.data.list.map(item => {
+                    this.pointerList = res.data.list.map(item => {
                         item.paths = Base64.decode(item.paths) || ''
 
                         item.pathArray = item.paths && JSON.parse(item.paths)
@@ -188,8 +187,7 @@ export default {
                 .then(res => {
                     this.activeLineObj = res.data
                     this.activeLineObj.pathArray = JSON.parse(Base64.decode(this.activeLineObj.paths))
-                    this.loadLine(this.map, this.activeLineObj)
-                    this.loadLineLabels(this.map, this.activeLineObj)
+                    this.loadPointerLabels(this.map, this.activeLineObj)
                 })
         },
 
@@ -214,72 +212,8 @@ export default {
             mapContainer.style.width = window.innerWidth + "px"
         },
 
-        // 载入路线信息
-        loadLine(map, line) {
-
-            // 切换线路之前如果存在路线，销毁已存在的路线
-            if (this.currentDragRouting) {
-                this.currentDragRouting.destroy()
-                this.currentDragRouting = null
-            }
-            map.plugin('AMap.DragRoute', () => {
-                // path 是驾车导航的起、途径和终点，最多支持16个途经点
-                let path = line.pathArray.map (item => item.position)
-                this.currentDragRouting = new AMap.DragRoute(map, path, line.policy, {
-                    startMarkerOptions: {
-                        offset: new AMap.Pixel(-13, -43),
-                        icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26, 43),
-                            image: ICON.start,
-                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26, 43) // 指定图标的大小，可以压缩图片
-
-                        }),
-                    },
-                    endMarkerOptions: {
-                        offset: new AMap.Pixel(-13, -43),
-                        icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26, 43),
-                            image: ICON.end,
-                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26, 43) // 指定图标的大小，可以压缩图片
-
-                        }),
-                    },
-                    midMarkerOptions: {
-                        offset: new AMap.Pixel(-9, -9),
-                        icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(30, 30),
-                            image: ICON.midIcon,
-                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(18, 18) // 指定图标的大小，可以压缩图片
-
-                        }),
-                    },
-                })
-
-                // 路线规划完成时
-                this.currentDragRouting.on('complete', res => {
-                    // 路线规划完成后，返回的路线数据：设置距离、行驶时间
-                    let lineData = res.data.routes[0]
-                    let distance =  (lineData.distance / 1000).toFixed(1) // m -> km
-                    let time = (lineData.time / 60).toFixed() // second -> min
-
-                    this.$set(this.activeLineObj, 'distance', distance)
-                    this.$set(this.activeLineObj, 'time', time)
-
-                    this.$set(this.drivingInfo, 'distance', distance)
-                    this.$set(this.drivingInfo, 'time', time)
-
-                })
-
-                // 查询导航路径并开启拖拽导航
-                this.currentDragRouting.search()
-            })
-        },
-
         // 添加路线 Label
-        loadLineLabels(map, line) {
+        loadPointerLabels(map, line) {
             line.pathArray.forEach((item, index) => {
                 this.addMarker(map, item, index)
             })

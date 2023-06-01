@@ -7,7 +7,7 @@
             :line="activeLineObj"
         />
 
-        <!-- 路线信息编辑面板-->
+        <!-- 点图信息编辑面板-->
         <transition
             enter-active-class="animate__bounceInDown"
             leave-active-class="animate__bounceOutUp"
@@ -22,20 +22,20 @@
                         </el-button>
                     </div>
                     <div class="title">
-                        <p v-if="isEditingLineInfo">编辑路线 {{ formPointer.name }}</p>
-                        <p v-else>新建路线 {{ lineId }}</p>
+                        <p v-if="isEditingLineInfo">编辑点图 {{ formPointer.name }}</p>
+                        <p v-else>新建点图 {{ pointerId }}</p>
                     </div>
                 </div>
                 <el-form
-                    class="mt-2"
-                    ref="formLine"
+                    class="mt-2 p-1"
+                    ref="formPointer"
                     v-if="formPointer && isShowingEdit"
                     :model="formPointer"
                     :rules="formPointerRules"
                     size="mini"
-                    label-width="100px"
+                    label-width="80px"
                 >
-                    <el-form-item label="数据名" prop="name">
+                    <el-form-item label="点图名" prop="name">
                         <el-input v-model="formPointer.name"/>
                     </el-form-item>
                     <el-form-item label="是否公开" prop="is_public">
@@ -45,32 +45,11 @@
                     <el-form-item label="地域" prop="area">
                         <el-input v-model="formPointer.area"/>
                     </el-form-item>
-                    <el-form-item label="路线类型" prop="road_type">
-                        <el-input v-model="formPointer.road_type"/>
-                    </el-form-item>
-                    <el-form-item label="适用季节" prop="seasons">
-                        <el-checkbox-group v-model="formPointer.seasonsArray">
-                            <el-checkbox-button label="春"></el-checkbox-button>
-                            <el-checkbox-button label="夏"></el-checkbox-button>
-                            <el-checkbox-button label="秋"></el-checkbox-button>
-                            <el-checkbox-button label="冬"></el-checkbox-button>
-                        </el-checkbox-group>
-                    </el-form-item>
                     <el-form-item label="视频链接" prop="video_link">
                         <el-input v-model="formPointer.video_link"/>
                     </el-form-item>
                     <el-form-item label="备注" prop="note">
                         <el-input type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formPointer.note"/>
-                    </el-form-item>
-                    <el-form-item label="总里程" prop="distance">
-                        <el-input disabled readonly v-model="formPointer.distance">
-                            <template slot="append">km</template>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item label="用时" prop="time">
-                        <el-input disabled readonly v-model="formPointer.time">
-                            <template slot="append">分钟</template>
-                        </el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button v-if="authorization" @click="submit" type="primary" icon="el-icon-check">保存</el-button>
@@ -107,14 +86,12 @@
                 {{ searchResultText }}
             </div>
 
-            <route-panel
+            <PointerEditPanel
                 class="mt-1"
                 :search-location="searchAddress"
                 @pointAdd="handleAddRoutePoint"
-                @print="printRoute"
-                @showLine="showLine"
-                @changeCurrentPolicy="changePolicy"
-                :policyArray="policyArray"
+                @print="printPointers"
+                @showPointer="showPointer"
                 :policy="currentPolicy"
                 :lng="Number(positionPicked.lng)"
                 :lat="Number(positionPicked.lat)"
@@ -131,7 +108,7 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
-import RoutePanel from "@/page/tool/route/components/RoutePanel.vue";
+import PointerEditPanel from "./components/PointerEditPanel";
 
 import {mapGetters, mapState} from 'vuex'
 import mapConfig from "../../mapConfig";
@@ -140,14 +117,11 @@ import axios from "axios";
 import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64";
 
-import {policyArray} from "./DrivingPolicy"
-
-
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 export default {
     name: "PointerEditor",
-    components: {Detail, RoutePanel},
+    components: {Detail, PointerEditPanel},
     data() {
         return {
             activeLineObj: null,
@@ -155,7 +129,7 @@ export default {
             isLoading: false,
             map: null,
 
-            currentDragRouting: null,  // 当前导航路线，拖拽导航路径对象
+            currentDragRouting: null,  // 当前导航点图，拖拽导航路径对象
 
             pathPointers: [
                 /*                {
@@ -170,31 +144,24 @@ export default {
                 lat: 0,
             },
 
-            policyArray, // 路径规划策略
-            currentPolicy: 2, // 当前路径规则策略
-
             // SEARCH
             searchAddress: '',  // 地址搜索关键字
             searchResultText: '',
 
             // FORM
-            formPointer: { // 路线信息
-                name: '', // *路线名
+            formPointer: { // 点图信息
+                name: '', // *点图名
                 area: '', // *地域
-                road_type: '', // *路面类型
-                policy: 2, // 路线规划策略 默认为最短距离
-                seasonsArray: [], // *[适用季节]
                 video_link: '', // 路径视频演示
-                paths: [], // *路径点
+                pointers: [], // *路径点
                 note: '', // 备注
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否公开
             },
             formPointerRules: {
-                name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
+                name: [{required: true, message: '请填写点图钱', trigger: 'blur'},],
                 area: [{required: true, message: '请填写地域', trigger: 'blur'},],
-                policy: [{required: true, message: '请选择路线规划策略', trigger: 'blur'},],
-                road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
+                policy: [{required: true, message: '请选择点图规划策略', trigger: 'blur'},],
                 seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
             },
 
@@ -247,8 +214,8 @@ export default {
                         lat: res.lnglat.lat
                     }
                 })
-                // 地图准备好之后，获取路线信息
-                this.getLineInfo()
+                // 地图准备好之后，获取点图信息
+                this.getPointerInfo()
             })
             .catch(e => {
                 console.log(e);
@@ -258,27 +225,23 @@ export default {
         ...mapGetters(["isAdmin"]),
         ...mapState(["windowInsets", "authorization"]),
         isEditingLineInfo() {
-            return !isNaN(Number(this.$route.query.lineId))
+            return !isNaN(Number(this.$route.query.pointerId))
         },
-        lineId() {
-            return this.$route.query.lineId
+        pointerId() {
+            return this.$route.query.pointerId
         }
     },
     methods: {
         toggleEditPanel(){
             this.isShowingEdit = !this.isShowingEdit
         },
-        changePolicy(policy){
-            console.log('最新的 policy', policy)
-            this.currentPolicy = policy
-        },
         submit() {
-            this.$refs['formLine'].validate((valid) => {
+            this.$refs['formPointer'].validate((valid) => {
                 if (valid) {
                     if (this.isEditingLineInfo) {
-                        this.routeModifySubmit()
+                        this.pointerModifySubmit()
                     } else {
-                        this.routeNewSubmit()
+                        this.pointerNewSubmit()
                     }
                 } else {
                     console.log('error submit!!');
@@ -287,15 +250,14 @@ export default {
             })
         },
         // 编辑
-        routeModifySubmit() {
+        pointerModifySubmit() {
             if (this.pathPointers.length < 1){
-                this.$message.warning('没有任何途经点')
+                this.$message.warning('没有添加任何点位')
                 return
             }
-            this.formPointer.policy = this.currentPolicy
             let requestData = {}
             Object.assign(requestData, this.formPointer)
-            requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
+            requestData.pointers = Base64.encode(JSON.stringify(this.pathPointers))
             pointerApi
                 .modify(requestData)
                 .then(res => {
@@ -310,15 +272,14 @@ export default {
                 })
         },
         // 新增
-        routeNewSubmit() {
+        pointerNewSubmit() {
             if (this.pathPointers.length < 1){
-                this.$message.warning('没有任何途经点')
+                this.$message.warning('没有添加任何点位')
                 return
             }
-            this.formPointer.policy = this.currentPolicy
             let requestData = {}
             Object.assign(requestData, this.formPointer)
-            requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
+            requestData.pointers = Base64.encode(JSON.stringify(this.pathPointers))
             pointerApi
                 .add(requestData)
                 .then(res => {
@@ -332,21 +293,19 @@ export default {
                     this.modalEdit = false
                 })
         },
-        // 获取路线信息
-        getLineInfo() {
-            if (this.$route.query.lineId) {
+        // 获取点图信息
+        getPointerInfo() {
+            if (this.$route.query.pointerId) {
                 pointerApi
                     .detail({
-                        id: this.$route.query.lineId
+                        id: this.$route.query.pointerId
                     })
                     .then(res => {
                         this.formPointer = res.data
-                        this.currentPolicy = res.data.policy
                         this.$set(this.formPointer, 'seasonsArray', this.formPointer.seasons.split('、'))
                         this.activeLineObj = res.data
-                        this.pathPointers = JSON.parse(Base64.decode(this.activeLineObj.paths))
-                        this.loadLine(this.map, this.pathPointers)
-                        this.loadLineLabels(this.map, this.pathPointers)
+                        this.pathPointers = JSON.parse(Base64.decode(this.activeLineObj.pointers))
+                        this.loadPointerLabels(this.map, this.pathPointers)
                     })
             }
         },
@@ -384,6 +343,7 @@ export default {
                 name: routePoint.name,
                 position: [this.positionPicked.lng, this.positionPicked.lat],
                 note: routePoint.note,
+                type: routePoint.type,
                 img: routePoint.img
             })
             this.map.setCenter(routePoint.position) // 定位到中心位置
@@ -391,6 +351,7 @@ export default {
                 position: routePoint.position,
                 name: routePoint.name,
                 note: routePoint.note,
+                type: routePoint.type,
                 img: routePoint.img
             }, 0)
         },
@@ -412,99 +373,25 @@ export default {
         pickLocationStop() {
             this.map.off('click', this.showLocation)
         },
-        // 打印 路线数据
-        printRoute() {
+        // 打印 点图数据
+        printPointers() {
             console.log(JSON.stringify([...this.pathPointers].reverse()))
         },
-        // 展示规划的路线
-        showLine() {
+        // 展示规划的地图信息
+        showPointer() {
             this.map.clearMap() // 删除地图上的所有标记
             if (this.currentDragRouting) {
-                this.currentDragRouting.destroy() // 删除之前的路线
+                this.currentDragRouting.destroy() // 删除之前的点图
             }
-            this.loadLine(this.map, this.pathPointers)
-            this.loadLineLabels(this.map, this.pathPointers)
+            this.loadPointerLabels(this.map, this.pathPointers)
         },
-        // 载入线路信息
-        loadLine(map, pathPointers) {
-
-            // 切换线路之前如果存在路线，销毁已存在的路线
-            if (this.currentDragRouting) {
-                this.currentDragRouting.destroy()
-                this.currentDragRouting = null
-            }
-            map.plugin('AMap.DragRoute', () => {
-                // path 是驾车导航的起、途径和终点，最多支持16个途经点
-                let path = pathPointers.map(point => point.position)
-                this.currentDragRouting = new AMap.DragRoute(map, path, this.currentPolicy, {
-                    startMarkerOptions: {
-                        offset: new AMap.Pixel(-13, -40),
-                        icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26, 40),
-                            image: ICON.start,
-                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
-
-                        }),
-                    },
-                    endMarkerOptions: {
-                        offset: new AMap.Pixel(-13, -40),
-                        icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(26, 40),
-                            image: ICON.end,
-                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
-
-                        }),
-                    },
-                    midMarkerOptions: {
-                        offset: new AMap.Pixel(-9, -9),
-                        icon: new AMap.Icon({ // 设置途经点的图标
-                            size: new AMap.Size(30, 30),
-                            image: ICON.midIcon,
-                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                            imageSize: new AMap.Size(18, 18) // 指定图标的大小，可以压缩图片
-
-                        }),
-                    },
-                })
-
-                // 添加途经点时
-                this.currentDragRouting.on('addway', res => {
-                    if (res.lnglat){
-                        this.positionPicked = {
-                            lng: res.lnglat.lng,
-                            lat: res.lnglat.lat
-                        }
-                    }
-                })
-
-                // 路线规划完成时
-                this.currentDragRouting.on('complete', res => {
-                    // 路线规划完成后，返回的路线数据：设置距离、行驶时间
-                    let lineData = res.data.routes[0]
-                    let distance = (lineData.distance / 1000).toFixed(1) // m -> km
-                    let time = (lineData.time / 60).toFixed() // second -> min
-                    this.activeLineObj = {
-                        name: '临时路线'
-                    }
-                    this.$set(this.formPointer, 'distance', distance)
-                    this.$set(this.formPointer, 'time', time)
-
-                })
-
-                // 查询导航路径并开启拖拽导航
-                this.currentDragRouting.search()
-            })
-        },
-        // 添加路线 label 线路信息
-        loadLineLabels(map, pathPointers) {
+        // 添加点图 label 线路信息
+        loadPointerLabels(map, pathPointers) {
             pathPointers.forEach((item, index) => {
                 this.addMarker(map, item, index)
             })
         },
         addMarker(map, item, index) {
-
             if (item.img){
                 let marker = new AMap.Marker({
                     position: item.position,
@@ -554,12 +441,6 @@ export default {
                 this.addMarker(this.map, item, index)
             })
         },
-        'formLine.seasonsArray'(newValue){
-            this.formPointer.seasons = newValue.join('、')
-        },
-        currentPolicy(newValue){
-            this.showLine()
-        }
     },
     beforeDestroy() {
         this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
@@ -584,7 +465,6 @@ export default {
     position: absolute;
     left: 20px;
     top: 20px;
-    width: 400px;
     z-index: 100;
 
     .search-panel {

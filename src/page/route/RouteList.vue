@@ -323,7 +323,7 @@ export default {
         },
         // 编辑
         routeModifySubmit() {
-            // 为了断开最终数据与 formRoute 的关联
+            // 为了断开最终数据与 formPointer 的关联
             let requestData = {}
             Object.assign(requestData, this.formRoute)
             requestData.paths = Base64.encode(this.formRoute.paths)
@@ -346,7 +346,7 @@ export default {
         },
         // 新增
         routeNewSubmit() {
-            // 为了断开最终数据与 formRoute 的关联
+            // 为了断开最终数据与 formPointer 的关联
             let requestData = {}
             Object.assign(requestData, this.formRoute)
             requestData.paths = Base64.encode(this.formRoute.paths)

@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <el-form
-                    class="mt-2"
+                    class="mt-2 p-1"
                     ref="formLine"
                     v-if="formLine && isShowingEdit"
                     :model="formLine"
