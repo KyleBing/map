@@ -35,9 +35,9 @@ const routes = [
         name: 'Pointer',
         path: '/pointer',
         component: Layout,
-        meta: {title: '地域信息', showInMenu: true, icon: 'el-icon-wind-power' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
+        meta: {title: '地域信息', showInMenu: true, icon: 'el-icon-location-outline' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
-            {name: 'PointerViewer',   path: 'pointer-viewer',   meta: {title: '展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerViewer'], resolve),},
+            {name: 'PointerViewer', path: 'pointer-viewer', meta: {title: '展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerViewer'], resolve),},
             {name: 'PointerList',   path: 'pointer-list',   meta: {title: '列表', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerList'], resolve),},
             {name: 'PointerEditor', path: 'pointer-editor', meta: {title: '编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerEditor.vue'], resolve),}
         ]
