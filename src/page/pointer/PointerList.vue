@@ -3,8 +3,8 @@
         <div class="tool-bar mb-2" v-if="!isInPortraitMode">
             <el-form size="small" inline>
                 <el-form-item>
-                    <el-button type="success" @click="addNewPointer" icon="el-icon-plus">新增路线</el-button>
-                    <el-button type="primary" @click="addNewRouteWidthMap" icon="el-icon-s-promotion">从地图中规划路线</el-button>
+                    <el-button type="success" @click="addNewPointer" icon="el-icon-plus">新增点图</el-button>
+                    <el-button type="primary" @click="addNewPointerWidthMap" icon="el-icon-s-promotion">从地图中规划点图</el-button>
                 </el-form-item>
                 <el-form-item label="关键字" class="ml-4">
                     <el-input clearable placeholder="点位名" v-model="formSearch.keyword"></el-input>
@@ -128,7 +128,7 @@
                 :model="formPointer"
                 :rules="formPointerRules"
                 size="small"
-                ref="formRoute" label-width="100px">
+                ref="formPointer" label-width="100px">
                 <el-form-item label="点图名" prop="name">
                     <el-input v-model="formPointer.name"/>
                 </el-form-item>
@@ -152,7 +152,7 @@
             <div slot="footer" class="dialog-footer">
                 <el-button size="small" @click="clearForm" type="warning">清空</el-button>
                 <el-button size="small" @click="closeModal">取 消</el-button>
-                <el-button size="small" type="primary" @click="submit">{{ editingRouteId ? '修改' : '添加' }}</el-button>
+                <el-button size="small" type="primary" @click="submit">{{ editingPointerId ? '修改' : '添加' }}</el-button>
             </div>
         </el-dialog>
     </div>
@@ -162,22 +162,17 @@ import utility from "@/utility";
 import {mapGetters, mapState} from "vuex";
 import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64"
-import { policyArray, policyMap } from './DrivingPolicy'
 
 export default {
     name: "PointerList",
     data() {
         return {
             isLoading: false,
-
-            editingRouteId: null,
+            editingPointerId: null,
 
             tableData: [],
             modalEdit: false, // modal show or not
-            groupOptions: [
-                {id: 1, name: '管理员'},
-                {id: 2, name: '普通路线'},
-            ],
+
             // FORM
             formPointer: { // 点图信息
                 name: '', // *点图名
@@ -192,7 +187,6 @@ export default {
                 name: [{required: true, message: '请填写点图钱', trigger: 'blur'},],
                 area: [{required: true, message: '请填写地域', trigger: 'blur'},],
                 policy: [{required: true, message: '请选择点图规划策略', trigger: 'blur'},],
-                seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
             },
             // pager
             pager: {
@@ -200,9 +194,6 @@ export default {
                 pageNo: 1,
                 total: 0
             },
-
-            policyArray, // 路线规划策略
-            policyMap, // 路线规划策略
 
             formSearch: {
                 keyword: '',
@@ -217,12 +208,7 @@ export default {
         ...mapGetters(["isAdmin", 'isInPortraitMode']),
         ...mapState(['windowInsets','authorization']),
         modalTitle() {
-            return this.editingRouteId ? '编辑路线' : '新增路线'
-        }
-    },
-    watch: {
-        'formRoute.seasonsArray'(newValue){
-            this.formPointer.seasons = newValue.join('、')
+            return this.editingPointerId ? '编辑点图' : '新增点图'
         }
     },
     methods: {
@@ -247,19 +233,19 @@ export default {
             })
         },
         // route to line editor
-        addNewRouteWidthMap(){
+        addNewPointerWidthMap(){
             this.$router.push({
                 name: 'PointerEditor'
             })
         },
         addNewPointer() {
             this.modalEdit = true
-            this.editingRouteId = null
+            this.editingPointerId = null
             this.clearForm()
         },
         clearForm() {
             this.formPointer = {
-                name: '', // *路线名
+                name: '', // *点图名
                 area: '', // *地域
                 video_link: '', // 路径视频演示
                 pointers: '', // *路径点
@@ -271,7 +257,7 @@ export default {
         closeModal(done) {
             this.$confirm('确认关闭？')
                 .then(_ => {
-                    this.editingRouteId = null
+                    this.editingPointerId = null
                     this.modalEdit = false
                     done();
                 })
@@ -279,12 +265,12 @@ export default {
                 });
         },
         submit() {
-            this.$refs['formRoute'].validate((valid) => {
+            this.$refs['formPointer'].validate((valid) => {
                 if (valid) {
-                    if (this.editingRouteId) {
-                        this.routeModifySubmit()
+                    if (this.editingPointerId) {
+                        this.pointerModifySubmit()
                     } else {
-                        this.routeNewSubmit()
+                        this.pointerNewSubmit()
                     }
                 } else {
                     console.log('error submit!!');
@@ -293,7 +279,7 @@ export default {
             })
         },
         // 编辑
-        routeModifySubmit() {
+        pointerModifySubmit() {
             // 为了断开最终数据与 formPointer 的关联
             let requestData = {}
             Object.assign(requestData, this.formPointer)
@@ -308,7 +294,7 @@ export default {
                         onClose() {
                         }
                     })
-                    this.editingRouteId = null
+                    this.editingPointerId = null
                     this.modalEdit = false
                     this.getPointerList()
                 })
@@ -316,7 +302,7 @@ export default {
                 })
         },
         // 新增
-        routeNewSubmit() {
+        pointerNewSubmit() {
             // 为了断开最终数据与 formPointer 的关联
             let requestData = {}
             Object.assign(requestData, this.formPointer)
@@ -331,7 +317,7 @@ export default {
                         onClose() {
                         }
                     })
-                    this.editingRouteId = null
+                    this.editingPointerId = null
                     this.modalEdit = false
                     this.getPointerList()
                 })
@@ -350,7 +336,7 @@ export default {
             this.getPointerList()
         },
 
-        // 获取路线列表
+        // 获取点图列表
         getPointerList() {
             this.isLoading = true
             let requestData = {
@@ -377,13 +363,13 @@ export default {
                 })
         },
         goEdit(routeLine) {
-            this.editingRouteId = routeLine.uid
+            this.editingPointerId = routeLine.uid
             Object.assign(this.formPointer, routeLine)
             this.modalEdit = true
         },
         goDelete(route) {
             console.log(route)
-            this.$confirm(`删除路线 ${route.name} (${route.area})`, '删除', {
+            this.$confirm(`删除点图 ${route.name} (${route.area})`, '删除', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'

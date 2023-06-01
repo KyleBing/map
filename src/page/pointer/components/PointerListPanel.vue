@@ -1,7 +1,7 @@
 <template>
     <div class="route-line-list">
         <div
-            @click="$emit('choseLine', pointer.id)"
+            @click="$emit('chosePointer', pointer.id)"
             :class="[
                 'route-line-list-item',
                 {active: Number($route.query.pointerId) === pointer.id}
@@ -19,7 +19,7 @@
 import {mapGetters} from "vuex";
 
 export default {
-    name: "RouteLineList",
+    name: "PointerListPanel",
     props:{
         pointerList: []
     },

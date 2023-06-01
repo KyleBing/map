@@ -7,10 +7,10 @@
             <i class="el-icon-tickets"></i>
         </div>
 
-        <!-- 路线列表 -->
+        <!-- 点图列表 -->
         <div class="float-route-list-panel" v-loading="isLoading" v-if="isPointerListShowed">
             <PointerListPanel
-                @choseLine="changeLine"
+                @chosePointer="changePointer"
                 :pointerList="pointerList"/>
         </div>
 
@@ -54,7 +54,7 @@ export default {
             currentPointerId: 0,
             activePointerObj: null, // 当前 Line 对象
 
-            pointerList: [], // 路线数组
+            pointerList: [], // 点图数组
             // pager
             pager: {
                 pageSize: 30,
@@ -68,6 +68,9 @@ export default {
     },
     mounted() {
         this.getPointerList()
+        if (this.$route.query.pointerId){
+            this.getPointerInfo(this.$route.query.pointerId)
+        }
         AMapLoader
             .load({
                 key: mapConfig.appId, // 开发应用的 ID
@@ -75,7 +78,7 @@ export default {
                 plugins: [
                     'AMap.ToolBar', // 缩放按钮
                     'AMap.Scale', // 比例尺
-                    'AMap.DragRoute', // 拖拽路线
+                    'AMap.DragRoute', // 拖拽点图
                     'AMap.Driving', // 导航
                 ],
             })
@@ -102,6 +105,7 @@ export default {
     },
     methods: {
 
+
         openInGaodeApp(){
             let originLnglat = this.activePointerObj.pointerArray[0].position // [lng, lat]
             let destLnglat = this.activePointerObj.pointerArray[this.activePointerObj.pointerArray.length - 1].position // [lng, lat]
@@ -122,7 +126,7 @@ export default {
                                 destination:result.destination
                             });
                             console.log(status, result)
-                            console.log('绘制驾车路线完成')
+                            console.log('绘制驾车点图完成')
                         } else {
                             console.log('获取驾车数据失败')
                         }
@@ -131,7 +135,7 @@ export default {
 
         },
 
-        // 获取路线列表
+        // 获取点图列表
         getPointerList() {
             this.isLoading = true
             let requestData = {
@@ -157,7 +161,7 @@ export default {
         },
 
         // Change Pointer
-        changeLine(pointerId){
+        changePointer(pointerId){
             this.$router.push({
                 name: 'PointerViewer',
                 query: {
@@ -202,12 +206,56 @@ export default {
             mapContainer.style.width = window.innerWidth + "px"
         },
 
-        // 添加路线 Label
-        loadPointerLabels(map, line) {
-            line.pointerArray.forEach((item, index) => {
+
+        /**
+         * 获取区域对角线的两点坐标，即这个区域内的最小坐标值和最大坐标值
+         *
+         * @param pointerArray [[a,b],[c,d]]
+         * @return Array {min:number[a,b], max:number[c,d]}
+         */
+        getMaxBoundsPointer(pointerArray){
+            let lngArray = pointerArray.map(item => item[0])
+            let latArray = pointerArray.map(item => item[1])
+
+            return {
+                min: [Math.min(...lngArray),  Math.min(...latArray)],
+                max: [Math.max(...lngArray),  Math.max(...latArray)],
+            }
+        },
+
+        // 添加点图 Label
+        loadPointerLabels(map, pointer) {
+            let maxLocations =  this.getMaxBoundsPointer(pointer.pointerArray.map(item => item.position))
+            // 取区间的 1/4 作为地图的边界
+            let lngGap = (maxLocations.max[0] - maxLocations.min[0]) / 4
+            let latGap = (maxLocations.max[1] - maxLocations.min[1]) / 4
+
+            // 新的区域极点坐标
+            let min = new AMap.LngLat(maxLocations.min[0] - lngGap, maxLocations.min[1] - latGap)
+            let max = new AMap.LngLat(maxLocations.max[0] + lngGap, maxLocations.max[1] + latGap)
+
+
+            // 1. 多个点时，设置 bounds
+            if (pointer.pointerArray.length > 1){
+                let bounds = new AMap.Bounds(min, max)
+                this.map.setBounds(bounds)
+            }
+            // 2. 一个点时，将其作为中心点
+            else if (pointer.pointerArray.length === 1){
+                console.log(pointer.pointerArray)
+                let centerLngLat = new AMap.LngLat(...pointer.pointerArray[0].position)
+                this.map.setCenter(centerLngLat)  // 设置地图中心点坐标
+            }
+            // 3.
+            else {
+
+            }
+
+            pointer.pointerArray.forEach((item, index) => {
                 this.addMarker(map, item, index)
             })
         },
+
         addMarker(map, item, index) {
             if (item.img){
                 let marker = new AMap.Marker({
@@ -262,14 +310,12 @@ export default {
     },
     watch: {
         '$route.query.pointerId'(newValue){
-            this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
             this.map.clearInfoWindow() // 清除地图上的信息窗体
             this.map.clearMap() // 删除所有 Marker
             this.getPointerInfo(newValue)
         }
     },
     beforeDestroy() {
-        this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
         this.map.clearInfoWindow() // 清除地图上的信息窗体
         this.map.clearMap() // 删除所有 Marker
         this.map.destroy() // 销毁地图，释放内存

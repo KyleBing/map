@@ -77,7 +77,7 @@ export default {
             this.$router.push({
                 name: 'PointerEditor',
                 query: {
-                    lineId: this.pointer.id
+                    pointerId: this.pointer.id
                 }
             })
         }

@@ -150,7 +150,7 @@ export default {
             pointerType: '', // 标记类别，颜色区分
 
             pointersLocal: [],
-            clipboardPointerData: '', // 要复制的所有路线点的数据
+            clipboardPointerData: '', // 要复制的所有点图点的数据
             clipboard: null,
 
             imgSuffix: mapConfig.thumbnail200_suffix,

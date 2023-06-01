@@ -89,13 +89,12 @@
             <PointerEditPanel
                 class="mt-1"
                 :search-location="searchAddress"
-                @pointAdd="handleAddRoutePoint"
+                @pointAdd="handleAddNewPointer"
                 @print="printPointers"
                 @showPointer="showPointer"
-                :policy="currentPolicy"
                 :lng="Number(positionPicked.lng)"
                 :lat="Number(positionPicked.lat)"
-                v-model="pathPointers"/>
+                v-model="pointers"/>
         </div>
 
 
@@ -129,9 +128,7 @@ export default {
             isLoading: false,
             map: null,
 
-            currentDragRouting: null,  // 当前导航点图，拖拽导航路径对象
-
-            pathPointers: [
+            pointers: [
                 /*                {
                     name: '',
                     position: [lng,lat]
@@ -161,8 +158,6 @@ export default {
             formPointerRules: {
                 name: [{required: true, message: '请填写点图钱', trigger: 'blur'},],
                 area: [{required: true, message: '请填写地域', trigger: 'blur'},],
-                policy: [{required: true, message: '请选择点图规划策略', trigger: 'blur'},],
-                seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
             },
 
             isShowingEdit: false,
@@ -251,13 +246,13 @@ export default {
         },
         // 编辑
         pointerModifySubmit() {
-            if (this.pathPointers.length < 1){
+            if (this.pointers.length < 1){
                 this.$message.warning('没有添加任何点位')
                 return
             }
             let requestData = {}
             Object.assign(requestData, this.formPointer)
-            requestData.pointers = Base64.encode(JSON.stringify(this.pathPointers))
+            requestData.pointers = Base64.encode(JSON.stringify(this.pointers))
             pointerApi
                 .modify(requestData)
                 .then(res => {
@@ -273,13 +268,13 @@ export default {
         },
         // 新增
         pointerNewSubmit() {
-            if (this.pathPointers.length < 1){
+            if (this.pointers.length < 1){
                 this.$message.warning('没有添加任何点位')
                 return
             }
             let requestData = {}
             Object.assign(requestData, this.formPointer)
-            requestData.pointers = Base64.encode(JSON.stringify(this.pathPointers))
+            requestData.pointers = Base64.encode(JSON.stringify(this.pointers))
             pointerApi
                 .add(requestData)
                 .then(res => {
@@ -302,10 +297,9 @@ export default {
                     })
                     .then(res => {
                         this.formPointer = res.data
-                        this.$set(this.formPointer, 'seasonsArray', this.formPointer.seasons.split('、'))
                         this.activeLineObj = res.data
-                        this.pathPointers = JSON.parse(Base64.decode(this.activeLineObj.pointers))
-                        this.loadPointerLabels(this.map, this.pathPointers)
+                        this.pointers = JSON.parse(Base64.decode(this.activeLineObj.pointers))
+                        this.loadPointerLabels(this.map, this.pointers)
                     })
             }
         },
@@ -338,8 +332,8 @@ export default {
                 })
         },
         // 添加新标记点和圆圈
-        handleAddRoutePoint(routePoint) {
-            this.pathPointers.push({
+        handleAddNewPointer(routePoint) {
+            this.pointers.push({
                 name: routePoint.name,
                 position: [this.positionPicked.lng, this.positionPicked.lat],
                 note: routePoint.note,
@@ -375,15 +369,12 @@ export default {
         },
         // 打印 点图数据
         printPointers() {
-            console.log(JSON.stringify([...this.pathPointers].reverse()))
+            console.log(JSON.stringify([...this.pointers].reverse()))
         },
         // 展示规划的地图信息
         showPointer() {
             this.map.clearMap() // 删除地图上的所有标记
-            if (this.currentDragRouting) {
-                this.currentDragRouting.destroy() // 删除之前的点图
-            }
-            this.loadPointerLabels(this.map, this.pathPointers)
+            this.loadPointerLabels(this.map, this.pointers)
         },
         // 添加点图 label 线路信息
         loadPointerLabels(map, pathPointers) {
@@ -436,14 +427,12 @@ export default {
         routeData(newValue) {
             if (newValue.length <= 0) return
             this.map.clearMap()
-            this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
             newValue.forEach((item, index) => {
                 this.addMarker(this.map, item, index)
             })
         },
     },
     beforeDestroy() {
-        this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
         this.map.clearInfoWindow() // 清除地图上的信息窗体
         this.map.destroy() // 销毁地图，释放内存
         this.map = null
