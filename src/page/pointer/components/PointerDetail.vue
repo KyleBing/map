@@ -1,44 +1,29 @@
 <template>
     <div :class="['detail', 'card', {'closed': !showContent}, {'center': isInPortraitMode}]">
         <div class="title">
-            <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
+            <h1>{{pointer.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i>
             </h1>
-            <a v-if="line.video_link" target="_blank" class="video-link" :href="line.video_link"><i class="el-icon-video-camera"></i></a>
+            <a v-if="pointer.video_link" target="_blank" class="video-link" :href="pointer.video_link"><i class="el-icon-video-camera"></i></a>
         </div>
 
         <div class="content" v-if="showContent">
             <div class="info-list">
-                <div class="info" v-if="line.area">
-                    <p class="info-title">路线区域</p><p class="info-value">{{line.area}}</p>
+                <div class="info" v-if="pointer.area">
+                    <p class="info-title">点图区域</p><p class="info-value">{{pointer.area}}</p>
                 </div>
-                <div v-if="line.policy !== undefined" class="info">
-                    <p class="info-title">路线策略</p><p class="info-value">{{policyMap.get(line.policy)}}</p>
-                </div>
-                <div v-if="line.road_type" class="info">
-                    <p class="info-title">路面类型</p><p class="info-value">{{line.road_type}}</p>
-                </div>
-                <div v-if="line.seasons" class="info">
-                    <p class="info-title">推荐季节</p><p class="info-value">{{line.seasons}}</p>
-                </div>
-                <div v-if="line.distance" class="info">
-                    <p class="info-title">距离/时间</p><p class="info-value">{{line.distance}} km</p>
-                </div>
-                <div v-if="line.time" class="info">
-                    <p class="info-title">行驶时间</p><p class="info-value">{{line.time}} min</p>
-                </div>
-                <div v-if="line.nickname" class="info">
-                    <p class="info-title">创建用户</p><p class="info-value">{{line.nickname}}</p>
+                <div v-if="pointer.nickname" class="info">
+                    <p class="info-title">创建用户</p><p class="info-value">{{pointer.nickname}}</p>
                 </div>
             </div>
-            <div class="note markdown" v-if="line.note" v-html="contentHtml"></div>
+            <div class="note markdown" v-if="pointer.note" v-html="contentHtml"></div>
             <div class="button-center"
-                 v-if="isAdmin || (authorization && authorization.uid) === line.uid"
+                 v-if="isAdmin || (authorization && authorization.uid) === pointer.uid"
             >
                 <el-button
-                    v-if="line.id !== undefined"
+                    v-if="pointer.id !== undefined"
                     type="text" size="mini"
-                    @click="goToEditCurrentLine"
+                    @click="goToEditCurrentPointer"
                     icon="el-icon-edit-outline">编辑</el-button>
             </div>
 <!--            <div class="button-center">
@@ -58,26 +43,19 @@
 <script>
 import {mapGetters, mapState} from "vuex";
 import QRCode from "./qr.js"
-import DrivingInfo from "@/page/route/components/DrivingInfo.vue";
-import {policyMap} from "@/page/route/DrivingPolicy"
 import {marked} from "marked";
 
 export default {
-    name: "Detail",
-    components: {DrivingInfo},
+    name: "PointerDetail",
     props:{
-        line:{
+        pointer:{
             type: Object
         },
-        drivingInfo: {
-            type: Object
-        }
     },
     data(){
         return {
             showContent: true,
             qrImg: '',
-            policyMap,
         }
     },
     mounted() {
@@ -88,18 +66,18 @@ export default {
         ...mapGetters(['isInPortraitMode', 'isAdmin', ]),
         ...mapState(['authorization', 'isShowingMenuToggleBtn']),
         contentHtml(){
-            return marked.parse(this.line.note)
+            return marked.parse(this.pointer.note)
         }
     },
     methods: {
         toggleContent(){
             this.showContent = !this.showContent
         },
-        goToEditCurrentLine(){
+        goToEditCurrentPointer(){
             this.$router.push({
-                name: 'RouteEditor',
+                name: 'PointerEditor',
                 query: {
-                    lineId: this.line.id
+                    lineId: this.pointer.id
                 }
             })
         }

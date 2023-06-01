@@ -1,16 +1,16 @@
 <template>
     <div class="route-line-list">
         <div
-            @click="$emit('choseLine', line.id)"
+            @click="$emit('choseLine', pointer.id)"
             :class="[
                 'route-line-list-item',
-                {active: Number($route.query.lineId) === line.id}
+                {active: Number($route.query.pointerId) === pointer.id}
             ]"
-            v-for="line in routeLineList" :key="line.id"
+            v-for="pointer in pointerList" :key="pointer.id"
         >
-            <div class="id">{{line.id}}</div>
-            <div class="name">{{line.name}}</div>
-            <div class="area">{{line.area}}</div>
+            <div class="id">{{pointer.id}}</div>
+            <div class="name">{{pointer.name}}</div>
+            <div class="area">{{pointer.area}}</div>
         </div>
     </div>
 </template>
@@ -21,7 +21,7 @@ import {mapGetters} from "vuex";
 export default {
     name: "RouteLineList",
     props:{
-        routeLineList: []
+        pointerList: []
     },
     data(){
         return {

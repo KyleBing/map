@@ -2,16 +2,16 @@
     <div class="map-container">
 
         <div class="button-float btn-router-list"
-             @click="isRouteListShowed = true"
-             v-if="!isRouteListShowed && isInPortraitMode">
+             @click="isPointerListShowed = true"
+             v-if="!isPointerListShowed && isInPortraitMode">
             <i class="el-icon-tickets"></i>
         </div>
 
         <!-- 路线列表 -->
-        <div class="float-route-list-panel" v-loading="isLoading" v-if="isRouteListShowed">
+        <div class="float-route-list-panel" v-loading="isLoading" v-if="isPointerListShowed">
             <PointerListPanel
                 @choseLine="changeLine"
-                :route-line-list="pointerList"/>
+                :pointerList="pointerList"/>
         </div>
 
         <!-- 地图 -->
@@ -19,9 +19,8 @@
 
         <!-- DETAIL INFO -->
         <detail
-            v-if="activeLineObj && (!isInPortraitMode || !isRouteListShowed)"
-            :line="activeLineObj"
-            :drivingInfo="drivingInfo"
+            v-if="activePointerObj && (!isInPortraitMode || !isPointerListShowed)"
+            :pointer="activePointerObj"
             @openInGaodeApp="openInGaodeApp"
         />
     </div>
@@ -32,7 +31,7 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
 import ICON from "@/assets/icons"
-import Detail from "./components/Detail"
+import Detail from "./components/PointerDetail"
 import {mapGetters, mapState} from "vuex"
 import mapConfig from "../../mapConfig";
 import pointerApi from "@/api/pointerApi";
@@ -52,15 +51,8 @@ export default {
             isLoading: false,
             map: null,
             colors: mapData.COLORS,
-            currentLineId: 0,
-            activeLineObj: null, // 当前 Line 对象
-            currentDragRouting: null,  // 当前导航路线
-
-            // Driving Info
-            drivingInfo: {
-                distance: '',
-                time: ''
-            },
+            currentPointerId: 0,
+            activePointerObj: null, // 当前 Line 对象
 
             pointerList: [], // 路线数组
             // pager
@@ -71,7 +63,7 @@ export default {
             },
 
             // float route list
-            isRouteListShowed: true, // route list 是否显示
+            isPointerListShowed: true, // route list 是否显示
         }
     },
     mounted() {
@@ -96,7 +88,7 @@ export default {
                 this.map.addControl(new AMap.ToolBar())
                 this.map.addControl(new AMap.Scale())
                 if (this.$route.query.lineId) {
-                    this.getLineInfo(this.$route.query.lineId)
+                    this.getPointerInfo(this.$route.query.lineId)
                 }
             })
             .catch(e => {
@@ -111,8 +103,8 @@ export default {
     methods: {
 
         openInGaodeApp(){
-            let originLnglat = this.activeLineObj.pathArray[0].position // [lng, lat]
-            let destLnglat = this.activeLineObj.pathArray[this.activeLineObj.pathArray.length - 1].position // [lng, lat]
+            let originLnglat = this.activePointerObj.pointerArray[0].position // [lng, lat]
+            let destLnglat = this.activePointerObj.pointerArray[this.activePointerObj.pointerArray.length - 1].position // [lng, lat]
             this.map.plugin('AMap.Driving', () => {
                 let currentDriving = new AMap.Driving({
                     map: this.map,
@@ -152,10 +144,8 @@ export default {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.pointerList = res.data.list.map(item => {
-                        item.paths = Base64.decode(item.paths) || ''
-
-                        item.pathArray = item.paths && JSON.parse(item.paths)
-                        item.seasonsArray = item.seasons.split('、')
+                        item.pointers = Base64.decode(item.pointers) || ''
+                        item.pointerArray = item.pointers && JSON.parse(item.pointers)
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
@@ -166,28 +156,28 @@ export default {
                 })
         },
 
-        // change line
-        changeLine(lineId){
+        // Change Pointer
+        changeLine(pointerId){
             this.$router.push({
-                name: 'RouteLine',
+                name: 'PointerViewer',
                 query: {
-                    lineId
+                    pointerId
                 }
             })
             if (innerWidth < 500){
-                this.isRouteListShowed = false
+                this.isPointerListShowed = false
             }
         },
 
-        getLineInfo(lineId) {
+        getPointerInfo(pointerId) {
             pointerApi
                 .detail({
-                    id: lineId
+                    id: pointerId
                 })
                 .then(res => {
-                    this.activeLineObj = res.data
-                    this.activeLineObj.pathArray = JSON.parse(Base64.decode(this.activeLineObj.paths))
-                    this.loadPointerLabels(this.map, this.activeLineObj)
+                    this.activePointerObj = res.data
+                    this.activePointerObj.pointerArray = JSON.parse(Base64.decode(this.activePointerObj.pointers))
+                    this.loadPointerLabels(this.map, this.activePointerObj)
                 })
         },
 
@@ -214,7 +204,7 @@ export default {
 
         // 添加路线 Label
         loadPointerLabels(map, line) {
-            line.pathArray.forEach((item, index) => {
+            line.pointerArray.forEach((item, index) => {
                 this.addMarker(map, item, index)
             })
         },
@@ -271,11 +261,11 @@ export default {
 
     },
     watch: {
-        '$route.query.lineId'(newValue){
+        '$route.query.pointerId'(newValue){
             this.currentDragRouting && this.currentDragRouting.destroy() // 销毁行程规划
             this.map.clearInfoWindow() // 清除地图上的信息窗体
             this.map.clearMap() // 删除所有 Marker
-            this.getLineInfo(newValue)
+            this.getPointerInfo(newValue)
         }
     },
     beforeDestroy() {
