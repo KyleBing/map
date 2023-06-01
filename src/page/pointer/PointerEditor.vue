@@ -22,34 +22,34 @@
                         </el-button>
                     </div>
                     <div class="title">
-                        <p v-if="isEditingLineInfo">编辑路线 {{ formLine.name }}</p>
+                        <p v-if="isEditingLineInfo">编辑路线 {{ formPointer.name }}</p>
                         <p v-else>新建路线 {{ lineId }}</p>
                     </div>
                 </div>
                 <el-form
                     class="mt-2"
                     ref="formLine"
-                    v-if="formLine && isShowingEdit"
-                    :model="formLine"
-                    :rules="formLineRules"
+                    v-if="formPointer && isShowingEdit"
+                    :model="formPointer"
+                    :rules="formPointerRules"
                     size="mini"
                     label-width="100px"
                 >
-                    <el-form-item label="路线名" prop="name">
-                        <el-input v-model="formLine.name"/>
+                    <el-form-item label="数据名" prop="name">
+                        <el-input v-model="formPointer.name"/>
                     </el-form-item>
                     <el-form-item label="是否公开" prop="is_public">
-                        <el-radio :label="1" v-model="formLine.is_public">公开</el-radio>
-                        <el-radio :label="0" v-model="formLine.is_public">私有</el-radio>
+                        <el-radio :label="1" v-model="formPointer.is_public">公开</el-radio>
+                        <el-radio :label="0" v-model="formPointer.is_public">私有</el-radio>
                     </el-form-item>
                     <el-form-item label="地域" prop="area">
-                        <el-input v-model="formLine.area"/>
+                        <el-input v-model="formPointer.area"/>
                     </el-form-item>
                     <el-form-item label="路线类型" prop="road_type">
-                        <el-input v-model="formLine.road_type"/>
+                        <el-input v-model="formPointer.road_type"/>
                     </el-form-item>
                     <el-form-item label="适用季节" prop="seasons">
-                        <el-checkbox-group v-model="formLine.seasonsArray">
+                        <el-checkbox-group v-model="formPointer.seasonsArray">
                             <el-checkbox-button label="春"></el-checkbox-button>
                             <el-checkbox-button label="夏"></el-checkbox-button>
                             <el-checkbox-button label="秋"></el-checkbox-button>
@@ -57,18 +57,18 @@
                         </el-checkbox-group>
                     </el-form-item>
                     <el-form-item label="视频链接" prop="video_link">
-                        <el-input v-model="formLine.video_link"/>
+                        <el-input v-model="formPointer.video_link"/>
                     </el-form-item>
                     <el-form-item label="备注" prop="note">
-                        <el-input type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formLine.note"/>
+                        <el-input type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formPointer.note"/>
                     </el-form-item>
                     <el-form-item label="总里程" prop="distance">
-                        <el-input disabled readonly v-model="formLine.distance">
+                        <el-input disabled readonly v-model="formPointer.distance">
                             <template slot="append">km</template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="用时" prop="time">
-                        <el-input disabled readonly v-model="formLine.time">
+                        <el-input disabled readonly v-model="formPointer.time">
                             <template slot="append">分钟</template>
                         </el-input>
                     </el-form-item>
@@ -178,7 +178,7 @@ export default {
             searchResultText: '',
 
             // FORM
-            formLine: { // 路线信息
+            formPointer: { // 路线信息
                 name: '', // *路线名
                 area: '', // *地域
                 road_type: '', // *路面类型
@@ -190,7 +190,7 @@ export default {
                 thumb_up: 0, // *点赞数
                 is_public: 1, // *是否公开
             },
-            formLineRules: {
+            formPointerRules: {
                 name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
                 area: [{required: true, message: '请填写地域', trigger: 'blur'},],
                 policy: [{required: true, message: '请选择路线规划策略', trigger: 'blur'},],
@@ -292,9 +292,9 @@ export default {
                 this.$message.warning('没有任何途经点')
                 return
             }
-            this.formLine.policy = this.currentPolicy
+            this.formPointer.policy = this.currentPolicy
             let requestData = {}
-            Object.assign(requestData, this.formLine)
+            Object.assign(requestData, this.formPointer)
             requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
             pointerApi
                 .modify(requestData)
@@ -315,9 +315,9 @@ export default {
                 this.$message.warning('没有任何途经点')
                 return
             }
-            this.formLine.policy = this.currentPolicy
+            this.formPointer.policy = this.currentPolicy
             let requestData = {}
-            Object.assign(requestData, this.formLine)
+            Object.assign(requestData, this.formPointer)
             requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
             pointerApi
                 .add(requestData)
@@ -340,9 +340,9 @@ export default {
                         id: this.$route.query.lineId
                     })
                     .then(res => {
-                        this.formLine = res.data
+                        this.formPointer = res.data
                         this.currentPolicy = res.data.policy
-                        this.$set(this.formLine, 'seasonsArray', this.formLine.seasons.split('、'))
+                        this.$set(this.formPointer, 'seasonsArray', this.formPointer.seasons.split('、'))
                         this.activeLineObj = res.data
                         this.pathPointers = JSON.parse(Base64.decode(this.activeLineObj.paths))
                         this.loadLine(this.map, this.pathPointers)
@@ -488,8 +488,8 @@ export default {
                     this.activeLineObj = {
                         name: '临时路线'
                     }
-                    this.$set(this.formLine, 'distance', distance)
-                    this.$set(this.formLine, 'time', time)
+                    this.$set(this.formPointer, 'distance', distance)
+                    this.$set(this.formPointer, 'time', time)
 
                 })
 
@@ -555,7 +555,7 @@ export default {
             })
         },
         'formLine.seasonsArray'(newValue){
-            this.formLine.seasons = newValue.join('、')
+            this.formPointer.seasons = newValue.join('、')
         },
         currentPolicy(newValue){
             this.showLine()

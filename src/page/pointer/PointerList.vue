@@ -30,7 +30,7 @@
                     v-loading="isLoading"
                 >
                     <el-table-column width="50" prop="id" label="#"/>
-                    <el-table-column width="150" prop="title" label="路线名"/>
+                    <el-table-column width="150" prop="title" label="数据名"/>
                     <el-table-column align="center" width="50" prop="is_public" label="状态">
                         <template slot-scope="scope">
                             {{ scope.row.is_public === 1 ? '公开' : '私有' }}
@@ -59,23 +59,15 @@
                                        @click="goDelete(scope.row)" plain size="mini" icon="el-icon-delete">删除</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column width="130" align="left" prop="seasons" label="适用季节"/>
-                    <el-table-column width="200" align="left" prop="road_type" label="路线类型">
-                        <template slot-scope="scope">
-                            <el-tag class="mr-1" size="mini"
-                                    v-for="item in scope.row.road_type.split('，')" :key="item">{{ item }}
-                            </el-tag>
-                        </template>
-                    </el-table-column>
                     <el-table-column align="center" width="50" prop="video_link" label="视频">
                         <template slot-scope="scope">
                             <a class="link" v-if="scope.row.video_link" target="_blank" :href="scope.row.video_link"><i class="el-icon-video-camera"></i></a>
                             <span v-else>-</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="paths" label="路线节点">
+                    <el-table-column align="center" prop="paths" label="数据点数量">
                         <template slot-scope="scope">
-                            <div v-if="scope.row.paths">{{ scope.row.pointersArray.length }}</div>
+                            <div v-if="scope.row.pointers">{{ scope.row.pointersArray.length }}</div>
                         </template>
                     </el-table-column>
                     <el-table-column align="left" width="250" prop="note" label="备注">
@@ -95,9 +87,15 @@
                     </el-table-column>
 
 <!--                    <el-table-column sortable align="center" width="60px" prop="thumb_up" label="赞"/>-->
-                    <el-table-column sortable align="center" width="160px" prop="date_init" label="时间">
+                    <el-table-column sortable align="center" width="160px" prop="date_create" label="创建时间">
                         <template slot-scope="scope">
-                            <div>{{ scope.row.date_init }}</div>
+                            <div>{{ scope.row.date_create }}</div>
+<!--                            <div>{{ scope.row.date_modify }}</div>-->
+                        </template>
+                    </el-table-column>
+                    <el-table-column sortable align="center" width="160px" prop="date_modify" label="编辑时间">
+                        <template slot-scope="scope">
+                            <div>{{ scope.row.date_modify }}</div>
 <!--                            <div>{{ scope.row.date_modify }}</div>-->
                         </template>
                     </el-table-column>
@@ -394,9 +392,8 @@ export default {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
-                        item.pointers = Base64.decode(item.pointers) || ''
                         item.pointersArray = item.pointers && JSON.parse(item.pointers)
-                        item.date_init = utility.dateFormatter(new Date(item.date_init))
+                        item.date_create = utility.dateFormatter(new Date(item.date_create))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
                     })
