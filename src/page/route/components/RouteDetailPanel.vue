@@ -207,6 +207,7 @@ i{
     }
 }
 .note{
+    overflow-y: auto;
     padding: 10px 20px;
     border-top: 1px solid $border-normal;
     line-height: 1.5;
