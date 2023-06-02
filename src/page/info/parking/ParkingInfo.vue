@@ -1,7 +1,7 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
-        <Detail :line="{
+        <route-detail-panel :line="{
             name: '济南常用地点停车收费说明',
             area: '山东济南',
             note: `记录一些自己常用的济南停车区域的停车价格说明`
@@ -15,12 +15,12 @@ import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
 const MAP_CENTER =  [117.129533, 36.685668]
 import locations from './parkingLocations.json'
-import Detail from "@/page/route/components/Detail.vue";
+import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 let AMap = null
 
 export default {
     name: "ParkingInfo",
-    components: {Detail},
+    components: {RouteDetailPanel},
     data() {
         return {
             isLoading: false,

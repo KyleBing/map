@@ -1,7 +1,7 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
-        <Detail :line="{
+        <route-detail-panel :line="{
             name: '济南籍莱钢段高速免费通行政策',
             area: '山东济南',
             road_type: '高速',
@@ -18,12 +18,12 @@ import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
 const MAP_CENTER = [117.582719, 36.42146]
 import locations from './locations.json'
-import Detail from "@/page/route/components/Detail.vue";
+import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 let AMap = null
 
 export default {
     name: "HighwayXueye",
-    components: {Detail},
+    components: {RouteDetailPanel},
     data() {
         return {
             isLoading: false,

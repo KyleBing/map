@@ -39,7 +39,7 @@
                 :lat="positionPicked.lat"
                 v-model="routeData"/>
         </div>
-        <detail
+        <route-detail-panel
             class="detail-panel mt-1"
             v-if="activeLineObj"
             :line="activeLineObj"
@@ -56,7 +56,7 @@ import RoutePanel from "@/page/tool/route/components/RoutePanel";
 
 import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
-import Detail from "@/page/route/components/Detail";
+import RouteDetailPanel from "@/page/route/components/RouteDetailPanel";
 import axios from "axios";
 import {policyArray} from "@/page/route/DrivingPolicy";
 
@@ -64,7 +64,7 @@ const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 export default {
     name: "ToolRoute",
-    components: {Detail, RoutePanel},
+    components: {RouteDetailPanel, RoutePanel},
     data() {
         return {
             activeLineObj: null,

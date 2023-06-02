@@ -46,7 +46,7 @@ import QRCode from "./qr.js"
 import {marked} from "marked";
 
 export default {
-    name: "PointerDetail",
+    name: "PointerDetailPanel",
     props:{
         pointer:{
             type: Object

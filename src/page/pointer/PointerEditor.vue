@@ -1,7 +1,7 @@
 <template>
     <div class="map-container">
 
-        <detail
+        <route-detail-panel
             class="detail-panel mt-1"
             v-if="activeLineObj"
             :line="activeLineObj"
@@ -111,7 +111,7 @@ import PointerEditPanel from "./components/PointerEditPanel";
 
 import {mapGetters, mapState} from 'vuex'
 import mapConfig from "../../mapConfig";
-import Detail from "@/page/route/components/Detail.vue";
+import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 import axios from "axios";
 import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64";
@@ -120,7 +120,7 @@ const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 export default {
     name: "PointerEditor",
-    components: {Detail, PointerEditPanel},
+    components: {RouteDetailPanel, PointerEditPanel},
     data() {
         return {
             activeLineObj: null,

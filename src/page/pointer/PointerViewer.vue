@@ -18,7 +18,7 @@
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
 
         <!-- DETAIL INFO -->
-        <detail
+        <pointer-detail-panel
             v-if="activePointerObj && (!isInPortraitMode || !isPointerListShowed)"
             :pointer="activePointerObj"
             @openInGaodeApp="openInGaodeApp"
@@ -30,8 +30,7 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
-import ICON from "@/assets/icons"
-import Detail from "./components/PointerDetail"
+import PointerDetailPanel from "./components/PointerDetailPanel"
 import {mapGetters, mapState} from "vuex"
 import mapConfig from "../../mapConfig";
 import pointerApi from "@/api/pointerApi";
@@ -45,7 +44,7 @@ let AMap = null
 
 export default {
     name: "PointerViewer",
-    components: {PointerListPanel, Detail},
+    components: {PointerListPanel, PointerDetailPanel},
     data() {
         return {
             isLoading: false,

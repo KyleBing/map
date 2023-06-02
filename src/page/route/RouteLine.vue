@@ -18,7 +18,7 @@
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
 
         <!-- DETAIL INFO -->
-        <detail
+        <route-detail-panel
             v-if="activeLineObj && (!isInPortraitMode || !isRouteListShowed)"
             :line="activeLineObj"
             :drivingInfo="drivingInfo"
@@ -32,7 +32,7 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
 import ICON from "@/assets/icons"
-import Detail from "./components/Detail"
+import RouteDetailPanel from "./components/RouteDetailPanel"
 import {mapGetters, mapState} from "vuex"
 import mapConfig from "../../mapConfig";
 import routeApi from "@/api/routeApi";
@@ -47,7 +47,7 @@ let AMap = null
 
 export default {
     name: "RouteLine",
-    components: {DrivingInfo, RouteLineList, Detail},
+    components: {DrivingInfo, RouteLineList, RouteDetailPanel},
     data() {
         return {
             isLoading: false,

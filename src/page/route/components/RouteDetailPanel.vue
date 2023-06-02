@@ -31,7 +31,7 @@
                     <p class="info-title">创建用户</p><p class="info-value">{{line.nickname}}</p>
                 </div>
             </div>
-            <div class="note markdown" v-if="line.note" v-html="contentHtml"></div>
+            <div class="note markdown" :style="`max-height: ${height}px`" v-if="line.note" v-html="contentHtml"></div>
             <div class="button-center"
                  v-if="isAdmin || (authorization && authorization.uid) === line.uid"
             >
@@ -63,7 +63,7 @@ import {policyMap} from "@/page/route/DrivingPolicy"
 import {marked} from "marked";
 
 export default {
-    name: "Detail",
+    name: "RouteDetailPanel",
     components: {DrivingInfo},
     props:{
         line:{
@@ -78,6 +78,7 @@ export default {
             showContent: true,
             qrImg: '',
             policyMap,
+            height: innerHeight * 0.5
         }
     },
     mounted() {

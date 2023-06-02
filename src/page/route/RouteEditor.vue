@@ -1,7 +1,7 @@
 <template>
     <div class="map-container">
 
-        <detail
+        <route-detail-panel
             class="detail-panel mt-1"
             v-if="activeLineObj"
             :line="activeLineObj"
@@ -135,7 +135,7 @@ import RoutePanel from "@/page/tool/route/components/RoutePanel.vue";
 
 import {mapGetters, mapState} from 'vuex'
 import mapConfig from "../../mapConfig";
-import Detail from "@/page/route/components/Detail.vue";
+import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 import axios from "axios";
 import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64";
@@ -147,7 +147,7 @@ const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 export default {
     name: "RouteEditor",
-    components: {Detail, RoutePanel},
+    components: {RouteDetailPanel, RoutePanel},
     data() {
         return {
             activeLineObj: null,
