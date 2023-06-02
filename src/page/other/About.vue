@@ -4,14 +4,13 @@
             <div class="company">
                 <div class="company-logo">
                     <img src="../../assets/logo.png" alt="logo"/>
-                    <h2>{{ copName }}</h2>
+                    <h2>{{ projectName }}</h2>
                 </div>
-                <p class="mt-2">一个可以分享行车路线的网站。</p>
-                <p class="mt-1">建议电脑端浏览该网站。</p>
-                <p class="description">请将疑问和建议发送邮件至
-                    <a :href="`mailto:${email}`">{{ email }}</a>
+                <div class="about-content markdown" v-html="aboutHtmlContent"></div>
+
+                <p class="description">请将疑问和建议发送邮件至： <i class="el-icon-message"></i>  <a :href="`mailto:${email}`">{{ email }}</a>
                 </p>
-                <p>我的主页： <a :href="homepage">{{ homepage }}</a></p>
+                <p>我的主页： <i class="el-icon-house"></i> <a :href="homepage">{{ homepage }}</a></p>
             </div>
         </div>
     </div>
@@ -19,15 +18,42 @@
 <script>
 import packageInfo from "../../../package.json"
 import {AnimateHeartCanvas} from "animate-heart-canvas";
+import {marked} from "marked";
 
 export default {
     name: 'About',
     data() {
         return {
-            copName: '路书',
+            projectName: '路书',
             email: packageInfo.author.email,
             animatedBg: null,
-            homepage: packageInfo.author.homepage
+            homepage: packageInfo.author.homepage,
+            aboutMarkdownContent: `
+#####  一个可以分享行车路线、地域信息的网站
+建议电脑端浏览该网站
+
+---
+
+网站主要使用高德 API 实现
+##### 开发中遇到的一些问题和经验分享
+- [高德API JS 高德地图获取多个坐标点的中心点](https://kylebing.blog.csdn.net/article/details/130991747)
+- [如何使用高德地图 API 做一个路线规划应用，展示自定义路线](https://blog.csdn.net/KimBing/article/details/119915390)
+- [高德地图 JS Web 添加自定义图标，自定义窗口标记](https://blog.csdn.net/KimBing/article/details/107761144)
+- [高德地图 Vue 中 加载 数据可视化 Loca 的方式](https://blog.csdn.net/KimBing/article/details/118615489)
+
+##### Github
+- [高德地图 Loca 和 路线规划 vue 演示项目](https://github.com/KyleBing/demo-map-loca)
+
+#####  高德官方开发文档
+
+- [高德地图 WEB JSAPI 2.0 文档](https://lbs.amap.com/api/javascript-api-v2/documentation)
+- [高德地图 WEB JSAPI 2.0 概述](https://lbs.amap.com/api/jsapi-v2/summary/)
+
+
+---
+
+            `,
+            aboutHtmlContent: ''
         }
     },
     mounted() {
@@ -40,6 +66,7 @@ export default {
                 80,
                 ''
             )
+        this.aboutHtmlContent = marked.parse(this.aboutMarkdownContent)
     },
     beforeDestroy() {
         this.animatedBg.destroy()
@@ -79,7 +106,7 @@ $text-about: #666;
 }
 
 .content {
-    width: 500px;
+    width: 600px;
     padding: 20px;
 }
 
