@@ -256,7 +256,7 @@ export default {
                                 console.log(err)
                             },
                             complete: res => {
-                                // res = {hash: 'hash', key: 'key'}
+                                // res = {hash: 'hash', key_service: 'key_service'}
                                 console.log('complete: ',res)
                                 if (this.currentPointIndex !== null){
                                     let tempData = this.data // 临时数组
