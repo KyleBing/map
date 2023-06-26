@@ -1,5 +1,9 @@
 <template>
     <div class="map-container">
+<!--        <el-cascader-->
+<!--            v-model="value"-->
+<!--            :options="options"-->
+<!--            @change="handleChange"/>-->
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
     </div>
 </template>
@@ -8,6 +12,7 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import {mapState} from 'vuex'
 import mapConfig from "../../../mapConfig";
+import axios from "axios";
 
 // 显示地图行政区的深度
 const DEPTH = {
@@ -15,6 +20,21 @@ const DEPTH = {
     city: 1, // 市
     country: 2 // 县、区
 }
+
+const COLORS = [
+    'rgba(190,194,161,0.8)',
+    'rgba(237,236,208,0.8)',
+    'rgba(222,148,111,0.8)',
+    'rgba(103,104,099,0.8)',
+    'rgba(201,166,085,0.8)',
+    'rgba(113,182,153,0.8)',
+    'rgba(205,087,085,0.8)',
+    'rgba(208,198,170,0.8)',
+    'rgba(212,227,206,0.8)',
+    'rgba(214,201,193,0.8)',
+    'rgba(212,144,167,0.8)',
+    'rgba(242,242,218,0.8)',
+]
 
 let AMap = null
 
@@ -25,48 +45,7 @@ export default {
         return {
             isLoading: false,
             map: null,
-            circleData: [
-                /*                {
-                                    name: '',
-                                    center: [lng,lat]
-                                    radius: 2.4, // 半径
-                                    color: '#000000' //
-                                },*/
-            ], // 对应点的范围数据
-
-            positionPicked: {
-                lng: 0,
-                lat: 0,
-            },
             layerCity: null, // 区域图层
-            colors: {
-                '370114': {color: 'rgba(190,194,161,0.8)', name: "章丘区"},
-                '370116': {color: 'rgba(237,236,208,0.8)', name: "莱芜区"},
-                '370117': {color: 'rgba(222,148,111,0.8)', name: "钢城区"},
-                '370115': {color: 'rgba(103,104,099,0.8)', name: "济阳区"},
-                '370112': {color: 'rgba(201,166,085,0.8)', name: "历城区"},
-                '370124': {color: 'rgba(113,182,153,0.8)', name: "平阴县"},
-                '370113': {color: 'rgba(205,087,085,0.8)', name: "长清区"},
-                '370103': {color: 'rgba(208,198,170,0.8)', name: "市中区"},
-                '370102': {color: 'rgba(212,227,206,0.8)', name: "历下区"},
-                '370126': {color: 'rgba(214,201,193,0.8)', name: "商河县"},
-                '370104': {color: 'rgba(212,144,167,0.8)', name: "槐荫区"},
-                '370105': {color: 'rgba(242,242,218,0.8)', name: "天桥区"},
-            },
-            markers: [
-                {"name": "平阴县", "position": [116.375526, 36.190518], "note": "370124"},
-                {"name": "商河县", "position": [117.201343, 37.319686], "note": "370126"},
-                {"name": "济阳区", "position": [117.085361, 37.002617], "note": "370115"},
-                {"name": "钢城区", "position": [117.825907, 36.127458], "note": "370117"},
-                {"name": "莱芜区", "position": [117.617702, 36.344708], "note": "370116"},
-                {"name": "章丘区", "position": [117.517144, 36.706865], "note": "370114"},
-                {"name": "历城区", "position": [117.250039, 36.639125], "note": "370112"},
-                {"name": " 市中区", "position": [116.953408, 36.586214], "note": "370103"},
-                {"name": "长清区", "position": [116.775567, 36.434444], "note": "370113"},
-                {"name": "槐荫区", "position": [116.885431, 36.683741], "note": "370104"},
-                {"name": "历下区", "position": [117.099664, 36.657856], "note": "370102"},
-                {"name": "天桥区", "position": [116.985681, 36.769594], "note": "370105"},
-            ]
         }
     },
     mounted() {
@@ -79,6 +58,7 @@ export default {
                     'AMap.Scale', // 比例尺
                     'AMap.Geolocation', // 定位
                     'AMap.DistrictLayer', // 定位
+                    'AMap.DistrictSearch', // 区域信息搜索
                 ],
                 AMapUI: {             // 是否加载 AMapUI，缺省不加载
                     version: '1.1',   // AMapUI 缺省 1.1
@@ -91,6 +71,12 @@ export default {
                     center: [117.129533, 36.685668],
                     zoom: 9, // 缩放级别
                     mapStyle: 'amap://styles/whitesmoke'
+                })
+
+
+                // 点击显示当地信息
+                this.map.on('click', event => {
+                    this.showDistrictInfoOf(event.lnglat)
                 })
 
                 this.map.setFeatures(['bg', 'point', 'road', 'building'])
@@ -117,49 +103,105 @@ export default {
                 })
 
                 geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
-
-                let CodeShandong = 370000
-                this.initPro(CodeShandong, DEPTH.country)
-                this.markers.forEach(item => {
-                    this.addMarker(this.map, item)
-                })
-
-            }).catch(e => {
-            console.log(e)
-        })
+            })
+            .catch(e => {
+                console.log(e)
+            })
 
     },
     computed: {
         ...mapState(['windowInsets'])
     },
     methods: {
-        initPro(code, dep) {
-            this.layerCity && this.layerCity.setMap(null)
+        showDistrictBounds(locationName){
+            // 绘制当前区域边界
+            this.districtSearch = new AMap.DistrictSearch({
+                // 关键字对应的行政区级别
+                level: 'district',
+                // country：国家；province：省/直辖市；city：市；district：区/县；biz_area：商圈
+                extensions: 'all',
+                //  显示下级行政区级数，1表示返回下一级行政区
+                subdistrict: 1
+            })
 
-            let that = this
+            this.districtSearch.search(locationName, (status, result) => {
+                console.log(result)
+                // 获取边界信息
+                let bounds = result.districtList[0].boundaries
+                let polygons = []
+                if (bounds) {
+                    for (let i = 0, l = bounds.length; i < l; i++) {
+                        // 生成行政区划polygon
+                        let polygon = new AMap.Polygon({
+                            map: this.map,
+                            strokeWeight: 2,
+                            path: bounds[i],
+                            fillOpacity: 0.6,
+                            fillColor: randomColor(),
+                            strokeColor: '#CC66CC'
+                        })
+                        this.map.add(polygon)
+                        polygons.push(polygon)
+                    }
+                    // 地图自适应
+                    // this.map.setFitView()  // 以合适的比例展示内容区
+                }
+
+                result.districtList[0].districtList.forEach(item => {
+                    this.addMarker(this.map, item)
+                })
+            })
+        },
+
+        // 获取坐标值的地理信息
+        showDistrictInfoOf(location){
+            axios({
+                url: 'https://restapi.amap.com/v3/geocode/regeo?parameters',
+                params: {
+                    key: mapConfig.key_service,
+                    location: `${location.lng},${location.lat}`
+                }
+            })
+                .then(res => {
+                    if (res.data && res.data.status === '1'){
+                        let locationInfo =  res.data.regeocode.addressComponent
+                        console.log(locationInfo)
+                        this.initDistrict(locationInfo.adcode, DEPTH.district) // TODO
+                        this.showDistrictBounds(locationInfo.city)
+                    } else {
+                        console.log(res)
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+
+        initDistrict(adcode, depth) {
+            this.layerCity && this.layerCity.setMap(null)
             this.layerCity = new AMap.DistrictLayer.Province({
                 zIndex: 8,
-                adcode: [code],
-                depth: dep,
+                adcode: [adcode],
+                depth: depth,
                 styles: {
                     'fill': properties => {
-                        // properties为可用于做样式映射的字段，包含
-                        // NAME_CHN:中文名称
-                        // adcode_pro
-                        // adcode_cit
-                        // adcode
+                        // properties为可用于做样式映射的字段，包含  // NAME_CHN:中文名称;  adcode_pro;  adcode_cit;  adcode
                         if (properties.adcode_cit.toString().indexOf('370100') === 0) {
                             let {NAME_CHN, adcode, x, y} = properties
                             // console.log(`{name: ${NAME_CHN}, adcode: ${adcode}, position: [${x},${y}]}`)
-                            return this.colors[adcode].color
+                            return randomColor()
                         }
                     },
-                    'province-stroke': 'black',
-                    'city-stroke': 'brown', // 中国地级市边界
-                    'county-stroke': 'rgba(255,255,255,0.5)' // 中国区县边界
+                    'stroke-width': 1,
+                    'coastline-stroke': 'white', // 海岸线颜色
+                    'nation-stroke': 'blue', // 国境线颜色
+                    'province-stroke': 'white', // 省界颜色
+                    'city-stroke': 'black', // 地级市边界
+                    'county-stroke': 'rgba(255,255,255,0.5)' // 区/县界颜色
+                    // 参考：
+                    // https://lbs.amap.com/api/javascript-api-v2/documentation#districtlayer
                 }
             })
-
             this.layerCity.setMap(this.map)
         },
 
@@ -170,7 +212,7 @@ export default {
                 this.map.setCenter(center)
                 this.addMarker(this.map, {
                     position: center,
-                    name: '我',
+                    name: '我的位置',
                     note: ''
                 })
             } else {
@@ -180,7 +222,7 @@ export default {
 
         addMarker(map, item) {
             let marker = new AMap.Marker({
-                position: item.position,
+                position: [item.center.lng, item.center.lat],
                 offset: new AMap.Pixel(-10, -20),
                 content: `
                 <div class="marker">
@@ -188,7 +230,8 @@ export default {
                       <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                       <div class="note">区号：${item.citycode}</div>
+                       <div class="note">行政：${item.adcode}</div>
                   </div>
                </div>`,
             })
@@ -200,6 +243,11 @@ export default {
         this.map.destroy() // 销毁地图，释放内存
         this.map = null
     }
+}
+
+function randomColor(){
+    let randomIndex = Math.floor(COLORS.length * Math.random())
+    return COLORS[randomIndex]
 }
 
 
