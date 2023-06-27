@@ -54,6 +54,7 @@ export default {
         }
     },
     mounted() {
+        this.pointerInfo.name = this.$route.query.city || '济南'
         AMapLoader
             .load({
                 key: mapConfig.key_web_js, // 开发应用的 ID
@@ -111,8 +112,6 @@ export default {
 
                 // 初始化默认展示济南区县
                 this.getAdcodeOfCity(this.pointerInfo.name)
-                this.showDistrictBounds(this.pointerInfo.name)
-
             })
             .catch(e => {
                 console.log(e)
@@ -121,6 +120,13 @@ export default {
     },
     computed: {
         ...mapState(['windowInsets'])
+    },
+    watch: {
+        '$route'(newValue){
+            this.getAdcodeOfCity(this.$route.query.city)
+            this.pointerInfo.name = `${this.$route.query.province}${this.$route.query.city}`
+
+        }
     },
     methods: {
 
@@ -171,16 +177,22 @@ export default {
                     }*/
                     if (res.data && res.data.status === '1'){
                         let locationInfo =  res.data.regeocode.addressComponent
-                        console.log('lnglat -> location: ', locationInfo)
+                        // console.log('lnglat -> location: ', locationInfo)
+                        this.pointerInfo.name = `${locationInfo.province}${locationInfo.city}`
 
-                        let addressName = `${locationInfo.province}${locationInfo.city}`
-                        this.pointerInfo.name = addressName
-                        this.getAdcodeOfCity(addressName)
-                        if (typeof locationInfo.city === 'object'){
-                            this.showDistrictBounds(locationInfo.province)
-                        } else {
-                            this.showDistrictBounds(locationInfo.city)
-                        }
+                        // 如果 city 为空数组，说明是直辖市
+                        let queryWord = typeof locationInfo.city === 'object' ? locationInfo.province : locationInfo.city
+
+                        this.$router.push({
+                            name: 'DistrictInfo',
+                            query: {
+                                city: queryWord,
+                                province: locationInfo.province
+                            }
+                        })
+
+                        // this.getAdcodeOfCity(queryWord) // 通过名字获取地域信息
+
                     } else {
                         console.log(res)
                     }
@@ -195,22 +207,23 @@ export default {
                 url: 'https://restapi.amap.com/v3/geocode/geo?parameters',
                 params: {
                     key: mapConfig.key_service,
-                    address,
+                    address
                 }
             })
                 .then(res => {
                     if (res.data.status === '1'){
                         let locationData = res.data.geocodes[0]
-                        console.log('address -> locationInfo: ',locationData)
+                        // console.log('address -> locationInfo: ',locationData)
                         this.initDistrict(locationData.adcode, DEPTH.country)
+                        this.showDistrictBounds(address)
                     }
                 })
                 .catch(err => console.log(err))
 
         },
-        showDistrictBounds(locationName){
 
-            // TODO: add params to query
+        // 显示区域边界
+        showDistrictBounds(locationName){
             // 绘制当前区域边界
             this.districtSearch = new AMap.DistrictSearch({
                 // 关键字对应的行政区级别
@@ -222,7 +235,7 @@ export default {
             })
 
             this.districtSearch.search(locationName, (status, result) => {
-                console.log('地域搜索： ',result)
+                // console.log('地域搜索： ',result)
                /* let bounds = []
                 if (result.districtList > 1){ // 直辖市时
                     result.districtList.forEach(item => {
@@ -258,15 +271,22 @@ export default {
                 let locationInfo = result.districtList[0]
                 let finalMarkDownContent = `**地址编码**：${locationInfo.adcode}\n
 **区号**：${locationInfo.citycode}\n`
+                locationInfo.districtList.sort((a,b) => a.adcode - b.adcode)  // 按 adcode 排序
                 locationInfo.districtList.forEach(item => {
                     finalMarkDownContent = finalMarkDownContent.concat(`- ${item.name}-${item.adcode}\n`)
                 })
+
+                finalMarkDownContent = finalMarkDownContent + `\n**点击任意区域，显示区县信息**\n`
                 this.pointerInfo.note = finalMarkDownContent
 
                 result.districtList[0].districtList.forEach(item => {
                     this.addMarker(this.map, item)
                 })
 
+
+                // 地图自适应
+                // this.map.setFitView()  // 以合适的比例展示内容区
+                this.map.setCenter(locationInfo.center)
             })
         },
 
@@ -295,6 +315,7 @@ export default {
                 }
             })
             this.layerCity.setMap(this.map)
+
         },
 
         // 设置地图中心点：用户坐标
@@ -322,8 +343,8 @@ export default {
                       <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">区号：${item.citycode}</div>
-                       <div class="note">行政：${item.adcode}</div>
+<!--                       <div class="note">区号：${item.citycode}</div>-->
+                       <div class="note">区域编码：${item.adcode}</div>
                   </div>
                </div>`,
             })

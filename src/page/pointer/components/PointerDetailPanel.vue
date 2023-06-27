@@ -8,7 +8,7 @@
         </div>
 
         <div class="content" v-if="showContent">
-            <div class="info-list">
+            <div class="info-list" v-if="pointer.area || pointer.nickname">
                 <div class="info" v-if="pointer.area">
                     <p class="info-title">点图区域</p><p class="info-value">{{pointer.area}}</p>
                 </div>
