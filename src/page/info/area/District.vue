@@ -1,9 +1,6 @@
 <template>
     <div class="map-container">
-<!--        <el-cascader-->
-<!--            v-model="value"-->
-<!--            :options="options"-->
-<!--            @change="handleChange"/>-->
+        <pointer-detail-panel :pointer="pointerInfo"/>
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
     </div>
 </template>
@@ -13,6 +10,7 @@ import AMapLoader from '@amap/amap-jsapi-loader'
 import {mapState} from 'vuex'
 import mapConfig from "../../../mapConfig";
 import axios from "axios";
+import PointerDetailPanel from "@/page/pointer/components/PointerDetailPanel";
 
 // 显示地图行政区的深度
 const DEPTH = {
@@ -41,11 +39,18 @@ let AMap = null
 
 export default {
     name: "AreaJinan",
+    components: {PointerDetailPanel},
     data() {
         return {
             isLoading: false,
             map: null,
             layerCity: null, // 区域图层
+
+            pointerInfo: {
+                name: '济南市',
+                // area: '',
+                note: ''
+            }
         }
     },
     mounted() {
@@ -103,6 +108,11 @@ export default {
                 })
 
                 geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
+
+                // 初始化默认展示济南区县
+                this.getAdcodeOfCity(this.pointerInfo.name)
+                this.showDistrictBounds(this.pointerInfo.name)
+
             })
             .catch(e => {
                 console.log(e)
@@ -113,7 +123,94 @@ export default {
         ...mapState(['windowInsets'])
     },
     methods: {
+
+        // 获取坐标值的地理信息
+        showDistrictInfoOf(lnglat){
+            axios({
+                url: 'https://restapi.amap.com/v3/geocode/regeo?parameters',
+                params: {
+                    key: mapConfig.key_service,
+                    location: `${lnglat.lng},${lnglat.lat}`
+                }
+            })
+                .then(res => {
+/*                    res = {
+                        "status": "1",
+                        "regeocode": {
+                            "addressComponent": {
+                                "city": "德州市",
+                                "province": "山东省",
+                                "adcode": "371425",
+                                "district": "齐河县",
+                                "towncode": "371425201000",
+                                "streetNumber": {
+                                    "number": [],
+                                    "direction": [],
+                                    "distance": [],
+                                    "street": []
+                                },
+                                "country": "中国",
+                                "township": "安头乡",
+                                "businessAreas": [
+                                    []
+                                ],
+                                "building": {
+                                    "name": [],
+                                    "type": []
+                                },
+                                "neighborhood": {
+                                    "name": [],
+                                    "type": []
+                                },
+                                "citycode": "0534"
+                            },
+                            "formatted_address": "山东省德州市齐河县安头乡安头八支路"
+                        },
+                        "info": "OK",
+                        "infocode": "10000"
+                    }*/
+                    if (res.data && res.data.status === '1'){
+                        let locationInfo =  res.data.regeocode.addressComponent
+                        console.log('lnglat -> location: ', locationInfo)
+
+                        let addressName = `${locationInfo.province}${locationInfo.city}`
+                        this.pointerInfo.name = addressName
+                        this.getAdcodeOfCity(addressName)
+                        if (typeof locationInfo.city === 'object'){
+                            this.showDistrictBounds(locationInfo.province)
+                        } else {
+                            this.showDistrictBounds(locationInfo.city)
+                        }
+                    } else {
+                        console.log(res)
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+
+        getAdcodeOfCity(address){
+            axios({
+                url: 'https://restapi.amap.com/v3/geocode/geo?parameters',
+                params: {
+                    key: mapConfig.key_service,
+                    address,
+                }
+            })
+                .then(res => {
+                    if (res.data.status === '1'){
+                        let locationData = res.data.geocodes[0]
+                        console.log('address -> locationInfo: ',locationData)
+                        this.initDistrict(locationData.adcode, DEPTH.country)
+                    }
+                })
+                .catch(err => console.log(err))
+
+        },
         showDistrictBounds(locationName){
+
+            // TODO: add params to query
             // 绘制当前区域边界
             this.districtSearch = new AMap.DistrictSearch({
                 // 关键字对应的行政区级别
@@ -125,9 +222,17 @@ export default {
             })
 
             this.districtSearch.search(locationName, (status, result) => {
-                console.log(result)
-                // 获取边界信息
-                let bounds = result.districtList[0].boundaries
+                console.log('地域搜索： ',result)
+               /* let bounds = []
+                if (result.districtList > 1){ // 直辖市时
+                    result.districtList.forEach(item => {
+                        console.log(item.boundaries)
+                        bounds.push(...item.boundaries)
+                    })
+                } else {
+                   bounds = result.districtList[0].boundaries
+                }
+                // 显示边界信息
                 let polygons = []
                 if (bounds) {
                     for (let i = 0, l = bounds.length; i < l; i++) {
@@ -147,37 +252,26 @@ export default {
                     // this.map.setFitView()  // 以合适的比例展示内容区
                 }
 
+
+*/
+
+                let locationInfo = result.districtList[0]
+                let finalMarkDownContent = `**地址编码**：${locationInfo.adcode}\n
+**区号**：${locationInfo.citycode}\n`
+                locationInfo.districtList.forEach(item => {
+                    finalMarkDownContent = finalMarkDownContent.concat(`- ${item.name}-${item.adcode}\n`)
+                })
+                this.pointerInfo.note = finalMarkDownContent
+
                 result.districtList[0].districtList.forEach(item => {
                     this.addMarker(this.map, item)
                 })
-            })
-        },
 
-        // 获取坐标值的地理信息
-        showDistrictInfoOf(location){
-            axios({
-                url: 'https://restapi.amap.com/v3/geocode/regeo?parameters',
-                params: {
-                    key: mapConfig.key_service,
-                    location: `${location.lng},${location.lat}`
-                }
             })
-                .then(res => {
-                    if (res.data && res.data.status === '1'){
-                        let locationInfo =  res.data.regeocode.addressComponent
-                        console.log(locationInfo)
-                        this.initDistrict(locationInfo.adcode, DEPTH.district) // TODO
-                        this.showDistrictBounds(locationInfo.city)
-                    } else {
-                        console.log(res)
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
         },
 
         initDistrict(adcode, depth) {
+            this.map.clearMap()
             this.layerCity && this.layerCity.setMap(null)
             this.layerCity = new AMap.DistrictLayer.Province({
                 zIndex: 8,
@@ -186,11 +280,9 @@ export default {
                 styles: {
                     'fill': properties => {
                         // properties为可用于做样式映射的字段，包含  // NAME_CHN:中文名称;  adcode_pro;  adcode_cit;  adcode
-                        if (properties.adcode_cit.toString().indexOf('370100') === 0) {
                             let {NAME_CHN, adcode, x, y} = properties
                             // console.log(`{name: ${NAME_CHN}, adcode: ${adcode}, position: [${x},${y}]}`)
                             return randomColor()
-                        }
                     },
                     'stroke-width': 1,
                     'coastline-stroke': 'white', // 海岸线颜色

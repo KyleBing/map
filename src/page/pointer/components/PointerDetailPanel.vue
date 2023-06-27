@@ -49,7 +49,16 @@ export default {
     name: "PointerDetailPanel",
     props:{
         pointer:{
-            type: Object
+            type: Object,
+            default: {
+                name: '', // *点图名
+                area: '', // *地域
+                video_link: '', // 路径视频演示
+                pointers: [], // *路径点
+                note: '', // 备注
+                thumb_up: 0, // *点赞数
+                is_public: 1, // *是否公开
+            }
         },
     },
     data(){
@@ -98,6 +107,7 @@ i{
     right: 20px;
     padding: 0;
     width: 250px;
+    z-index: 1000;
     .title{
         position: relative;
         text-align: center;
