@@ -35,7 +35,7 @@ const routes = [
         name: 'Pointer',
         path: '/pointer',
         component: Layout,
-        meta: {title: '地域信息(beta)', showInMenu: true, icon: 'el-icon-location-outline' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
+        meta: {title: '地域信息', showInMenu: true, icon: 'el-icon-location-outline' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
             {name: 'PointerViewer', path: 'pointer-viewer', meta: {title: '展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerViewer'], resolve),},
             {name: 'PointerList',   path: 'pointer-list',   meta: {title: '列表', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerList'], resolve),},
@@ -53,6 +53,18 @@ const routes = [
         ]
     },
     {
+        name: 'Tool',
+        path: '/tool',
+        component: Layout,
+        redirect: '/tool/circle',
+        meta: {title: '地图工具', showInMenu: true, icon: 'el-icon-place' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
+        children: [
+            {name: 'ToolCircle'  , path: 'circle'       , meta: {title: '范围标记' , showInMenu: true}, component: resolve => require(['@/page/tool/circle/ToolCircle'], resolve), },
+            {name: 'ToolRoute'   , path: 'route'        , meta: {title: '路线标记' , showInMenu: true}, component: resolve => require(['@/page/tool/route/ToolRoute']  , resolve), },
+            {name: 'DistrictInfo', path: 'district-info', meta: {title: '城市各区县', showInMenu: true}, component: resolve => require(['@/page/info/area/District']    , resolve), },
+        ]
+    },
+    {
         name: 'Info',
         path: '/info',
         component: Layout,
@@ -65,18 +77,7 @@ const routes = [
             {name: 'HighwayXueye'      , path: 'highway-xueye'  , meta: {title: '济南籍车辆高速免费' , showInMenu: true} , component: resolve => require(['@/page/info/highwayXueye/HighwayXueye.vue']       , resolve) , } ,
         ]
     },
-    {
-        name: 'Tool',
-        path: '/tool',
-        component: Layout,
-        redirect: '/tool/circle',
-        meta: {title: '地图工具', showInMenu: true, icon: 'el-icon-place' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
-        children: [
-            {name: 'ToolCircle'  , path: 'circle'       , meta: {title: '范围标记' , showInMenu: true}, component: resolve => require(['@/page/tool/circle/ToolCircle'], resolve), },
-            {name: 'ToolRoute'   , path: 'route'        , meta: {title: '路线标记' , showInMenu: true}, component: resolve => require(['@/page/tool/route/ToolRoute']  , resolve), },
-            {name: 'DistrictInfo', path: 'district-info', meta: {title: '城市各区县', showInMenu: true}, component: resolve => require(['@/page/info/area/District']    , resolve), },
-        ]
-    },
+
 /*    {
         name: 'Other',
         path: '/other',

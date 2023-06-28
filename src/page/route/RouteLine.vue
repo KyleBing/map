@@ -41,6 +41,7 @@ import {Base64} from "js-base64"
 import utility from "@/utility";
 import RouteLineList from "@/page/route/components/RouteLineListPanel";
 import DrivingInfo from "@/page/route/components/DrivingInfo";
+import axios from "axios";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -260,10 +261,13 @@ export default {
 
                 // 路线规划完成时
                 this.currentDragRouting.on('complete', res => {
+                    console.log(res)
                     // 路线规划完成后，返回的路线数据：设置距离、行驶时间
                     let lineData = res.data.routes[0]
                     let distance =  (lineData.distance / 1000).toFixed(1) // m -> km
                     let time = (lineData.time / 60).toFixed() // second -> min
+
+                    this.fetchWeatherFromRoute(lineData.steps)
 
                     this.$set(this.activeLineObj, 'distance', distance)
                     this.$set(this.activeLineObj, 'time', time)
@@ -275,6 +279,47 @@ export default {
 
                 // 查询导航路径并开启拖拽导航
                 this.currentDragRouting.search()
+            })
+        },
+
+        fetchWeatherFromRoute(steps){
+            let districtsMap = new Map()
+            steps.forEach(item => {
+                item.cities.forEach(city => {
+                    city.districts.forEach(district => {
+                        if (districtsMap.has(district.adcode)){
+
+                        } else {
+                            districtsMap.set(district.adcode, {name: [city.name, district.name], adcode: district.adcode})
+                        }
+                    })
+                })
+            })
+
+            let weatherRequestArray = []
+            districtsMap.forEach((value,key) => {
+                weatherRequestArray.push(this.getWeather(key))
+            })
+
+            axios
+                .all(weatherRequestArray)
+                .then(response => {
+                    let weatherString = '\n\n### 天气信息\n\n'
+                    response.forEach((res, index) => {
+                        let weatherData = res.data.lives[0]
+                        weatherString = weatherString.concat(`${index + 1}. ${weatherData.province}-${weatherData.city}: ${weatherData.temperature}℃ | ${weatherData.humidity}%RH, ${weatherData.weather},\n`)
+                    })
+                    this.activeLineObj.note = this.activeLineObj.note.concat(weatherString)
+                })
+        },
+
+        getWeather(adcode){
+            return axios({
+                url: 'https://restapi.amap.com/v3/weather/weatherInfo',
+                params: {
+                    key: mapConfig.key_service,
+                    city: adcode
+                }
             })
         },
 

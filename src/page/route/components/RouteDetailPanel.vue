@@ -119,7 +119,7 @@ i{
     top: 20px;
     right: 20px;
     padding: 0;
-    width: 250px;
+    width: 300px;
     .title{
         position: relative;
         text-align: center;
