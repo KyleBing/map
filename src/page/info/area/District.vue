@@ -50,7 +50,9 @@ export default {
                 name: '济南市',
                 // area: '',
                 note: ''
-            }
+            },
+
+            tempColorArray: []
         }
     },
     mounted() {
@@ -293,6 +295,8 @@ export default {
         initDistrict(adcode, depth) {
             this.map.clearMap()
             this.layerCity && this.layerCity.setMap(null)
+            this.tempColorArray = [].concat(COLORS).concat(COLORS) // 放两层颜色
+            console.log(this.tempColorArray)
             this.layerCity = new AMap.DistrictLayer.Province({
                 zIndex: 8,
                 adcode: [adcode],
@@ -300,16 +304,19 @@ export default {
                 styles: {
                     'fill': properties => {
                         // properties为可用于做样式映射的字段，包含  // NAME_CHN:中文名称;  adcode_pro;  adcode_cit;  adcode
-                            let {NAME_CHN, adcode, x, y} = properties
-                            // console.log(`{name: ${NAME_CHN}, adcode: ${adcode}, position: [${x},${y}]}`)
-                            return randomColor()
+                        // let {NAME_CHN, adcode, x, y} = properties
+                        // console.log(`{name: ${NAME_CHN}, adcode: ${adcode}, position: [${x},${y}]}`)
+                        if (String(properties.adcode_cit) === adcode){
+                            return this.tempColorArray.pop()
+                        }
                     },
-                    'stroke-width': 1,
-                    'coastline-stroke': 'white', // 海岸线颜色
-                    'nation-stroke': 'blue', // 国境线颜色
+                    'stroke-width': 2,
+                    'coastline-stroke': 'blue', // 海岸线颜色
+                    'nation-stroke': 'blue',    // 国境线颜色
                     'province-stroke': 'white', // 省界颜色
-                    'city-stroke': 'black', // 地级市边界
-                    'county-stroke': 'rgba(255,255,255,0.5)' // 区/县界颜色
+                    'city-stroke': 'black',     // 地级市边界
+                    'county-stroke': 'white'    // 区/县界颜色
+
                     // 参考：
                     // https://lbs.amap.com/api/javascript-api-v2/documentation#districtlayer
                 }
@@ -358,10 +365,6 @@ export default {
     }
 }
 
-function randomColor(){
-    let randomIndex = Math.floor(COLORS.length * Math.random())
-    return COLORS[randomIndex]
-}
 
 
 </script>
