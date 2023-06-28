@@ -11,7 +11,7 @@ import {mapState} from 'vuex'
 import mapConfig from "../../../mapConfig";
 import axios from "axios";
 import PointerDetailPanel from "@/page/pointer/components/PointerDetailPanel";
-
+import {adcodeMap} from './adcodeMap'
 // 显示地图行政区的深度
 const DEPTH = {
     province: 0, // 省
@@ -20,6 +20,7 @@ const DEPTH = {
 }
 
 const COLORS = [
+    'rgba(237,236,208,0.8)',
     'rgba(113,182,153,0.8)',
     'rgba(212,144,167,0.8)',
     'rgba(242,242,218,0.8)',
@@ -27,7 +28,6 @@ const COLORS = [
     'rgba(222,148,111,0.8)',
     'rgba(212,227,206,0.8)',
     'rgba(201,166,085,0.8)',
-    'rgba(237,236,208,0.8)',
     'rgba(103,104,099,0.8)',
     'rgba(205,087,085,0.8)',
     'rgba(208,198,170,0.8)',
@@ -49,14 +49,22 @@ export default {
             pointerInfo: {
                 name: '济南市',
                 // area: '',
-                note: ''
+                note: '',
+                adcode: ''
             },
 
             tempColorArray: []
         }
     },
     mounted() {
-        this.pointerInfo.name = this.$route.query.city || '济南'
+        if (this.$route.query.adcode){
+            this.pointerInfo.adcode = this.$route.query.adcode
+            let adcodeInfo = adcodeMap.get(this.pointerInfo.adcode)
+            this.pointerInfo.name = adcodeInfo[0]
+        } else {
+            this.pointerInfo.name = this.$route.query.city || '济南'
+        }
+
         AMapLoader
             .load({
                 key: mapConfig.key_web_js, // 开发应用的 ID
@@ -125,9 +133,15 @@ export default {
     },
     watch: {
         '$route'(newValue){
-            this.getAdcodeOfCity(this.$route.query.city)
-            this.pointerInfo.name = `${this.$route.query.province}${this.$route.query.city}`
-
+            if (newValue.query.adcode){
+                this.pointerInfo.adcode = newValue.query.adcode
+                let adcodeInfo = adcodeMap.get(this.pointerInfo.adcode)
+                this.pointerInfo.name = adcodeInfo[0]
+                this.getAdcodeOfCity(this.pointerInfo.name)
+            } else {
+                this.getAdcodeOfCity(newValue.query.city)
+                this.pointerInfo.name = `${newValue.query.province}${newValue.query.city}`
+            }
         }
     },
     methods: {
@@ -189,7 +203,7 @@ export default {
                             name: 'DistrictInfo',
                             query: {
                                 city: queryWord,
-                                province: locationInfo.province
+                                province: locationInfo.province,
                             }
                         })
 
@@ -203,7 +217,6 @@ export default {
                     console.log(err)
                 })
         },
-
         getAdcodeOfCity(address){
             axios({
                 url: 'https://restapi.amap.com/v3/geocode/geo?parameters',
@@ -226,6 +239,8 @@ export default {
 
         // 显示区域边界
         showDistrictBounds(locationName){
+            this.tempColorArray = [].concat(COLORS).concat(COLORS) // 放两层颜色
+
             // 绘制当前区域边界
             this.districtSearch = new AMap.DistrictSearch({
                 // 关键字对应的行政区级别
@@ -237,65 +252,71 @@ export default {
             })
 
             this.districtSearch.search(locationName, (status, result) => {
-                // console.log('地域搜索： ',result)
-               /* let bounds = []
-                if (result.districtList > 1){ // 直辖市时
-                    result.districtList.forEach(item => {
-                        console.log(item.boundaries)
-                        bounds.push(...item.boundaries)
-                    })
-                } else {
-                   bounds = result.districtList[0].boundaries
-                }
-                // 显示边界信息
-                let polygons = []
-                if (bounds) {
-                    for (let i = 0, l = bounds.length; i < l; i++) {
-                        // 生成行政区划polygon
-                        let polygon = new AMap.Polygon({
-                            map: this.map,
-                            strokeWeight: 2,
-                            path: bounds[i],
-                            fillOpacity: 0.6,
-                            fillColor: randomColor(),
-                            strokeColor: '#CC66CC'
-                        })
-                        this.map.add(polygon)
-                        polygons.push(polygon)
-                    }
-                    // 地图自适应
-                    // this.map.setFitView()  // 以合适的比例展示内容区
-                }
-
-
-*/
-
+                console.log('地域搜索： ',result)
                 let locationInfo = result.districtList[0]
-                let finalMarkDownContent = `**地址编码**：${locationInfo.adcode}\n
+
+                // 一、如果是 区、县级，显示边界
+                if (locationInfo.level === 'district'){
+                    let bounds = []
+                    if (result.districtList > 1){ // 直辖市时
+                        result.districtList.forEach(item => {
+                            console.log(item.boundaries)
+                            bounds.push(...item.boundaries)
+                        })
+                    } else {
+                        bounds = result.districtList[0].boundaries
+                    }
+                    // 显示边界信息
+                    let polygons = []
+                    if (bounds) {
+                        for (let i = 0, l = bounds.length; i < l; i++) {
+                            // 生成行政区划polygon
+                            let polygon = new AMap.Polygon({
+                                map: this.map,
+                                strokeWeight: 2,
+                                path: bounds[i],
+                                fillOpacity: 0.6,
+                                fillColor: this.tempColorArray.shift(),
+                                strokeColor: '#CC66CC'
+                            })
+                            this.map.add(polygon)
+                            polygons.push(polygon)
+                        }
+                        // 地图自适应
+                        this.map.setFitView()  // 以合适的比例展示内容区
+                    }
+
+                    locationInfo.districtList.forEach(item => {
+                        this.addMarker(this.map, item)
+                    })
+
+                } else {
+                    // 二、如果是市
+                    let finalMarkDownContent = `**地址编码**：${locationInfo.adcode}\n
 **区号**：${locationInfo.citycode}\n`
-                locationInfo.districtList.sort((a,b) => a.adcode - b.adcode)  // 按 adcode 排序
-                locationInfo.districtList.forEach(item => {
-                    finalMarkDownContent = finalMarkDownContent.concat(`- ${item.name}-${item.adcode}\n`)
-                })
-
-                finalMarkDownContent = finalMarkDownContent + `\n**点击任意区域，显示区县信息**\n`
-                this.pointerInfo.note = finalMarkDownContent
-
-
-                if (/^(上海|北京|天津|重庆)市$/.test(result.districtList[0].name)){ // 直辖市
-                    console.log(result.districtList[0].name)
-                    result.districtList[0].districtList[0].districtList.forEach(item => {
-                        this.addMarker(this.map, item)
+                    locationInfo.districtList.sort((a,b) => a.adcode - b.adcode)  // 按 adcode 排序
+                    locationInfo.districtList.forEach(item => {
+                        finalMarkDownContent = finalMarkDownContent.concat(`- ${item.name}-${item.adcode}\n`)
                     })
-                } else { // 普通城市
-                    result.districtList[0].districtList.forEach(item => {
-                        this.addMarker(this.map, item)
-                    })
+
+                    finalMarkDownContent = finalMarkDownContent + `\n**点击任意区域，显示区县信息**\n`
+                    this.pointerInfo.note = finalMarkDownContent
+
+
+                    if (/^(上海|北京|天津|重庆)市$/.test(locationInfo.name)){ // 直辖市
+                        console.log(locationInfo.name)
+                        locationInfo.districtList[0].districtList.forEach(item => {
+                            this.addMarker(this.map, item)
+                        })
+                    } else { // 普通城市
+                        locationInfo.districtList.forEach(item => {
+                            this.addMarker(this.map, item)
+                        })
+                    }
+
+                    this.map.setCenter(locationInfo.center) // 视角移到中间位置
                 }
 
-                // 地图自适应
-                // this.map.setFitView()  // 以合适的比例展示内容区
-                this.map.setCenter(locationInfo.center)
             })
         },
 
@@ -328,7 +349,6 @@ export default {
                 }
             })
             this.layerCity.setMap(this.map)
-
         },
 
         // 设置地图中心点：用户坐标
