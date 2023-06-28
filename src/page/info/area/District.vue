@@ -233,7 +233,7 @@ export default {
                 // country：国家；province：省/直辖市；city：市；district：区/县；biz_area：商圈
                 extensions: 'all',
                 //  显示下级行政区级数，1表示返回下一级行政区
-                subdistrict: 1
+                subdistrict: 2
             })
 
             this.districtSearch.search(locationName, (status, result) => {
@@ -281,10 +281,17 @@ export default {
                 finalMarkDownContent = finalMarkDownContent + `\n**点击任意区域，显示区县信息**\n`
                 this.pointerInfo.note = finalMarkDownContent
 
-                result.districtList[0].districtList.forEach(item => {
-                    this.addMarker(this.map, item)
-                })
 
+                console.log(result)
+                if (/[上海市|北京市|天津市|重庆市]/.test(result.districtList[0].name)){ // 直辖市
+                    result.districtList[0].districtList[0].districtList.forEach(item => {
+                        this.addMarker(this.map, item)
+                    })
+                } else { // 普通城市
+                    result.districtList[0].districtList.forEach(item => {
+                        this.addMarker(this.map, item)
+                    })
+                }
 
                 // 地图自适应
                 // this.map.setFitView()  // 以合适的比例展示内容区
@@ -296,7 +303,6 @@ export default {
             this.map.clearMap()
             this.layerCity && this.layerCity.setMap(null)
             this.tempColorArray = [].concat(COLORS).concat(COLORS) // 放两层颜色
-            console.log(this.tempColorArray)
             this.layerCity = new AMap.DistrictLayer.Province({
                 zIndex: 8,
                 adcode: [adcode],
@@ -306,7 +312,7 @@ export default {
                         // properties为可用于做样式映射的字段，包含  // NAME_CHN:中文名称;  adcode_pro;  adcode_cit;  adcode
                         // let {NAME_CHN, adcode, x, y} = properties
                         // console.log(`{name: ${NAME_CHN}, adcode: ${adcode}, position: [${x},${y}]}`)
-                        if (String(properties.adcode_cit) === adcode){
+                        if (String(properties.adcode_cit) === adcode || String(properties.adcode_pro) === adcode){
                             return this.tempColorArray.pop()
                         }
                     },
