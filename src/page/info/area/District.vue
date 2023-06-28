@@ -20,18 +20,18 @@ const DEPTH = {
 }
 
 const COLORS = [
-    'rgba(190,194,161,0.8)',
-    'rgba(237,236,208,0.8)',
-    'rgba(222,148,111,0.8)',
-    'rgba(103,104,099,0.8)',
-    'rgba(201,166,085,0.8)',
     'rgba(113,182,153,0.8)',
-    'rgba(205,087,085,0.8)',
-    'rgba(208,198,170,0.8)',
-    'rgba(212,227,206,0.8)',
-    'rgba(214,201,193,0.8)',
     'rgba(212,144,167,0.8)',
     'rgba(242,242,218,0.8)',
+    'rgba(190,194,161,0.8)',
+    'rgba(222,148,111,0.8)',
+    'rgba(212,227,206,0.8)',
+    'rgba(201,166,085,0.8)',
+    'rgba(237,236,208,0.8)',
+    'rgba(103,104,099,0.8)',
+    'rgba(205,087,085,0.8)',
+    'rgba(208,198,170,0.8)',
+    'rgba(214,201,193,0.8)',
 ]
 
 let AMap = null
@@ -282,8 +282,8 @@ export default {
                 this.pointerInfo.note = finalMarkDownContent
 
 
-                console.log(result)
-                if (/[上海市|北京市|天津市|重庆市]/.test(result.districtList[0].name)){ // 直辖市
+                if (/^(上海|北京|天津|重庆)市$/.test(result.districtList[0].name)){ // 直辖市
+                    console.log(result.districtList[0].name)
                     result.districtList[0].districtList[0].districtList.forEach(item => {
                         this.addMarker(this.map, item)
                     })
@@ -313,7 +313,7 @@ export default {
                         // let {NAME_CHN, adcode, x, y} = properties
                         // console.log(`{name: ${NAME_CHN}, adcode: ${adcode}, position: [${x},${y}]}`)
                         if (String(properties.adcode_cit) === adcode || String(properties.adcode_pro) === adcode){
-                            return this.tempColorArray.pop()
+                            return this.tempColorArray.shift()
                         }
                     },
                     'stroke-width': 2,
