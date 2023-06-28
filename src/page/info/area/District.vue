@@ -2,6 +2,16 @@
     <div class="map-container">
         <pointer-detail-panel :pointer="pointerInfo"/>
         <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div class="card input-panel">
+            <el-form inline size="mini">
+                <el-form-item>
+                    <el-input placeholder="区域编码" v-model="pointerInfo.adcode"/>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="showDistrictOfAdcode">确定</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
     </div>
 </template>
 
@@ -136,8 +146,12 @@ export default {
             if (newValue.query.adcode){
                 this.pointerInfo.adcode = newValue.query.adcode
                 let adcodeInfo = adcodeMap.get(this.pointerInfo.adcode)
-                this.pointerInfo.name = adcodeInfo[0]
-                this.getAdcodeOfCity(this.pointerInfo.name)
+                if (adcodeInfo){
+                    this.pointerInfo.name = adcodeInfo[0]
+                    this.getAdcodeOfCity(this.pointerInfo.name)
+                } else {
+                    this.$message.warning('adcode 未匹配到任何区域')
+                }
             } else {
                 this.getAdcodeOfCity(newValue.query.city)
                 this.pointerInfo.name = `${newValue.query.province}${newValue.query.city}`
@@ -145,6 +159,16 @@ export default {
         }
     },
     methods: {
+
+        // 通过输入的 adcode 显示区域
+        showDistrictOfAdcode(){
+            this.$router.push({
+                name: 'DistrictInfo',
+                query: {
+                    adcode: this.pointerInfo.adcode
+                }
+            })
+        },
 
         // 获取坐标值的地理信息
         showDistrictInfoOf(lnglat){
@@ -400,6 +424,15 @@ export default {
 
 .map-container {
     position: relative;
+}
+
+.input-panel{
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    .el-form-item{
+        margin: 0 5px 0 0;
+    }
 }
 
 
