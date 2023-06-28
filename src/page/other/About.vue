@@ -36,6 +36,7 @@ export default {
 
 网站主要使用高德 API 实现
 ##### 开发中遇到的一些问题和经验分享
+- [高德 web api 通过 adcode 获取地区实时天气信息，每天有30万次查询的免费额度](https://blog.csdn.net/KimBing/article/details/131437023)
 - [高德API JS 高德地图获取多个坐标点的中心点](https://kylebing.blog.csdn.net/article/details/130991747)
 - [如何使用高德地图 API 做一个路线规划应用，展示自定义路线](https://blog.csdn.net/KimBing/article/details/119915390)
 - [高德地图 JS Web 添加自定义图标，自定义窗口标记](https://blog.csdn.net/KimBing/article/details/107761144)
