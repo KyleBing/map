@@ -33,14 +33,14 @@ const COLORS = [
     'rgba(237,236,208,0.8)',
     'rgba(113,182,153,0.8)',
     'rgba(212,144,167,0.8)',
-    'rgba(242,242,218,0.8)',
+    'rgba(212,227,206,0.8)',
     'rgba(190,194,161,0.8)',
     'rgba(222,148,111,0.8)',
-    'rgba(212,227,206,0.8)',
     'rgba(201,166,085,0.8)',
     'rgba(103,104,099,0.8)',
     'rgba(205,087,085,0.8)',
     'rgba(208,198,170,0.8)',
+    'rgba(242,242,218,0.8)',
     'rgba(214,201,193,0.8)',
 ]
 
@@ -361,7 +361,7 @@ export default {
                             return this.tempColorArray.shift()
                         }
                     },
-                    'stroke-width': 2,
+                    'stroke-width': 1,
                     'coastline-stroke': 'blue', // 海岸线颜色
                     'nation-stroke': 'blue',    // 国境线颜色
                     'province-stroke': 'white', // 省界颜色
