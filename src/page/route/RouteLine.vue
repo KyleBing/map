@@ -307,7 +307,7 @@ export default {
                     let weatherString = '\n\n### 天气信息\n\n'
                     response.forEach((res, index) => {
                         let weatherData = res.data.lives[0]
-                        weatherString = weatherString.concat(`${index + 1}. ${weatherData.province}-${weatherData.city}: ${weatherData.temperature}℃ | ${weatherData.humidity}%RH, ${weatherData.weather},\n`)
+                        weatherString = weatherString.concat(`${index + 1}. ${weatherData.province}-${weatherData.city}: ${weatherData.temperature}℃ | ${weatherData.humidity}%RH, ${weatherData.weather}\n`)
                     })
                     this.activeLineObj.note = this.activeLineObj.note.concat(weatherString)
                 })
