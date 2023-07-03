@@ -316,8 +316,10 @@ export default {
 
                 } else {
                     // 二、如果是市
-                    let finalMarkDownContent = `**地址编码**：${locationInfo.adcode}\n
-**区号**：${locationInfo.citycode}\n`
+                    let finalMarkDownContent = `**区域编码**：${locationInfo.adcode}\n
+**区号**：${locationInfo.citycode}\n
+**区/县区域编码**：\n
+`
                     locationInfo.districtList.sort((a,b) => a.adcode - b.adcode)  // 按 adcode 排序
                     locationInfo.districtList.forEach(item => {
                         finalMarkDownContent = finalMarkDownContent.concat(`- ${item.name}-${item.adcode}\n`)
