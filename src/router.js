@@ -109,6 +109,11 @@ const routes = [
         component: Login,
     },
     {
+        name: 'Register', path: '/register',
+        meta: {title: '注册', showInMenu: false, icon: 'el-icon-user-solid',},
+        component: resolve => require(['@/page/Register'], resolve),
+    },
+    {
         name: 'NoPage', path: '*',
         meta: {title: '404', showInMenu: false, icon: 'el-icon-user-solid',},
         component: resolve => require(['@/page/Login'], resolve),

@@ -22,7 +22,7 @@
                 </el-form-item>
             </el-form>
             <div class="register-link">
-                <a target="_blank" href="https://kylebing.cn/diary/#/register">注册</a>
+                <router-link to="Register">注册</router-link>
             </div>
         </div>
     </div>
