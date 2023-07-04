@@ -185,6 +185,7 @@ export default {
 
                 // this.map.addControl(new AMap.ToolBar())
                 this.map.addControl(new AMap.Scale())
+                this.map.addControl(new AMap.Geolocation())
 
                 // 定位
                 let geolocation = new AMap.Geolocation({

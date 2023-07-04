@@ -92,7 +92,7 @@ export default {
             .then(map => {
                 AMap = map
                 this.map = new AMap.Map('container', {
-                    center: MY_POSITION,
+                    // center: MY_POSITION,
                     zoom: 11
                 })
                 this.map.addControl(new AMap.ToolBar())
