@@ -8,10 +8,10 @@
         </div>
 
         <!-- 路线列表 -->
-        <div class="float-route-list-panel" v-loading="isLoading" v-if="isRouteListShowed">
-            <route-line-list
+        <div class="float-route-list-panel" v-if="isRouteListShowed">
+            <route-line-list-panel
                 @choseLine="changeLine"
-                :route-line-list="routeLineList"/>
+                />
         </div>
 
         <!-- 地图 -->
@@ -39,7 +39,7 @@ import routeApi from "@/api/routeApi";
 
 import {Base64} from "js-base64"
 import utility from "@/utility";
-import RouteLineList from "@/page/route/components/RouteLineListPanel";
+import RouteLineListPanel from "@/page/route/components/RouteLineListPanel";
 import DrivingInfo from "@/page/route/components/DrivingInfo";
 import axios from "axios";
 
@@ -48,7 +48,7 @@ let AMap = null
 
 export default {
     name: "RouteLine",
-    components: {DrivingInfo, RouteLineList, RouteDetailPanel},
+    components: {DrivingInfo, RouteLineListPanel, RouteDetailPanel},
     data() {
         return {
             isLoading: false,
@@ -64,20 +64,11 @@ export default {
                 time: ''
             },
 
-            routeLineList: [], // 路线数组
-            // pager
-            pager: {
-                pageSize: 30,
-                pageNo: 1,
-                total: 0
-            },
-
             // float route list
             isRouteListShowed: true, // route list 是否显示
         }
     },
     mounted() {
-        this.getRouteList()
         AMapLoader
             .load({
                 key: mapConfig.key_web_js, // 开发应用的 ID
@@ -141,32 +132,6 @@ export default {
 
         },
 
-        // 获取路线列表
-        getRouteList() {
-            this.isLoading = true
-            let requestData = {
-                pageNo: this.pager.pageNo,
-                pageSize: this.pager.pageSize
-            }
-            routeApi
-                .list(requestData)
-                .then(res => {
-                    this.isLoading = false
-                    this.pager = res.data.pager
-                    this.routeLineList = res.data.list.map(item => {
-                        item.paths = Base64.decode(item.paths) || ''
-
-                        item.pathArray = item.paths && JSON.parse(item.paths)
-                        item.seasonsArray = item.seasons.split('、')
-                        item.date_init = utility.dateFormatter(new Date(item.date_init))
-                        item.date_modify = utility.dateFormatter(new Date(item.date_modify))
-                        return item
-                    })
-                })
-                .catch(err => {
-                    this.isLoading = false
-                })
-        },
 
         // change line
         changeLine(lineId){
@@ -261,7 +226,6 @@ export default {
 
                 // 路线规划完成时
                 this.currentDragRouting.on('complete', res => {
-                    console.log(res)
                     // 路线规划完成后，返回的路线数据：设置距离、行驶时间
                     let lineData = res.data.routes[0]
                     let distance =  (lineData.distance / 1000).toFixed(1) // m -> km
