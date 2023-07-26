@@ -383,6 +383,7 @@ export default {
         getRouteList() {
             this.isLoading = true
             let requestData = {
+                isMine: "1", // 是否过滤自己的路线
                 pageNo: this.pager.pageNo,
                 pageSize: this.pager.pageSize,
                 keyword: this.formSearch.keyword,
