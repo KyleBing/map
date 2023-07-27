@@ -276,6 +276,15 @@ export default {
         submit() {
             this.$refs['formLine'].validate((valid) => {
                 if (valid) {
+
+                    let tempJsonStr = JSON.stringify(this.pathPointers)
+                    try {
+                        let convertObject = JSON.parse(tempJsonStr)
+                    } catch (err){
+                        this.$message.error('节点数据格式错误，请检查')
+                        return
+                    }
+
                     if (this.isEditingLineInfo) {
                         this.routeModifySubmit()
                     } else {

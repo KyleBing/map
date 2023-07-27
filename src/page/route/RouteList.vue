@@ -165,7 +165,7 @@
                 <el-form-item label="视频链接" prop="video_link">
                     <el-input v-model="formRoute.video_link"/>
                 </el-form-item>
-                <el-form-item label="路线" prop="paths">
+                <el-form-item label="路线节点" prop="paths">
                     <el-input type="textarea" :rows="6" v-model="formRoute.paths"/>
                 </el-form-item>
                 <el-form-item label="备注" prop="note">
@@ -305,11 +305,20 @@ export default {
                     done();
                 })
                 .catch(_ => {
-                });
+                })
         },
         submit() {
             this.$refs['formRoute'].validate((valid) => {
                 if (valid) {
+                    if (this.formRoute.paths){
+                        try {
+                            let convertObject = JSON.parse(this.formRoute.paths)
+                        } catch (err){
+                            this.$message.error('节点数据格式错误，请检查')
+                            return false
+                        }
+                    }
+
                     if (this.editingRouteId) {
                         this.routeModifySubmit()
                     } else {

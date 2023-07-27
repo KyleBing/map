@@ -117,7 +117,6 @@ export default {
 
                     this.routeLineListPublic = resPublic.data.list.map(item => {
                         item.paths = Base64.decode(item.paths) || ''
-
                         item.pathArray = item.paths && JSON.parse(item.paths)
                         item.seasonsArray = item.seasons.split('、')
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
@@ -126,7 +125,6 @@ export default {
                     })
                     this.routeLineListMine = resMine.data.list.map(item => {
                         item.paths = Base64.decode(item.paths) || ''
-
                         item.pathArray = item.paths && JSON.parse(item.paths)
                         item.seasonsArray = item.seasons.split('、')
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
