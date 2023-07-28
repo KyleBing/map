@@ -62,9 +62,9 @@ export default {
             new AnimateHeartCanvas(
                 0,
                 360,
-                100,
                 30,
-                80,
+                30,
+                800,
                 ''
             )
         this.aboutHtmlContent = marked.parse(this.aboutMarkdownContent)

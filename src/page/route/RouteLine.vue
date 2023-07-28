@@ -268,7 +268,7 @@ export default {
             axios
                 .all(weatherRequestArray)
                 .then(response => {
-                    let weatherString = '\n\n### 天气信息\n\n'
+                    let weatherString = '\n\n### 途经地天气信息\n\n'
                     response.forEach((res, index) => {
                         let weatherData = res.data.lives[0]
                         weatherString = weatherString.concat(`${index + 1}. ${weatherData.province}-${weatherData.city}: ${weatherData.temperature}℃ | ${weatherData.humidity}%RH, ${weatherData.weather}\n`)

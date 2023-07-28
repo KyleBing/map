@@ -53,7 +53,7 @@ export default {
     },
     mounted() {
         this.height = innerHeight
-        this.animatedBg = new AnimateHeartCanvas(0, 360, 250, 20, 50, '#eee')
+        this.animatedBg = new AnimateHeartCanvas(0, 360, 50, 20, 100, '#eee')
     },
     beforeDestroy() {
         this.animatedBg.destroy()
