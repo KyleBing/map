@@ -249,7 +249,7 @@ export default {
         fetchWeatherFromRoute(steps){
             let districtsMap = new Map()
             steps.forEach(item => {
-                item.cities.forEach(city => {
+                item.cities && item.cities.forEach(city => {
                     city.districts.forEach(district => {
                         if (districtsMap.has(district.adcode)){
 

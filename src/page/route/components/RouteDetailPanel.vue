@@ -12,6 +12,12 @@
                 <div class="info" v-if="line.area">
                     <p class="info-title">路线区域</p><p class="info-value">{{line.area}}</p>
                 </div>
+                <div class="info">
+                    <p class="info-title">公开状态</p><p class="info-value">{{line.is_public? '公开': '私有'}}</p>
+                </div>
+                <div class="info">
+                    <p class="info-title">节点数量</p><p class="info-value">{{line.pathArray.length}} 个</p>
+                </div>
                 <div v-if="line.policy !== undefined" class="info">
                     <p class="info-title">路线策略</p><p class="info-value">{{policyMap.get(line.policy)}}</p>
                 </div>
@@ -115,11 +121,12 @@ i{
     @extend .unselectable;
 }
 .detail{
+    backdrop-filter: blur(3px) saturate(120%);
     position: absolute;
     top: 20px;
     right: 20px;
     padding: 0;
-    width: 300px;
+    width: 350px;
     .title{
         position: relative;
         text-align: center;
@@ -174,6 +181,7 @@ i{
     font-size: 0.8rem;
 }
 .info-list{
+    background-color: white;
     font-size: 12px;
     padding: 10px 20px;
 }
