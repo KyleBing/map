@@ -28,10 +28,7 @@
                     <p class="info-title">推荐季节</p><p class="info-value">{{line.seasons}}</p>
                 </div>
                 <div v-if="line.distance" class="info">
-                    <p class="info-title">距离/时间</p><p class="info-value">{{line.distance}} km</p>
-                </div>
-                <div v-if="line.time" class="info">
-                    <p class="info-title">行驶时间</p><p class="info-value">{{line.time}} min</p>
+                    <p class="info-title">距离/时间</p><p class="info-value">{{line.distance}} km / {{line.time}} min</p>
                 </div>
                 <div v-if="line.nickname" class="info">
                     <p class="info-title">创建用户</p><p class="info-value">{{line.nickname}}</p>
