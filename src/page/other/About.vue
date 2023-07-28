@@ -128,6 +128,7 @@ $text-about: #666;
 }
 
 .company-logo {
+    padding: 30px 0;
     display: flex;
     justify-content: center;
     align-items: center;
