@@ -15,7 +15,7 @@
                 <div class="info">
                     <p class="info-title">公开状态</p><p class="info-value">{{line.is_public? '公开': '私有'}}</p>
                 </div>
-                <div class="info">
+                <div class="info" v-if="line.pathArray && line.pathArray.length > 0">
                     <p class="info-title">节点数量</p><p class="info-value">{{line.pathArray.length}} 个</p>
                 </div>
                 <div v-if="line.policy !== undefined" class="info">
