@@ -155,6 +155,8 @@ export default {
             isLoading: false,
             map: null,
 
+            currentMarkers: [],
+
             currentDragRouting: null,  // 当前导航路线，拖拽导航路径对象
 
             pathPointers: [
@@ -437,6 +439,7 @@ export default {
         },
         // 载入线路信息
         loadLine(map, pathPointers) {
+            this.currentMarkers = []
 
             // 切换线路之前如果存在路线，销毁已存在的路线
             if (this.currentDragRouting) {
@@ -514,10 +517,12 @@ export default {
             })
         },
         addMarker(map, item, index) {
-
+            let marker
             if (item.img){
-                let marker = new AMap.Marker({
+                marker = new AMap.Marker({
                     position: item.position,
+                    title: item.note,
+                    draggable: true,
                     content: `
                <div class="marker">
                   <div class="marker-index">
@@ -535,10 +540,11 @@ export default {
                </div>
 `,
                 })
-                map.add(marker)
             } else {
-                let marker = new AMap.Marker({
+                marker = new AMap.Marker({
                     position: item.position,
+                    title: item.note,
+                    draggable: true,
                     content: `
                <div class="marker">
                   <div class="marker-index">
@@ -550,8 +556,9 @@ export default {
                   </div>
                </div>`,
                 })
-                map.add(marker)
             }
+            this.currentMarkers.push(marker)
+            map.add(marker)
 
         }
     },

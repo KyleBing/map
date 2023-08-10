@@ -3,6 +3,7 @@
         <div class="list-panel-header">
             <div class="title">路线列表</div>
             <el-button size="mini" icon="el-icon-monitor" type="default" @click="togglePanel">折叠/展开</el-button>
+            <el-button size="mini" icon="el-icon-price-tag" type="default" @click="toggleLabel">切换标签显示</el-button>
         </div>
         <el-tabs
             v-if="isShowPanel"
@@ -83,11 +84,13 @@ export default {
         togglePanel(){
             this.isShowPanel = !this.isShowPanel
         },
+        toggleLabel(){
+            this.$emit('labelToggle')
+        },
         tabClick(tab, event){
             // console.log(tab, event)
         },
         // 获取路线列表
-
         getRouteList() {
             this.isLoading = true
 

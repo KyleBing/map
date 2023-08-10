@@ -11,6 +11,7 @@
         <div class="float-route-list-panel" v-if="isRouteListShowed">
             <route-line-list-panel
                 @choseLine="changeLine"
+                @labelToggle="toggleLabel"
                 />
         </div>
 
@@ -58,6 +59,10 @@ export default {
             activeLineObj: null, // 当前 Line 对象
             currentDragRouting: null,  // 当前导航路线
 
+
+            isMarkerShowed: true,
+            currentMarkers: [], // 地图上的 markers
+
             // Driving Info
             drivingInfo: {
                 distance: '',
@@ -102,7 +107,17 @@ export default {
         ...mapState(['windowInsets', 'authorization', 'isShowingMenuToggleBtn']),
     },
     methods: {
-
+        // 切换路线的标签显示
+        toggleLabel(){
+            this.currentMarkers.forEach(item => {
+                if (this.isMarkerShowed){
+                    item.hide()
+                } else {
+                    item.show()
+                }
+            })
+            this.isMarkerShowed = !this.isMarkerShowed
+        },
         openInGaodeApp(){
             let originLnglat = this.activeLineObj.pathArray[0].position // [lng, lat]
             let destLnglat = this.activeLineObj.pathArray[this.activeLineObj.pathArray.length - 1].position // [lng, lat]
@@ -182,6 +197,8 @@ export default {
 
         // 载入路线信息
         loadLine(map, line) {
+            this.currentMarkers = []
+            this.isMarkerShowed = true
 
             // 切换线路之前如果存在路线，销毁已存在的路线
             if (this.currentDragRouting) {
@@ -294,9 +311,12 @@ export default {
             })
         },
         addMarker(map, item, index) {
+            let marker
             if (item.img){
-                let marker = new AMap.Marker({
+                marker = new AMap.Marker({
                     position: item.position,
+                    title: item.note,
+                    draggable: false,
                     content: `
                <div class="marker">
                   <div class="marker-index">
@@ -313,16 +333,12 @@ export default {
                   </div>
                </div>`,
                 })
-                marker.on('mouseover', mapEvent => {
-                    mapEvent.target.dom.style.zIndex = '999'
-                })
-                marker.on('mouseleave', mapEvent => {
-                    mapEvent.target.dom.style.zIndex = '12'
-                })
-                map.add(marker)
+
             } else {
-                let marker = new AMap.Marker({
+                marker = new AMap.Marker({
                     position: item.position,
+                    title: item.note,
+                    draggable: false,
                     content: `
                <div class="marker">
                   <div class="marker-index">
@@ -334,14 +350,15 @@ export default {
                   </div>
                </div>`,
                 })
-                marker.on('mouseover', mapEvent => {
-                    mapEvent.target.dom.style.zIndex = '999'
-                })
-                marker.on('mouseleave', mapEvent => {
-                    mapEvent.target.dom.style.zIndex = '12'
-                })
-                map.add(marker)
             }
+            marker.on('mouseover', mapEvent => {
+                mapEvent.target.dom.style.zIndex = '999'
+            })
+            marker.on('mouseleave', mapEvent => {
+                mapEvent.target.dom.style.zIndex = '12'
+            })
+            this.currentMarkers.push(marker)
+            map.add(marker)
         }
 
     },
