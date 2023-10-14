@@ -27,7 +27,10 @@ import {mapGetters} from "vuex";
 export default {
     name: "PointerListPanel",
     props:{
-        pointerList: []
+        pointerList: {
+            type: Array,
+            default: []
+        }
     },
     data(){
         return {

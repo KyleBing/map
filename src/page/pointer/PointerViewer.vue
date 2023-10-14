@@ -147,8 +147,13 @@ export default {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.pointerList = res.data.list.map(item => {
-                        item.pointers = Base64.decode(item.pointers) || ''
-                        item.pointerArray = item.pointers && JSON.parse(item.pointers)
+                        try  {
+                            item.pointers = Base64.decode(item.pointers) || '[]'
+                        } catch (err) {
+                            item.pointers = '[]'
+                            console.log(err)
+                        }
+                        item.pointerArray = JSON.parse(item.pointers)
                         item.date_init = utility.dateFormatter(new Date(item.date_init))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item

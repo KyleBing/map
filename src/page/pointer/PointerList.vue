@@ -67,7 +67,7 @@
                     </el-table-column>
                     <el-table-column align="center" prop="pointers" label="数据点数量">
                         <template slot-scope="scope">
-                            <div v-if="scope.row.pointers">{{ scope.row.pointersArray.length }}</div>
+                            <div>{{ scope.row.pointerArray.length }}</div>
                         </template>
                     </el-table-column>
                     <el-table-column align="left" width="250" prop="note" label="备注">
@@ -351,8 +351,14 @@ export default {
                     this.isLoading = false
                     this.pager = res.data.pager
                     this.tableData = res.data.list.map(item => {
-                        item.pointers = Base64.decode(item.pointers) || ''
-                        item.pointersArray = item.pointers && JSON.parse(item.pointers)
+                        try  {
+                            item.pointers = Base64.decode(item.pointers) || '[]'
+                            item.pointerArray = JSON.parse(item.pointers)
+                        } catch (err) {
+                            item.pointers = ''
+                            item.pointerArray = []
+                            console.log(err)
+                        }
                         item.date_create = utility.dateFormatter(new Date(item.date_create))
                         item.date_modify = utility.dateFormatter(new Date(item.date_modify))
                         return item
