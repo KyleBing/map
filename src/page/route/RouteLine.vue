@@ -351,12 +351,6 @@ export default {
                </div>`,
                 })
             }
-            marker.on('mouseover', mapEvent => {
-                mapEvent.target.dom.style.zIndex = '999'
-            })
-            marker.on('mouseleave', mapEvent => {
-                mapEvent.target.dom.style.zIndex = '12'
-            })
             this.currentMarkers.push(marker)
             map.add(marker)
         }
