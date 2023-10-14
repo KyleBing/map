@@ -278,12 +278,6 @@ export default {
                   </div>
                </div>`,
                 })
-                marker.on('mouseover', mapEvent => {
-                    mapEvent.target.dom.style.zIndex = '999'
-                })
-                marker.on('mouseleave', mapEvent => {
-                    mapEvent.target.dom.style.zIndex = '12'
-                })
                 map.add(marker)
             } else {
                 let marker = new AMap.Marker({
@@ -298,12 +292,6 @@ export default {
                        <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                   </div>
                </div>`,
-                })
-                marker.on('mouseover', mapEvent => {
-                    mapEvent.target.dom.style.zIndex = '999'
-                })
-                marker.on('mouseleave', mapEvent => {
-                    mapEvent.target.dom.style.zIndex = '12'
                 })
                 map.add(marker)
             }

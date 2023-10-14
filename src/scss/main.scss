@@ -13,6 +13,9 @@ body{
 }
 
 .amap-marker{
+    &:hover{
+        z-index: 9999 !important;
+    }
     &-content{
         white-space: normal !important;
     }
@@ -50,8 +53,8 @@ body{
     flex-flow: column nowrap;
     .marker-index{
         display: flex;
-        flex-flow: row nowrap;
-        align-items: center;
+        flex-flow: column nowrap;
+        align-items: flex-start;
         justify-content: flex-start;
         .index{
             font-weight: bold;
