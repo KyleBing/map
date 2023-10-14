@@ -66,10 +66,7 @@ export default {
         }
     },
     mounted() {
-        this.getPointerList()
-        if (this.$route.query.pointerId){
-            this.getPointerInfo(this.$route.query.pointerId)
-        }
+
         AMapLoader
             .load({
                 key: mapConfig.key_web_js, // 开发应用的 ID
@@ -89,9 +86,10 @@ export default {
                 })
                 this.map.addControl(new AMap.ToolBar())
                 this.map.addControl(new AMap.Scale())
-                if (this.$route.query.lineId) {
-                    this.getPointerInfo(this.$route.query.lineId)
+                if (this.$route.query.pointerId){
+                    this.getPointerInfo(this.$route.query.pointerId)
                 }
+                this.getPointerList()
             })
             .catch(e => {
                 console.log(e)
