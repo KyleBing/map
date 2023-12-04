@@ -71,6 +71,7 @@ const routes = [
         redirect: '/info/plate',
         meta: {title: '济南本地信息', showInMenu: true, icon: 'el-icon-postcard' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
+            {name: 'MotorHighway'      , path: 'motor-highway'  , meta: {title: '摩托车高速'  , showInMenu: true} , component: resolve => require(['@/page/info/motorHighway/MotorHighway.vue'] , resolve) , } ,
             {name: 'InfoPlate'         , path: 'plate'          , meta: {title: '山东各市车牌'  , showInMenu: true} , component: resolve => require(['@/page/info/carPlate/CarPlate.vue'] , resolve) , } ,
             {name: 'InfoCarDepartment' , path: 'car-department' , meta: {title: '济南车管所'   , showInMenu: true} , component: resolve => require(['@/page/info/car/CarDepartment']     , resolve) , } ,
             {name: 'CarUsed'           , path: 'car-used'       , meta: {title: '济南二手车市场' , showInMenu: true} , component: resolve => require(['@/page/info/car/CarUsed.vue']       , resolve) , } ,
