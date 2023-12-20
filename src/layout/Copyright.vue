@@ -9,6 +9,7 @@
                 <span @click="login" class="btn-logout">登录</span>
             </dd>
         </dl>
+        <dl><dt>开源：</dt><dd><a :href="packageInfo['github']">github</a></dd></dl>
         <dl><dt>更新：</dt><dd>{{ packageInfo['date-update'] }}</dd></dl>
         <dl><dt>版本：</dt><dd>v{{ packageInfo['version'] }}</dd></dl>
         <dl><dt>API：</dt><dd><a href="https://lbs.amap.com/api/javascript-api/summary/">高德地图 v2.0.0</a></dd></dl>

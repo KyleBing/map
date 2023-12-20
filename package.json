@@ -3,6 +3,7 @@
   "date-update": "2023.12.04",
   "version": "0.2.5",
   "private": true,
+  "github": "https://github.com/KyleBing/map",
   "author": {
     "name": "KyleBing",
     "email": "kylebing@163.com",
