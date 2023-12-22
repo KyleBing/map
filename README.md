@@ -18,10 +18,7 @@ export default {
 
 ## 二、后台
 
-目前直接跑是跑不起来的，因为没有后台数据，但可以查看前端代码。
-
-后台是用的我一个日记项目的后台，开源版本中目前没有路书相关的接口，之后慢慢开放出来，现在没时间处理。
-
+目前直接跑是跑不起来的
 后台：[https://github.com/KyleBing/diary-portal](https://github.com/KyleBing/diary-portal)
 
 
