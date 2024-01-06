@@ -18,8 +18,7 @@ export default {
 
 ## 二、后台
 
-目前直接跑是跑不起来的
-后台：[https://github.com/KyleBing/diary-portal](https://github.com/KyleBing/diary-portal)
+后台：[https://github.com/KyleBing/portal](https://github.com/KyleBing/portal)
 
 
 ## 三、用到的技术
