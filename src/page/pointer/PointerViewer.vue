@@ -49,6 +49,8 @@ export default {
         return {
             isLoading: false,
             map: null,
+            cluster: null,  // 点聚合的对象
+
             colors: mapData.COLORS,
             currentPointerId: 0,
             activePointerObj: null, // 当前 Line 对象
@@ -76,6 +78,7 @@ export default {
                     'AMap.Scale', // 比例尺
                     'AMap.DragRoute', // 拖拽点图
                     'AMap.Driving', // 导航
+                    'AMap.MarkerCluster', // 点聚合
                 ],
             })
             .then(map => {
@@ -86,10 +89,12 @@ export default {
                 })
                 this.map.addControl(new AMap.ToolBar())
                 this.map.addControl(new AMap.Scale())
+
                 if (this.$route.query.pointerId){
                     this.getPointerInfo(this.$route.query.pointerId)
                 }
                 this.getPointerList()
+
             })
             .catch(e => {
                 console.log(e)
@@ -227,6 +232,87 @@ export default {
 
         // 添加点图 Label
         loadPointerLabels(map, pointer) {
+            let pointers = pointer.pointerArray.map(item => {
+                item.weight = 1
+                item.lnglat = item.position
+                return item
+            })
+            let count = pointers.length
+
+            const _renderClusterMarker = function (context) {
+                var factor = Math.pow(context.count / count, 1 / 18);
+                var div = document.createElement('div');
+                var Hue = 180 - factor * 180;
+                var bgColor = 'hsla(' + Hue + ',100%,40%,0.7)';
+                var fontColor = 'hsla(' + Hue + ',100%,90%,1)';
+                var borderColor = 'hsla(' + Hue + ',100%,40%,1)';
+                var shadowColor = 'hsla(' + Hue + ',100%,90%,1)';
+                div.style.backgroundColor = bgColor;
+                var size = Math.round(30 + Math.pow(context.count / count, 1 / 5) * 20);
+                div.style.width = div.style.height = size + 'px';
+                div.style.border = 'solid 1px ' + borderColor;
+                div.style.borderRadius = size / 2 + 'px';
+                div.style.boxShadow = '0 0 5px ' + shadowColor;
+                div.innerHTML = context.count;
+                div.style.lineHeight = size + 'px';
+                div.style.color = fontColor;
+                div.style.fontSize = '14px';
+                div.style.textAlign = 'center';
+                context.marker.setOffset(new AMap.Pixel(-size / 2, -size / 2));
+                context.marker.setContent(div)
+            };
+
+            const _renderMarker = function(context) {
+                // console.log(context)
+                let item = context.data[0]
+                let content
+                if (item.img){
+                    context.marker.setContent(`
+                       <div class="marker">
+                          <div class="marker-index">
+                              <div class="title">${item.name}</div>
+                          </div>
+                          <div class="marker-content">
+                               <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                               <div class="view">
+                                   <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
+                                      <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
+                                   </a>
+                               </div>
+                          </div>
+                       </div>`)
+                } else {
+                    context.marker.setContent(`
+                       <div class="marker">
+                          <div class="marker-index">
+                              <div class="title">${item.name}</div>
+                          </div>
+                          <div class="marker-content">
+                               <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                          </div>
+                       </div>`)
+                }
+
+                let offset = new AMap.Pixel(-9, -9);
+                context.marker.setOffset(offset)
+            }
+
+            if (this.cluster){
+                this.cluster.setData(pointers)
+            } else {
+                this.cluster = new AMap.MarkerCluster(
+                    map,       // 地图实例
+                    pointers,  // 海量点数据，数据中需包含经纬度信息字段 lnglat
+                    {
+                        gridSize: 30,
+                        renderClusterMarker: _renderClusterMarker, // 自定义聚合点样式
+                        renderMarker: _renderMarker, // 自定义非聚合点样式
+                    }
+                )
+            }
+
+            return
+
             let maxLocations =  this.getMaxBoundsPointer(pointer.pointerArray.map(item => item.position))
             // 取区间的 1/4 作为地图的边界
             let lngGap = (maxLocations.max[0] - maxLocations.min[0]) / 4
