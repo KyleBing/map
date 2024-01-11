@@ -240,6 +240,7 @@ export default {
             let count = pointers.length
 
             const _renderClusterMarker = function (context) {
+                // console.log('context cluster: ', context)
                 let factor = Math.pow(context.count / count, 1 / 18);
                 let div = document.createElement('div');
                 let Hue = 180 - factor * 180;
@@ -264,9 +265,8 @@ export default {
             };
 
             const _renderMarker = function(context) {
-                // console.log(context)
+                // console.log('context normal: ', context)
                 let item = context.data[0]
-                let content
                 if (item.img){
                     context.marker.setContent(`
                        <div class="marker">
