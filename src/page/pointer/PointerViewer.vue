@@ -240,23 +240,24 @@ export default {
             let count = pointers.length
 
             const _renderClusterMarker = function (context) {
-                var factor = Math.pow(context.count / count, 1 / 18);
-                var div = document.createElement('div');
-                var Hue = 180 - factor * 180;
-                var bgColor = 'hsla(' + Hue + ',100%,40%,0.7)';
-                var fontColor = 'hsla(' + Hue + ',100%,90%,1)';
-                var borderColor = 'hsla(' + Hue + ',100%,40%,1)';
-                var shadowColor = 'hsla(' + Hue + ',100%,90%,1)';
+                let factor = Math.pow(context.count / count, 1 / 18);
+                let div = document.createElement('div');
+                let Hue = 180 - factor * 180;
+                let bgColor = 'hsla(' + Hue + ',100%,100%,1)';
+                let fontColor = 'hsla(' + Hue + ',100%,50%,1)';
+                let borderColor = 'hsla(' + Hue + ',100%,0%,1)';
+                let shadowColor = 'hsla(' + Hue + ',100%,10%,0.3)';
                 div.style.backgroundColor = bgColor;
-                var size = Math.round(30 + Math.pow(context.count / count, 1 / 5) * 20);
+                let size = Math.round(30 + Math.pow(context.count / count, 1 / 5) * 20);
                 div.style.width = div.style.height = size + 'px';
-                div.style.border = 'solid 1px ' + borderColor;
+                div.style.border = `solid 1px ${borderColor}`;
                 div.style.borderRadius = size / 2 + 'px';
-                div.style.boxShadow = '0 0 5px ' + shadowColor;
+                div.style.boxShadow = `2px 2px 5px ${shadowColor}`;
                 div.innerHTML = context.count;
                 div.style.lineHeight = size + 'px';
                 div.style.color = fontColor;
-                div.style.fontSize = '14px';
+                div.style.fontSize = '18px';
+                div.style.fontWeight = 'bold';
                 div.style.textAlign = 'center';
                 context.marker.setOffset(new AMap.Pixel(-size / 2, -size / 2));
                 context.marker.setContent(div)
@@ -311,7 +312,6 @@ export default {
                 )
             }
 
-            return
 
             let maxLocations =  this.getMaxBoundsPointer(pointer.pointerArray.map(item => item.position))
             // 取区间的 1/4 作为地图的边界
@@ -338,10 +338,10 @@ export default {
             else {
 
             }
-
+/*
             pointer.pointerArray.forEach((item, index) => {
                 this.addMarker(map, item, index)
-            })
+            })*/
         },
 
         addMarker(map, item, index) {
