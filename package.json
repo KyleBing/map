@@ -7,7 +7,7 @@
   "author": {
     "name": "KyleBing",
     "email": "kylebing@163.com",
-    "homepage": "https://kylebing.cn"
+    "homepage": "http://kylebing.cn"
   },
   "scripts": {
     "serve": "vue-cli-service serve",
