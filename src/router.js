@@ -43,6 +43,15 @@ const routes = [
         ]
     },
     {
+        name: 'GPX',
+        path: '/gpx',
+        component: Layout,
+        meta: {title: 'GPX', showInMenu: true, icon: 'el-icon-s-promotion' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
+        children: [
+            {name: 'GpxViewer', path: 'gpx-viewer', meta: {title: 'GPX路径', showInMenu: true, icon: 'el-icon-s-promotion'}, component: resolve => require(['@/page/gpx/GpxViewer.vue'], resolve),},
+        ]
+    },
+    {
         name: 'Debug',
         path: '/debug',
         component: Layout,
