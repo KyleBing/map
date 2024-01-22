@@ -8,6 +8,7 @@
                 <p class="mt-7">有时候，可能需要在地图上写写画画，想要确定去一个地方哪条路线最优，可以 <router-link to="/tool/route">点这里</router-link> </p>
                 <p>也有时候，可能需要查看一个地点周边方圆多少公里的覆盖范围是怎样的，可以 <router-link to="/tool/circle">点这里</router-link></p>
                 <p>再有时候，可能需要查看一个市的区、县信息，可以 <router-link to="/tool/district-info">看这里</router-link></p>
+                <p>还有可能，需要查看一个 gpx 路径是怎样的，可以 <router-link to="/gpx/gpx-viewer">看这里</router-link></p>
 
                 <p class="mt-5">另外，该项目是开源的，可以从这里查看 <a target="_blank" href="https://github.com/KyleBing/map">Map</a></p>
             </div>

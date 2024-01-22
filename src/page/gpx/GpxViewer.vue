@@ -3,7 +3,7 @@
         <div class="card float-panel"
              @click="isPointerListShowed = true">
             <div class="mb-2">
-                <input id="inputFile" type="file" @change="fileChange($event.target.files)">
+                <input accept=".gpx" id="inputFile" type="file" @change="fileChange($event.target.files)">
                 <label for="inputFile">
                     <el-tag size="mini" type="primary" icon="el-icon-tickets">选择 gpx 文件</el-tag>
                 </label>
