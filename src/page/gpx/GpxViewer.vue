@@ -2,8 +2,19 @@
     <div class="map-container">
         <div class="card float-panel"
              @click="isPointerListShowed = true">
-            <i class="el-icon-tickets"></i>
-            <input type="file" @change="fileChange($event.target.files)">
+            <div class="mb-2">
+                <input id="inputFile" type="file" @change="fileChange($event.target.files)">
+                <label for="inputFile">
+                    <el-tag size="mini" type="primary" icon="el-icon-tickets">选择 gpx 文件</el-tag>
+                </label>
+            </div>
+
+            <el-descriptions border size="mini" column="1" direction="horizontal" v-if="xmlFile">
+                <el-descriptions-item label="文件名">{{xmlFile.name}}</el-descriptions-item>
+                <el-descriptions-item label="路线名">{{xmlObj.gpx.trk.name}}</el-descriptions-item>
+                <el-descriptions-item label="数据点">{{pathPointers.length}}个</el-descriptions-item>
+                <el-descriptions-item label="时间">{{dateFormatter(new Date(pathPointers[0].time))}} ~ {{dateFormatter(new Date(pathPointers[pathPointers.length - 1].time), 'hh:mm:ss')}}</el-descriptions-item>
+            </el-descriptions>
         </div>
 
         <!-- 地图 -->
@@ -29,6 +40,7 @@ import {XMLParser, XMLBuilder, XMLValidator} from "fast-xml-parser"
 
 import {Base64} from "js-base64"
 import PointerListPanel from "../pointer/components/PointerListPanel";
+import utility from "@/utility";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -46,11 +58,17 @@ export default {
             activePointerObj: null, // 当前 Line 对象
 
             // xml
+            xmlFile: null,
             xmlText: '',
             xmlObj: null,
+            line: null,
+            pathPointers: [],
 
             // float route list
             isPointerListShowed: true, // route list 是否显示
+
+            //
+            dateFormatter: utility.dateFormatter
         }
     },
     mounted() {
@@ -90,7 +108,13 @@ export default {
 
         fileChange(files){
             if(files.length){
-                let file = files[0]
+
+                // reset map content
+                this.map.clearInfoWindow() // 清除地图上的信息窗体
+                this.map.clearMap() // 删除所有 Marker
+
+
+                this.xmlFile = files[0]
                 let reader = new FileReader()
                 let that = this
                 reader.onload = function(){
@@ -103,7 +127,7 @@ export default {
                     // console.log(xmlParser.parse(this.result))
                     that.loadAllPointer()
                 }
-                reader.readAsText(file)
+                reader.readAsText(this.xmlFile)
             }
         },
 
@@ -120,11 +144,13 @@ export default {
             }*/
 
             let pointers = this.xmlObj.gpx.trk.trkseg.trkpt
-            let pathPointers = pointers.map(item => {
-                let lnglat = new AMap.LngLat(item._lon, item._lat)
-                return lnglat.offset(535,40)  // E,N 向东，向北移动距离，单位：米
+            this.pathPointers = pointers.map(item => {
+                item.lnglat = new AMap.LngLat(item._lon, item._lat)
+                item.lnglat = item.lnglat.offset(545,45)
+                return item  // E,N 向东，向北移动距离，单位：米
             })
-            this.loadGpxPath(this.map, pathPointers)
+            this.loadGpxPath(this.map, this.pathPointers.map(item => item.lnglat))
+            this.loadMarkers(this.map, this.pathPointers)
         },
 
         loadGpxPath(map, ptArray){
@@ -132,7 +158,7 @@ export default {
             this.addMarker(map, ptArray[0], '起点')
             this.addMarker(map, ptArray[ptArray.length - 1], '终点')
 
-            let polyline = new AMap.Polyline({
+            this.line = new AMap.Polyline({
                 path: ptArray,           // Array<[number, number]>
                 isOutline: true,
                 outlineColor: '#ffeeff', // 路线边框颜色
@@ -149,11 +175,20 @@ export default {
                 geodesic: false,         // 是否显示大地线
                 extraData: {}            // any
             })
-            polyline.on('mouseover', data => {
+            this.line.on('mouseover', data => {
                 console.log(data)
             })
-            map.add([polyline]);
+            map.add([this.line]);
             map.setFitView();
+        },
+
+        loadMarkers(map, pathPointers){
+            pathPointers.forEach((item, index) => {
+                if(index % 50 === 0 && index !== 0){
+                    this.addMarker(map, item.lnglat, utility.dateFormatter(new Date(item.time), 'hh:mm'))
+                    // this.addMarker(map, item.lnglat, item.extensions.heartrate)
+                }
+            })
         },
 
 
@@ -342,6 +377,10 @@ export default {
 <style lang="scss" scoped>
 @import "../../scss/plugin";
 
+input[type=file]{
+    display: none;
+}
+
 .btn-router-list{
     position: absolute;
     top: 20px;
@@ -353,7 +392,8 @@ export default {
 }
 
 .float-panel{
-    min-height: 300px;
+    width: 400px;
+    min-height: 100px;
     position: absolute;
     z-index: 1000;
     top: 20px;
