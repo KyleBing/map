@@ -1,6 +1,6 @@
 <template>
     <div class="map-container">
-        <div class="card float-panel"
+        <div class="card p-1 float-panel"
              @click="isPointerListShowed = true">
             <div class="mb-2">
                 <input accept=".gpx" id="inputFile" type="file" @change="fileChange($event.target.files)">
@@ -9,15 +9,33 @@
                 </label>
             </div>
 
-            <el-descriptions border size="mini" :column="1" direction="horizontal" v-if="xmlFile && xmlFile.gpx">
+            <el-descriptions border size="mini" :column="1" direction="horizontal" v-if="xmlObj && xmlObj.gpx">
                 <el-descriptions-item label="文件名">{{xmlFile.name}}</el-descriptions-item>
                 <el-descriptions-item label="路线名">{{xmlObj.gpx.trk.name}}</el-descriptions-item>
                 <el-descriptions-item label="数据点">{{pathPointers.length}}个</el-descriptions-item>
                 <el-descriptions-item label="时间">{{dateFormatter(new Date(pathPointers[0].time))}} ~ {{dateFormatter(new Date(pathPointers[pathPointers.length - 1].time), 'hh:mm:ss')}}</el-descriptions-item>
             </el-descriptions>
 
-            <el-button type="primary" size="mini" @click="toggleMarkerDisplay">切换标签显示</el-button>
-            <el-button type="primary" size="mini" @click="togglePathDisplay">切换路径显示</el-button>
+            <el-form inline size="mini" class="mt-1">
+                <el-form-item label="偏移量" class="mb-1">
+                    <el-input type="number" :step="5" v-model="offsetN">
+                        <template #prepend>向北</template>
+                        <template #append>米</template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="偏移量" class="mb-1">
+                    <el-input type="number" :step="5" v-model="offsetE">
+                        <template #prepend>向东</template>
+                        <template #append>米</template>
+                    </el-input>
+                </el-form-item>
+            </el-form>
+
+            <div class="mt-1">
+                <el-button type="warning" size="mini" icon="el-icon-price-tag" @click="toggleMarkerDisplay">切换标签</el-button>
+                <el-button type="primary" size="mini" icon="el-icon-location-information" @click="togglePathDisplay">切换路径</el-button>
+                <el-button type="success" size="mini" icon="el-icon-medal-1" @click="toggleKmDisplay">切换公里数显示</el-button>
+            </div>
         </div>
 
         <!-- 地图 -->
@@ -66,6 +84,10 @@ export default {
             xmlText: '',
             xmlObj: null,
 
+            // 偏移量
+            offsetN: 45, // 北
+            offsetE: 545, // 东
+
             // 路径
             path: null,
             isPathShowed: true,
@@ -75,6 +97,9 @@ export default {
             pathPointers: [],
 
             markers: [], //
+
+            // 公里标记显示
+            kmMarkers: [],
 
             // float route list
             isPointerListShowed: true, // route list 是否显示
@@ -117,6 +142,9 @@ export default {
         ...mapState(['windowInsets', 'authorization', 'isShowingMenuToggleBtn']),
     },
     methods: {
+        toggleKmDisplay(){
+
+        },
         toggleMarkerDisplay(){
             if (this.isMarkerShowed){
                 this.markers.forEach(item => {
@@ -168,13 +196,15 @@ export default {
                     })
                     that.xmlObj = xmlParser.parse(this.result)
                     // console.log(xmlParser.parse(this.result))
-                    that.loadAllPointer()
+                    that.loadAllPointer(true)
                 }
                 reader.readAsText(this.xmlFile)
             }
         },
 
-        loadAllPointer(){
+        loadAllPointer(isNeedFitToMap = false){
+            this.map.clearInfoWindow() // 清除地图上的信息窗体
+            this.map.clearMap() // 删除所有 Marker
             this.isMarkerShowed = true
             this.isPathShowed = true
 /*            pointer = {
@@ -191,7 +221,7 @@ export default {
             let pointers = this.xmlObj.gpx.trk.trkseg.trkpt
             this.pathPointers = pointers.map((item, index) => {
                 item.lnglat = new AMap.LngLat(item._lon, item._lat)
-                item.lnglat = item.lnglat.offset(545,45)
+                item.lnglat = item.lnglat.offset(this.offsetE, this.offsetN) // offset 偏移量 E, N 单位：米
 
                 // 给 pointers 添加 label: start | end，供后续对 marker 的操作
                 if (index === 0){
@@ -202,11 +232,11 @@ export default {
                 }
                 return item  // E,N 向东，向北移动距离，单位：米
             })
-            this.loadGpxPath(this.map, this.pathPointers.map(item => item.lnglat))
+            this.loadGpxPath(this.map, this.pathPointers.map(item => item.lnglat), isNeedFitToMap)
             this.loadMarkers(this.map, this.pathPointers)
         },
 
-        loadGpxPath(map, ptArray){
+        loadGpxPath(map, ptArray, isNeedFitToMap){
             this.path = new AMap.Polyline({
                 path: ptArray,           // Array<[number, number]>
                 isOutline: true,
@@ -227,8 +257,10 @@ export default {
             this.path.on('mouseover', data => {
                 console.log(data)
             })
-            map.add([this.path]);
-            map.setFitView();
+            map.add([this.path])
+            if (isNeedFitToMap){
+                map.setFitView()
+            }
         },
 
         loadMarkers(map, ptArray){
@@ -236,7 +268,7 @@ export default {
             ptArray.forEach((item, index) => {
                 if (item.label === 'start'){
                     // 起点
-                    this.addMarker(map, item.lnglat, '起点',
+                    this.addMarker(map, item.lnglat, '起点', item.ele,
                         {label: item.label}, // AMap.Marker.extData
                         new AMap.Icon({ // 设置途经点的图标
                             size: new AMap.Size(26, 43),
@@ -249,7 +281,7 @@ export default {
                     )
                 } else if (item.label === 'end'){
                     // 终点
-                    this.addMarker(map, item.lnglat, '终点',
+                    this.addMarker(map, item.lnglat, '终点', item.ele,
                         {label: item.label}, // AMap.Marker.extData
                         new AMap.Icon({ // 设置途经点的图标
                             size: new AMap.Size(26, 43),
@@ -336,18 +368,20 @@ export default {
         },
 
 
-        addMarker(map, position, name, extData, icon, offset) {
+        addMarker(map, position, name, height, extData, icon, offset) {
             let marker
             if (icon){
                 marker = new AMap.Marker({
                     position: position,
                     icon: icon,
                     offset: offset,
+                    height,
                     extData
                 })
             } else {
                 marker = new AMap.Marker({
                     position: position,
+                    height,
                     content: `<div class="marker">
                               <div class="marker-index">
                                   <div class="title">${name}</div>
@@ -359,6 +393,18 @@ export default {
             map.add(marker)
         }
 
+    },
+    watch: {
+        offsetN(newValue){
+            if (this.xmlObj){
+                this.loadAllPointer()
+            }
+        },
+        offsetE(newValue){
+            if (this.xmlObj){
+                this.loadAllPointer()
+            }
+        },
     },
     beforeDestroy() {
         this.map.clearInfoWindow() // 清除地图上的信息窗体
