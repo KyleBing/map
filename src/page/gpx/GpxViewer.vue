@@ -14,9 +14,11 @@
                 <el-descriptions-item label="路线名">{{xmlObj.gpx.trk.name}}</el-descriptions-item>
                 <el-descriptions-item label="数据点">{{pathPointers.length}}个</el-descriptions-item>
                 <el-descriptions-item label="时间">{{dateFormatter(new Date(pathPointers[0].time))}} ~ {{dateFormatter(new Date(pathPointers[pathPointers.length - 1].time), 'hh:mm:ss')}}</el-descriptions-item>
+                <el-descriptions-item label="总用时">{{timeCost}} 分钟</el-descriptions-item>
+                <el-descriptions-item v-if="path" label="总长">{{pathLength}}</el-descriptions-item>
             </el-descriptions>
 
-            <el-form inline size="mini" class="mt-1">
+            <el-form inline size="mini" class="mt-1" label-width="70px">
                 <el-form-item label="偏移量" class="mb-1">
                     <el-input type="number" :step="5" v-model="offsetN">
                         <template #prepend>向北</template>
@@ -29,12 +31,20 @@
                         <template #append>米</template>
                     </el-input>
                 </el-form-item>
+                <el-form-item label="间隔点" class="mb-1">
+                    <el-input type="number" :step="5" v-model="gapCount">
+                        <template #prepend>间隔</template>
+                        <template #append>个数据点展示</template>
+                    </el-input>
+                </el-form-item>
             </el-form>
 
             <div class="mt-1">
-                <el-button type="warning" size="mini" icon="el-icon-price-tag" @click="toggleMarkerDisplay">切换标签</el-button>
-                <el-button type="primary" size="mini" icon="el-icon-location-information" @click="togglePathDisplay">切换路径</el-button>
-                <el-button type="success" size="mini" icon="el-icon-medal-1" @click="toggleKmDisplay">切换公里数显示</el-button>
+                <el-button type="warning" size="mini" icon="el-icon-price-tag" @click="toggleMarkerDisplay">{{isMarkerShowed? '隐藏': '显示'}}标签</el-button>
+                <el-button type="primary" size="mini" icon="el-icon-map-location" @click="togglePathDisplay">{{isPathShowed? '隐藏': '显示'}}路径</el-button>
+                <el-button type="primary" size="mini" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</el-button>
+<!--                <el-button type="success" size="mini" icon="el-icon-medal-1" @click="toggleKmDisplay"-->
+<!--                           v-if="pathPointers[0] && pathPointers[0].extensions && pathPointers[0].extensions.distance">切换公里数显示</el-button>-->
             </div>
         </div>
 
@@ -64,6 +74,8 @@ import PointerListPanel from "../pointer/components/PointerListPanel";
 import utility from "@/utility";
 import ICON from "@/assets/icons";
 
+import Moment from "moment"
+
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 
@@ -87,6 +99,7 @@ export default {
             // 偏移量
             offsetN: 45, // 北
             offsetE: 545, // 东
+            gapCount: 100, // 间隔多少个数据点展示一个 marker
 
             // 路径
             path: null,
@@ -109,6 +122,7 @@ export default {
         }
     },
     mounted() {
+        this.getMapConfig()
 
         AMapLoader
             .load({
@@ -140,9 +154,50 @@ export default {
     computed: {
         ...mapGetters(["isAdmin", 'isInPortraitMode']),
         ...mapState(['windowInsets', 'authorization', 'isShowingMenuToggleBtn']),
+        pathLength(){
+            let length = this.path.getLength(true)
+            if (length > 10000){
+                return `${(length/1000).toFixed(2)} km`
+            } else {
+                return `${length} m`
+            }
+        },
+        timeCost() {
+            let start = Moment(this.pathPointers[0].time)
+            let end = Moment(this.pathPointers[this.pathPointers.length - 1].time)
+            return end.diff(start, 'minutes')
+        }
     },
     methods: {
+        getMapConfig() {
+            let configString = localStorage.getItem('MapConfig')
+            if (configString) {
+                this.offsetE = JSON.parse(configString).offset.E
+                this.offsetN = JSON.parse(configString).offset.N
+            }
+        },
+        saveMapConfig(){
+            localStorage.setItem('MapConfig', JSON.stringify({
+                offset: {
+                    E: this.offsetE,
+                    N: this.offsetN
+                }
+            }))
+            this.$message.success('保存成功')
+        },
         toggleKmDisplay(){
+            this.kmMarkers = []
+            this.pathPointers.forEach(item => {
+                if (item.extensions.distance % 1000 === 0){
+                    this.kmMarkers.push(item)
+                }
+            })
+
+            this.markers.forEach(item => item.remove()) // 删除所有 Marker
+
+            this.kmMarkers.forEach(item => {
+                this.addMarker(this.map, item.lnglat, item.extensions.distance, item.ele)
+            })
 
         },
         toggleMarkerDisplay(){
@@ -150,7 +205,6 @@ export default {
                 this.markers.forEach(item => {
                     let extData = item.getExtData()
                     if (extData && (extData.label === 'start' || extData.label === 'end')){
-                        console.log(item)
                     } else {
                         item.hide()
                     }
@@ -160,7 +214,6 @@ export default {
                 this.markers.forEach(item => {
                     let extData = item.getExtData()
                     if (extData && (extData.label === 'start' || extData.label === 'end')){
-                        console.log(item)
                     } else {
                         item.show()
                     }
@@ -203,8 +256,7 @@ export default {
         },
 
         loadAllPointer(isNeedFitToMap = false){
-            this.map.clearInfoWindow() // 清除地图上的信息窗体
-            this.map.clearMap() // 删除所有 Marker
+            this.map.clearMap() // 删除所有 Marker path
             this.isMarkerShowed = true
             this.isPathShowed = true
 /*            pointer = {
@@ -292,7 +344,7 @@ export default {
                         new AMap.Pixel(-13, -43),
                     )
                 } else {
-                    if (index % 100 === 0){
+                    if (index % this.gapCount === 0){
                         this.addMarker(map, item.lnglat,  utility.dateFormatter(new Date(item.time), 'hh:mm'))
                         // this.addMarker(map, item.lnglat, item.extensions.heartrate)
                     }
@@ -405,6 +457,11 @@ export default {
                 this.loadAllPointer()
             }
         },
+        gapCount(newValue){
+            if (this.xmlObj){
+                this.loadAllPointer()
+            }
+        },
     },
     beforeDestroy() {
         this.map.clearInfoWindow() // 清除地图上的信息窗体
@@ -433,7 +490,7 @@ input[type=file]{
 }
 
 .float-panel{
-    width: 400px;
+    width: 450px;
     min-height: 100px;
     position: absolute;
     z-index: 1000;
