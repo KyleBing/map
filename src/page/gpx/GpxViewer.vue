@@ -9,12 +9,15 @@
                 </label>
             </div>
 
-            <el-descriptions border size="mini" column="1" direction="horizontal" v-if="xmlFile">
+            <el-descriptions border size="mini" :column="1" direction="horizontal" v-if="xmlFile && xmlFile.gpx">
                 <el-descriptions-item label="文件名">{{xmlFile.name}}</el-descriptions-item>
                 <el-descriptions-item label="路线名">{{xmlObj.gpx.trk.name}}</el-descriptions-item>
                 <el-descriptions-item label="数据点">{{pathPointers.length}}个</el-descriptions-item>
                 <el-descriptions-item label="时间">{{dateFormatter(new Date(pathPointers[0].time))}} ~ {{dateFormatter(new Date(pathPointers[pathPointers.length - 1].time), 'hh:mm:ss')}}</el-descriptions-item>
             </el-descriptions>
+
+            <el-button type="primary" size="mini" @click="toggleMarkerDisplay">切换标签显示</el-button>
+            <el-button type="primary" size="mini" @click="togglePathDisplay">切换路径显示</el-button>
         </div>
 
         <!-- 地图 -->
@@ -41,6 +44,7 @@ import {XMLParser, XMLBuilder, XMLValidator} from "fast-xml-parser"
 import {Base64} from "js-base64"
 import PointerListPanel from "../pointer/components/PointerListPanel";
 import utility from "@/utility";
+import ICON from "@/assets/icons";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -61,8 +65,16 @@ export default {
             xmlFile: null,
             xmlText: '',
             xmlObj: null,
-            line: null,
+
+            // 路径
+            path: null,
+            isPathShowed: true,
+
+            // 路径上的 markers
+            isMarkerShowed: true,
             pathPointers: [],
+
+            markers: [], //
 
             // float route list
             isPointerListShowed: true, // route list 是否显示
@@ -105,6 +117,38 @@ export default {
         ...mapState(['windowInsets', 'authorization', 'isShowingMenuToggleBtn']),
     },
     methods: {
+        toggleMarkerDisplay(){
+            if (this.isMarkerShowed){
+                this.markers.forEach(item => {
+                    let extData = item.getExtData()
+                    if (extData && (extData.label === 'start' || extData.label === 'end')){
+                        console.log(item)
+                    } else {
+                        item.hide()
+                    }
+                })
+                this.isMarkerShowed = false
+            } else {
+                this.markers.forEach(item => {
+                    let extData = item.getExtData()
+                    if (extData && (extData.label === 'start' || extData.label === 'end')){
+                        console.log(item)
+                    } else {
+                        item.show()
+                    }
+                })
+                this.isMarkerShowed = true
+            }
+        },
+        togglePathDisplay(){
+            if (this.isPathShowed){
+                this.path.hide()
+                this.isPathShowed = false
+            } else {
+                this.path.show()
+                this.isPathShowed = true
+            }
+        },
 
         fileChange(files){
             if(files.length){
@@ -112,7 +156,6 @@ export default {
                 // reset map content
                 this.map.clearInfoWindow() // 清除地图上的信息窗体
                 this.map.clearMap() // 删除所有 Marker
-
 
                 this.xmlFile = files[0]
                 let reader = new FileReader()
@@ -132,6 +175,8 @@ export default {
         },
 
         loadAllPointer(){
+            this.isMarkerShowed = true
+            this.isPathShowed = true
 /*            pointer = {
                 "ele": 18,
                 "time": "2023-11-18T12:08:53Z",
@@ -144,9 +189,17 @@ export default {
             }*/
 
             let pointers = this.xmlObj.gpx.trk.trkseg.trkpt
-            this.pathPointers = pointers.map(item => {
+            this.pathPointers = pointers.map((item, index) => {
                 item.lnglat = new AMap.LngLat(item._lon, item._lat)
                 item.lnglat = item.lnglat.offset(545,45)
+
+                // 给 pointers 添加 label: start | end，供后续对 marker 的操作
+                if (index === 0){
+                    item.label = 'start'
+                }
+                if ( index === pointers.length - 1){
+                    item.label = 'end'
+                }
                 return item  // E,N 向东，向北移动距离，单位：米
             })
             this.loadGpxPath(this.map, this.pathPointers.map(item => item.lnglat))
@@ -154,11 +207,7 @@ export default {
         },
 
         loadGpxPath(map, ptArray){
-
-            this.addMarker(map, ptArray[0], '起点')
-            this.addMarker(map, ptArray[ptArray.length - 1], '终点')
-
-            this.line = new AMap.Polyline({
+            this.path = new AMap.Polyline({
                 path: ptArray,           // Array<[number, number]>
                 isOutline: true,
                 outlineColor: '#ffeeff', // 路线边框颜色
@@ -173,20 +222,48 @@ export default {
                 zIndex: 50,
                 showDir: true,           // 显示方向箭头， 宽度 > 6 时有效
                 geodesic: false,         // 是否显示大地线
-                extraData: {}            // any
+                extData: {}            // any
             })
-            this.line.on('mouseover', data => {
+            this.path.on('mouseover', data => {
                 console.log(data)
             })
-            map.add([this.line]);
+            map.add([this.path]);
             map.setFitView();
         },
 
-        loadMarkers(map, pathPointers){
-            pathPointers.forEach((item, index) => {
-                if(index % 50 === 0 && index !== 0){
-                    this.addMarker(map, item.lnglat, utility.dateFormatter(new Date(item.time), 'hh:mm'))
-                    // this.addMarker(map, item.lnglat, item.extensions.heartrate)
+        loadMarkers(map, ptArray){
+            this.markers = []
+            ptArray.forEach((item, index) => {
+                if (item.label === 'start'){
+                    // 起点
+                    this.addMarker(map, item.lnglat, '起点',
+                        {label: item.label}, // AMap.Marker.extData
+                        new AMap.Icon({ // 设置途经点的图标
+                            size: new AMap.Size(26, 43),
+                            image: ICON.start,
+                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                            imageSize: new AMap.Size(26, 43) // 指定图标的大小，可以压缩图片
+
+                        }),
+                        new AMap.Pixel(-13, -43)
+                    )
+                } else if (item.label === 'end'){
+                    // 终点
+                    this.addMarker(map, item.lnglat, '终点',
+                        {label: item.label}, // AMap.Marker.extData
+                        new AMap.Icon({ // 设置途经点的图标
+                            size: new AMap.Size(26, 43),
+                            image: ICON.end,
+                            // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                            imageSize: new AMap.Size(26, 43) // 指定图标的大小，可以压缩图片
+                        }),
+                        new AMap.Pixel(-13, -43),
+                    )
+                } else {
+                    if (index % 100 === 0){
+                        this.addMarker(map, item.lnglat,  utility.dateFormatter(new Date(item.time), 'hh:mm'))
+                        // this.addMarker(map, item.lnglat, item.extensions.heartrate)
+                    }
                 }
             })
         },
@@ -258,109 +335,27 @@ export default {
             }
         },
 
-        // 添加点图 Label
-        loadPointerLabels(map, pointer) {
-            let pointers = pointer.pointerArray.map(item => {
-                item.weight = 1
-                item.lnglat = item.position
-                return item
-            })
-            let count = pointers.length
 
-            const _renderClusterMarker = function (context) {
-                // console.log('context cluster: ', context)
-                let factor = Math.pow(context.count / count, 1 / 18);
-                let div = document.createElement('div');
-                let Hue = 180 - factor * 180;
-                let bgColor = 'hsla(' + Hue + ',100%,100%,1)';
-                let fontColor = 'hsla(' + Hue + ',100%,50%,1)';
-                let borderColor = 'hsla(' + Hue + ',100%,0%,1)';
-                let shadowColor = 'hsla(' + Hue + ',100%,10%,0.3)';
-                div.style.backgroundColor = bgColor;
-                let size = Math.round(30 + Math.pow(context.count / count, 1 / 5) * 20);
-                div.style.width = div.style.height = size + 'px';
-                div.style.border = `solid 1px ${borderColor}`;
-                div.style.borderRadius = size / 2 + 'px';
-                div.style.boxShadow = `2px 2px 5px ${shadowColor}`;
-                div.innerHTML = context.count;
-                div.style.lineHeight = size + 'px';
-                div.style.color = fontColor;
-                div.style.fontSize = '18px';
-                div.style.fontWeight = 'bold';
-                div.style.textAlign = 'center';
-                context.marker.setOffset(new AMap.Pixel(-size / 2, -size / 2));
-                context.marker.setContent(div)
-            };
-
-            const _renderMarker = function(context) {
-                // console.log('context normal: ', context)
-                let item = context.data[0]
-                context.marker.setContent(`
-                       <div class="marker">
-                          <div class="marker-index">
-                              <div class="title">${item.name}</div>
-                          </div>
-                       </div>`)
-
-                let offset = new AMap.Pixel(-9, -9);
-                context.marker.setOffset(offset)
-            }
-
-            if (this.cluster){
-                this.cluster.setData(pointers)
+        addMarker(map, position, name, extData, icon, offset) {
+            let marker
+            if (icon){
+                marker = new AMap.Marker({
+                    position: position,
+                    icon: icon,
+                    offset: offset,
+                    extData
+                })
             } else {
-                this.cluster = new AMap.MarkerCluster(
-                    map,       // 地图实例
-                    pointers,  // 海量点数据，数据中需包含经纬度信息字段 lnglat
-                    {
-                        gridSize: 30,
-                        renderClusterMarker: _renderClusterMarker, // 自定义聚合点样式
-                        renderMarker: _renderMarker, // 自定义非聚合点样式
-                    }
-                )
+                marker = new AMap.Marker({
+                    position: position,
+                    content: `<div class="marker">
+                              <div class="marker-index">
+                                  <div class="title">${name}</div>
+                              </div>
+                           </div>`,
+                })
             }
-
-
-            let maxLocations =  this.getMaxBoundsPointer(pointer.pointerArray.map(item => item.position))
-            // 取区间的 1/4 作为地图的边界
-            let lngGap = (maxLocations.max[0] - maxLocations.min[0]) / 4
-            let latGap = (maxLocations.max[1] - maxLocations.min[1]) / 4
-
-            // 新的区域极点坐标
-            let min = new AMap.LngLat(maxLocations.min[0] - lngGap, maxLocations.min[1] - latGap)
-            let max = new AMap.LngLat(maxLocations.max[0] + lngGap, maxLocations.max[1] + latGap)
-
-
-            // 1. 多个点时，设置 bounds
-            if (pointer.pointerArray.length > 1){
-                let bounds = new AMap.Bounds(min, max)
-                this.map.setBounds(bounds)
-            }
-            // 2. 一个点时，将其作为中心点
-            else if (pointer.pointerArray.length === 1){
-                console.log(pointer.pointerArray)
-                let centerLngLat = new AMap.LngLat(...pointer.pointerArray[0].position)
-                this.map.setCenter(centerLngLat)  // 设置地图中心点坐标
-            }
-            // 3.
-            else {
-
-            }
-/*
-            pointer.pointerArray.forEach((item, index) => {
-                this.addMarker(map, item, index)
-            })*/
-        },
-
-        addMarker(map, position, name) {
-            let marker = new AMap.Marker({
-                position: position,
-                content: `<div class="marker">
-                          <div class="marker-index">
-                              <div class="title">${name}</div>
-                          </div>
-                       </div>`
-            })
+            this.markers.push(marker)
             map.add(marker)
         }
 
