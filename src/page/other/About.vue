@@ -44,7 +44,7 @@ export default {
 - [高德地图 绘制 gpx 地图路径 AMap.polyLine](https://blog.csdn.net/KimBing/article/details/135698526)
 
 ##### Github
-- [高德地图 Loca 和 路线规划 vue 演示项目](https://github.com/KyleBing/demo-map-loca)
+- [高德地图 Loca 和 路线规划 vue 演示项目](https://github.com/KyleBing/map)
 
 #####  高德官方开发文档
 
