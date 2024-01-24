@@ -19,6 +19,19 @@
             </el-descriptions>
 
             <el-form inline size="mini" class="mt-1" label-width="70px">
+
+                <div class="move-pad mb-1">
+                    <div class="up">
+                        <el-button size="mini"  @click=offsetMoveUp(5) type="primary" class="p-1">↑</el-button>
+                    </div>
+                    <div class="middle">
+                        <el-button size="mini"  @click=offsetMoveLeft(5) type="primary" class="mr-2 p-1" >←</el-button>
+                        <el-button size="mini"  @click=offsetMoveRight(5) type="primary" class="ml-2 p-1" >→</el-button>
+                    </div>
+                    <div class="down">
+                        <el-button size="mini"  @click=offsetMoveDown(5) type="primary" class="p-1">↓</el-button>
+                    </div>
+                </div>
                 <el-form-item label="偏移量" class="mb-1">
                     <el-input type="number" :step="5" v-model="offsetN">
                         <template #prepend>向北</template>
@@ -42,7 +55,7 @@
             <div class="mt-1">
                 <el-button type="warning" size="mini" icon="el-icon-price-tag" @click="toggleMarkerDisplay">{{isMarkerShowed? '隐藏': '显示'}}标签</el-button>
                 <el-button type="primary" size="mini" icon="el-icon-map-location" @click="togglePathDisplay">{{isPathShowed? '隐藏': '显示'}}路径</el-button>
-                <el-button type="primary" size="mini" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</el-button>
+<!--                <el-button type="success" size="mini" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</el-button>-->
 <!--                <el-button type="success" size="mini" icon="el-icon-medal-1" @click="toggleKmDisplay"-->
 <!--                           v-if="pathPointers[0] && pathPointers[0].extensions && pathPointers[0].extensions.distance">切换公里数显示</el-button>-->
             </div>
@@ -169,11 +182,23 @@ export default {
         }
     },
     methods: {
+        offsetMoveUp(step){
+            this.offsetN = this.offsetN + step
+        },
+        offsetMoveLeft(step){
+            this.offsetE = this.offsetE - step
+        },
+        offsetMoveRight(step){
+            this.offsetE = this.offsetE + step
+        },
+        offsetMoveDown(step){
+            this.offsetN = this.offsetN - step
+        },
         getMapConfig() {
             let configString = localStorage.getItem('MapConfig')
             if (configString) {
-                this.offsetE = JSON.parse(configString).offset.E
-                this.offsetN = JSON.parse(configString).offset.N
+                this.offsetE = Number(JSON.parse(configString).offset.E)
+                this.offsetN = Number(JSON.parse(configString).offset.N)
             }
         },
         saveMapConfig(){
@@ -183,7 +208,6 @@ export default {
                     N: this.offsetN
                 }
             }))
-            this.$message.success('保存成功')
         },
         toggleKmDisplay(){
             this.kmMarkers = []
@@ -448,11 +472,13 @@ export default {
     },
     watch: {
         offsetN(newValue){
+            this.saveMapConfig()
             if (this.xmlObj){
                 this.loadAllPointer()
             }
         },
         offsetE(newValue){
+            this.saveMapConfig()
             if (this.xmlObj){
                 this.loadAllPointer()
             }
@@ -509,5 +535,25 @@ input[type=file]{
         right: 10px;
     }
 }
+.move-pad{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column nowrap;
+    .up,.middle,.down{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-flow: row nowrap;
+    }
+    .up{
 
+    }
+    .middle{
+
+    }
+    .down{
+
+    }
+}
 </style>
