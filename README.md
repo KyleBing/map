@@ -36,6 +36,9 @@ export default {
 }
 ```
 
+Web JS 在使用的时候还需要在服务器中设置对应的安全密钥，具体参见官方文档：
+> [JS API 安全密钥使用 https://lbs.amap.com/api/javascript-api-v2/guide/abc/jscode](https://lbs.amap.com/api/javascript-api-v2/guide/abc/jscode)
+
 ## 二、后台
 
 后台：[https://github.com/KyleBing/portal](https://github.com/KyleBing/portal)
