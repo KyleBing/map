@@ -183,16 +183,16 @@ export default {
     },
     methods: {
         offsetMoveUp(step){
-            this.offsetN = this.offsetN + step
+            this.offsetN = Number(this.offsetN) + step
         },
         offsetMoveLeft(step){
-            this.offsetE = this.offsetE - step
+            this.offsetE = Number(this.offsetE) - step
         },
         offsetMoveRight(step){
-            this.offsetE = this.offsetE + step
+            this.offsetE = Number(this.offsetE) + step
         },
         offsetMoveDown(step){
-            this.offsetN = this.offsetN - step
+            this.offsetN = Number(this.offsetN) - step
         },
         getMapConfig() {
             let configString = localStorage.getItem('MapConfig')
