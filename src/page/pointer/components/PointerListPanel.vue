@@ -95,7 +95,7 @@ export default {
         }
         .name{
             padding-left: 10px;
-            width: 150px;
+            width: 200px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow-ellipsis: ellipsis;

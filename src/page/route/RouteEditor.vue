@@ -33,7 +33,7 @@
                     :model="formLine"
                     :rules="formLineRules"
                     size="mini"
-                    label-width="100px"
+                    label-width="80px"
                 >
                     <el-form-item label="路线名" prop="name">
                         <el-input v-model="formLine.name"/>

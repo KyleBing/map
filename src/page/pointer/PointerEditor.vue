@@ -33,7 +33,7 @@
                     :model="formPointer"
                     :rules="formPointerRules"
                     size="mini"
-                    label-width="80px"
+                    label-width="70px"
                 >
                     <el-form-item label="点图名" prop="name">
                         <el-input v-model="formPointer.name"/>
