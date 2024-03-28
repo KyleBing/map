@@ -3,10 +3,10 @@ input[type=number] {
 }
 
 .el-input__inner{
-  padding: 0 0 0 6px !important;
+  padding-left: 6px !important;
 }
 .el-textarea__inner{
-  padding: 5px 8px;
+  padding: 5px 8px !important;
 }
 
 .el-table .cell {

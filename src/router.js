@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import utility from "@/utility";
 
 Vue.use(VueRouter)
 
@@ -28,7 +27,7 @@ const routes = [
         children: [
             {name: 'RouteLine',   path: 'route-line',   meta: {title: '展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteLine'], resolve),},
             {name: 'RouteList',   path: 'route-list',   meta: {title: '列表', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteList'], resolve),},
-            {name: 'RouteEditor', path: 'route-editor', meta: {title: '编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteEditor.vue'], resolve),}
+            {name: 'RouteEditor', path: 'route-editor', meta: {title: '新建 | 编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/route/RouteEditor.vue'], resolve),}
         ]
     },
     {
@@ -39,7 +38,7 @@ const routes = [
         children: [
             {name: 'PointerViewer', path: 'pointer-viewer', meta: {title: '展示', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerViewer'], resolve),},
             {name: 'PointerList',   path: 'pointer-list',   meta: {title: '列表', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerList'], resolve),},
-            {name: 'PointerEditor', path: 'pointer-editor', meta: {title: '编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerEditor.vue'], resolve),}
+            {name: 'PointerEditor', path: 'pointer-editor', meta: {title: '新建 | 编辑', showInMenu: true, icon: 'el-icon-wind-power'}, component: resolve => require(['@/page/pointer/PointerEditor.vue'], resolve),}
         ]
     },
     {
