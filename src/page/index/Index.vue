@@ -5,7 +5,7 @@
                 <h1>路书</h1>
                 <h3>一个可以分享行车路线、地点信息的网站</h3>
 
-                <p class="mt-7">在这里，你可以查看别人分享的一些路线 <router-link to="/tool/route/route-line">看这</router-link>。</p>
+                <p class="mt-7">在这里，你可以查看别人分享的一些路线 <router-link to="/route/route-line">看这</router-link>。</p>
 
                 <p class="mt-3">有时候，可能需要在地图上写写画画，想要确定去一个地方哪条路线最优，可以 <router-link to="/tool/route">点这里</router-link>。 </p>
                 <p>也有时候，可能需要查看一个地点周边方圆多少公里的覆盖范围是怎样的，可以 <router-link to="/tool/circle">点这里</router-link>。</p>
