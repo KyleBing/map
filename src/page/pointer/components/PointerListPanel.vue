@@ -68,7 +68,7 @@ export default {
     //@include border-radius($radius);
     overflow: hidden;
     background-color: white;
-    width: 300px;
+    width: 350px;
     .route-line-list-item{
         &:last-child{
             border-bottom: none;
@@ -95,7 +95,7 @@ export default {
         }
         .name{
             padding-left: 10px;
-            width: 200px;
+            width: 180px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow-ellipsis: ellipsis;
