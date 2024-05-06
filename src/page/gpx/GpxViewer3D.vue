@@ -308,9 +308,9 @@ export default {
         showLineLayer(loca, gpxPointers){
             let pointers = gpxPointers.map(item => {
                 let lnglat = new AMap.LngLat(item._lon, item._lat)
-                let lnglatAfterOffset = lnglat.offset(this.offsetE, this.offsetN) // offset 偏移量 E, N 单位：米
-                let lnglatArray = lnglatAfterOffset.toArray()
-                lnglatArray.push(item.ele)
+                let lnglatAfterOffset = lnglat.offset(this.offsetE, this.offsetN) // offset 偏移量 E, N 单位：米，这个方法是变更返回值，而不是原对象的值。
+                let lnglatArray = lnglatAfterOffset.toArray() // 转成 [lng, lat] 这类数据
+                lnglatArray.push(item.ele) // 添加高度信息，变成 [lng, lat, ele] 数据
                 return lnglatArray
             })
             console.log(pointers)

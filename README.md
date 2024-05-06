@@ -6,8 +6,11 @@
 路线分享  
 <img width="2032" alt="Screenshot 2024-01-23 at 17 45 28" src="https://github.com/KyleBing/map/assets/12215982/19597ade-9f78-4fdc-a0db-b0fd78fca6b4">
 
-gpx 展示  
+gpx 路径 展示  
 <img width="2032" alt="GPX" src="https://github.com/KyleBing/map/assets/12215982/293ac9e9-dc52-4224-b855-97c707cf07ea">
+
+gpx 3D 路径展示  
+![2024-05-06 13-52-05 2024-05-06 13_55_08](https://github.com/KyleBing/map/assets/12215982/1bd3033e-84cf-4d56-9b3f-22e6c46c94b8)
 
 数据点展示  
 <img width="2032" alt="Screenshot 2024-01-23 at 17 39 57" src="https://github.com/KyleBing/map/assets/12215982/9ef18183-a004-4e51-a547-49bcb9fdfbd9">

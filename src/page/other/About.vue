@@ -42,6 +42,7 @@ export default {
 - [高德地图 JS Web 添加自定义图标，自定义窗口标记](https://blog.csdn.net/KimBing/article/details/107761144)
 - [高德地图 Vue 中 加载 数据可视化 Loca 的方式](https://blog.csdn.net/KimBing/article/details/118615489)
 - [高德地图 绘制 gpx 地图路径 AMap.polyLine](https://blog.csdn.net/KimBing/article/details/135698526)
+- [如何使用高德地图的 Loca 展示 gpx 文件的 3D 路径，Loca.LineLayer](https://blog.csdn.net/KimBing/article/details/138492842)
 
 ##### Github
 - [高德地图 Loca 和 路线规划 vue 演示项目](https://github.com/KyleBing/map)
