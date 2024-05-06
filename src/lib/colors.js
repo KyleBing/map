@@ -10,6 +10,18 @@ const colors = {
     gray: "#8E8E93",
 }
 
+const colorArray = [
+    "#4CD964",
+    "#5AC8FA",
+    "#007AFF",
+    "#5856D6",
+    "#FF2D70",
+    "#FF3B30",
+    "#FF9500",
+    "#FFCC00",
+    "#8E8E93",
+]
+
 const colorsRGB = [
     'rgb(190,194,161)',
     'rgb(237,236,208)',
@@ -29,5 +41,5 @@ const colorsRGB = [
     'rgb(146,128,140)',
 ]
 export default {
-    colors, colorsRGB
+    colors, colorsRGB, colorArray
 }

@@ -55,9 +55,9 @@
             <div class="mt-1">
                 <el-button type="warning" size="mini" icon="el-icon-price-tag" @click="toggleMarkerDisplay">{{isMarkerShowed? '隐藏': '显示'}}标签</el-button>
                 <el-button type="primary" size="mini" icon="el-icon-map-location" @click="togglePathDisplay">{{isPathShowed? '隐藏': '显示'}}路径</el-button>
-<!--                <el-button type="success" size="mini" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</el-button>-->
-<!--                <el-button type="success" size="mini" icon="el-icon-medal-1" @click="toggleKmDisplay"-->
-<!--                           v-if="pathPointers[0] && pathPointers[0].extensions && pathPointers[0].extensions.distance">切换公里数显示</el-button>-->
+                <!--                <el-button type="success" size="mini" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</el-button>-->
+                <!--                <el-button type="success" size="mini" icon="el-icon-medal-1" @click="toggleKmDisplay"-->
+                <!--                           v-if="pathPointers[0] && pathPointers[0].extensions && pathPointers[0].extensions.distance">切换公里数显示</el-button>-->
             </div>
         </div>
 
@@ -88,6 +88,7 @@ import utility from "@/utility";
 import ICON from "@/assets/icons";
 
 import Moment from "moment"
+import Colors from "@/lib/colors";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -99,6 +100,7 @@ export default {
         return {
             isLoading: false,
             map: null,
+            loca: null, // LOCA
             cluster: null,  // 点聚合的对象
 
             currentPointerId: 0,
@@ -141,39 +143,59 @@ export default {
             .load({
                 key: mapConfig.key_web_js, // 开发应用的 ID
                 version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-                plugins: [
-                    'AMap.ToolBar', // 缩放按钮
-                    'AMap.Scale', // 比例尺
-                ],
+                plugins: [],
+                Loca: {
+                    version: '2.0.0',
+                },
+                AMapUI: {             // 是否加载 AMapUI，缺省不加载
+                    version: '1.1',   // AMapUI 缺省 1.1
+                    plugins: [],       // 需要加载的 AMapUI ui插件
+                },
+
             })
             .then(map => {
                 AMap = map
                 this.map = new AMap.Map('container', {
+                    viewMode: '3D',
+                    zoom: 20,
+                    pitch: 32,
                     center: MY_POSITION,
-                    viewMode: '3D', //地图模式
-                    rotateEnable: true, //是否开启地图旋转交互 鼠标右键 + 鼠标画圈移动 或 键盘Ctrl + 鼠标左键画圈移动
-                    pitchEnable: true, //是否开启地图倾斜交互 鼠标右键 + 鼠标上下移动或键盘Ctrl + 鼠标左键上下移动
-                    zoom: 11
+                    // mapStyle: 'amap://styles/grey',
+                    showBuildingBlock: true, // 显示建筑物
+                    // showLabel: false, // 不显示地名什么的
                 })
-                this.map.addControl(new AMap.ToolBar())
-                this.map.addControl(new AMap.Scale())
 
-                if (this.$route.query.pointerId){
-                    this.getPointerInfo(this.$route.query.pointerId)
-                }
+
+                // 文字图层
+                let labelLayer = new AMap.LabelsLayer({
+                    rejectMapMask: true,
+                    collision: true,
+                    animation: true,
+                })
+                this.map.add(labelLayer)
+
+                this.loca = new Loca.Container({
+                    map: this.map,
+                })
+
+                this.map.on('complete', () => {
+                    // this.loca.animate.start()
+                })
+
             })
             .catch(e => {
                 console.log(e)
             })
+
     },
 
     computed: {
         ...mapGetters(["isAdmin", 'isInPortraitMode']),
         ...mapState(['windowInsets', 'authorization', 'isShowingMenuToggleBtn']),
-        pathLength(){
+        pathLength() {
             let length = this.path.getLength(true)
-            if (length > 10000){
-                return `${(length/1000).toFixed(2)} km`
+            if (length > 10000) {
+                return `${(length / 1000).toFixed(2)} km`
             } else {
                 return `${length} m`
             }
@@ -185,16 +207,16 @@ export default {
         }
     },
     methods: {
-        offsetMoveUp(step){
+        offsetMoveUp(step) {
             this.offsetN = Number(this.offsetN) + step
         },
-        offsetMoveLeft(step){
+        offsetMoveLeft(step) {
             this.offsetE = Number(this.offsetE) - step
         },
-        offsetMoveRight(step){
+        offsetMoveRight(step) {
             this.offsetE = Number(this.offsetE) + step
         },
-        offsetMoveDown(step){
+        offsetMoveDown(step) {
             this.offsetN = Number(this.offsetN) - step
         },
         getMapConfig() {
@@ -204,7 +226,7 @@ export default {
                 this.offsetN = Number(JSON.parse(configString).offset.N)
             }
         },
-        saveMapConfig(){
+        saveMapConfig() {
             localStorage.setItem('MapConfig', JSON.stringify({
                 offset: {
                     E: this.offsetE,
@@ -212,10 +234,10 @@ export default {
                 }
             }))
         },
-        toggleKmDisplay(){
+        toggleKmDisplay() {
             this.kmMarkers = []
             this.pathPointers.forEach(item => {
-                if (item.extensions.distance % 1000 === 0){
+                if (item.extensions.distance % 1000 === 0) {
                     this.kmMarkers.push(item)
                 }
             })
@@ -227,11 +249,11 @@ export default {
             })
 
         },
-        toggleMarkerDisplay(){
-            if (this.isMarkerShowed){
+        toggleMarkerDisplay() {
+            if (this.isMarkerShowed) {
                 this.markers.forEach(item => {
                     let extData = item.getExtData()
-                    if (extData && (extData.label === 'start' || extData.label === 'end')){
+                    if (extData && (extData.label === 'start' || extData.label === 'end')) {
                     } else {
                         item.hide()
                     }
@@ -240,7 +262,7 @@ export default {
             } else {
                 this.markers.forEach(item => {
                     let extData = item.getExtData()
-                    if (extData && (extData.label === 'start' || extData.label === 'end')){
+                    if (extData && (extData.label === 'start' || extData.label === 'end')) {
                     } else {
                         item.show()
                     }
@@ -248,8 +270,8 @@ export default {
                 this.isMarkerShowed = true
             }
         },
-        togglePathDisplay(){
-            if (this.isPathShowed){
+        togglePathDisplay() {
+            if (this.isPathShowed) {
                 this.path.hide()
                 this.isPathShowed = false
             } else {
@@ -258,8 +280,8 @@ export default {
             }
         },
 
-        fileChange(files){
-            if(files.length){
+        fileChange(files) {
+            if (files.length) {
 
                 // reset map content
                 this.map.clearInfoWindow() // 清除地图上的信息窗体
@@ -268,11 +290,11 @@ export default {
                 this.xmlFile = files[0]
                 let reader = new FileReader()
                 let that = this
-                reader.onload = function(){
+                reader.onload = function () {
                     that.xmlText = this.result
                     let xmlParser = new XMLParser({
                         ignoreAttributes: false,  // 读取xml节点的属性值
-                        attributeNamePrefix : "_"
+                        attributeNamePrefix: "_"
                     })
                     that.xmlObj = xmlParser.parse(this.result)
                     // console.log(xmlParser.parse(this.result))
@@ -282,20 +304,68 @@ export default {
             }
         },
 
-        loadAllPointer(isNeedFitToMap = false){
+        // 显示 3D 路径
+        showLineLayer(loca, gpxPointers){
+            let pointers = gpxPointers.map(item => {
+                let lnglat = new AMap.LngLat(item._lon, item._lat)
+                let lnglatAfterOffset = lnglat.offset(this.offsetE, this.offsetN) // offset 偏移量 E, N 单位：米
+                let lnglatArray = lnglatAfterOffset.toArray()
+                lnglatArray.push(item.ele)
+                return lnglatArray
+            })
+            console.log(pointers)
+            let geoData = {
+                type: "FeatureCollection",
+                features: [
+                    {
+                        type: "Feature",
+                        properties: {
+                            type: 1
+                        },
+                        geometry: {
+                            type: "LineString",
+                            coordinates: pointers
+                        }
+                    }
+                ]
+            }
+            // loca lineLayer
+            let lineLayer = new Loca.LineLayer({
+                loca: loca,
+                zIndex: 120,
+                opacity: 1,
+                visible: true,
+                zooms: [2,20]
+            })
+            // GEO Data, 这是个标准文件格式，参见: https://geojson.org/
+            let geo = new Loca.GeoJSONSource({
+                data: geoData
+            })
+            // 给 Loca.LineLayer 添加数据
+            lineLayer.setSource(geo, {
+                color: Colors.colors.magenta,
+                lineWidth: 5,
+
+            })
+            // Loca 中添加这个线的图层
+            this.loca.add(lineLayer)
+        },
+
+        loadAllPointer(isNeedFitToMap = false) {
             this.map.clearMap() // 删除所有 Marker path
+            this.loca.clear() // 清除所有 loca 上的图层
             this.isMarkerShowed = true
             this.isPathShowed = true
-/*            pointer = {
-                "ele": 18,
-                "time": "2023-11-18T12:08:53Z",
-                "extensions": {
-                    "heartrate": 96,
-                    "distance": 13
-                },
-                "_lat": "36.7426527",
-                "_lon": "117.0671413"
-            }*/
+            /*            pointer = {
+                            "ele": 18,
+                            "time": "2023-11-18T12:08:53Z",
+                            "extensions": {
+                                "heartrate": 96,
+                                "distance": 13
+                            },
+                            "_lat": "36.7426527",
+                            "_lon": "117.0671413"
+                        }*/
 
             let pointers = this.xmlObj.gpx.trk.trkseg.trkpt
             this.pathPointers = pointers.map((item, index) => {
@@ -303,19 +373,20 @@ export default {
                 item.lnglat = item.lnglat.offset(this.offsetE, this.offsetN) // offset 偏移量 E, N 单位：米
 
                 // 给 pointers 添加 label: start | end，供后续对 marker 的操作
-                if (index === 0){
+                if (index === 0) {
                     item.label = 'start'
                 }
-                if ( index === pointers.length - 1){
+                if (index === pointers.length - 1) {
                     item.label = 'end'
                 }
                 return item  // E,N 向东，向北移动距离，单位：米
             })
             this.loadGpxPath(this.map, this.pathPointers.map(item => item.lnglat), isNeedFitToMap)
             this.loadMarkers(this.map, this.pathPointers)
+            this.showLineLayer(this.loca, this.pathPointers)
         },
 
-        loadGpxPath(map, ptArray, isNeedFitToMap){
+        loadGpxPath(map, ptArray, isNeedFitToMap) {
             this.path = new AMap.Polyline({
                 path: ptArray,           // Array<[number, number]>
                 isOutline: true,
@@ -339,15 +410,15 @@ export default {
                 console.log(data)
             })
             map.add([this.path])
-            if (isNeedFitToMap){
+            if (isNeedFitToMap) {
                 map.setFitView()
             }
         },
 
-        loadMarkers(map, ptArray){
+        loadMarkers(map, ptArray) {
             this.markers = []
             ptArray.forEach((item, index) => {
-                if (item.label === 'start'){
+                if (item.label === 'start') {
                     // 起点
                     this.addMarker(map, item.lnglat, '起点', item.ele,
                         {label: item.label}, // AMap.Marker.extData
@@ -360,7 +431,7 @@ export default {
                         }),
                         new AMap.Pixel(-13, -43)
                     )
-                } else if (item.label === 'end'){
+                } else if (item.label === 'end') {
                     // 终点
                     this.addMarker(map, item.lnglat, '终点', item.ele,
                         {label: item.label}, // AMap.Marker.extData
@@ -373,8 +444,8 @@ export default {
                         new AMap.Pixel(-13, -43),
                     )
                 } else {
-                    if (index % this.gapCount === 0){
-                        this.addMarker(map, item.lnglat,  utility.dateFormatter(new Date(item.time), 'hh:mm'))
+                    if (index % this.gapCount === 0) {
+                        this.addMarker(map, item.lnglat, utility.dateFormatter(new Date(item.time), 'hh:mm'))
                         // this.addMarker(map, item.lnglat, item.extensions.heartrate)
                     }
                 }
@@ -382,7 +453,7 @@ export default {
         },
 
 
-        openInGaodeApp(){
+        openInGaodeApp() {
             let originLnglat = this.activePointerObj.pointerArray[0].position // [lng, lat]
             let destLnglat = this.activePointerObj.pointerArray[this.activePointerObj.pointerArray.length - 1].position // [lng, lat]
             this.map.plugin('AMap.Driving', () => {
@@ -398,8 +469,8 @@ export default {
                         // https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
                         if (status === 'complete') {
                             currentDriving.searchOnAMAP({
-                                origin:result.origin,
-                                destination:result.destination
+                                origin: result.origin,
+                                destination: result.destination
                             });
                             console.log(status, result)
                             console.log('绘制驾车点图完成')
@@ -438,20 +509,20 @@ export default {
          * @param pointerArray [[a,b],[c,d]]
          * @return Array {min:number[a,b], max:number[c,d]}
          */
-        getMaxBoundsPointer(pointerArray){
+        getMaxBoundsPointer(pointerArray) {
             let lngArray = pointerArray.map(item => item[0])
             let latArray = pointerArray.map(item => item[1])
 
             return {
-                min: [Math.min(...lngArray),  Math.min(...latArray)],
-                max: [Math.max(...lngArray),  Math.max(...latArray)],
+                min: [Math.min(...lngArray), Math.min(...latArray)],
+                max: [Math.max(...lngArray), Math.max(...latArray)],
             }
         },
 
 
         addMarker(map, position, name, height, extData, icon, offset) {
             let marker
-            if (icon){
+            if (icon) {
                 marker = new AMap.Marker({
                     position: position,
                     icon: icon,
@@ -476,20 +547,20 @@ export default {
 
     },
     watch: {
-        offsetN(newValue){
+        offsetN(newValue) {
             this.saveMapConfig()
-            if (this.xmlObj){
+            if (this.xmlObj) {
                 this.loadAllPointer()
             }
         },
-        offsetE(newValue){
+        offsetE(newValue) {
             this.saveMapConfig()
-            if (this.xmlObj){
+            if (this.xmlObj) {
                 this.loadAllPointer()
             }
         },
-        gapCount(newValue){
-            if (this.xmlObj){
+        gapCount(newValue) {
+            if (this.xmlObj) {
                 this.loadAllPointer()
             }
         },
@@ -506,11 +577,11 @@ export default {
 <style lang="scss" scoped>
 @import "../../scss/plugin";
 
-input[type=file]{
+input[type=file] {
     display: none;
 }
 
-.btn-router-list{
+.btn-router-list {
     position: absolute;
     top: 20px;
     left: 280px;
@@ -520,7 +591,7 @@ input[type=file]{
     position: relative
 }
 
-.float-panel{
+.float-panel {
     width: 400px;
     min-height: 100px;
     position: absolute;
@@ -530,34 +601,39 @@ input[type=file]{
 }
 
 @media (max-width: $screen-width-threshold) {
-    .float-panel{
+    .float-panel {
         left: 50%;
         transform: translateX(-50%);
     }
-    .btn-router-list{
+    .btn-router-list {
         left: auto;
         top: 10px;
         right: 10px;
     }
 }
-.move-pad{
+
+.move-pad {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-flow: column nowrap;
-    .up,.middle,.down{
+
+    .up, .middle, .down {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-flow: row nowrap;
     }
-    .up{
+
+    .up {
 
     }
-    .middle{
+
+    .middle {
 
     }
-    .down{
+
+    .down {
 
     }
 }

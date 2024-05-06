@@ -48,6 +48,7 @@ const routes = [
         meta: {title: 'GPX', showInMenu: true, icon: 'el-icon-s-promotion' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
             {name: 'GpxViewer', path: 'gpx-viewer', meta: {title: 'GPX路径', showInMenu: true, icon: 'el-icon-s-promotion'}, component: resolve => require(['@/page/gpx/GpxViewer.vue'], resolve),},
+            {name: 'GpxViewer3D', path: 'gpx-viewer-3D', meta: {title: 'GPX路径3D', showInMenu: true, icon: 'el-icon-s-promotion'}, component: resolve => require(['@/page/gpx/GpxViewer3D.vue'], resolve),},
         ]
     },
     {
@@ -87,7 +88,7 @@ const routes = [
         ]
     },
 
-/*    {
+    {
         name: 'Other',
         path: '/other',
         component: Layout,
@@ -96,7 +97,7 @@ const routes = [
         children: [
             {name: 'MapLoca', path: 'map-loca', meta: {title: '脉冲图', showInMenu: true}, component: resolve => require(['@/page/other/map/MapLoca'], resolve),},
         ]
-    },*/
+    },
     {
         name: 'AboutFramework',
         path: '/about',
