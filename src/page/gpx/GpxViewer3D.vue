@@ -534,7 +534,7 @@ export default {
                 marker = new AMap.Marker({
                     position: position,
                     height,
-                    content: `<div class="marker">
+                    content: `<div class="marker no-content">
                               <div class="marker-index">
                                   <div class="title">${name}</div>
                               </div>
