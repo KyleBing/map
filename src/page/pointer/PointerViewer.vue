@@ -239,6 +239,9 @@ export default {
             })
             let count = pointers.length
 
+            // 最终聚合之后，只显示一个点，这个点就是权重比较大的点，context 数据里的 clusterData 也只显示这个聚合位置的点，
+            // 如果不显示报警的点，就无法获取这个点的报警状态，就无法显示报警
+            // 所以增大报警点的权重
             const _renderClusterMarker = function (context) {
                 // console.log('context cluster: ', context)
                 let factor = Math.pow(context.count / count, 1 / 18);
@@ -269,11 +272,11 @@ export default {
                 let item = context.data[0]
                 if (item.img){
                     context.marker.setContent(`
-                       <div class="marker">
+                       <div class="marker ${(item.note || item.img) ? '': 'no-content'}">
                           <div class="marker-index">
                               <div class="title">${item.name}</div>
                           </div>
-                          <div class="marker-content">
+                          <div class="marker-content ">
                                <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                                <div class="view">
                                    <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
@@ -284,11 +287,11 @@ export default {
                        </div>`)
                 } else {
                     context.marker.setContent(`
-                       <div class="marker">
+                       <div class="marker ${(item.note || item.img) ? '': 'no-content'}">
                           <div class="marker-index">
                               <div class="title">${item.name}</div>
                           </div>
-                          <div class="marker-content">
+                          <div class="marker-content ">
                                <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                           </div>
                        </div>`)

@@ -23,18 +23,33 @@ body{
 
 .marker{
     @extend .unselectable;
-    background-color: white;
+    background-color: $bg-light;
     @include border-radius(10px);
-    padding: 6px;
     line-height: 1.3;
     color: $text-main;
     @include transition(all 0.3s);
     @include box-shadow(2px 2px 5px rgba(121, 85, 72, 0.39));
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-flow: column nowrap;
+    &.no-content{  // 没有内容的用，没有 padding
+        @include border-radius(10px);
+        overflow: hidden;
+        .marker-index{
+            border-bottom: none;
+        }
+        .marker-content{
+            padding: 0;
+        }
+        &:hover{
+            overflow: hidden;
+        }
+    }
     &:hover{
         z-index: 99999;
         @include border-radius(10px);
         @include transition(all 0.3s);
-        padding: 8px 6px;
         transform: scale(1.2);
         transform-origin: center center;
         .marker-index{
@@ -47,20 +62,20 @@ body{
 
         }
     }
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-flow: column nowrap;
     .marker-index{
+        @include border-radius(10px 10px 0 0 );
+        border-bottom: 1px solid $border-normal;
+        background-color: white;
+        padding: 5px 10px;
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
         justify-content: flex-start;
         .index{
+            margin-right: 10px;
             font-weight: bold;
-            padding: 0 10px 0 5px;
             color: transparentize(black, 0.6);
-            font-size: 20px;
+            font-size: 18px;
         }
         .title{
             white-space: nowrap;
@@ -69,6 +84,7 @@ body{
         }
     }
     .marker-content{
+        padding: 4px 8px 10px;
         .note{
             white-space: nowrap;
             font-size: 0.7rem;

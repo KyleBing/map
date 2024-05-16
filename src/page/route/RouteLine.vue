@@ -313,43 +313,44 @@ export default {
         addMarker(map, item, index) {
             let marker
             if (item.img){
+
+
                 marker = new AMap.Marker({
                     position: item.position,
                     title: item.note,
                     draggable: false,
                     content: `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${item.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
-                       <div class="view">
-                           <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
-                              <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
-                           </a>
-                       </div>
-                  </div>
-               </div>`,
+                           <div class="marker ${(item.note || item.img) ? '': 'no-content'}">
+                              <div class="marker-index">
+                                   <div class="index">${index + 1}</div>
+                                  <div class="title">${item.name}</div>
+                              </div>
+                              <div class="marker-content">
+                                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                                   <div class="view">
+                                       <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
+                                          <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
+                                       </a>
+                                   </div>
+                              </div>
+                           </div>`,
                 })
-
             } else {
                 marker = new AMap.Marker({
                     position: item.position,
                     title: item.note,
                     draggable: false,
                     content: `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                       <div class="title">${item.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
-                  </div>
-               </div>`,
-                })
+                           <div class="marker ${(item.note || item.img) ? '': 'no-content'}">
+                              <div class="marker-index">
+                                   <div class="index">${index + 1}</div>
+                                   <div class="title">${item.name}</div>
+                              </div>
+                              <div class="marker-content">
+                                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                              </div>
+                           </div>`,
+                        })
             }
             this.currentMarkers.push(marker)
             map.add(marker)
