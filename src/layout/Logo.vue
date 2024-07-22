@@ -9,11 +9,8 @@
 
 <script lang="ts" setup>
 import {useProjectStore} from "@/pinia.ts";
-import {useRoute, useRouter} from "vue-router";
 
 const store = useProjectStore()
-const router = useRouter()
-const route = useRoute()
 
 withDefaults(defineProps<{
     height?: number

@@ -12,7 +12,7 @@ const LOADING_OPTION = {
 const BASE_URL = process.env.NODE_ENV === 'development' ? '': 'http://kylebing.cn/portal/' // 生产环境时是 ../portal
 
 
-function request(method: 'get'|'post', params: any, requestData: any, showLoading = false, cancelToken, url: string) {
+function request(method: 'get'|'post'|'put'|'delete', params: any, requestData: any, showLoading = false, cancelToken, url: string) {
     let layerLoading
     if (showLoading) layerLoading = Loading.service(LOADING_OPTION)
 

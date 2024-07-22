@@ -30,7 +30,7 @@ onMounted(()=>{
     resizeComponents()
 })
 
-watch(store.windowInsets, newValue => {
+watch(store.windowInsets, () => {
     resizeComponents()
 })
 
