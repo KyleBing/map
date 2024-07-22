@@ -69,7 +69,7 @@ const router = useRouter()
 
 const refFormRegister = ref()
 
-const validatePassworDrepeat = (rule, value, callback) => {
+const validatePasswordRepeat = (rule, value, callback) => {
     if (value !== formRegister.value.password) {
         callback(new Error("两次密码输入不一致"))
     } else {
@@ -123,13 +123,13 @@ const userRules = reactive({
     password: {required: true, message: '请填写原密码', trigger: 'blur'},
     passwordrepeat: [
         {required: true, message: '请再填写一次新密码', trigger: 'blur'},
-        {validator: validatePassworDrepeat, trigger: 'blur'}
+        {validator: validatePasswordRepeat, trigger: 'blur'}
     ],
     invitationCode: {required: true, message: '请输入邀请码', trigger: 'blur'},
 })
 
 function submit() {
-    refFormRegister.value.validate((valid) => {
+    refFormRegister.value.validate(valid => {
         if (valid) {
             register();
         } else {

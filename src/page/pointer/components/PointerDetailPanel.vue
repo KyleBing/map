@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import QRCode from "./qr.js"
+// import QRCode from "./qr.js"
 import {marked} from "marked";
 import {useProjectStore} from "@/pinia";
 
@@ -71,7 +71,7 @@ export default {
         }
     },
     mounted() {
-        this.qrImg = QRCode.generatePNG(window.location.href)
+        // this.qrImg = QRCode.generatePNG(window.location.href)
 
     },
     computed:{

@@ -30,12 +30,12 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
-import PointerDetailPanel from "./components/PointerDetailPanel"
+import PointerDetailPanel from "./components/PointerDetailPanel.vue"
 import mapConfig from "../../mapConfig";
 import pointerApi from "@/api/pointerApi";
 
 import {Base64} from "js-base64"
-import PointerListPanel from "./components/PointerListPanel";
+import PointerListPanel from "./components/PointerListPanel.vue";
 import {useProjectStore} from "@/pinia";
 import {dateFormatter} from "@/utility";
 const store = useProjectStore()

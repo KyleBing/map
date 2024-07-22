@@ -76,13 +76,13 @@
 <script>
 
 import AMapLoader from '@amap/amap-jsapi-loader'
-import PointerDetailPanel from "../pointer/components/PointerDetailPanel"
+import PointerDetailPanel from "../pointer/components/PointerDetailPanel.vue"
 import mapConfig from "../../mapConfig";
 import pointerApi from "@/api/pointerApi";
 import {XMLParser, XMLBuilder, XMLValidator} from "fast-xml-parser"
 
 import {Base64} from "js-base64"
-import PointerListPanel from "../pointer/components/PointerListPanel";
+import PointerListPanel from "../pointer/components/PointerListPanel.vue";
 import {dateFormatter} from "@/utility";
 import ICON from "@/assets/icons";
 

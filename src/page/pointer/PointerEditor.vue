@@ -105,7 +105,7 @@
 
 <script>
 import AMapLoader from '@amap/amap-jsapi-loader';
-import PointerEditPanel from "./components/PointerEditPanel";
+import PointerEditPanel from "./components/PointerEditPanel.vue";
 
 import mapConfig from "../../mapConfig";
 import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";

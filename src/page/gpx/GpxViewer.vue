@@ -76,17 +76,18 @@
 <script>
 
 import AMapLoader from '@amap/amap-jsapi-loader'
-import PointerDetailPanel from "../pointer/components/PointerDetailPanel"
+import PointerDetailPanel from "../pointer/components/PointerDetailPanel.vue"
 import mapConfig from "../../mapConfig";
 import pointerApi from "@/api/pointerApi";
 import {XMLParser, XMLBuilder, XMLValidator} from "fast-xml-parser"
 
 import {Base64} from "js-base64"
-import PointerListPanel from "../pointer/components/PointerListPanel";
+import PointerListPanel from "../pointer/components/PointerListPanel.vue";
 import ICON from "@/assets/icons";
 
 import Moment from "moment"
 import {dateFormatter} from "@/utility";
+import {useProjectStore} from "@/pinia";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -96,6 +97,9 @@ export default {
     components: {PointerListPanel, PointerDetailPanel},
     data() {
         return {
+
+            store: useProjectStore(),
+
             isLoading: false,
             map: null,
             cluster: null,  // 点聚合的对象

@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import QRCode from "../../../lib/qr.js"
+// import QRCode from "../../../lib/qr.js"
 import DrivingInfo from "@/page/route/components/DrivingInfo.vue";
 import {policyMap} from "@/page/route/DrivingPolicy"
 import {marked} from "marked";
@@ -87,7 +87,7 @@ export default {
         }
     },
     mounted() {
-        this.qrImg = QRCode.generatePNG(window.location.href)
+        // this.qrImg = QRCode.generatePNG(window.location.href)
     },
     computed:{
         contentHtml(){

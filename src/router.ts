@@ -3,7 +3,7 @@ import Login from "./page/Login.vue"
 import Register from "./page/Register.vue"
 import Layout from "./layout/Layout.vue"
 import Logout from "./page/Logout.vue"
-import {useProjectStore} from "./pinia.ts";
+// import {useProjectStore} from "./pinia.ts"
 
 
 const FIXED_ROUTES: Array<RouteRecordRaw> = [
@@ -133,13 +133,13 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes: FIXED_ROUTES
 })
-
-const store = useProjectStore()
-router.afterEach((to, from) => {
-    if (store.isInPortraitMode) { // 适配移动端 路由跳转后，隐藏菜单
-        store.isShowingMenuToggleBtn = true
-    }
-})
+//
+// const store = useProjectStore()
+// router.afterEach((to, from) => {
+//     if (store.isInPortraitMode) { // 适配移动端 路由跳转后，隐藏菜单
+//         store.isShowingMenuToggleBtn = true
+//     }
+// })
 
 router.beforeEach((to, from, next) => {
     next()

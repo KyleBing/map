@@ -52,9 +52,9 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
-import RoutePanel from "@/page/tool/route/components/RoutePanel";
+import RoutePanel from "@/page/tool/route/components/RoutePanel.vue";
 import mapConfig from "../../../mapConfig";
-import RouteDetailPanel from "@/page/route/components/RouteDetailPanel";
+import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 import axios from "axios";
 import {policyArray} from "@/page/route/DrivingPolicy";
 import {useProjectStore} from "@/pinia";

@@ -42,7 +42,7 @@
 <script>
 
 import AMapLoader from '@amap/amap-jsapi-loader'
-import CirclePanel from "@/page/tool/circle/components/CirclePanel"
+import CirclePanel from "@/page/tool/circle/components/CirclePanel.vue"
 import mapConfig from "../../../mapConfig";
 import axios from "axios";
 import {useProjectStore} from "@/pinia";

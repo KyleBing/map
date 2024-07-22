@@ -19,7 +19,7 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import mapConfig from "../../../mapConfig";
 import axios from "axios";
-import PointerDetailPanel from "@/page/pointer/components/PointerDetailPanel";
+import PointerDetailPanel from "@/page/pointer/components/PointerDetailPanel.vue";
 import {adcodeMap} from './adcodeMap'
 import {useProjectStore} from "@/pinia";
 

@@ -33,13 +33,13 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
 import ICON from "@/assets/icons"
-import RouteDetailPanel from "./components/RouteDetailPanel"
+import RouteDetailPanel from "./components/RouteDetailPanel.vue"
 import mapConfig from "../../mapConfig";
 import routeApi from "@/api/routeApi";
 
 import {Base64} from "js-base64"
-import RouteLineListPanel from "@/page/route/components/RouteLineListPanel";
-import DrivingInfo from "@/page/route/components/DrivingInfo";
+import RouteLineListPanel from "@/page/route/components/RouteLineListPanel.vue";
+import DrivingInfo from "@/page/route/components/DrivingInfo.vue";
 import axios from "axios";
 import {useProjectStore} from "@/pinia";
 
