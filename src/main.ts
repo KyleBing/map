@@ -25,7 +25,6 @@ import {createPinia} from "pinia"
 const pinia = createPinia()
 app.use(pinia)
 
-
 // ROUTER
 import {router} from "./router"
 app.use(router)

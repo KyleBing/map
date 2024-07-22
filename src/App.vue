@@ -1,10 +1,8 @@
 <template>
     <div>
         <RouterView/>
-        <ElDialog center
-            title="提示"
-            :visible.sync="modalTip"
-            width="50%">
+        <ElDialog center title="提示" width="50%"
+                  :visible.sync="modalTip">
             <p class="text-center">地图多次拖动后会变得卡顿，刷新页面即可</p>
             <div slot="footer" class="dialog-footer">
                 <ElButton size="small" type="primary" @click="checkTip">OK</ElButton>

@@ -65,7 +65,6 @@ import {ElNotification} from "element-plus";
 
 const store = useProjectStore()
 const router = useRouter()
-const route = useRoute()
 
 
 const refFormRegister = ref()

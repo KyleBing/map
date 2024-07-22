@@ -2,12 +2,7 @@
 
 </template>
 
-<script>
-export default {
-    name: "Logout",
-    mounted() {
-    }
-}
+<script lang="ts" setup>
 </script>
 
 <style scoped>

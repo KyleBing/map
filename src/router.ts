@@ -1,14 +1,15 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from "vue-router";
 import Login from "./page/Login.vue"
 import Register from "./page/Register.vue"
-import Layout from "./layout/Layout.vue";
-import Logout from "./page/Logout.vue";
+import Layout from "./layout/Layout.vue"
+import Logout from "./page/Logout.vue"
 import {useProjectStore} from "./pinia.ts";
 
 
 const FIXED_ROUTES: Array<RouteRecordRaw> = [
     {
-        name: 'Root', path: '/',
+        name: 'Root',
+        path: '/',
         meta: {title: '主页', showInMenu: true, icon: 'el-icon-house'},
         component: Layout,
         redirect: '/index',
