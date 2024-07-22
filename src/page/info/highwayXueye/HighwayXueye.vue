@@ -14,7 +14,6 @@
 
 <script>
 import AMapLoader from '@amap/amap-jsapi-loader'
-import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
 const MAP_CENTER = [117.582719, 36.42146]
 import locations from './locations.json'

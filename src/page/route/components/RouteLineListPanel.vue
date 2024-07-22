@@ -5,13 +5,13 @@
             <ElButton size="mini" icon="el-icon-monitor" type="default" @click="togglePanel">折叠/展开</ElButton>
             <ElButton size="mini" icon="el-icon-price-tag" type="default" @click="toggleLabel">切换标签显示</ElButton>
         </div>
-        <el-tabs
+        <ElTabs
             v-if="isShowPanel"
             type="card"
             @tab-click="tabClick"
             v-model="currentTab">
-            <el-tab-pane label="我的" name="mine">
-                <div class="route-line-list" :style="`max-height: ${windowInsets.height - 300}px`">
+            <ElTabPane label="我的" name="mine">
+                <div class="route-line-list" :style="`max-height: ${store.windowInsets.height - 300}px`">
                     <div
                         @click="$emit('choseLine', line.id)"
                         :class="[
@@ -25,9 +25,9 @@
                         <div class="area">{{line.area}}</div>
                     </div>
                 </div>
-            </el-tab-pane>
-            <el-tab-pane label="其它公开路线" name="other">
-                <div class="route-line-list" :style="`max-height: ${windowInsets.height - 300}px`">
+            </ElTabPane>
+            <ElTabPane label="其它公开路线" name="other">
+                <div class="route-line-list" :style="`max-height: ${store.windowInsets.height - 300}px`">
                     <div
                         @click="$emit('choseLine', line.id)"
                         :class="[
@@ -41,23 +41,25 @@
                         <div class="area">{{line.area}}</div>
                     </div>
                 </div>
-            </el-tab-pane>
-        </el-tabs>
+            </ElTabPane>
+        </ElTabs>
     </div>
 
 </template>
 
 <script>
-import {mapGetters, mapState} from "vuex";
 import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64";
-import utility from "@/utility";
+import {dateFormatter} from "@/utility";
 import axios from "axios";
+import {useProjectStore} from "@/pinia";
 
 export default {
     name: "PointerListPanel",
     data(){
         return {
+            store: useProjectStore(),
+
             showContent: true,
             currentTab: 'mine', // 我的
             isLoading: false,
@@ -71,11 +73,6 @@ export default {
             },
             isShowPanel: true,
         }
-    },
-
-    computed:{
-        ...mapState(['windowInsets']),
-        ...mapGetters(['isInPortraitMode']),
     },
     mounted() {
         this.getRouteList()
@@ -122,16 +119,16 @@ export default {
                         item.paths = Base64.decode(item.paths) || ''
                         item.pathArray = item.paths && JSON.parse(item.paths)
                         item.seasonsArray = item.seasons.split('、')
-                        item.date_init = utility.dateFormatter(new Date(item.date_init))
-                        item.date_modify = utility.dateFormatter(new Date(item.date_modify))
+                        item.date_init = dateFormatter(new Date(item.date_init))
+                        item.date_modify = dateFormatter(new Date(item.date_modify))
                         return item
                     })
                     this.routeLineListMine = resMine.data.list.map(item => {
                         item.paths = Base64.decode(item.paths) || ''
                         item.pathArray = item.paths && JSON.parse(item.paths)
                         item.seasonsArray = item.seasons.split('、')
-                        item.date_init = utility.dateFormatter(new Date(item.date_init))
-                        item.date_modify = utility.dateFormatter(new Date(item.date_modify))
+                        item.date_init = dateFormatter(new Date(item.date_init))
+                        item.date_modify = dateFormatter(new Date(item.date_modify))
                         return item
                     })
                     this.isLoading = false

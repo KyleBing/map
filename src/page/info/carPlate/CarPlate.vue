@@ -6,7 +6,6 @@
 
 <script>
 import AMapLoader from '@amap/amap-jsapi-loader';
-import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
 import {useProjectStore} from "@/pinia";
 

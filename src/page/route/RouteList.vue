@@ -1,6 +1,6 @@
 <template>
     <div class="route-list p-2">
-        <div class="tool-bar mb-2" v-if="!isInPortraitMode">
+        <div class="tool-bar mb-2" v-if="!store.isInPortraitMode">
             <ElForm size="small" inline>
                 <ElFormItem>
                     <ElButton type="success" @click="addNewRoute" icon="el-icon-plus">新增路线</ElButton>
@@ -23,8 +23,8 @@
                 <ElTable
                     class="table-narrow"
                     size="small"
-                    :height="windowInsets.height - 170"
-                    :max-height="windowInsets.height - 170"
+                    :height="store.windowInsets.height - 170"
+                    :max-height="store.windowInsets.height - 170"
                     stripe
                     :data="tableData"
                     v-loading="isLoading"
@@ -49,22 +49,22 @@
                             <ElButton class="btn-narrow" type="success"
                                        @click="showRoute(scope.row)" size="mini" plain icon="el-icon-view">地图中查看</ElButton>
                             <ElButton class="btn-narrow" type="success"
-                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
+                                       v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
                                        @click="editRouteLine(scope.row)" plain size="mini" icon="el-icon-position">地图中编辑</ElButton>
                             <ElButton class="btn-narrow" type="primary"
-                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
+                                       v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
                                        @click="goEdit(scope.row)" plain size="mini" icon="el-icon-edit">编辑</ElButton>
                             <ElButton class="btn-narrow" type="danger"
-                                       v-if="isAdmin || (authorization && Number(authorization.uid) === scope.row.uid)"
+                                       v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
                                        @click="goDelete(scope.row)" plain size="mini" icon="el-icon-delete">删除</ElButton>
                         </template>
                     </ElTableColumn>
                     <ElTableColumn width="130" align="left" prop="seasons" label="适用季节"/>
                     <ElTableColumn width="200" align="left" prop="road_type" label="路线类型">
                         <template #default="scope">
-                            <el-tag class="mr-1" size="mini"
+                            <ElTag class="mr-1" size="mini"
                                     v-for="item in scope.row.road_type.split('，')" :key="item">{{ item }}
-                            </el-tag>
+                            </ElTag>
                         </template>
                     </ElTableColumn>
                     <ElTableColumn align="center" width="50" prop="video_link" label="视频">
@@ -242,8 +242,6 @@ export default {
         this.getRouteList()
     },
     computed: {
-        ...mapGetters(["isAdmin", 'isInPortraitMode']),
-        ...mapState(['windowInsets','authorization']),
         modalTitle() {
             return this.editingRouteId ? '编辑路线' : '新增路线'
         }

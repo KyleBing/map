@@ -1,5 +1,5 @@
 <template>
-    <div :class="['detail', 'card', {'closed': !showContent}, {'center': isInPortraitMode}]">
+    <div :class="['detail', 'card', {'closed': !showContent}, {'center': store.isInPortraitMode}]">
         <div class="title">
             <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i>
@@ -36,7 +36,7 @@
             </div>
             <div class="note markdown" :style="`max-height: ${height}px`" v-if="line.note" v-html="contentHtml"></div>
             <div class="button-center"
-                 v-if="isAdmin || (authorization && authorization.uid) === line.uid"
+                 v-if="store.isAdmin || (store.authorization && store.authorization.uid) === line.uid"
             >
                 <ElButton
                     v-if="line.id !== undefined"
@@ -59,11 +59,11 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from "vuex";
 import QRCode from "../../../lib/qr.js"
 import DrivingInfo from "@/page/route/components/DrivingInfo.vue";
 import {policyMap} from "@/page/route/DrivingPolicy"
 import {marked} from "marked";
+import {useProjectStore} from "@/pinia";
 
 export default {
     name: "RouteDetailPanel",
@@ -78,6 +78,8 @@ export default {
     },
     data(){
         return {
+            store: useProjectStore(),
+
             showContent: true,
             qrImg: '',
             policyMap,
@@ -86,11 +88,8 @@ export default {
     },
     mounted() {
         this.qrImg = QRCode.generatePNG(window.location.href)
-
     },
     computed:{
-        ...mapGetters(['isInPortraitMode', 'isAdmin', ]),
-        ...mapState(['authorization', 'isShowingMenuToggleBtn']),
         contentHtml(){
             return marked.parse(this.line.note)
         }

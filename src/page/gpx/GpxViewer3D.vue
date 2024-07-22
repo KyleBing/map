@@ -5,18 +5,18 @@
             <div class="mb-2">
                 <input accept=".gpx" id="inputFile" type="file" @change="fileChange($event.target.files)">
                 <label for="inputFile">
-                    <el-tag size="mini" type="primary" icon="el-icon-tickets">选择 gpx 文件</el-tag>
+                    <ElTag size="mini" type="primary" icon="el-icon-tickets">选择 gpx 文件</ElTag>
                 </label>
             </div>
 
-            <el-descriptions border size="mini" :column="1" direction="horizontal" v-if="xmlObj && xmlObj.gpx">
-                <el-descriptions-item label="文件名">{{xmlFile.name}}</el-descriptions-item>
-                <el-descriptions-item label="路线名">{{xmlObj.gpx.trk.name}}</el-descriptions-item>
-                <el-descriptions-item label="数据点">{{pathPointers.length}}个</el-descriptions-item>
-                <el-descriptions-item label="时间">{{dateFormatter(new Date(pathPointers[0].time))}} ~ {{dateFormatter(new Date(pathPointers[pathPointers.length - 1].time), 'hh:mm:ss')}}</el-descriptions-item>
-                <el-descriptions-item label="总用时">{{timeCost}} 分钟</el-descriptions-item>
-                <el-descriptions-item v-if="path" label="总长">{{pathLength}}</el-descriptions-item>
-            </el-descriptions>
+            <ElDescriptions border size="mini" :column="1" direction="horizontal" v-if="xmlObj && xmlObj.gpx">
+                <ElDescriptionsItem label="文件名">{{xmlFile.name}}</ElDescriptionsItem>
+                <ElDescriptionsItem label="路线名">{{xmlObj.gpx.trk.name}}</ElDescriptionsItem>
+                <ElDescriptionsItem label="数据点">{{pathPointers.length}}个</ElDescriptionsItem>
+                <ElDescriptionsItem label="时间">{{dateFormatter(new Date(pathPointers[0].time))}} ~ {{dateFormatter(new Date(pathPointers[pathPointers.length - 1].time), 'hh:mm:ss')}}</ElDescriptionsItem>
+                <ElDescriptionsItem label="总用时">{{timeCost}} 分钟</ElDescriptionsItem>
+                <ElDescriptionsItem v-if="path" label="总长">{{pathLength}}</ElDescriptionsItem>
+            </ElDescriptions>
 
             <ElForm inline size="mini" class="mt-1" label-width="70px">
 
@@ -62,11 +62,11 @@
         </div>
 
         <!-- 地图 -->
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
 
         <!-- DETAIL INFO -->
         <pointer-detail-panel
-            v-if="activePointerObj && (!isInPortraitMode || !isPointerListShowed)"
+            v-if="activePointerObj && (!store.isInPortraitMode || !isPointerListShowed)"
             :pointer="activePointerObj"
             @openInGaodeApp="openInGaodeApp"
         />
@@ -77,18 +77,18 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader'
 import PointerDetailPanel from "../pointer/components/PointerDetailPanel"
-import {mapGetters, mapState} from "vuex"
 import mapConfig from "../../mapConfig";
 import pointerApi from "@/api/pointerApi";
 import {XMLParser, XMLBuilder, XMLValidator} from "fast-xml-parser"
 
 import {Base64} from "js-base64"
 import PointerListPanel from "../pointer/components/PointerListPanel";
-import utility from "@/utility";
+import {dateFormatter} from "@/utility";
 import ICON from "@/assets/icons";
 
 import Moment from "moment"
 import Colors from "@/lib/colors";
+import {useProjectStore} from "@/pinia";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -98,6 +98,8 @@ export default {
     components: {PointerListPanel, PointerDetailPanel},
     data() {
         return {
+            store: useProjectStore(),
+
             isLoading: false,
             map: null,
             loca: null, // LOCA
@@ -133,7 +135,7 @@ export default {
             isPointerListShowed: true, // route list 是否显示
 
             //
-            dateFormatter: utility.dateFormatter
+            dateFormatter: dateFormatter
         }
     },
     mounted() {
@@ -190,8 +192,6 @@ export default {
     },
 
     computed: {
-        ...mapGetters(["isAdmin", 'isInPortraitMode']),
-        ...mapState(['windowInsets', 'authorization', 'isShowingMenuToggleBtn']),
         pathLength() {
             let length = this.path.getLength(true)
             if (length > 10000) {
@@ -445,7 +445,7 @@ export default {
                     )
                 } else {
                     if (index % this.gapCount === 0) {
-                        this.addMarker(map, item.lnglat, utility.dateFormatter(new Date(item.time), 'hh:mm'))
+                        this.addMarker(map, item.lnglat, dateFormatter(new Date(item.time), 'hh:mm'))
                         // this.addMarker(map, item.lnglat, item.extensions.heartrate)
                     }
                 }

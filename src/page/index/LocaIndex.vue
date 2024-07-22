@@ -1,6 +1,6 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
     </div>
 </template>
 
@@ -8,8 +8,8 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader'
 import ICON from "@/assets/icons"
-import {mapState} from "vuex"
 import mapConfig from "../../mapConfig";
+import {useProjectStore} from "@/pinia";
 
 const POSITION = {
     daMingHu: [117.026217, 36.670921], // 大明湖
@@ -22,6 +22,8 @@ export default {
     name: "LocaIndex",
     data() {
         return {
+            store: useProjectStore(),
+
             isLoading: false,
             map: null,
             loca: null,
@@ -145,9 +147,6 @@ export default {
             .catch(e => {
                 console.log(e)
             })
-    },
-    computed: {
-        ...mapState(['windowInsets'])
     },
     methods: {
         resizeMap() {

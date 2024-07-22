@@ -1,6 +1,6 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
         <route-panel
             @pointAdd="handleAddRoutePoint"
             @print="printRoute"
@@ -16,9 +16,8 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import ICON from "@/assets/icons"
 import RoutePanel from "@/page/tool/route/components/RoutePanel"
-
-import { mapState } from 'vuex'
 import mapConfig from "../../mapConfig";
+import {useProjectStore} from "@/pinia";
 // 显示地图行政区的深度
 const DEPTH = {
     province: 0, // 省
@@ -33,6 +32,8 @@ export default {
     components: {RoutePanel},
     data() {
         return {
+            store: useProjectStore(),
+
             isLoading: false,
             map: null,
             currentRouting: null,  // 当前导航路线
@@ -144,9 +145,6 @@ export default {
             console.log(e)
         })
 
-    },
-    computed: {
-        ...mapState(['windowInsets'])
     },
     methods: {
         // 展示行政图

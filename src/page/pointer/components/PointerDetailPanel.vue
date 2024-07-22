@@ -1,5 +1,5 @@
 <template>
-    <div :class="['detail', 'card', {'closed': !showContent}, {'center': isInPortraitMode}]">
+    <div :class="['detail', 'card', {'closed': !showContent}, {'center': store.isInPortraitMode}]">
         <div class="title">
             <h1>{{pointer.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
                 <i @click="toggleContent" v-else class="el-icon-arrow-up"></i>
@@ -18,7 +18,7 @@
             </div>
             <div class="note markdown" :style="`max-height: ${height}px`" v-if="pointer.note" v-html="contentHtml"></div>
             <div class="button-center"
-                 v-if="isAdmin || (authorization && authorization.uid) === pointer.uid"
+                 v-if="store.isAdmin || (store.authorization && store.authorization.uid) === pointer.uid"
             >
                 <ElButton
                     v-if="pointer.id !== undefined"
@@ -41,9 +41,9 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from "vuex";
 import QRCode from "./qr.js"
 import {marked} from "marked";
+import {useProjectStore} from "@/pinia";
 
 export default {
     name: "PointerDetailPanel",
@@ -63,6 +63,8 @@ export default {
     },
     data(){
         return {
+            store: useProjectStore(),
+
             showContent: true,
             qrImg: '',
             height: innerHeight * 0.5
@@ -73,8 +75,6 @@ export default {
 
     },
     computed:{
-        ...mapGetters(['isInPortraitMode', 'isAdmin', ]),
-        ...mapState(['authorization', 'isShowingMenuToggleBtn']),
         contentHtml(){
             return marked.parse(this.pointer.note)
         }

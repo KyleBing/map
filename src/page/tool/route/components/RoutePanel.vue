@@ -130,8 +130,9 @@ import ClipboardJS from 'clipboard'
 import mapConfig from "@/mapConfig";
 import * as qiniu from "qiniu-js";
 import fileApi from "@/api/fileApi";
-import utility from "@/utility";
 import {policyArray} from "@/page/route/DrivingPolicy";
+import {getAuthorization} from "@/utility";
+import {ElMessage} from "element-plus";
 
 export default {
     name: "RoutePanel",
@@ -224,7 +225,7 @@ export default {
             this.currentModifyingString = ''
         },
         uploadAvatar(event){
-            if (!utility.getAuthorization()){
+            if (!getAuthorization()){
                 this.$message.error('请登录后操作')
                 return
             }
@@ -273,7 +274,7 @@ export default {
                         // subscription.unsubscribe() // 上传取消
                     })
                     .catch(err => {
-                        utility.popMessage('danger', '获取上传 token 失败', null, 3)
+                        ElMessage.error('获取上传 token 失败')
                     })
             }
         },
