@@ -1,60 +1,46 @@
 <template>
-    <el-aside :class="{mobile: isInPortraitMode}"
+    <ElAside :class="{mobile: store.isInPortraitMode}"
               :style="`min-height: ${heightAside}px`"
-              :width="`${navWidth}px`">
+              :width="`${store.navWidth}px`">
        <div class="navbar">
            <logo :height="heightLogo"></logo>
-           <navbar class="side-menu" :height="heightNavbar"/>
-           <copyright v-show="!navMenuIsClosed" :height="heightCopyright"></copyright>
+           <Navbar class="side-menu" :height="heightNavbar"/>
+           <copyright v-show="!store.navMenuIsClosed" :height="heightCopyright"></copyright>
        </div>
-    </el-aside>
+    </ElAside>
 </template>
 
-<script>
+<script lang="ts" setup>
 
-import navbar from "@/layout/Navbar"
-import {mapState, mapGetters, mapMutations} from "vuex"
-import Copyright from "@/layout/Copyright";
-import Logo from "@/layout/Logo";
+import Navbar from "./Navbar.vue"
+import Copyright from "./Copyright.vue";
+import Logo from "./Logo.vue";
+import {onMounted, ref, watch} from "vue";
 
-export default {
-    name: 'Aside',
-    components: {
-        Copyright,
-        Logo,
-        navbar,
-    },
-    data() {
-        return {
-            heightAside: 0,
-            heightNavbar: 0,
-            heightLogo: 100,
-            heightCopyright: 150
-        }
-    },
-    created() {
-        this.resizeComponents()
-    },
-    computed: {
-        ...mapGetters(['isInPortraitMode']),
-        ...mapState(['windowInsets','navWidth', 'navMenuIsClosed', 'isInMobile', 'isShowingMenuToggleBtn'])
-    },
-    watch: {
-        windowInsets(newValue){
-            this.resizeComponents()
-        }
-    },
-    methods:{
-        ...mapMutations(['SET_NAV_WIDTH']),
-        resizeComponents(){
-            this.heightAside = this.isInPortraitMode? this.windowInsets.height - 50 : this.windowInsets.height// padding aside remove
-            this.heightNavbar = this.heightAside - this.heightLogo - this.heightCopyright
-            if (this.isInPortraitMode){
-                this.SET_NAV_WIDTH(this.windowInsets.width)
-            } else {
-                this.SET_NAV_WIDTH(200) // 当从移动端切到 PC 时，重新设置 NavMenu 的宽度
-            }
-        }
+import {useProjectStore} from "@/pinia.ts";
+
+const store = useProjectStore()
+
+const heightAside = ref(0)
+const heightNavbar = ref(0)
+const heightLogo = ref(100)
+const heightCopyright = ref(150)
+
+onMounted(()=>{
+    resizeComponents()
+})
+
+watch(store.windowInsets, newValue => {
+    resizeComponents()
+})
+
+function  resizeComponents(){
+    heightAside.value = store.isInPortraitMode? store.windowInsets.height - 50 : store.windowInsets.height// padding aside remove
+    heightNavbar.value = heightAside.value - heightLogo.value - heightCopyright.value
+    if (store.isInPortraitMode){
+        store.navWidth = store.windowInsets.width
+    } else {
+        store.navWidth = 200// 当从移动端切到 PC 时，重新设置 NavMenu 的宽度
     }
 }
 </script>

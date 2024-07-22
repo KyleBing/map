@@ -19,10 +19,10 @@
                         <div class="lat">纬: {{lat || '--'}}</div>
                     </div>
                 </td>
-                <td><el-input @keyup.native.enter="addNewCircle" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></el-input></td>
-                <td><el-input @keyup.native.enter="addNewCircle" ref="radius" size="mini" placeholder="半径" v-model="radius" type="number"></el-input></td>
+                <td><ElInput @keyup.native.enter="addNewCircle" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></ElInput></td>
+                <td><ElInput @keyup.native.enter="addNewCircle" ref="radius" size="mini" placeholder="半径" v-model="radius" type="number"></ElInput></td>
                 <td>
-                    <el-button size="mini" type="success" @click="addNewCircle" icon="el-icon-plus">添加</el-button>
+                    <ElButton size="mini" type="success" @click="addNewCircle" icon="el-icon-plus">添加</ElButton>
                 </td>
             </tr>
                 <tr v-for="(item, index) in dataLocal" :key="index">

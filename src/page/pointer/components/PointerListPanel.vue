@@ -5,10 +5,10 @@
             <div
                 v-if="pointerList.length > 0"
                 v-for="pointer in pointerList" :key="pointer.id"
-                @click="$emit('chosePointer', pointer.id)"
+                @click="emit('chosePointer', pointer.id)"
                 :class="[
                 'route-line-list-item',
-                {active: Number($route.query.pointerId) === pointer.id}
+                {active: Number(route.query.pointerId) === pointer.id}
             ]"
             >
                 <div class="id">{{pointer.id}}</div>
@@ -21,30 +21,26 @@
 
 </template>
 
-<script>
-import {mapGetters} from "vuex";
+<script setup lang="ts">
 
-export default {
-    name: "PointerListPanel",
-    props:{
-        pointerList: {
-            type: Array,
-            default: []
-        }
-    },
-    data(){
-        return {
-            showContent: true
-        }
-    },
-    computed:{
-        ...mapGetters(['isInPortraitMode']),
-    },
-    methods: {
-        toggleContent(){
-            this.showContent = !this.showContent
-        }
-    },
+import {useProjectStore} from "@/pinia";
+import {useRoute} from "vue-router";
+import {ref} from "vue";
+
+const store = useProjectStore()
+const route = useRoute()
+
+
+const emit = defineEmits()
+
+defineProps<{
+    pointerList: []
+}>()
+
+const showContent = ref(true)
+
+function toggleContent(){
+    showContent.value = !showContent.value
 }
 </script>
 

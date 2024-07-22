@@ -1,115 +1,109 @@
 <template>
     <nav :style="`height:${height}px`">
-        <el-menu
+        <ElMenu
             :default-active="activeMenu"
             @select="handleMenu"
             @open="handleOpen"
             @close="handleClose"
             :unique-opened="false"
-            :collapse="navMenuIsClosed"
+            :collapse="store.navMenuIsClosed"
             :collapse-transition="false"
         >
             <template v-for="(submenu,index) in menus">
-                <el-submenu v-if="submenu.children && submenu.children.length > 0" :index="submenu.path">
+                <ElSubmenu v-if="submenu.children && submenu.children.length > 0" :index="submenu.path">
                     <template slot="title">
                         <i :class="submenu.meta.icon"></i>
                         <span slot="title">{{ submenu.meta.title }}</span>
                     </template>
-                    <el-menu-item
+                    <ElMenuItem
                         :class="{'is-active': menuItem.name === $route.name}"
                         v-for="menuItem in submenu.children"
                         :key="menuItem.path"
                         :index="`${submenu.path}/${menuItem.path}`">{{ menuItem.meta.title }}
-                    </el-menu-item>
-                </el-submenu>
+                    </ElMenuItem>
+                </ElSubmenu>
 
                 <!-- 显示所有名不为 CategoryLink 的-->
-                <el-menu-item
+                <ElMenuItem
                     v-else-if="submenu.name !== 'CategoryLink'"
                     :index="submenu.path"
                 >
                     <i :class="submenu.meta.icon"></i>
                     <span slot="title">{{ submenu.meta.title }}</span>
-                </el-menu-item>
+                </ElMenuItem>
                 <!--如果名为 CategoryLink，需要 email === 管理员账户才显示 -->
-                <el-menu-item
-                    v-else-if="$utility.getAuthorization().group_id === 1"
+                <ElMenuItem
+                    v-else-if="getAuthorization().group_id === 1"
                     :index="submenu.path"
                 >
                     <i :class="submenu.meta.icon"></i>
                     <span slot="title">{{ submenu.meta.title }}</span>
-                </el-menu-item>
+                </ElMenuItem>
             </template>
 
-        </el-menu>
+        </ElMenu>
     </nav>
 </template>
 
-<script>
-import {mapGetters, mapState} from "vuex"
-import {routes} from "../router"
-import utility from "@/utility";
+<script lang="ts" setup>
+import {FIXED_ROUTES} from "../router"
+import  {getAuthorization} from "@/utility";
+import {onMounted, ref, watch} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {useProjectStore} from "@/pinia.ts";
 
-export default {
-    name: "Navbar",
-    props: {
-        height:{
-            type: Number,
-        }
-    },
-    created() {
-        this.activeMenu = this.$route.path
-        // 过滤 Router 中的路由，去除 showInMenu === false 的菜单
-        let submenuShow = routes.filter(submenu => {
-            if (submenu.meta.showInMenu){
-                if (submenu.meta.isAdmin){
-                    return isAdmin
-                } else {
-                    return true
-                }
+const store = useProjectStore()
+
+const route = useRoute()
+const router = useRouter()
+
+defineProps<{
+    height: number
+}>()
+
+const activeMenu = ref('/page-components/canvas')
+const menus = ref([])
+
+onMounted(()=>{
+    activeMenu.value = route.path
+    // 过滤 Router 中的路由，去除 showInMenu === false 的菜单
+    let submenuShow = FIXED_ROUTES.filter(submenu => {
+        if (submenu.meta.showInMenu){
+            if (submenu.meta.isAdmin){
+                return store.isAdmin
             } else {
-                return false
+                return true
             }
-        })
-        submenuShow.forEach(menu => {
-            if (menu.children){ // 有子菜单才进行筛选
-                menu.children = menu.children.filter(menuItem => menuItem.meta.showInMenu)
-            }
-            return menu
-        })
-        this.menus = submenuShow
-    },
-    data() {
-        return {
-            activeMenu: '/page-components/canvas',
-            menus:[]
-        };
-    },
-
-    computed: {
-        ...mapGetters(['isInPortraitMode', 'isAdmin']),
-        ...mapState(['navMenuIsClosed'])
-    },
-    methods: {
-        handleOpen() {
-            // 处理导航组展开
-        },
-        handleClose() {
-            // 处理导航组折叠
-        },
-        handleMenu(key) {
-            // 处理导航点击
-            if (this.$route.path !== key) {
-                this.$router.push(key);
-            }
-        },
-    },
-    watch: {
-        '$route'(newValue){
-            this.activeMenu = newValue.path
+        } else {
+            return false
         }
+    })
+    submenuShow.forEach(menu => {
+        if (menu.children){ // 有子菜单才进行筛选
+            menu.children = menu.children.filter(menuItem => menuItem.meta.showInMenu)
+        }
+        return menu
+    })
+    menus.value = submenuShow
+})
+
+function handleOpen() {
+    // 处理导航组展开
+}
+function handleClose() {
+    // 处理导航组折叠
+}
+function handleMenu(key) {
+    // 处理导航点击
+    if (route.path !== key) {
+        router.push(key);
     }
-};
+}
+
+watch(route, newValue => {
+    activeMenu.value = newValue.path
+})
+
 </script>
 
 <style lang="scss">
@@ -122,7 +116,7 @@ $hover-menu-bg: transparentize($color-main, 0.4);
 .el-menu {
     border: none;
 }
-.el-radio-group {
+.ElRadio-group {
     padding: 10px;
 }
 .el-submenu{

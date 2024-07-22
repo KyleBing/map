@@ -1,17 +1,20 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
     </div>
 </template>
 
 <script>
 
 import AMapLoader from '@amap/amap-jsapi-loader'
-import {mapState} from "vuex"
 import GEO_PROVINCE_DATA from './province.json'
 import mapConfig from "../../../mapConfig";
+import {useProjectStore} from "@/pinia";
 
 let AMap = null
+
+const store = useProjectStore()
+
 
 const TARGET_POINT = [121.504673, 25.046711] // 目标坐标 台湾
 const DESTENATION_POINT = [110.504673, 28.046711] // 目标坐标
@@ -242,7 +245,6 @@ export default {
     },
 
     computed: {
-        ...mapState(['windowInsets']),
         // 根据省份地址，生成展示地图需要的格式化数据
         dataPoints(){
             let tempData = GEO_PROVINCE_DATA.map(item => {

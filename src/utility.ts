@@ -1,18 +1,7 @@
-import store from './store'
 const AUTHORIZATION_NAME = 'Authorization' // 存储用户信息的 localStorage name，跟 Diary 通用
 
-function downloadFile(fileName, data) { // 下载 base64 图片
-   let aLink = document.createElement('a')
-   let blob = new Blob([data]); //new Blob([content])
-   let evt = document.createEvent("HTMLEvents")
-   evt.initEvent("click", true, true); //initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
-   aLink.download = fileName
-   aLink.href = URL.createObjectURL(blob)
-   aLink.click()
-}
-
 // 设置 authorization
-function setAuthorization(nickname, uid, email, phone, avatar, token, group_id, city, geolocation) {
+function setAuthorization(nickname: string, uid: number, email: string, phone: string, avatar: string, token: string, group_id: number, city: string, geolocation: string) {
    localStorage.setItem(AUTHORIZATION_NAME, JSON.stringify({
       nickname, uid, email, phone, avatar, token, group_id, city, geolocation
    }))
@@ -28,15 +17,31 @@ function deleteAuthorization() {
    localStorage.removeItem(AUTHORIZATION_NAME)
 }
 
-function $(selector){
-   return document.querySelector(selector)
+
+// CONST
+enum EnumWeekDay {
+   '周日' = 0,
+   '周一',
+   '周二',
+   '周三',
+   '周四',
+   '周五',
+   '周六',
 }
 
+enum EnumWeekDayShort {
+   '日' = 0,
+   '一',
+   '二',
+   '三',
+   '四',
+   '五',
+   '六',
+}
 
 // 格式化时间，输出字符串
-function dateFormatter(date, formatString) {
-   formatString = formatString || 'yyyy-MM-dd hh:mm:ss'
-   let dateRegArray = {
+function dateFormatter(date: Date, formatString: string = 'yyyy-MM-dd hh:mm:ss') {
+   let dateRegArray: Object = {
       "M+": date.getMonth() + 1,                      // 月份
       "d+": date.getDate(),                           // 日
       "h+": date.getHours(),                          // 小时
@@ -56,14 +61,28 @@ function dateFormatter(date, formatString) {
    return formatString
 }
 
-function dateProcess(dateString) {
+interface DateUtilityObject{
+   year: number,
+   day: number,
+   month: number,
+   weekday: string,
+   weekShort: string,
+   dateShort: string,
+   date: string,
+   dateFull: string,
+   dateFullSlash: string,
+   timeLabel: string,
+   time: string
+}
+
+function dateProcess(dateString: string): DateUtilityObject {
    let date = new Date(dateString)
    let year = date.getFullYear()
    let month = date.getMonth() + 1
    let day = date.getDate()
    let hour = date.getHours()
    let minutes = date.getMinutes()
-   let seconds = date.getSeconds()
+   // let seconds = date.getSeconds()
    let week = date.getDay()
    let timeLabel = ''
    if (hour >= 23 && hour < 24 || hour <= 3 && hour >= 0) {
@@ -81,9 +100,13 @@ function dateProcess(dateString) {
    }
 
    return {
-      year: year,
-      weekday: WEEKDAY[week],
-      date:`${padNumberWith0(month)}月${padNumberWith0(day)}日`,
+      year,
+      day,
+      month,
+      weekday: EnumWeekDay[week],
+      weekShort: EnumWeekDayShort[week],
+      dateShort: `${padNumberWith0(month)}-${padNumberWith0(day)}`,
+      date: `${padNumberWith0(month)}月${padNumberWith0(day)}日`,
       dateFull: `${year}年${month}月${day}日`,
       dateFullSlash: `${year}/${month}/${day}`,
       timeLabel: timeLabel,
@@ -91,11 +114,15 @@ function dateProcess(dateString) {
    }
 }
 
-export default {
+function padNumberWith0(num: number) {
+   return String(num).padStart(2, '0')
+}
+
+
+export {
    getAuthorization,
    setAuthorization,
    dateProcess,
    dateFormatter,
-   deleteAuthorization,
-   downloadFile
+   deleteAuthorization
 }

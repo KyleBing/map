@@ -2,8 +2,8 @@
     <div :class="['list-panel', {collapsed: !isShowPanel}] " v-loading="isLoading">
         <div class="list-panel-header">
             <div class="title">路线列表</div>
-            <el-button size="mini" icon="el-icon-monitor" type="default" @click="togglePanel">折叠/展开</el-button>
-            <el-button size="mini" icon="el-icon-price-tag" type="default" @click="toggleLabel">切换标签显示</el-button>
+            <ElButton size="mini" icon="el-icon-monitor" type="default" @click="togglePanel">折叠/展开</ElButton>
+            <ElButton size="mini" icon="el-icon-price-tag" type="default" @click="toggleLabel">切换标签显示</ElButton>
         </div>
         <el-tabs
             v-if="isShowPanel"

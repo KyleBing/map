@@ -1,157 +1,158 @@
 <template>
     <div class="container">
-        <el-row>
-            <el-col :span="10" :offset="(24 - 10)/2">
+        <ElRow>
+            <ElCol :span="10" :offset="(24 - 10)/2">
                 <div class="content"
-                     :style="`min-height: ${windowInsets.height}px`"
+                     :style="`min-height: ${store.windowInsets.height}px`"
                 >
                     <div class="register-header">
                         <img src="../assets/logo.png" alt="LOGO">
                         <h2>注册</h2>
                     </div>
-                    <el-form
+                    <ElForm
                         label-position="top"
                         :model="formRegister"
                         :rules="userRules"
-                        ref="register"
+                        ref="refFormRegister"
                         label-width="100px">
-                        <el-form-item label="邀请码" prop="invitationCode">
-                            <el-input autocomplete="off" v-model="formRegister.invitationCode"/>
-                        </el-form-item>
-                        <el-form-item label="邮箱" prop="email">
-                            <el-input autocomplete="off" v-model="formRegister.email"/>
-                        </el-form-item>
-                        <el-form-item label="用户名" prop="username">
-                            <el-input autocomplete="off" v-model="formRegister.username"/>
-                        </el-form-item>
-                        <el-form-item label="昵称" prop="nickname">
-                            <el-input autocomplete="off" v-model="formRegister.nickname"/>
-                        </el-form-item>
-                        <el-form-item label="微信 (挪车使用)" prop="wx">
-                            <el-input autocomplete="off" v-model="formRegister.wx"/>
-                        </el-form-item>
-                        <el-form-item label="手机 (挪车使用)" prop="phone">
-                            <el-input autocomplete="off" v-model="formRegister.phone"/>
-                        </el-form-item>
-<!--                        <el-form-item label="高德组队码" prop="gaode">
-                            <el-input autocomplete="off" v-model="formRegister.gaode"/>
-                        </el-form-item>-->
-                        <el-form-item label="主页" prop="homepage">
-                            <el-input autocomplete="off" v-model="formRegister.homepage"/>
-                        </el-form-item>
-                        <el-form-item label="密码" prop="password">
-                            <el-input autocomplete="off" v-model="formRegister.password"/>
-                        </el-form-item>
-                        <el-form-item label="确认密码" prop="passwordrepeat">
-                            <el-input autocomplete="off" v-model="formRegister.passwordrepeat"/>
-                        </el-form-item>
+                        <ElFormItem label="邀请码" prop="invitationCode">
+                            <ElInput autocomplete="off" v-model="formRegister.invitationCode"/>
+                        </ElFormItem>
+                        <ElFormItem label="邮箱" prop="email">
+                            <ElInput autocomplete="off" v-model="formRegister.email"/>
+                        </ElFormItem>
+                        <ElFormItem label="用户名" prop="username">
+                            <ElInput autocomplete="off" v-model="formRegister.username"/>
+                        </ElFormItem>
+                        <ElFormItem label="昵称" prop="nickname">
+                            <ElInput autocomplete="off" v-model="formRegister.nickname"/>
+                        </ElFormItem>
+                        <ElFormItem label="微信 (挪车使用)" prop="wx">
+                            <ElInput autocomplete="off" v-model="formRegister.wx"/>
+                        </ElFormItem>
+                        <ElFormItem label="手机 (挪车使用)" prop="phone">
+                            <ElInput autocomplete="off" v-model="formRegister.phone"/>
+                        </ElFormItem>
+<!--                        <ElFormItem label="高德组队码" prop="gaode">
+                            <ElInput autocomplete="off" v-model="formRegister.gaode"/>
+                        </ElFormItem>-->
+                        <ElFormItem label="主页" prop="homepage">
+                            <ElInput autocomplete="off" v-model="formRegister.homepage"/>
+                        </ElFormItem>
+                        <ElFormItem label="密码" prop="password">
+                            <ElInput autocomplete="off" v-model="formRegister.password"/>
+                        </ElFormItem>
+                        <ElFormItem label="确认密码" prop="passwordrepeat">
+                            <ElInput autocomplete="off" v-model="formRegister.passwordrepeat"/>
+                        </ElFormItem>
 
-                    </el-form>
+                    </ElForm>
                     <div class="submit">
-                        <el-button style="width: 200px" type="primary" @click="submit">注册</el-button>
+                        <ElButton style="width: 200px" type="primary" @click="submit">注册</ElButton>
                     </div>
                 </div>
-            </el-col>
-        </el-row>
+            </ElCol>
+        </ElRow>
     </div>
 </template>
 
-<script>
-import {mapState} from "vuex";
+<script lang="ts" setup>
 import userApi from "@/api/userApi";
+import {reactive, ref} from "vue";
+import {useProjectStore} from "@/pinia.ts";
+import {useRoute, useRouter} from "vue-router";
+import {ElNotification} from "element-plus";
 
-export default {
-    name: "Register",
-    data() {
-        const validatePassworDrepeat = (rule, value, callback) => {
-            if (value !== this.formRegister.password) {
-                callback(new Error("两次密码输入不一致"))
-            } else {
-                callback()
-            }
-        }
-        return {
-            isNewUser: false,
-            formRegister: {
-                username: '',
-                nickname: '',
-                wx: '',
-                phone: '',
-                homepage: '',
-                // gaode: '',
-                password: '',
-                passwordrepeat: '',
-                invitationCode: ''
-            },
-            userRules: {
-                email: [
-                    {required: true, message: '请填写邮箱', trigger: 'blur'},
-                    {
-                        validator: (rule, value, callback) => {
-                            if (!/(\w|\d)+@(\w|\d)+\.\w+/i.test(value)){
-                                callback(new Error("邮箱格式有误"))
-                            } else {
-                                callback()
-                            }
-                        }
-                    }
-                ],
-                username: [
-                    {required: true, message: '请填写用户名', trigger: 'blur'},
-                    {
-                        validator: (rule, value, callback) => {
-                            if (!/^[a-z_]+$/.test(value)) {
-                                callback(new Error("用户名只能是小写字母"))
-                            } else {
-                                callback()
-                            }
-                        }
-                    }
-                ],
-                nickname: {required: true, message: '请填写昵称', trigger: 'blur'},
-                wx: {required: true, message: '请填写微信', trigger: 'blur'},
-                phone: {required: true, message: '请填写手机号', trigger: 'blur'},
-                homepage: '',
-                // gaode: '',
-                password: {required: true, message: '请填写原密码', trigger: 'blur'},
-                passwordrepeat: [
-                    {required: true, message: '请再填写一次新密码', trigger: 'blur'},
-                    {validator: validatePassworDrepeat, trigger: 'blur'}
-                ],
-                invitationCode: {required: true, message: '请输入邀请码', trigger: 'blur'},
-            }
-        }
-    },
-    computed: {
-        ...mapState(['windowInsets'])
-    },
-    methods: {
-        submit() {
-            this.$refs['register'].validate((valid) => {
-                if (valid) {
-                    this.register();
+const store = useProjectStore()
+const router = useRouter()
+const route = useRoute()
+
+
+const refFormRegister = ref()
+
+const validatePassworDrepeat = (rule, value, callback) => {
+    if (value !== formRegister.value.password) {
+        callback(new Error("两次密码输入不一致"))
+    } else {
+        callback()
+    }
+}
+
+const isNewUser = ref(false)
+const formRegister = ref({
+    username: '',
+    nickname: '',
+    wx: '',
+    phone: '',
+    homepage: '',
+    // gaode: '',
+    password: '',
+    passwordrepeat: '',
+    invitationCode: ''
+})
+
+const userRules = reactive({
+    email: [
+        {required: true, message: '请填写邮箱', trigger: 'blur'},
+        {
+            validator: (rule, value, callback) => {
+                if (!/(\w|\d)+@(\w|\d)+\.\w+/i.test(value)) {
+                    callback(new Error("邮箱格式有误"))
                 } else {
-                    console.log('error submit!!');
-                    return false;
+                    callback()
                 }
-            });
-        },
-        register() {
-            userApi
-                .register(this.formRegister)
-                .then(res => {
-                    this.$notify({
-                        title: res.message,
-                        message: '请登录',
-                        position: 'top-right',
-                        type: 'success',
-                        onClose() {
-                        }
-                    })
-                    this.$router.push('/login')
-                })
-        },
-    },
+            }
+        }
+    ],
+    username: [
+        {required: true, message: '请填写用户名', trigger: 'blur'},
+        {
+            validator: (rule, value, callback) => {
+                if (!/^[a-z_]+$/.test(value)) {
+                    callback(new Error("用户名只能是小写字母"))
+                } else {
+                    callback()
+                }
+            }
+        }
+    ],
+    nickname: {required: true, message: '请填写昵称', trigger: 'blur'},
+    wx: {required: true, message: '请填写微信', trigger: 'blur'},
+    phone: {required: true, message: '请填写手机号', trigger: 'blur'},
+    homepage: '',
+    // gaode: '',
+    password: {required: true, message: '请填写原密码', trigger: 'blur'},
+    passwordrepeat: [
+        {required: true, message: '请再填写一次新密码', trigger: 'blur'},
+        {validator: validatePassworDrepeat, trigger: 'blur'}
+    ],
+    invitationCode: {required: true, message: '请输入邀请码', trigger: 'blur'},
+})
+
+function submit() {
+    refFormRegister.value.validate((valid) => {
+        if (valid) {
+            register();
+        } else {
+            console.log('error submit!!');
+            return false;
+        }
+    });
+}
+function register() {
+    userApi
+        .register(formRegister.value)
+        .then(res => {
+            ElNotification({
+                title: res.message,
+                message: '请登录',
+                position: 'top-right',
+                type: 'success',
+                onClose() {
+                }
+            })
+            router.push('/login')
+        })
 }
 </script>
 

@@ -1,45 +1,39 @@
 <template>
     <div>
-        <router-view/>
-        <el-dialog
-            center
+        <RouterView/>
+        <ElDialog center
             title="提示"
             :visible.sync="modalTip"
             width="50%">
             <p class="text-center">地图多次拖动后会变得卡顿，刷新页面即可</p>
             <div slot="footer" class="dialog-footer">
-                <el-button size="small" type="primary" @click="checkTip">OK</el-button>
+                <ElButton size="small" type="primary" @click="checkTip">OK</ElButton>
             </div>
-        </el-dialog>
+        </ElDialog>
     </div>
 </template>
 
-<script>
-import {mapMutations} from "vuex";
+<script lang="ts" setup>
 
-export default {
-    name: 'App',
-    data(){
-        return {
-            modalTip: false,
-        }
-    },
-    mounted() {
-        this.SET_AUTHORIZATION(this.$utility.getAuthorization())
-        this.modalTip = !localStorage.getItem('map-has-checked-tip')
-    },
-    methods: {
-        ...mapMutations(['SET_AUTHORIZATION']),
-        checkTip(){
-            localStorage.setItem('map-has-checked-tip', 'true')
-            this.modalTip = false
-        },
-    }
+import {onMounted, ref} from "vue";
+import {useProjectStore} from "@/pinia.ts";
+import {getAuthorization} from "@/utility.ts";
+
+const store = useProjectStore()
+
+const modalTip = ref(false)
+onMounted(() => {
+    store.authorization = getAuthorization()
+    modalTip.value = !localStorage.getItem('map-has-checked-tip')
+})
+
+function checkTip(){
+    localStorage.setItem('map-has-checked-tip', 'true')
+    modalTip.value = false
 }
-
 
 </script>
 
 <style lang="scss">
-@import "./scss/main";
+@import "./scss/plugin";
 </style>

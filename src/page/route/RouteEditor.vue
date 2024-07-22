@@ -15,18 +15,18 @@
             <div class="card editor-panel">
                 <div class="form-title">
                     <div class="collapse-btn">
-                        <el-button size="mini" @click="toggleEditPanel">
+                        <ElButton size="mini" @click="toggleEditPanel">
                             <i v-if="isShowingEdit" class="el-icon-arrow-up"></i>
                             <i v-else class="el-icon-arrow-down"></i>
                             折叠面板
-                        </el-button>
+                        </ElButton>
                     </div>
                     <div class="title">
                         <p v-if="isEditingLineInfo">编辑路线 {{ formLine.name }}</p>
                         <p v-else>新建路线 {{ lineId }}</p>
                     </div>
                 </div>
-                <el-form
+                <ElForm
                     class="mt-2 p-1"
                     ref="formLine"
                     v-if="formLine && isShowingEdit"
@@ -35,71 +35,71 @@
                     size="mini"
                     label-width="80px"
                 >
-                    <el-form-item label="路线名" prop="name">
-                        <el-input v-model="formLine.name"/>
-                    </el-form-item>
-                    <el-form-item label="是否公开" prop="is_public">
-                        <el-radio :label="1" v-model="formLine.is_public">公开</el-radio>
-                        <el-radio :label="0" v-model="formLine.is_public">私有</el-radio>
-                    </el-form-item>
-                    <el-form-item label="地域" prop="area">
-                        <el-input v-model="formLine.area"/>
-                    </el-form-item>
-                    <el-form-item label="路线类型" prop="road_type">
-                        <el-input v-model="formLine.road_type"/>
-                    </el-form-item>
-                    <el-form-item label="适用季节" prop="seasons">
-                        <el-checkbox-group v-model="formLine.seasonsArray">
-                            <el-checkbox-button label="春"></el-checkbox-button>
-                            <el-checkbox-button label="夏"></el-checkbox-button>
-                            <el-checkbox-button label="秋"></el-checkbox-button>
-                            <el-checkbox-button label="冬"></el-checkbox-button>
-                        </el-checkbox-group>
-                    </el-form-item>
-                    <el-form-item label="视频链接" prop="video_link">
-                        <el-input v-model="formLine.video_link"/>
-                    </el-form-item>
-                    <el-form-item label="备注" prop="note">
-                        <el-input type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formLine.note"/>
-                    </el-form-item>
-                    <el-form-item label="总里程" prop="distance">
-                        <el-input disabled readonly v-model="formLine.distance">
+                    <ElFormItem label="路线名" prop="name">
+                        <ElInput v-model="formLine.name"/>
+                    </ElFormItem>
+                    <ElFormItem label="是否公开" prop="is_public">
+                        <ElRadio :label="1" v-model="formLine.is_public">公开</ElRadio>
+                        <ElRadio :label="0" v-model="formLine.is_public">私有</ElRadio>
+                    </ElFormItem>
+                    <ElFormItem label="地域" prop="area">
+                        <ElInput v-model="formLine.area"/>
+                    </ElFormItem>
+                    <ElFormItem label="路线类型" prop="road_type">
+                        <ElInput v-model="formLine.road_type"/>
+                    </ElFormItem>
+                    <ElFormItem label="适用季节" prop="seasons">
+                        <ElCheckboxGroup v-model="formLine.seasonsArray">
+                            <ElCheckboxButton label="春"></ElCheckboxButton>
+                            <ElCheckboxButton label="夏"></ElCheckboxButton>
+                            <ElCheckboxButton label="秋"></ElCheckboxButton>
+                            <ElCheckboxButton label="冬"></ElCheckboxButton>
+                        </ElCheckboxGroup>
+                    </ElFormItem>
+                    <ElFormItem label="视频链接" prop="video_link">
+                        <ElInput v-model="formLine.video_link"/>
+                    </ElFormItem>
+                    <ElFormItem label="备注" prop="note">
+                        <ElInput type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formLine.note"/>
+                    </ElFormItem>
+                    <ElFormItem label="总里程" prop="distance">
+                        <ElInput disabled readonly v-model="formLine.distance">
                             <template slot="append">km</template>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item label="用时" prop="time">
-                        <el-input disabled readonly v-model="formLine.time">
+                        </ElInput>
+                    </ElFormItem>
+                    <ElFormItem label="用时" prop="time">
+                        <ElInput disabled readonly v-model="formLine.time">
                             <template slot="append">分钟</template>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button v-if="authorization" @click="submit" type="primary" icon="el-icon-check">保存</el-button>
-                        <el-button v-else @click="$router.push({name: 'Login'})" type="primary" icon="el-icon-user">请先登录</el-button>
-                    </el-form-item>
-                </el-form>
+                        </ElInput>
+                    </ElFormItem>
+                    <ElFormItem>
+                        <ElButton v-if="store.authorization" @click="submit" type="primary" icon="el-icon-check">保存</ElButton>
+                        <ElButton v-else @click="$router.push({name: 'Login'})" type="primary" icon="el-icon-user">请先登录</ElButton>
+                    </ElFormItem>
+                </ElForm>
             </div>
         </transition>
 
         <div class="float-panel">
             <!-- 搜索面板 -->
             <div class="search-panel card">
-                <el-form inline @submit="search" size="mini">
-                    <el-form-item class="mb-0" label="地址">
-                        <el-input style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></el-input>
-                    </el-form-item>
-                    <el-form-item class="mb-0" label="">
-                        <el-button type="primary" @click="search" icon="el-icon-search">搜索</el-button>
-                    </el-form-item>
-                </el-form>
+                <ElForm inline @submit="search" size="mini">
+                    <ElFormItem class="mb-0" label="地址">
+                        <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
+                    </ElFormItem>
+                    <ElFormItem class="mb-0" label="">
+                        <ElButton type="primary" @click="search" icon="el-icon-search">搜索</ElButton>
+                    </ElFormItem>
+                </ElForm>
 
-                <el-form inline class="mt-1" size="mini">
-                    <el-form-item class="mb-0" label="经度">
-                        <el-input style="width:140px" placeholder="lng" v-model="positionPicked.lng"></el-input>
-                    </el-form-item>
-                    <el-form-item class="mb-0" label="纬度">
-                        <el-input style="width:140px" placeholder="lat" v-model="positionPicked.lat"></el-input>
-                    </el-form-item>
-                </el-form>
+                <ElForm inline class="mt-1" size="mini">
+                    <ElFormItem class="mb-0" label="经度">
+                        <ElInput style="width:140px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
+                    </ElFormItem>
+                    <ElFormItem class="mb-0" label="纬度">
+                        <ElInput style="width:140px" placeholder="lat" v-model="positionPicked.lat"></ElInput>
+                    </ElFormItem>
+                </ElForm>
             </div>
 
             <!-- 结果面板 -->
@@ -122,7 +122,7 @@
         </div>
 
 
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
 
     </div>
 </template>
@@ -133,7 +133,6 @@ import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
 import RoutePanel from "@/page/tool/route/components/RoutePanel.vue";
 
-import {mapGetters, mapState} from 'vuex'
 import mapConfig from "../../mapConfig";
 import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 import axios from "axios";
@@ -141,6 +140,9 @@ import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64";
 
 import {policyArray} from "./DrivingPolicy"
+import {useProjectStore} from "@/pinia";
+
+const store = useProjectStore()
 
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -150,6 +152,8 @@ export default {
     components: {RouteDetailPanel, RoutePanel},
     data() {
         return {
+            store,
+
             activeLineObj: null,
 
             isLoading: false,
@@ -258,8 +262,6 @@ export default {
             })
     },
     computed: {
-        ...mapGetters(["isAdmin"]),
-        ...mapState(["windowInsets", "authorization"]),
         isEditingLineInfo() {
             return !isNaN(Number(this.$route.query.lineId))
         },

@@ -20,17 +20,17 @@
             <div class="button-center"
                  v-if="isAdmin || (authorization && authorization.uid) === pointer.uid"
             >
-                <el-button
+                <ElButton
                     v-if="pointer.id !== undefined"
                     type="text" size="mini"
                     @click="goToEditCurrentPointer"
-                    icon="el-icon-edit-outline">编辑</el-button>
+                    icon="el-icon-edit-outline">编辑</ElButton>
             </div>
 <!--            <div class="button-center">
-                <el-button
+                <ElButton
                     type="text" size="mini"
                     @click="$emit('openInGaodeApp')"
-                    icon="el-icon-position">打开高德导航</el-button>
+                    icon="el-icon-position">打开高德导航</ElButton>
             </div>-->
             <div class="qr">
                 <img :src="qrImg" alt="">

@@ -1,36 +1,32 @@
 <template>
     <div class="logo-container" :style="`height: ${height}px`">
-        <div :class="['logo', {narrow: navMenuIsClosed}]" @click="handleCollapseToggle">
+        <div :class="['logo', {narrow: store.navMenuIsClosed}]" @click="handleCollapseToggle">
             <img src="../assets/logo.png" alt="LOGO">
         </div>
     </div>
 
 </template>
 
-<script>
-import {mapMutations, mapState} from "vuex";
+<script lang="ts" setup>
+import {useProjectStore} from "@/pinia.ts";
+import {useRoute, useRouter} from "vue-router";
 
-export default {
-    props: {
-        height: { // 高度
-            type: Number,
-            default: 100
-        }
-    },
-    name: "Logo",
-    computed: {
-        ...mapState(['navWidth', 'navMenuIsClosed', 'isShowingMenuToggleBtn'])
-    },
-    methods: {
-        ...mapMutations(['SET_NAV_WIDTH', 'SET_NAV_MENU_STATUS', 'SET_IS_SHOWING_MENU_TOGGLE_BTN']),
-        handleCollapseToggle() {
-            if (innerHeight < innerWidth){
-                this.SET_NAV_MENU_STATUS(!this.navMenuIsClosed)
-                this.SET_NAV_WIDTH(this.navMenuIsClosed ? 64 : 200)
-            } else {
-                this.SET_IS_SHOWING_MENU_TOGGLE_BTN(!this.isShowingMenuToggleBtn)
-            }
-        },
+const store = useProjectStore()
+const router = useRouter()
+const route = useRoute()
+
+withDefaults(defineProps<{
+    height?: number
+}>(), {
+    height: 100
+})
+
+function handleCollapseToggle() {
+    if (innerHeight < innerWidth){
+        store.navMenuIsClosed = !store.navMenuIsClosed
+        store.navWidth = store.navMenuIsClosed ? 64 : 200
+    } else {
+        store.isShowingMenuToggleBtn = !store.isShowingMenuToggleBtn
     }
 }
 </script>

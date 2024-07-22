@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Loading, Message } from 'element-ui'
-import utility from "@/utility";
+import {getAuthorization} from "@/utility";
 
 
 const LOADING_OPTION = {
@@ -12,7 +12,7 @@ const LOADING_OPTION = {
 const BASE_URL = process.env.NODE_ENV === 'development' ? '': 'http://kylebing.cn/portal/' // 生产环境时是 ../portal
 
 
-function request(method, params, requestData, showLoading = false, cancelToken, url) {
+function request(method: 'get'|'post', params: any, requestData: any, showLoading = false, cancelToken, url: string) {
     let layerLoading
     if (showLoading) layerLoading = Loading.service(LOADING_OPTION)
 
@@ -23,8 +23,8 @@ function request(method, params, requestData, showLoading = false, cancelToken, 
     * */
     if (url !== 'user/Login' && url !== 'user/Register'){ // 注册和登录时不添加 Token 数据
         Object.assign(headers, {
-            'Diary-Token':  utility.getAuthorization() && utility.getAuthorization().token,
-            'Diary-Uid':  utility.getAuthorization() && utility.getAuthorization().uid
+            'Diary-Token':  getAuthorization() && getAuthorization().token,
+            'Diary-Uid':  getAuthorization() && getAuthorization().uid
         })
     }
 

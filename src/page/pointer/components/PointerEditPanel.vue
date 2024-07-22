@@ -1,6 +1,6 @@
 <template>
     <div class="pointer-panel card">
-        <el-dialog
+        <ElDialog
             center
             title=""
             append-to-body
@@ -8,22 +8,22 @@
             :before-close="closeModal"
             width="50%">
             <div>
-                <el-form>
-                    <el-form-item :label="`修改${modalTitle}`">
-                        <el-input v-model="currentModifyingString"/>
-                    </el-form-item>
-                </el-form>
+                <ElForm>
+                    <ElFormItem :label="`修改${modalTitle}`">
+                        <ElInput v-model="currentModifyingString"/>
+                    </ElFormItem>
+                </ElForm>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button size="small" type="default" @click="isModalShowing = false">取消</el-button>
-                <el-button size="small" type="primary" @click="submitStringChange">确定</el-button>
+                <ElButton size="small" type="default" @click="isModalShowing = false">取消</ElButton>
+                <ElButton size="small" type="primary" @click="submitStringChange">确定</ElButton>
             </div>
-        </el-dialog>
+        </ElDialog>
 
         <div class="toolbar">
-            <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制 JSON 数据</el-button>
-            <el-button size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</el-button>
-            <el-button class="ml-1" size="mini" type="primary" @click="$emit('showPointer', null)" icon="el-icon-position">展示点图</el-button>
+            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制 JSON 数据</ElButton>
+            <ElButton size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</ElButton>
+            <ElButton class="ml-1" size="mini" type="primary" @click="$emit('showPointer', null)" icon="el-icon-position">展示点图</ElButton>
         </div>
         <table class="table-record">
             <thead>
@@ -47,7 +47,7 @@
                     </div>
                 </td>
                 <td>
-                    <el-input
+                    <ElInput
                         @keyup.native.enter="addNewPointerWithKeyEnter"
                         clearable
                         ref="inputName" class="input-focus" size="mini"
@@ -55,7 +55,7 @@
                         v-model="pointerName"/>
                 </td>
                 <td>
-                    <el-input
+                    <ElInput
                         @keyup.native.enter="addNewPointerWithKeyEnter"
                         clearable
                         ref="inputNote" class="input-focus" size="mini"
@@ -63,13 +63,13 @@
                         v-model="pointerNote"/>
                 </td>
                 <td>
-                    <el-select size="mini" v-model="pointerType">
-                        <el-option label="白色" value="白色">白色</el-option>
-                        <el-option label="黄色" value="黄色">黄色</el-option>
-                        <el-option label="黑色" value="黑色">黑色</el-option>
-                        <el-option label="红色" value="红色">红色</el-option>
-                        <el-option label="绿色" value="绿色">绿色</el-option>
-                    </el-select>
+                    <ElSelect size="mini" v-model="pointerType">
+                        <ElOption label="白色" value="白色">白色</ElOption>
+                        <ElOption label="黄色" value="黄色">黄色</ElOption>
+                        <ElOption label="黑色" value="黑色">黑色</ElOption>
+                        <ElOption label="红色" value="红色">红色</ElOption>
+                        <ElOption label="绿色" value="绿色">绿色</ElOption>
+                    </ElSelect>
                 </td>
                 <td>
                     <div class="img-wrapper">
@@ -81,7 +81,7 @@
                     </div>
                 </td>
                 <td>
-                    <el-button size="mini" type="success" @click="addNewPointer" icon="el-icon-plus">添加</el-button>
+                    <ElButton size="mini" type="success" @click="addNewPointer" icon="el-icon-plus">添加</ElButton>
                 </td>
             </tr>
 

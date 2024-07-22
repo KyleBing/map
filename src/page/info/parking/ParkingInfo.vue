@@ -1,6 +1,6 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
         <route-detail-panel :line="{
             name: '济南常用地点停车收费说明',
             area: '山东济南',
@@ -11,12 +11,14 @@
 
 <script>
 import AMapLoader from '@amap/amap-jsapi-loader'
-import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
 const MAP_CENTER =  [117.129533, 36.685668]
 import locations from './parkingLocations.json'
 import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
+import {useProjectStore} from "@/pinia";
 let AMap = null
+const store = useProjectStore()
+
 
 export default {
     name: "ParkingInfo",
@@ -59,9 +61,6 @@ export default {
                 console.log(e)
             })
 
-    },
-    computed: {
-        ...mapState(['windowInsets'])
     },
     methods: {
         addMarker(map, item, index) {

@@ -3,7 +3,7 @@
 
         <div class="button-float btn-router-list"
              @click="isPointerListShowed = true"
-             v-if="!isPointerListShowed && isInPortraitMode">
+             v-if="!isPointerListShowed && store.isInPortraitMode">
             <i class="el-icon-tickets"></i>
         </div>
 
@@ -15,11 +15,11 @@
         </div>
 
         <!-- 地图 -->
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
 
         <!-- DETAIL INFO -->
         <pointer-detail-panel
-            v-if="activePointerObj && (!isInPortraitMode || !isPointerListShowed)"
+            v-if="activePointerObj && (!store.isInPortraitMode || !isPointerListShowed)"
             :pointer="activePointerObj"
             @openInGaodeApp="openInGaodeApp"
         />
@@ -31,13 +31,14 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
 import PointerDetailPanel from "./components/PointerDetailPanel"
-import {mapGetters, mapState} from "vuex"
 import mapConfig from "../../mapConfig";
 import pointerApi from "@/api/pointerApi";
 
 import {Base64} from "js-base64"
-import utility from "@/utility";
 import PointerListPanel from "./components/PointerListPanel";
+import {useProjectStore} from "@/pinia";
+import {dateFormatter} from "@/utility";
+const store = useProjectStore()
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -47,6 +48,8 @@ export default {
     components: {PointerListPanel, PointerDetailPanel},
     data() {
         return {
+            store,
+
             isLoading: false,
             map: null,
             cluster: null,  // 点聚合的对象
@@ -100,14 +103,7 @@ export default {
                 console.log(e)
             })
     },
-
-    computed: {
-        ...mapGetters(["isAdmin", 'isInPortraitMode']),
-        ...mapState(['windowInsets', 'authorization', 'isShowingMenuToggleBtn']),
-    },
     methods: {
-
-
         openInGaodeApp(){
             let originLnglat = this.activePointerObj.pointerArray[0].position // [lng, lat]
             let destLnglat = this.activePointerObj.pointerArray[this.activePointerObj.pointerArray.length - 1].position // [lng, lat]
@@ -157,8 +153,8 @@ export default {
                             console.log(err)
                         }
                         item.pointerArray = JSON.parse(item.pointers)
-                        item.date_init = utility.dateFormatter(new Date(item.date_init))
-                        item.date_modify = utility.dateFormatter(new Date(item.date_modify))
+                        item.date_init = dateFormatter(new Date(item.date_init))
+                        item.date_modify = dateFormatter(new Date(item.date_modify))
                         return item
                     })
                 })

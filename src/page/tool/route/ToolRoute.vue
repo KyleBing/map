@@ -1,25 +1,25 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
         <div class="float-panel">
             <div class="search-panel card">
-                <el-form inline  size="mini">
-                    <el-form-item class="mb-0" label="地址">
-                        <el-input style="width: 200px" placeholder="输入较完整的地址" v-model="address"></el-input>
-                    </el-form-item>
-                    <el-form-item class="mb-0" label="">
-                        <el-button  type="primary" @click="search" icon="el-icon-search">搜索</el-button>
-                    </el-form-item>
-                </el-form>
+                <ElForm inline  size="mini">
+                    <ElFormItem class="mb-0" label="地址">
+                        <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="address"></ElInput>
+                    </ElFormItem>
+                    <ElFormItem class="mb-0" label="">
+                        <ElButton  type="primary" @click="search" icon="el-icon-search">搜索</ElButton>
+                    </ElFormItem>
+                </ElForm>
 
-                <el-form inline class="mt-1" size="mini">
-                    <el-form-item class="mb-0" label="经度">
-                        <el-input style="width:140px" placeholder="lng" v-model="positionPicked.lng"></el-input>
-                    </el-form-item>
-                    <el-form-item class="mb-0" label="纬度">
-                        <el-input style="width:140px" placeholder="lat" v-model="positionPicked.lat"></el-input>
-                    </el-form-item>
-                </el-form>
+                <ElForm inline class="mt-1" size="mini">
+                    <ElFormItem class="mb-0" label="经度">
+                        <ElInput style="width:140px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
+                    </ElFormItem>
+                    <ElFormItem class="mb-0" label="纬度">
+                        <ElInput style="width:140px" placeholder="lat" v-model="positionPicked.lat"></ElInput>
+                    </ElFormItem>
+                </ElForm>
             </div>
 
             <div class="result card mt-1" v-if="resultText">
@@ -53,12 +53,11 @@
 import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
 import RoutePanel from "@/page/tool/route/components/RoutePanel";
-
-import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
 import RouteDetailPanel from "@/page/route/components/RouteDetailPanel";
 import axios from "axios";
 import {policyArray} from "@/page/route/DrivingPolicy";
+import {useProjectStore} from "@/pinia";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -67,6 +66,9 @@ export default {
     components: {RouteDetailPanel, RoutePanel},
     data() {
         return {
+            store: useProjectStore(),
+
+
             activeLineObj: null,
 
             isLoading: false,
@@ -143,9 +145,6 @@ export default {
                 console.log(e);
             })
 
-    },
-    computed: {
-        ...mapState(['windowInsets'])
     },
     methods: {
         changePolicy(policy){

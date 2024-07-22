@@ -1,7 +1,7 @@
 <template>
     <div class="circle-panel card">
 
-        <el-dialog
+        <ElDialog
             center
             title=""
             append-to-body
@@ -9,33 +9,33 @@
             :before-close="closeModal"
             width="50%">
             <div>
-                <el-form>
-                    <el-form-item label="修改">
-                        <el-input v-model="currentModifyingString"/>
-                    </el-form-item>
-                </el-form>
+                <ElForm>
+                    <ElFormItem label="修改">
+                        <ElInput v-model="currentModifyingString"/>
+                    </ElFormItem>
+                </ElForm>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button size="small" type="default" @click="isModalShowing = false">取消</el-button>
-                <el-button size="small" type="primary" @click="submitStringChange">确定</el-button>
+                <ElButton size="small" type="default" @click="isModalShowing = false">取消</ElButton>
+                <ElButton size="small" type="primary" @click="submitStringChange">确定</ElButton>
             </div>
-        </el-dialog>
+        </ElDialog>
 
         <div class="toolbar">
-            <el-button class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制 JSON 数据</el-button>
-            <el-button size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</el-button>
+            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制 JSON 数据</ElButton>
+            <ElButton size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</ElButton>
         </div>
         <div class="toolbar">
-            <el-button size="mini" type="warning" @click="$emit('setData', routePathLocal.reverse())" icon="el-icon-sort">倒序</el-button>
-            <el-select size="mini" class="ml-1" v-model="currentPolicy" placeholder="请选择">
-                <el-option
+            <ElButton size="mini" type="warning" @click="$emit('setData', routePathLocal.reverse())" icon="el-icon-sort">倒序</ElButton>
+            <ElSelect size="mini" class="ml-1" v-model="currentPolicy" placeholder="请选择">
+                <ElOption
                     v-for="item in policyArray"
                     :key="item.label"
                     :label="item.label"
                     :value="item.value">
-                </el-option>
-            </el-select>
-            <el-button class="ml-1" size="mini" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</el-button>
+                </ElOption>
+            </ElSelect>
+            <ElButton class="ml-1" size="mini" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</ElButton>
         </div>
 
         <table class="log">
@@ -59,7 +59,7 @@
                     </div>
                 </td>
                 <td>
-                    <el-input
+                    <ElInput
                         @keyup.native.enter="addNewRoutePointWithKeyEnter"
                         clearable
                         ref="inputName" class="input-focus" size="mini"
@@ -67,7 +67,7 @@
                         v-model="pointerName"/>
                 </td>
                 <td>
-                    <el-input
+                    <ElInput
                         @keyup.native.enter="addNewRoutePointWithKeyEnter"
                         clearable
                         ref="inputNote" class="input-focus" size="mini"
@@ -84,7 +84,7 @@
                     </div>
                 </td>
                 <td>
-                    <el-button size="mini" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</el-button>
+                    <ElButton size="mini" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</ElButton>
                 </td>
             </tr>
 

@@ -2,7 +2,7 @@
     <div class="copyright" :style="`height: ${height}px`">
 
         <dl><dt>用户：</dt>
-            <dd v-if="authorization && authorization.nickname">{{ authorization.nickname }}
+            <dd v-if="store.authorization && store.authorization.nickname">{{ store.authorization.nickname }}
                 <span @click="logout" class="btn-logout">退出</span>
             </dd>
             <dd v-else>
@@ -16,39 +16,30 @@
     </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import packageInfo from "@/../package.json"
-import {mapGetters, mapMutations, mapState} from "vuex";
+import {useProjectStore} from "@/pinia.ts";
+import {useRouter} from "vue-router";
+import {deleteAuthorization,} from "@/utility.ts";
 
-export default {
-    name: "Copyright",
-    props: {
-        height: { // 高度
-            type: Number,
-            default: 100
-        }
-    },
-    data(){
-        return {
-            packageInfo: packageInfo
-        }
-    },
-    methods: {
-        ...mapMutations(['SET_AUTHORIZATION']),
-        logout(){
-            this.$utility.deleteAuthorization()
-            this.SET_AUTHORIZATION({})
-        },
-        login(){
-            this.$router.push({
-                name: 'Login'
-            })
-        }
-    },
-    computed: {
-        ...mapState(['authorization'])
-    }
+const store = useProjectStore()
+const router = useRouter()
 
+
+withDefaults(defineProps<{
+    height?: number
+}>(), {
+    height: 100
+})
+
+function logout(){
+    deleteAuthorization()
+}
+
+function login(){
+    router.push({
+        name: 'Login'
+    })
 }
 </script>
 

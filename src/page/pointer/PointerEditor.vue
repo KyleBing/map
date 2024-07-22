@@ -15,18 +15,18 @@
             <div class="card editor-panel">
                 <div class="form-title">
                     <div class="collapse-btn">
-                        <el-button size="mini" @click="toggleEditPanel">
+                        <ElButton size="mini" @click="toggleEditPanel">
                             <i v-if="isShowingEdit" class="el-icon-arrow-up"></i>
                             <i v-else class="el-icon-arrow-down"></i>
                             折叠面板
-                        </el-button>
+                        </ElButton>
                     </div>
                     <div class="title">
                         <p v-if="isEditingLineInfo">编辑点图 {{ formPointer.name }}</p>
                         <p v-else>新建点图 {{ pointerId }}</p>
                     </div>
                 </div>
-                <el-form
+                <ElForm
                     class="mt-2 p-1"
                     ref="formPointer"
                     v-if="formPointer && isShowingEdit"
@@ -35,50 +35,50 @@
                     size="mini"
                     label-width="70px"
                 >
-                    <el-form-item label="点图名" prop="name">
-                        <el-input v-model="formPointer.name"/>
-                    </el-form-item>
-                    <el-form-item label="是否公开" prop="is_public">
-                        <el-radio :label="1" v-model="formPointer.is_public">公开</el-radio>
-                        <el-radio :label="0" v-model="formPointer.is_public">私有</el-radio>
-                    </el-form-item>
-                    <el-form-item label="地域" prop="area">
-                        <el-input v-model="formPointer.area"/>
-                    </el-form-item>
-                    <el-form-item label="视频链接" prop="video_link">
-                        <el-input v-model="formPointer.video_link"/>
-                    </el-form-item>
-                    <el-form-item label="备注" prop="note">
-                        <el-input type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formPointer.note"/>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button v-if="authorization" @click="submit" type="primary" icon="el-icon-check">保存</el-button>
-                        <el-button v-else @click="$router.push({name: 'Login'})" type="primary" icon="el-icon-user">请先登录</el-button>
-                    </el-form-item>
-                </el-form>
+                    <ElFormItem label="点图名" prop="name">
+                        <ElInput v-model="formPointer.name"/>
+                    </ElFormItem>
+                    <ElFormItem label="是否公开" prop="is_public">
+                        <ElRadio :label="1" v-model="formPointer.is_public">公开</ElRadio>
+                        <ElRadio :label="0" v-model="formPointer.is_public">私有</ElRadio>
+                    </ElFormItem>
+                    <ElFormItem label="地域" prop="area">
+                        <ElInput v-model="formPointer.area"/>
+                    </ElFormItem>
+                    <ElFormItem label="视频链接" prop="video_link">
+                        <ElInput v-model="formPointer.video_link"/>
+                    </ElFormItem>
+                    <ElFormItem label="备注" prop="note">
+                        <ElInput type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formPointer.note"/>
+                    </ElFormItem>
+                    <ElFormItem>
+                        <ElButton v-if="getAuthorization()" @click="submit" type="primary" icon="el-icon-check">保存</ElButton>
+                        <ElButton v-else @click="$router.push({name: 'Login'})" type="primary" icon="el-icon-user">请先登录</ElButton>
+                    </ElFormItem>
+                </ElForm>
             </div>
         </transition>
 
         <div class="float-panel">
             <!-- 搜索面板 -->
             <div class="search-panel card">
-                <el-form inline @submit="search" size="mini">
-                    <el-form-item class="mb-0" label="地址">
-                        <el-input style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></el-input>
-                    </el-form-item>
-                    <el-form-item class="mb-0" label="">
-                        <el-button type="primary" @click="search" icon="el-icon-search">搜索</el-button>
-                    </el-form-item>
-                </el-form>
+                <ElForm inline @submit="search" size="mini">
+                    <ElFormItem class="mb-0" label="地址">
+                        <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
+                    </ElFormItem>
+                    <ElFormItem class="mb-0" label="">
+                        <ElButton type="primary" @click="search" icon="el-icon-search">搜索</ElButton>
+                    </ElFormItem>
+                </ElForm>
 
-                <el-form inline class="mt-1" size="mini">
-                    <el-form-item class="mb-0" label="经度">
-                        <el-input style="width:140px" placeholder="lng" v-model="positionPicked.lng"></el-input>
-                    </el-form-item>
-                    <el-form-item class="mb-0" label="纬度">
-                        <el-input style="width:140px" placeholder="lat" v-model="positionPicked.lat"></el-input>
-                    </el-form-item>
-                </el-form>
+                <ElForm inline class="mt-1" size="mini">
+                    <ElFormItem class="mb-0" label="经度">
+                        <ElInput style="width:140px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
+                    </ElFormItem>
+                    <ElFormItem class="mb-0" label="纬度">
+                        <ElInput style="width:140px" placeholder="lat" v-model="positionPicked.lat"></ElInput>
+                    </ElFormItem>
+                </ElForm>
             </div>
 
             <!-- 结果面板 -->
@@ -98,23 +98,23 @@
         </div>
 
 
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
 
     </div>
 </template>
 
 <script>
-
 import AMapLoader from '@amap/amap-jsapi-loader';
-import ICON from "@/assets/icons";
 import PointerEditPanel from "./components/PointerEditPanel";
 
-import {mapGetters, mapState} from 'vuex'
 import mapConfig from "../../mapConfig";
 import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 import axios from "axios";
 import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64";
+import {useProjectStore} from "@/pinia";
+import {getAuthorization} from "@/utility";
+const store = useProjectStore()
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -123,6 +123,7 @@ export default {
     components: {RouteDetailPanel, PointerEditPanel},
     data() {
         return {
+            store: store,
             activeLineObj: null,
 
             isLoading: false,
@@ -218,8 +219,6 @@ export default {
             })
     },
     computed: {
-        ...mapGetters(["isAdmin"]),
-        ...mapState(["windowInsets", "authorization"]),
         isEditingLineInfo() {
             return !isNaN(Number(this.$route.query.pointerId))
         },
@@ -228,6 +227,7 @@ export default {
         }
     },
     methods: {
+        getAuthorization,
         toggleEditPanel(){
             this.isShowingEdit = !this.isShowingEdit
         },

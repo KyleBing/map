@@ -3,7 +3,7 @@
 
         <div class="button-float btn-router-list"
              @click="isRouteListShowed = true"
-             v-if="!isRouteListShowed && isInPortraitMode">
+             v-if="!isRouteListShowed && store.isInPortraitMode">
             <i class="el-icon-tickets"></i>
         </div>
 
@@ -16,11 +16,11 @@
         </div>
 
         <!-- 地图 -->
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
 
         <!-- DETAIL INFO -->
         <route-detail-panel
-            v-if="activeLineObj && (!isInPortraitMode || !isRouteListShowed)"
+            v-if="activeLineObj && (!store.isInPortraitMode || !isRouteListShowed)"
             :line="activeLineObj"
             :drivingInfo="drivingInfo"
             @openInGaodeApp="openInGaodeApp"
@@ -34,24 +34,27 @@ import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
 import ICON from "@/assets/icons"
 import RouteDetailPanel from "./components/RouteDetailPanel"
-import {mapGetters, mapState} from "vuex"
 import mapConfig from "../../mapConfig";
 import routeApi from "@/api/routeApi";
 
 import {Base64} from "js-base64"
-import utility from "@/utility";
 import RouteLineListPanel from "@/page/route/components/RouteLineListPanel";
 import DrivingInfo from "@/page/route/components/DrivingInfo";
 import axios from "axios";
+import {useProjectStore} from "@/pinia";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
+
+const store = useProjectStore()
 
 export default {
     name: "RouteLine",
     components: {DrivingInfo, RouteLineListPanel, RouteDetailPanel},
     data() {
         return {
+            store,
+
             isLoading: false,
             map: null,
             colors: mapData.COLORS,
@@ -100,11 +103,6 @@ export default {
             .catch(e => {
                 console.log(e)
             })
-    },
-
-    computed: {
-        ...mapGetters(["isAdmin", 'isInPortraitMode']),
-        ...mapState(['windowInsets', 'authorization', 'isShowingMenuToggleBtn']),
     },
     methods: {
         // 切换路线的标签显示

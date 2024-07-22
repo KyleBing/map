@@ -1,13 +1,13 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
     </div>
 </template>
 
 <script>
 import AMapLoader from '@amap/amap-jsapi-loader';
-import { mapState } from 'vuex'
 import mapConfig from "../../../mapConfig";
+import {useProjectStore} from "@/pinia";
 
 // 显示地图行政区的深度
 const DEPTH = {
@@ -17,6 +17,7 @@ const DEPTH = {
 }
 
 let AMap = null
+const store = useProjectStore()
 
 
 export default {
@@ -122,9 +123,6 @@ export default {
             console.log(e)
         })
 
-    },
-    computed: {
-        ...mapState(['windowInsets'])
     },
     methods: {
         generateProvinceMap(){

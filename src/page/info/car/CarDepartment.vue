@@ -1,14 +1,17 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
     </div>
 </template>
 
 <script>
 import AMapLoader from '@amap/amap-jsapi-loader'
-import { mapState } from 'vuex'
+
 import mapConfig from "../../../mapConfig";
+import {useProjectStore} from "@/pinia";
 const MY_POSITION = [117.129533, 36.685668]
+
+const store = useProjectStore()
 
 let AMap = null
 
@@ -79,9 +82,6 @@ export default {
                 console.log(e)
             })
 
-    },
-    computed: {
-        ...mapState(['windowInsets'])
     },
     methods: {
         addMarker(map, item) {

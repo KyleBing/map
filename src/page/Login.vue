@@ -7,97 +7,101 @@
             <div class="login-title">
                 <h2>路书</h2>
             </div>
-            <el-form
+            <ElForm
                 :model="formLogin"
                 :rules="loginRules"
-                ref="login" label-width="0">
-                <el-form-item label="" prop="email">
-                    <el-input autocomplete="off" placeholder="邮箱" v-model="formLogin.email"/>
-                </el-form-item>
-                <el-form-item label="" prop="password">
-                    <el-input type="password" autocomplete="off" @keydown.enter.native="submit" placeholder="密码" v-model="formLogin.password"/>
-                </el-form-item>
-                <el-form-item align="center">
-                    <el-button :loading="isInLoginProcess" class="login-btn" type="primary" @click="submit">登录</el-button>
-                </el-form-item>
-            </el-form>
+                ref="refFormLogin" label-width="0">
+                <ElFormItem label="" prop="email">
+                    <ElInput autocomplete="off" placeholder="邮箱" v-model="formLogin.email"/>
+                </ElFormItem>
+                <ElFormItem label="" prop="password">
+                    <ElInput type="password" autocomplete="off" @keydown.enter.native="submit" placeholder="密码" v-model="formLogin.password"/>
+                </ElFormItem>
+                <ElFormItem align="center">
+                    <ElButton :loading="isInLoginProcess" class="login-btn" type="primary" @click="submit">登录</ElButton>
+                </ElFormItem>
+            </ElForm>
             <div class="register-link">
-                <router-link to="Register">注册</router-link>
+                <RouterLink to="Register">注册</RouterLink>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-import {mapMutations, mapState} from "vuex"
+<script lang="ts" setup>
 import userApi from "@/api/userApi";
+import {onMounted, onUnmounted, reactive, ref} from "vue";
+import {useProjectStore} from "@/pinia.ts";
+import {useRoute, useRouter} from "vue-router";
+import {ElMessage} from "element-plus";
+import {getAuthorization, setAuthorization} from "@/utility.ts";
 import {AnimateHeartCanvas} from "animate-heart-canvas";
 
-export default {
-    name: "Login",
-    data() {
-        return {
-            height: 600,
-            formLogin: {
-                email: '',
-                password: ''
-            },
-            loginRules: {
-                email: {required: true, message: '请填写用户名', trigger: 'blur'},
-                password: {required: true, message: '请填写密码', trigger: 'blur'},
-            },
-            isInLoginProcess: false, // 登录中状态展示
-            animatedBg: null,
 
+const store = useProjectStore()
+const router = useRouter()
+const route = useRoute()
+
+const refFormLogin = ref()
+
+const height = ref(600)
+const formLogin = ref({
+    email: '',
+    password: ''
+})
+const loginRules = reactive({
+    email: {required: true, message: '请填写用户名', trigger: 'blur'},
+    password: {required: true, message: '请填写密码', trigger: 'blur'},
+})
+const isInLoginProcess = ref(false) // 登录中状态展示
+const animatedBg = ref(null)
+
+
+onMounted(()=>{
+    height.value = innerHeight
+    animatedBg.value = new AnimateHeartCanvas(0, 360, 50, 20, 100, '#eee')
+})
+
+onUnmounted(()=>{
+    animatedBg.value.destroy()
+})
+
+function submit() {
+    refFormLogin.value.validate((valid) => {
+        if (valid) {
+            login()
+        } else {
+            console.log('error submit!!')
+            return false
         }
-    },
-    mounted() {
-        this.height = innerHeight
-        this.animatedBg = new AnimateHeartCanvas(0, 360, 50, 20, 100, '#eee')
-    },
-    beforeDestroy() {
-        this.animatedBg.destroy()
-    },
-    methods: {
-        ...mapMutations(['SET_AUTHORIZATION']),
-        submit() {
-            this.$refs['login'].validate((valid) => {
-                if (valid) {
-                    this.login();
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
-        },
-        login() {
-            this.isInLoginProcess = true
-            userApi
-                .login(this.formLogin)
-                .then(res => {
-                    console.log(res)
-                    console.log('Login success')
-                    this.isInLoginProcess = false
-                    this.$utility.setAuthorization(
-                        res.data.nickname,
-                        res.data.uid,
-                        res.data.email,
-                        res.data.phone,
-                        res.data.avatar,
-                        res.data.password,
-                        res.data.group_id,
-                        res.data.city,
-                        res.data.geolocation,
-                    )
-                    this.SET_AUTHORIZATION(this.$utility.getAuthorization())
-                    this.$message.success( '欢迎用户 ' + res.data.username)
-                    this.$router.push({name: 'Index'})
-                })
-                .catch(err => {
-                    this.isInLoginProcess = false
-                })
-        },
-    },
+    });
+}
+function login() {
+    isInLoginProcess.value = true
+    userApi
+        .login(formLogin.value)
+        .then(res => {
+            console.log(res)
+            console.log('Login success')
+            isInLoginProcess.value = false
+            setAuthorization(
+                res.data.nickname,
+                res.data.uid,
+                res.data.email,
+                res.data.phone,
+                res.data.avatar,
+                res.data.password,
+                res.data.group_id,
+                res.data.city,
+                res.data.geolocation,
+            )
+            store.authorization = getAuthorization()
+            ElMessage.success( '欢迎用户 ' + res.data.username)
+            router.push({name: 'Index'})
+        })
+        .catch(err => {
+            isInLoginProcess.value = false
+        })
 }
 </script>
 
@@ -117,11 +121,12 @@ export default {
     display: flex;
     justify-content: center;
     flex-flow: row nowrap;
+    transform: translateY(-50px);
     img{
         display: block;
         height: 100px;
     }
-    transform: translateY(-50px);
+
 }
 
 .login-title{

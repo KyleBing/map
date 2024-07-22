@@ -18,46 +18,46 @@
                 <el-descriptions-item v-if="path" label="总长">{{pathLength}}</el-descriptions-item>
             </el-descriptions>
 
-            <el-form inline size="mini" class="mt-1" label-width="70px">
+            <ElForm inline size="mini" class="mt-1" label-width="70px">
 
                 <div class="move-pad mb-1">
                     <div class="up">
-                        <el-button size="mini"  @click=offsetMoveUp(5) type="primary" class="p-1">↑</el-button>
+                        <ElButton size="mini"  @click=offsetMoveUp(5) type="primary" class="p-1">↑</ElButton>
                     </div>
                     <div class="middle">
-                        <el-button size="mini"  @click=offsetMoveLeft(5) type="primary" class="mr-2 p-1" >←</el-button>
-                        <el-button size="mini"  @click=offsetMoveRight(5) type="primary" class="ml-2 p-1" >→</el-button>
+                        <ElButton size="mini"  @click=offsetMoveLeft(5) type="primary" class="mr-2 p-1" >←</ElButton>
+                        <ElButton size="mini"  @click=offsetMoveRight(5) type="primary" class="ml-2 p-1" >→</ElButton>
                     </div>
                     <div class="down">
-                        <el-button size="mini"  @click=offsetMoveDown(5) type="primary" class="p-1">↓</el-button>
+                        <ElButton size="mini"  @click=offsetMoveDown(5) type="primary" class="p-1">↓</ElButton>
                     </div>
                 </div>
-                <el-form-item label="偏移量" class="mb-1">
-                    <el-input type="number" :step="5" v-model="offsetN">
+                <ElFormItem label="偏移量" class="mb-1">
+                    <ElInput type="number" :step="5" v-model="offsetN">
                         <template #prepend>向北</template>
                         <template #append>米</template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="偏移量" class="mb-1">
-                    <el-input type="number" :step="5" v-model="offsetE">
+                    </ElInput>
+                </ElFormItem>
+                <ElFormItem label="偏移量" class="mb-1">
+                    <ElInput type="number" :step="5" v-model="offsetE">
                         <template #prepend>向东</template>
                         <template #append>米</template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="间隔点" class="mb-1">
-                    <el-input type="number" :step="5" v-model="gapCount">
+                    </ElInput>
+                </ElFormItem>
+                <ElFormItem label="间隔点" class="mb-1">
+                    <ElInput type="number" :step="5" v-model="gapCount">
                         <template #prepend>间隔</template>
                         <template #append>个数据点</template>
-                    </el-input>
-                </el-form-item>
-            </el-form>
+                    </ElInput>
+                </ElFormItem>
+            </ElForm>
 
             <div class="mt-1">
-                <el-button type="warning" size="mini" icon="el-icon-price-tag" @click="toggleMarkerDisplay">{{isMarkerShowed? '隐藏': '显示'}}标签</el-button>
-                <el-button type="primary" size="mini" icon="el-icon-map-location" @click="togglePathDisplay">{{isPathShowed? '隐藏': '显示'}}路径</el-button>
-                <!--                <el-button type="success" size="mini" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</el-button>-->
-                <!--                <el-button type="success" size="mini" icon="el-icon-medal-1" @click="toggleKmDisplay"-->
-                <!--                           v-if="pathPointers[0] && pathPointers[0].extensions && pathPointers[0].extensions.distance">切换公里数显示</el-button>-->
+                <ElButton type="warning" size="mini" icon="el-icon-price-tag" @click="toggleMarkerDisplay">{{isMarkerShowed? '隐藏': '显示'}}标签</ElButton>
+                <ElButton type="primary" size="mini" icon="el-icon-map-location" @click="togglePathDisplay">{{isPathShowed? '隐藏': '显示'}}路径</ElButton>
+                <!--                <ElButton type="success" size="mini" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</ElButton>-->
+                <!--                <ElButton type="success" size="mini" icon="el-icon-medal-1" @click="toggleKmDisplay"-->
+                <!--                           v-if="pathPointers[0] && pathPointers[0].extensions && pathPointers[0].extensions.distance">切换公里数显示</ElButton>-->
             </div>
         </div>
 

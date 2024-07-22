@@ -1,27 +1,37 @@
 <template>
     <div class="map-container">
         <pointer-detail-panel :pointer="pointerInfo"/>
-        <div id="container" :style="`height: ${windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
         <div class="card input-panel">
-            <el-form inline size="mini">
-                <el-form-item>
-                    <el-input placeholder="区域编码" v-model="pointerInfo.adcode"/>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="showDistrictOfAdcode">确定</el-button>
-                </el-form-item>
-            </el-form>
+            <ElForm inline size="mini">
+                <ElFormItem>
+                    <ElInput placeholder="区域编码" v-model="pointerInfo.adcode"/>
+                </ElFormItem>
+                <ElFormItem>
+                    <ElButton type="primary" @click="showDistrictOfAdcode">确定</ElButton>
+                </ElFormItem>
+            </ElForm>
         </div>
     </div>
 </template>
 
-<script>
+<script >
 import AMapLoader from '@amap/amap-jsapi-loader'
-import {mapState} from 'vuex'
 import mapConfig from "../../../mapConfig";
 import axios from "axios";
 import PointerDetailPanel from "@/page/pointer/components/PointerDetailPanel";
 import {adcodeMap} from './adcodeMap'
+import {useProjectStore} from "@/pinia";
+
+import {onMounted, onUnmounted, reactive, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {ElMessage} from "element-plus";
+import {getAuthorization, setAuthorization} from "@/utility.ts";
+
+const store = useProjectStore()
+const router = useRouter()
+const route = useRoute()
+
 // 显示地图行政区的深度
 const DEPTH = {
     province: 0, // 省
@@ -67,12 +77,12 @@ export default {
         }
     },
     mounted() {
-        if (this.$route.query.adcode){
-            this.pointerInfo.adcode = this.$route.query.adcode
+        if (route.query.adcode){
+            this.pointerInfo.adcode = route.query.adcode
             let adcodeInfo = adcodeMap.get(this.pointerInfo.adcode)
             this.pointerInfo.name = adcodeInfo[0]
         } else {
-            this.pointerInfo.name = this.$route.query.city || '济南'
+            this.pointerInfo.name = route.query.city || '济南'
         }
 
         AMapLoader
@@ -138,9 +148,6 @@ export default {
                 console.log(e)
             })
 
-    },
-    computed: {
-        ...mapState(['windowInsets'])
     },
     watch: {
         '$route'(newValue){
@@ -433,7 +440,7 @@ export default {
     position: absolute;
     left: 20px;
     top: 20px;
-    .el-form-item{
+    .ElFormItem{
         margin: 0 5px 0 0;
     }
 }

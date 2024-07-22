@@ -38,17 +38,17 @@
             <div class="button-center"
                  v-if="isAdmin || (authorization && authorization.uid) === line.uid"
             >
-                <el-button
+                <ElButton
                     v-if="line.id !== undefined"
                     type="text" size="mini"
                     @click="goToEditCurrentLine"
-                    icon="el-icon-edit-outline">编辑</el-button>
+                    icon="el-icon-edit-outline">编辑</ElButton>
             </div>
 <!--            <div class="button-center">
-                <el-button
+                <ElButton
                     type="text" size="mini"
                     @click="$emit('openInGaodeApp')"
-                    icon="el-icon-position">打开高德导航</el-button>
+                    icon="el-icon-position">打开高德导航</ElButton>
             </div>-->
             <div class="qr">
                 <img :src="qrImg" alt="">
