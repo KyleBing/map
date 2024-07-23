@@ -69,7 +69,7 @@ import {EntityRoute} from "@/page/route/Route.ts";
 
 const props = defineProps<{
     line: EntityRoute,
-    drivingInfo: {}
+    drivingInfo?: {}
 }>()
 
 const store = useProjectStore()

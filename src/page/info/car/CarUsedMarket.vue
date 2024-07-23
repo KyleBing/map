@@ -6,12 +6,10 @@
 
 <script lang="ts" setup>
 import AMapLoader from '@amap/amap-jsapi-loader'
-
 import {useProjectStore} from "@/pinia";
 import {onMounted, onUnmounted, ref} from "vue";
 import {key_web_js} from "@/mapConfig.ts";
 const MY_POSITION = [117.129533, 36.685668]
-
 const store = useProjectStore()
 
 const MARKERS = [
@@ -26,21 +24,12 @@ const MARKERS = [
     {position: [117.002642, 36.593224] ,  phone: '' ,            type: "market",     name: "贵和"} ,
     {position: [116.981724, 36.612771] ,  phone: '' ,            type: "market",     name: "中海-环宇城"} ,
     {position: [116.978032, 36.649693] ,  phone: '' ,            type: "market",     name: "和谐广场"} ,
-    {position: [117.821953 , 36.138451] , phone: '06345667973' , type: "department", name: "钢城区车辆管理所" } ,
-    {position: [117.166785 , 37.245034] , phone: '84801008' ,    type: "department", name: "商河钱隆机动车登记服务站" } ,
-    {position: [117.699792 , 36.179012] , phone: '06346096277' , type: "department", name: "莱芜区车辆管理所" } ,
-    {position: [116.405267 , 36.270492] , phone: '66712345' ,    type: "department", name: "平阴车辆管理所" } ,
-    {position: [116.920532 , 36.656044] , phone: '66712345' ,    type: "department", name: "槐荫车管分所" } ,
-    {position: [117.153975 , 37.284018] , phone: '66712345' ,    type: "department", name: "商河车辆管理所" } ,
-    {position: [116.821744 , 36.619044] , phone: '83156888' ,    type: "department", name: "济西新能源机动车登记服务站" } ,
-    {position: [116.935087 , 36.711933] , phone: '66712345' ,    type: "department", name: "天桥车管分所" } ,
-    {position: [117.206635 , 36.720479] , phone: '66712345' ,    type: "department", name: "历城车管分所" } ,
-    {position: [117.163276 , 36.937575] , phone: '66712345' ,    type: "department", name: "济阳车辆管理所" } ,
-    {position: [116.840032 , 36.641677] , phone: '66712345' ,    type: "department", name: "济南市车管所" } ,
-    {position: [117.225284 , 36.661391] , phone: '66712345' ,    type: "department", name: "历下车管分所" } ,
-    {position: [116.981713 , 36.624219] , phone: '66712345' ,    type: "department", name: "市中车管分所" } ,
-    {position: [116.804331 , 36.587233] , phone: '66712345' ,    type: "department", name: "长清区车辆管理所" } ,
-    {position: [117.568698 , 36.684551] , phone: '66712345' ,    type: "department", name: "章丘车辆管理所" }
+    {position: [117.228819, 36.725181] , phone: '' , type: "department", name: "济东二手车市场" } ,
+    {position: [117.21,36.72] , phone: '' , type: "department", name: "济钢二手车市场" } ,
+    {position: [116.829921, 36.626101] , phone: '' , type: "department", name: "济西二手车市场" } ,
+    {position: [116.95,36.70] , phone: '' , type: "department", name: "蓝翔路机动车交易市场" } ,
+    {position: [116.989477, 36.712772] , phone: '' , type: "department", name: "泺口二手车市场" } ,
+    {position: [117.049659, 36.695429] , phone: '' , type: "department", name: "华瑞源二手车网" } ,
 ]
 
 let AMap = null
@@ -69,8 +58,8 @@ onMounted(() => {
             map.addControl(new AMap.Scale())
 
 
-           MARKERS.forEach(item => {
-               addMarker(map, item)
+            MARKERS.forEach(item => {
+                addMarker(map, item)
             })
 
         })
@@ -98,11 +87,10 @@ function addMarker(map, item) {
 }
 
 onUnmounted(() => {
-        map.clearInfoWindow() // 清除地图上的信息窗体
-        map.destroy() // 销毁地图，释放内存
-        map = null
+    map.clearInfoWindow() // 清除地图上的信息窗体
+    map.destroy() // 销毁地图，释放内存
+    map = null
 })
-
 </script>
 
 <style lang="scss" scoped>
