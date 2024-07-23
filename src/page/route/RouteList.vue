@@ -47,22 +47,22 @@
                     <ElTableColumn align="center" width="450px" label="操作">
                         <template #default="scope">
                             <ElButton class="btn-narrow" type="success"
-                                       @click="showRoute(scope.row)" size="mini" plain icon="el-icon-view">地图中查看</ElButton>
+                                       @click="showRoute(scope.row)" size="small" plain icon="el-icon-view">地图中查看</ElButton>
                             <ElButton class="btn-narrow" type="success"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
-                                       @click="editRouteLine(scope.row)" plain size="mini" icon="el-icon-position">地图中编辑</ElButton>
+                                       @click="editRouteLine(scope.row)" plain size="small" icon="el-icon-position">地图中编辑</ElButton>
                             <ElButton class="btn-narrow" type="primary"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
-                                       @click="goEdit(scope.row)" plain size="mini" icon="el-icon-edit">编辑</ElButton>
+                                       @click="goEdit(scope.row)" plain size="small" icon="el-icon-edit">编辑</ElButton>
                             <ElButton class="btn-narrow" type="danger"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
-                                       @click="goDelete(scope.row)" plain size="mini" icon="el-icon-delete">删除</ElButton>
+                                       @click="goDelete(scope.row)" plain size="small" icon="el-icon-delete">删除</ElButton>
                         </template>
                     </ElTableColumn>
                     <ElTableColumn width="130" align="left" prop="seasons" label="适用季节"/>
                     <ElTableColumn width="200" align="left" prop="road_type" label="路线类型">
                         <template #default="scope">
-                            <ElTag class="mr-1" size="mini"
+                            <ElTag class="mr-1" size="small"
                                     v-for="item in scope.row.road_type.split('，')" :key="item">{{ item }}
                             </ElTag>
                         </template>

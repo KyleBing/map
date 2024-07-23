@@ -2,8 +2,8 @@
     <div :class="['list-panel', {collapsed: !isShowPanel}] " v-loading="isLoading">
         <div class="list-panel-header">
             <div class="title">路线列表</div>
-            <ElButton size="mini" icon="el-icon-monitor" type="default" @click="togglePanel">折叠/展开</ElButton>
-            <ElButton size="mini" icon="el-icon-price-tag" type="default" @click="toggleLabel">切换标签显示</ElButton>
+            <ElButton size="small" icon="el-icon-monitor" type="default" @click="togglePanel">折叠/展开</ElButton>
+            <ElButton size="small" icon="el-icon-price-tag" type="default" @click="toggleLabel">切换标签显示</ElButton>
         </div>
         <ElTabs
             v-if="isShowPanel"
@@ -171,15 +171,15 @@ export default {
     background-color: white;
     width: 400px;
     .route-line-list-item{
-        &:last-child{
-            border-bottom: none;
-        }
         border-bottom: 1px solid $border-light;
         padding: 3px;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         font-size: $fz-normal;
+        &:last-child{
+            border-bottom: none;
+        }
         &:hover{
             border-bottom-color: white;
             background-color: $bg-active;

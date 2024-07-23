@@ -255,6 +255,7 @@ const LINES = [
         ]
     },
 ]
+
 const COLORS = {
     green  : "#4CD964",
     cyan   : "#5AC8FA",
@@ -266,6 +267,6 @@ const COLORS = {
     yellow : "#FFCC00",
     gray   : "#8E8E93",
 }
-export default {
+export {
     COLORS, LINES
 }

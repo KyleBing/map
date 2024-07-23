@@ -19,15 +19,19 @@
                         <div class="lat">纬: {{lat || '--'}}</div>
                     </div>
                 </td>
-                <td><ElInput @keyup.native.enter="addNewCircle" clearable ref="name" size="mini" placeholder="标记名" v-model="name"></ElInput></td>
-                <td><ElInput @keyup.native.enter="addNewCircle" ref="radius" size="mini" placeholder="半径" v-model="radius" type="number"></ElInput></td>
                 <td>
-                    <ElButton size="mini" type="success" @click="addNewCircle" icon="el-icon-plus">添加</ElButton>
+                    <ElInput @keyup.native.enter="addNewCircle" clearable ref="refInputName" size="small" placeholder="标记名" v-model="name"></ElInput>
+                </td>
+                <td>
+                    <ElInput @keyup.native.enter="addNewCircle" ref="refInputRadius" size="small" placeholder="半径" v-model="radius" type="number"></ElInput>
+                </td>
+                <td>
+                    <ElButton size="small" type="success" @click="addNewCircle" icon="el-icon-plus">添加</ElButton>
                 </td>
             </tr>
-                <tr v-for="(item, index) in dataLocal" :key="index">
+                <tr v-for="(item, index) in modelValue" :key="index">
 
-                    <td>{{dataLocal.length - index}}</td>
+                    <td>{{modelValue.length - index}}</td>
                     <td>
                         <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
                             <div class="lng">经: {{item.center[0]}}</div>
@@ -37,13 +41,13 @@
                     <td>{{item.name}}</td>
                     <td>{{item.radius}} km</td>
                     <td>
-                        <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < data.length - 1}]">
-<!--                            <div class="move">
-                                <i class="el-icon-caret-top" v-if="index > 0"  @click="move(index, 'up')"></i>
-                                <i class="el-icon-caret-bottom" v-if="index < data.length - 1" @click="move(index, 'down')"></i>
-                            </div>-->
+                        <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < modelValue.length - 1}]">
+                            <div class="move">
+                                <ElIcon v-if="index > 0"  @click="move(index, 'up')"><ArrowUp /></ElIcon>
+                                <ElIcon v-if="index < modelValue.length - 1" @click="move(index, 'down')"><ArrowDown /></ElIcon>
+                            </div>
                             <div class="delete">
-                                <i class="el-icon-circle-close" @click="circleDelete(index)"></i>
+                                <ElIcon  @click="circleDelete(index)"><Delete /></ElIcon>
                             </div>
                         </div>
                     </td>
@@ -53,91 +57,84 @@
     </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import ClipboardJS from 'clipboard'
-export default {
-    name: "CirclePanel",
-    props: {
-        data: {type: Array},
-        lng: {type: Number},
-        lat: {type: Number},
-    },
-    model: {
-        prop: 'data',
-        event: 'setData'
-    },
-    data() {
-        return {
-            name: '', // 当前点的地名
-            radius: '1', // 半径：公里
-        }
-    },
-    computed: {
-        dataLocal(){
-            return [...this.data.reverse()]
-        }
-    },
-    mounted() {
-        let clipboard = new ClipboardJS('.lnglat')
-    },
-    methods: {
-        addNewCircle(){
-            if(this.validateInput()){
-                this.$emit('circleAdd', {
-                    center: [this.lng, this.lat],
-                    radius: this.radius,
-                    name: this.name
-                })
-            }
-        },
-        validateInput(){
-            if (!this.lng || !this.lat){
-                this.$message({
-                    message: '坐标未选定',
-                    type: 'warning'
-                })
-                return false
-            }
-            if (!this.name){
-                this.$message({
-                    message: '地名未填写',
-                    type: 'warning'
-                })
-                this.$refs.name.focus()
-                return false
-            }
-            if (!this.radius){
-                this.$message({
-                    message: '半径未填写',
-                    type: 'warning'
-                })
-                this.$refs.radius.focus()
-                return false
-            }
-            return true
-        },
-        move(index, direction){
-            let indexExchange = direction === 'up'? index - 1 : index + 1
-            let tempItem = this.data[index]
-            let preItem = this.data[indexExchange]
-            let tempData = this.data // 临时数组
-            tempData[indexExchange] = tempItem
-            tempData[index] = preItem
-            this.$emit('setData', [...tempData])
-        },
-        circleDelete(index){
-            this.data.splice(index, 1)
-        }
-    },
-    watch: {
-        radius(newValue){
-            if (newValue < 0){
-                this.radius = 0
-            }
-        }
-    }
+import {onMounted, ref, watch} from "vue";
+import {ElMessage} from "element-plus";
 
+const props = defineProps<{
+    lng: number,
+    lat: number,
+}>()
+
+const modelValue = defineModel<Array<any>>([])
+
+const name = ref('') // 当前点的地名
+const radius = ref('1') // 半径：公里
+
+const refInputName = ref()
+const refInputRadius = ref()
+
+
+
+onMounted(() => {
+    let clipboard = new ClipboardJS('.lnglat')
+})
+
+function addNewCircle(){
+    if(validateInput()){
+        modelValue.value.push({
+            center: [props.lng, props.lat],
+            radius: radius.value,
+            name: name.value
+        })
+    }
 }
+
+function validateInput(){
+    if (!props.lng || !props.lat){
+        ElMessage({
+            message: '坐标未选定',
+            type: 'warning'
+        })
+        return false
+    }
+    if (!name.value){
+        ElMessage({
+            message: '地名未填写',
+            type: 'warning'
+        })
+        refInputName.value.focus()
+        return false
+    }
+    if (!radius.value){
+        ElMessage({
+            message: '半径未填写',
+            type: 'warning'
+        })
+        refInputRadius.value.focus()
+        return false
+    }
+    return true
+}
+function move(index: number, direction: 'up'|'down'){
+    let indexExchange = direction === 'up'? index - 1 : index + 1
+    let tempItem = modelValue.value[index]
+    let preItem = modelValue.value[indexExchange]
+    let tempData = modelValue.value // 临时数组
+    tempData[indexExchange] = tempItem
+    tempData[index] = preItem
+    modelValue.value = [...tempData]
+}
+function circleDelete(index: number){
+    modelValue.value.splice(index, 1)
+}
+
+watch(radius, newValue => {
+    if (newValue < 0) {
+        radius.value = 0
+    }
+})
 </script>
 
 <style scoped lang="scss">

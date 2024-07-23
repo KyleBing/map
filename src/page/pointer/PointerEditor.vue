@@ -15,7 +15,7 @@
             <div class="card editor-panel">
                 <div class="form-title">
                     <div class="collapse-btn">
-                        <ElButton size="mini" @click="toggleEditPanel">
+                        <ElButton size="small" @click="toggleEditPanel">
                             <i v-if="isShowingEdit" class="el-icon-arrow-up"></i>
                             <i v-else class="el-icon-arrow-down"></i>
                             折叠面板
@@ -32,7 +32,7 @@
                     v-if="formPointer && isShowingEdit"
                     :model="formPointer"
                     :rules="formPointerRules"
-                    size="mini"
+                    size="small"
                     label-width="70px"
                 >
                     <ElFormItem label="点图名" prop="name">
@@ -62,7 +62,7 @@
         <div class="float-panel">
             <!-- 搜索面板 -->
             <div class="search-panel card">
-                <ElForm inline @submit="search" size="mini">
+                <ElForm inline @submit="search" size="small">
                     <ElFormItem class="mb-0" label="地址">
                         <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
                     </ElFormItem>
@@ -71,7 +71,7 @@
                     </ElFormItem>
                 </ElForm>
 
-                <ElForm inline class="mt-1" size="mini">
+                <ElForm inline class="mt-1" size="small">
                     <ElFormItem class="mb-0" label="经度">
                         <ElInput style="width:140px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
                     </ElFormItem>

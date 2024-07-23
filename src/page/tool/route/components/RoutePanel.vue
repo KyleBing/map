@@ -22,12 +22,12 @@
         </ElDialog>
 
         <div class="toolbar">
-            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制 JSON 数据</ElButton>
-            <ElButton size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</ElButton>
+            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="small" type="info" icon="el-icon-document-copy">复制 JSON 数据</ElButton>
+            <ElButton size="small" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</ElButton>
         </div>
         <div class="toolbar">
-            <ElButton size="mini" type="warning" @click="$emit('setData', routePathLocal.reverse())" icon="el-icon-sort">倒序</ElButton>
-            <ElSelect size="mini" class="ml-1" v-model="currentPolicy" placeholder="请选择">
+            <ElButton size="small" type="warning" @click="$emit('setData', routePathLocal.reverse())" icon="el-icon-sort">倒序</ElButton>
+            <ElSelect size="small" class="ml-1" v-model="currentPolicy" placeholder="请选择">
                 <ElOption
                     v-for="item in policyArray"
                     :key="item.label"
@@ -35,7 +35,7 @@
                     :value="item.value">
                 </ElOption>
             </ElSelect>
-            <ElButton class="ml-1" size="mini" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</ElButton>
+            <ElButton class="ml-1" size="small" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</ElButton>
         </div>
 
         <table class="log">
@@ -62,7 +62,7 @@
                     <ElInput
                         @keyup.native.enter="addNewRoutePointWithKeyEnter"
                         clearable
-                        ref="inputName" class="input-focus" size="mini"
+                        ref="inputName" class="input-focus" size="small"
                         placeholder="标记名"
                         v-model="pointerName"/>
                 </td>
@@ -70,7 +70,7 @@
                     <ElInput
                         @keyup.native.enter="addNewRoutePointWithKeyEnter"
                         clearable
-                        ref="inputNote" class="input-focus" size="mini"
+                        ref="inputNote" class="input-focus" size="small"
                         placeholder="备注" type="textarea" :rows="1"
                         v-model="pointerNote"/>
                 </td>
@@ -84,7 +84,7 @@
                     </div>
                 </td>
                 <td>
-                    <ElButton size="mini" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</ElButton>
+                    <ElButton size="small" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</ElButton>
                 </td>
             </tr>
 

@@ -3,7 +3,7 @@
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
         <div class="float-panel">
             <div class="search-panel card">
-                <ElForm inline  size="mini">
+                <ElForm inline  size="small">
                     <ElFormItem class="mb-0" label="地址">
                         <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="address"></ElInput>
                     </ElFormItem>
@@ -12,7 +12,7 @@
                     </ElFormItem>
                 </ElForm>
 
-                <ElForm inline class="mt-1" size="mini">
+                <ElForm inline class="mt-1" size="small">
                     <ElFormItem class="mb-0" label="经度">
                         <ElInput style="width:140px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
                     </ElFormItem>

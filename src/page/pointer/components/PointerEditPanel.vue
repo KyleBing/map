@@ -21,9 +21,9 @@
         </ElDialog>
 
         <div class="toolbar">
-            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="mini" type="info" icon="el-icon-document-copy">复制 JSON 数据</ElButton>
-            <ElButton size="mini" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</ElButton>
-            <ElButton class="ml-1" size="mini" type="primary" @click="$emit('showPointer', null)" icon="el-icon-position">展示点图</ElButton>
+            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="small" type="info" icon="el-icon-document-copy">复制 JSON 数据</ElButton>
+            <ElButton size="small" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</ElButton>
+            <ElButton class="ml-1" size="small" type="primary" @click="$emit('showPointer', null)" icon="el-icon-position">展示点图</ElButton>
         </div>
         <table class="table-record">
             <thead>
@@ -50,7 +50,7 @@
                     <ElInput
                         @keyup.native.enter="addNewPointerWithKeyEnter"
                         clearable
-                        ref="inputName" class="input-focus" size="mini"
+                        ref="inputName" class="input-focus" size="small"
                         placeholder="标记名"
                         v-model="pointerName"/>
                 </td>
@@ -58,12 +58,12 @@
                     <ElInput
                         @keyup.native.enter="addNewPointerWithKeyEnter"
                         clearable
-                        ref="inputNote" class="input-focus" size="mini"
+                        ref="inputNote" class="input-focus" size="small"
                         placeholder="备注" type="textarea" :rows="1"
                         v-model="pointerNote"/>
                 </td>
                 <td>
-                    <ElSelect size="mini" v-model="pointerType">
+                    <ElSelect size="small" v-model="pointerType">
                         <ElOption label="白色" value="白色">白色</ElOption>
                         <ElOption label="黄色" value="黄色">黄色</ElOption>
                         <ElOption label="黑色" value="黑色">黑色</ElOption>
@@ -81,7 +81,7 @@
                     </div>
                 </td>
                 <td>
-                    <ElButton size="mini" type="success" @click="addNewPointer" icon="el-icon-plus">添加</ElButton>
+                    <ElButton size="small" type="success" @click="addNewPointer" icon="el-icon-plus">添加</ElButton>
                 </td>
             </tr>
 

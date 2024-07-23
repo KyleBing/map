@@ -22,13 +22,13 @@
             >
                 <ElButton
                     v-if="pointer.id !== undefined"
-                    type="text" size="mini"
+                    type="text" size="small"
                     @click="goToEditCurrentPointer"
                     icon="el-icon-edit-outline">编辑</ElButton>
             </div>
 <!--            <div class="button-center">
                 <ElButton
-                    type="text" size="mini"
+                    type="text" size="small"
                     @click="$emit('openInGaodeApp')"
                     icon="el-icon-position">打开高德导航</ElButton>
             </div>-->

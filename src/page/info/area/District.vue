@@ -3,7 +3,7 @@
         <pointer-detail-panel :pointer="pointerInfo"/>
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
         <div class="card input-panel">
-            <ElForm inline size="mini">
+            <ElForm inline size="small">
                 <ElFormItem>
                     <ElInput placeholder="区域编码" v-model="pointerInfo.adcode"/>
                 </ElFormItem>

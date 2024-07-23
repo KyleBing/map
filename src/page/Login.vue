@@ -35,7 +35,7 @@ import {useProjectStore} from "@/pinia.ts";
 import {useRoute, useRouter} from "vue-router";
 import {ElMessage} from "element-plus";
 import {getAuthorization, setAuthorization} from "@/utility.ts";
-import {AnimateHeartCanvas} from "animate-heart-canvas/animate-heart-canvas.js";
+// import {AnimateHeartCanvas} from "animate-heart-canvas/animate-heart-canvas.js";
 
 
 const store = useProjectStore()
@@ -54,16 +54,16 @@ const loginRules = reactive({
     password: {required: true, message: '请填写密码', trigger: 'blur'},
 })
 const isInLoginProcess = ref(false) // 登录中状态展示
-const animatedBg = ref(null)
+// const animatedBg = ref(null)
 
 
 onMounted(()=>{
     height.value = innerHeight
-    animatedBg.value = new AnimateHeartCanvas(0, 360, 50, 20, 100, '#eee')
+    // animatedBg.value = new AnimateHeartCanvas(0, 360, 50, 20, 100, '#eee')
 })
 
 onUnmounted(()=>{
-    animatedBg.value.destroy()
+    // animatedBg.value.destroy()
 })
 
 function submit() {

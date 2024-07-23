@@ -5,11 +5,11 @@
             <div class="mb-2">
                 <input accept=".gpx" id="inputFile" type="file" @change="fileChange($event.target.files)">
                 <label for="inputFile">
-                    <ElTag size="mini" type="primary" icon="el-icon-tickets">选择 gpx 文件</ElTag>
+                    <ElTag size="small" type="primary" icon="el-icon-tickets">选择 gpx 文件</ElTag>
                 </label>
             </div>
 
-            <ElDescriptions border size="mini" :column="1" direction="horizontal" v-if="xmlObj && xmlObj.gpx">
+            <ElDescriptions border size="small" :column="1" direction="horizontal" v-if="xmlObj && xmlObj.gpx">
                 <ElDescriptionsItem label="文件名">{{xmlFile.name}}</ElDescriptionsItem>
                 <ElDescriptionsItem label="路线名">{{xmlObj.gpx.trk.name}}</ElDescriptionsItem>
                 <ElDescriptionsItem label="数据点">{{pathPointers.length}}个</ElDescriptionsItem>
@@ -18,18 +18,18 @@
                 <ElDescriptionsItem v-if="path" label="总长">{{pathLength}}</ElDescriptionsItem>
             </ElDescriptions>
 
-            <ElForm inline size="mini" class="mt-1" label-width="70px">
+            <ElForm inline size="small" class="mt-1" label-width="70px">
 
                 <div class="move-pad mb-1">
                     <div class="up">
-                        <ElButton size="mini"  @click=offsetMoveUp(5) type="primary" class="p-1">↑</ElButton>
+                        <ElButton size="small"  @click=offsetMoveUp(5) type="primary" class="p-1">↑</ElButton>
                     </div>
                     <div class="middle">
-                        <ElButton size="mini"  @click=offsetMoveLeft(5) type="primary" class="mr-2 p-1" >←</ElButton>
-                        <ElButton size="mini"  @click=offsetMoveRight(5) type="primary" class="ml-2 p-1" >→</ElButton>
+                        <ElButton size="small"  @click=offsetMoveLeft(5) type="primary" class="mr-2 p-1" >←</ElButton>
+                        <ElButton size="small"  @click=offsetMoveRight(5) type="primary" class="ml-2 p-1" >→</ElButton>
                     </div>
                     <div class="down">
-                        <ElButton size="mini"  @click=offsetMoveDown(5) type="primary" class="p-1">↓</ElButton>
+                        <ElButton size="small"  @click=offsetMoveDown(5) type="primary" class="p-1">↓</ElButton>
                     </div>
                 </div>
                 <ElFormItem label="偏移量" class="mb-1">
@@ -53,10 +53,10 @@
             </ElForm>
 
             <div class="mt-1">
-                <ElButton type="warning" size="mini" icon="el-icon-price-tag" @click="toggleMarkerDisplay">{{isMarkerShowed? '隐藏': '显示'}}标签</ElButton>
-                <ElButton type="primary" size="mini" icon="el-icon-map-location" @click="togglePathDisplay">{{isPathShowed? '隐藏': '显示'}}路径</ElButton>
-<!--                <ElButton type="success" size="mini" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</ElButton>-->
-<!--                <ElButton type="success" size="mini" icon="el-icon-medal-1" @click="toggleKmDisplay"-->
+                <ElButton type="warning" size="small" icon="el-icon-price-tag" @click="toggleMarkerDisplay">{{isMarkerShowed? '隐藏': '显示'}}标签</ElButton>
+                <ElButton type="primary" size="small" icon="el-icon-map-location" @click="togglePathDisplay">{{isPathShowed? '隐藏': '显示'}}路径</ElButton>
+<!--                <ElButton type="success" size="small" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</ElButton>-->
+<!--                <ElButton type="success" size="small" icon="el-icon-medal-1" @click="toggleKmDisplay"-->
 <!--                           v-if="pathPointers[0] && pathPointers[0].extensions && pathPointers[0].extensions.distance">切换公里数显示</ElButton>-->
             </div>
         </div>
