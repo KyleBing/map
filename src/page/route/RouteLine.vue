@@ -13,9 +13,6 @@
                 @labelToggle="toggleLabel"/>
         </div>
 
-        <!-- 地图 -->
-        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
-
         <!-- DETAIL INFO -->
         <RouteDetailPanel
             v-if="activeLineObj && (!store.isInPortraitMode || !isRouteListShowed)"
@@ -23,6 +20,11 @@
             :drivingInfo="drivingInfo"
             @openInGaodeApp="openInGaodeApp"
         />
+
+        <!-- 地图 -->
+        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
+
+
     </div>
 </template>
 
@@ -42,8 +44,11 @@ import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} fro
 import {EntityRoute} from "@/page/route/Route.ts";
 
 const MY_POSITION = [117.129533, 36.685668]
+
 let AMap = null
-let map = null
+let mapInstance = null
+const currentDragRouting = null  // 当前导航路线
+
 
 const store = useProjectStore()
 const route = useRoute()
@@ -51,7 +56,6 @@ const router = useRouter()
 
 const isLoading = ref(false)
 const activeLineObj = ref<EntityRoute>(null) // 当前 Line 对象
-const currentDragRouting = ref(null)  // 当前导航路线
 
 const isMarkerShowed = ref(true)
 const currentMarkers = ref([]) // 地图上的 markers
@@ -76,12 +80,12 @@ onMounted(() => {
         })
         .then(mapItem => {
             AMap = mapItem
-            map = new AMap.Map('container', {
+            mapInstance = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
             })
-            map.addControl(new AMap.ToolBar())
-            map.addControl(new AMap.Scale())
+            mapInstance.addControl(new AMap.ToolBar())
+            mapInstance.addControl(new AMap.Scale())
             if (route.query.lineId) {
                 getLineInfo(route.query.lineId!)
             }
@@ -105,9 +109,9 @@ function toggleLabel(){
 function openInGaodeApp(){
     let originLnglat = activeLineObj.value.pathArray[0].position // [lng, lat]
     let destLnglat = activeLineObj.value.pathArray[activeLineObj.value.pathArray.length - 1].position // [lng, lat]
-    map.plugin('AMap.Driving', () => {
+    mapInstance.plugin('AMap.Driving', () => {
         let currentDriving = new AMap.Driving({
-            map: map,
+            map: mapInstance,
             policy: AMap.DrivingPolicy.LEAST_TIME
         })
         currentDriving.search(
@@ -152,8 +156,8 @@ function getLineInfo(lineId: string) {
         .then(res => {
             activeLineObj.value = res.data
             activeLineObj.value.pathArray = JSON.parse(Base64.decode(activeLineObj.value.paths))
-            loadLine(map, activeLineObj.value)
-            loadLineLabels(map, activeLineObj.value)
+            loadLine(mapInstance, activeLineObj.value)
+            loadLineLabels(mapInstance, activeLineObj.value)
         })
 }
 
@@ -169,14 +173,14 @@ function loadLine(map, line) {
     isMarkerShowed.value = true
 
     // 切换线路之前如果存在路线，销毁已存在的路线
-    if (currentDragRouting.value) {
-        currentDragRouting.value.destroy()
-        currentDragRouting.value = null
+    if (currentDragRouting) {
+        currentDragRouting.destroy()
+        currentDragRouting = null
     }
     map.plugin('AMap.DragRoute', () => {
         // path 是驾车导航的起、途径和终点，最多支持16个途经点
         let path = line.pathArray.map (item => item.position)
-        currentDragRouting.value = new AMap.DragRoute(map, path, line.policy, {
+        currentDragRouting = new AMap.DragRoute(map, path, line.policy, {
             startMarkerOptions: {
                 offset: new AMap.Pixel(-13, -43),
                 icon: new AMap.Icon({ // 设置途经点的图标
@@ -210,7 +214,7 @@ function loadLine(map, line) {
         })
 
         // 路线规划完成时
-        currentDragRouting.value.on('complete', res => {
+        currentDragRouting.on('complete', res => {
             // 路线规划完成后，返回的路线数据：设置距离、行驶时间
             let lineData = res.data.routes[0]
             let distance =  (lineData.distance / 1000).toFixed(1) // m -> km
@@ -226,7 +230,7 @@ function loadLine(map, line) {
         })
 
         // 查询导航路径并开启拖拽导航
-        currentDragRouting.value.search()
+        currentDragRouting.search()
     })
 }
 
@@ -326,18 +330,18 @@ const isRouteListShowed = ref(true) // route list 是否显示
 
 
 watch(()=>route.query.lineId, newValue => {
-    currentDragRouting.value && currentDragRouting.value.destroy() // 销毁行程规划
-    map.clearInfoWindow() // 清除地图上的信息窗体
-    map.clearMap() // 删除所有 Marker
+    currentDragRouting && currentDragRouting.destroy() // 销毁行程规划
+    mapInstance.clearInfoWindow() // 清除地图上的信息窗体
+    mapInstance.clearMap() // 删除所有 Marker
     getLineInfo(newValue)
 })
 
 onUnmounted(() => {
-    currentDragRouting.value && currentDragRouting.value.destroy() // 销毁行程规划
-    map.clearInfoWindow() // 清除地图上的信息窗体
-    map.clearMap() // 删除所有 Marker
-    map.destroy() // 销毁地图，释放内存
-    map = null
+    currentDragRouting && currentDragRouting.destroy() // 销毁行程规划
+    mapInstance.clearInfoWindow() // 清除地图上的信息窗体
+    mapInstance.clearMap() // 删除所有 Marker
+    mapInstance.destroy() // 销毁地图，释放内存
+    mapInstance = null
 })
 </script>
 

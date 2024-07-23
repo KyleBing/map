@@ -1,7 +1,9 @@
 import request from "./request";
+import {EntityAuthorization} from "@/utility.ts";
+import {ServerResponse} from "@/api/ServerResponse.ts";
 
 export default {
-    login(requestData) {return request('post', null, requestData, false, null, 'user/login')},
+    login(requestData): Promise<ServerResponse> {return request('post', null, requestData, false, null, 'user/login')},
     register(requestData) {return request('post', {}, requestData, false, null, 'user/register')},
 
 

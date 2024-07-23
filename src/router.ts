@@ -3,6 +3,7 @@ import Login from "./page/Login.vue"
 import Register from "./page/Register.vue"
 import Layout from "./layout/Layout.vue"
 import Logout from "./page/Logout.vue"
+import {useProjectStore} from "@/pinia.ts";
 // import {useProjectStore} from "./pinia.ts"
 
 
@@ -111,11 +112,11 @@ const FIXED_ROUTES: Array<RouteRecordRaw> = [
         meta: {title: '退出登录', showInMenu: false, icon: 'BottomRight',},
         component: Logout,
     },
-    // {
-    //     name: 'Login', path: '/login',
-    //     meta: {title: '登录', showInMenu: false, icon: 'el-icon-user-solid',},
-    //     component: Login,
-    // },
+    {
+        name: 'Login', path: '/login',
+        meta: {title: '登录', showInMenu: false, icon: 'el-icon-user-solid',},
+        component: () => import('./page/Login.vue'),
+    },
     // {
     //     name: 'Register', path: '/register',
     //     meta: {title: '注册', showInMenu: false, icon: 'el-icon-user-solid',},
@@ -133,17 +134,10 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes: FIXED_ROUTES
 })
-//
-// const store = useProjectStore()
-// router.afterEach((to, from) => {
-//     if (store.isInPortraitMode) { // 适配移动端 路由跳转后，隐藏菜单
-//         store.isShowingMenuToggleBtn = true
-//     }
-// })
 
-// router.beforeEach((to, from, next) => {
-//     next()
-// })
+router.beforeEach((to, from, next) => {
+    next()
+})
 
 export {
     router,
