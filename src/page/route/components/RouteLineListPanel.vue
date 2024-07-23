@@ -2,8 +2,8 @@
     <div :class="['list-panel', {collapsed: !isShowPanel}] " v-loading="isLoading">
         <div class="list-panel-header">
             <div class="title">路线列表</div>
-            <ElButton size="small" icon="el-icon-monitor" type="default" @click="togglePanel">折叠/展开</ElButton>
-            <ElButton size="small" icon="el-icon-price-tag" type="default" @click="toggleLabel">切换标签显示</ElButton>
+            <ElButton size="small" icon="Minus" type="info" @click="togglePanel">折叠/展开</ElButton>
+            <ElButton size="small" icon="PriceTag" type="info" @click="toggleLabel">切换标签显示</ElButton>
         </div>
         <ElTabs
             v-if="isShowPanel"
@@ -13,10 +13,10 @@
             <ElTabPane label="我的" name="mine">
                 <div class="route-line-list" :style="`max-height: ${store.windowInsets.height - 300}px`">
                     <div
-                        @click="$emit('choseLine', line.id)"
+                        @click="emit('choseLine', line.id)"
                         :class="[
                             'route-line-list-item',
-                            {active: Number($route.query.lineId) === line.id}
+                            {active: Number(route.query.lineId) === line.id}
                         ]"
                         v-for="line in routeLineListMine" :key="line.id"
                     >
@@ -29,10 +29,10 @@
             <ElTabPane label="其它公开路线" name="other">
                 <div class="route-line-list" :style="`max-height: ${store.windowInsets.height - 300}px`">
                     <div
-                        @click="$emit('choseLine', line.id)"
+                        @click="emit('choseLine', line.id)"
                         :class="[
                             'route-line-list-item',
-                            {active: Number($route.query.lineId) === line.id}
+                            {active: Number(route.query.lineId) === line.id}
                         ]"
                         v-for="line in routeLineListPublic" :key="line.id"
                     >
@@ -47,97 +47,99 @@
 
 </template>
 
-<script>
+<script lang="ts" setup>
 import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64";
 import {dateFormatter} from "@/utility";
 import axios from "axios";
 import {useProjectStore} from "@/pinia";
+import {onMounted, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {EntityRoute} from "@/page/route/Route.ts";
 
-export default {
-    name: "PointerListPanel",
-    data(){
-        return {
-            store: useProjectStore(),
+const store = useProjectStore()
+const route = useRoute()
+const router = useRouter()
 
-            showContent: true,
-            currentTab: 'mine', // 我的
-            isLoading: false,
-            routeLineListPublic: [],
-            routeLineListMine: [],
-            // pager
-            pager: {
-                pageSize: 100,
-                pageNo: 1,
-                total: 0
-            },
-            isShowPanel: true,
-        }
-    },
-    mounted() {
-        this.getRouteList()
-    },
-    methods: {
-        togglePanel(){
-            this.isShowPanel = !this.isShowPanel
-        },
-        toggleLabel(){
-            this.$emit('labelToggle')
-        },
-        tabClick(tab, event){
-            // console.log(tab, event)
-        },
-        // 获取路线列表
-        getRouteList() {
-            this.isLoading = true
 
-            let requestDataPublic = {
-                isMine: "0", // 是否过滤自己的路线
-                pageNo: this.pager.pageNo,
-                pageSize: this.pager.pageSize
-            }
+const emit = defineEmits(['choseLine', 'labelToggle'])
 
-            let requestDataMine = {
-                isMine: "1", // 是否过滤自己的路线
-                pageNo: this.pager.pageNo,
-                pageSize: this.pager.pageSize
-            }
+const isShowContent = ref(true)
+const currentTab = ref('mine') // 我的
+const isLoading = ref(false)
+const routeLineListPublic = ref<Array<EntityRoute>>([])
+const routeLineListMine = ref<Array<EntityRoute>>([])
 
-            axios
-                .all([
-                    routeApi.list(requestDataPublic),
-                    routeApi.list(requestDataMine),
-                ])
-                .then(response => {
-                    this.routeLineListPublic = []
-                    this.routeLineListMine = []
+// pager
+const pager = ref({
+    pageSize: 100,
+    pageNo: 1,
+    total: 0
+})
+const isShowPanel = ref(true)
 
-                    let resPublic = response[0]
-                    let resMine = response[1]
+onMounted(()=>{
+    getRouteList()
+})
 
-                    this.routeLineListPublic = resPublic.data.list.map(item => {
-                        item.paths = Base64.decode(item.paths) || ''
-                        item.pathArray = item.paths && JSON.parse(item.paths)
-                        item.seasonsArray = item.seasons.split('、')
-                        item.date_init = dateFormatter(new Date(item.date_init))
-                        item.date_modify = dateFormatter(new Date(item.date_modify))
-                        return item
-                    })
-                    this.routeLineListMine = resMine.data.list.map(item => {
-                        item.paths = Base64.decode(item.paths) || ''
-                        item.pathArray = item.paths && JSON.parse(item.paths)
-                        item.seasonsArray = item.seasons.split('、')
-                        item.date_init = dateFormatter(new Date(item.date_init))
-                        item.date_modify = dateFormatter(new Date(item.date_modify))
-                        return item
-                    })
-                    this.isLoading = false
-                })
-                .catch(err => {
-                    this.isLoading = false
-                })
-        },
-    },
+function togglePanel(){
+    isShowPanel.value = !isShowPanel.value
+}
+function toggleLabel(){
+    emit('labelToggle')
+}
+function tabClick(tab, event){
+    // console.log(tab, event)
+}
+// 获取路线列表
+function getRouteList() {
+    isLoading.value = true
+
+    let requestDataPublic = {
+        isMine: "0", // 是否过滤自己的路线
+        pageNo: pager.value.pageNo,
+        pageSize: pager.value.pageSize
+    }
+
+    let requestDataMine = {
+        isMine: "1", // 是否过滤自己的路线
+        pageNo: pager.value.pageNo,
+        pageSize: pager.value.pageSize
+    }
+
+    axios
+        .all([
+            routeApi.list(requestDataPublic),
+            routeApi.list(requestDataMine),
+        ])
+        .then(response => {
+            routeLineListPublic.value = []
+            routeLineListMine.value = []
+
+            let resPublic = response[0]
+            let resMine = response[1]
+
+            routeLineListPublic.value = resPublic.data.list.map(item => {
+                item.paths = Base64.decode(item.paths) || ''
+                item.pathArray = item.paths && JSON.parse(item.paths)
+                item.seasonsArray = item.seasons.split('、')
+                item.date_init = dateFormatter(new Date(item.date_init))
+                item.date_modify = dateFormatter(new Date(item.date_modify))
+                return item
+            })
+            routeLineListMine.value = resMine.data.list.map(item => {
+                item.paths = Base64.decode(item.paths) || ''
+                item.pathArray = item.paths && JSON.parse(item.paths)
+                item.seasonsArray = item.seasons.split('、')
+                item.date_init = dateFormatter(new Date(item.date_init))
+                item.date_modify = dateFormatter(new Date(item.date_modify))
+                return item
+            })
+            isLoading.value = false
+        })
+        .catch(err => {
+            isLoading.value = false
+        })
 }
 </script>
 

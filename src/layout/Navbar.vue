@@ -9,7 +9,7 @@
             :collapse="store.navMenuIsClosed"
             :collapse-transition="false"
         >
-            <template v-for="(submenu,index) in menus">
+            <template v-for="( submenu, index ) in menus">
                 <ElSubMenu v-if="submenu.children && submenu.children.length > 0" :index="submenu.path">
                     <template #title>
                         <ElIcon>

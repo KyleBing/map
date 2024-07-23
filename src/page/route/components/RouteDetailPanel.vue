@@ -58,56 +58,49 @@
     </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 // import QRCode from "../../../lib/qr.js"
-import DrivingInfo from "@/page/route/components/DrivingInfo.vue";
 import {policyMap} from "@/page/route/DrivingPolicy"
-import {marked} from "marked";
+// import {marked} from "marked";
 import {useProjectStore} from "@/pinia";
+import {useRoute, useRouter} from "vue-router";
+import {computed, onMounted, ref} from "vue";
+import {EntityRoute} from "@/page/route/Route.ts";
 
-export default {
-    name: "RouteDetailPanel",
-    components: {DrivingInfo},
-    props:{
-        line:{
-            type: Object
-        },
-        drivingInfo: {
-            type: Object
-        }
-    },
-    data(){
-        return {
-            store: useProjectStore(),
+const props = defineProps<{
+    line: EntityRoute,
+    drivingInfo: {}
+}>()
 
-            showContent: true,
-            qrImg: '',
-            policyMap,
-            height: innerHeight * 0.5
-        }
-    },
-    mounted() {
-        // this.qrImg = QRCode.generatePNG(window.location.href)
-    },
-    computed:{
-        contentHtml(){
-            return marked.parse(this.line.note)
-        }
-    },
-    methods: {
-        toggleContent(){
-            this.showContent = !this.showContent
-        },
-        goToEditCurrentLine(){
-            this.$router.push({
-                name: 'RouteEditor',
-                query: {
-                    lineId: this.line.id
-                }
-            })
-        }
-    }
+const store = useProjectStore()
+const route = useRoute()
+const router = useRouter()
+
+
+const showContent = ref(true)
+const qrImg = ref('')
+const height = ref(innerHeight * 0.5)
+
+onMounted(()=>{
+    // qrImg.value = QRCode.generatePNG(window.location.href)
+})
+
+const contentHtml = computed(() => {
+    // return marked.parse(props.line.note)
+})
+
+function toggleContent(){
+    showContent.value = !showContent.value
 }
+function goToEditCurrentLine(){
+    router.push({
+        name: 'RouteEditor',
+        query: {
+            lineId: props.line.id
+        }
+    })
+}
+
 </script>
 
 <style lang="scss" scoped>

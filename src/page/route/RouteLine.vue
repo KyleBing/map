@@ -1,15 +1,14 @@
 <template>
     <div class="map-container">
-
         <div class="button-float btn-router-list"
              @click="isRouteListShowed = true"
              v-if="!isRouteListShowed && store.isInPortraitMode">
-            <i class="el-icon-tickets"></i>
+            <ELIcon><Tickets/></ELIcon>
         </div>
 
         <!-- 路线列表 -->
         <div class="float-route-list-panel" v-if="isRouteListShowed">
-            <route-line-list-panel
+            <RouteLineListPanel
                 @choseLine="changeLine"
                 @labelToggle="toggleLabel"/>
         </div>
@@ -18,7 +17,7 @@
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
 
         <!-- DETAIL INFO -->
-        <route-detail-panel
+        <RouteDetailPanel
             v-if="activeLineObj && (!store.isInPortraitMode || !isRouteListShowed)"
             :line="activeLineObj"
             :drivingInfo="drivingInfo"
@@ -31,7 +30,6 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import ICON from "@/assets/icons"
 import RouteDetailPanel from "./components/RouteDetailPanel.vue"
-import mapConfig from "../../mapConfig";
 import routeApi from "@/api/routeApi";
 
 import {Base64} from "js-base64"
@@ -40,6 +38,7 @@ import axios from "axios";
 import {useProjectStore} from "@/pinia";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
+import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig.ts";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -65,7 +64,7 @@ const drivingInfo = ref({
 onMounted(() => {
     AMapLoader
         .load({
-            key: mapConfig.key_web_js, // 开发应用的 ID
+            key: key_web_js, // 开发应用的 ID
             version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
             plugins: [
                 'AMap.ToolBar', // 缩放按钮
@@ -83,7 +82,7 @@ onMounted(() => {
             map.addControl(new AMap.ToolBar())
             map.addControl(new AMap.Scale())
             if (route.query.lineId) {
-                getLineInfo(route.query.lineId)
+                getLineInfo(route.query.lineId!)
             }
         })
         .catch(e => {
@@ -265,7 +264,7 @@ function getWeather(adcode){
     return axios({
         url: 'https://restapi.amap.com/v3/weather/weatherInfo',
         params: {
-            key: mapConfig.key_service,
+            key: key_service,
             city: adcode
         }
     })
@@ -293,8 +292,8 @@ function addMarker(map, item, index) {
                   <div class="marker-content">
                        <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                        <div class="view">
-                           <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
-                              <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
+                           <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
+                              <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
                            </a>
                        </div>
                   </div>

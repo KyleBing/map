@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import {EntityAuthorization} from "@/utility.ts";
 
 export const useProjectStore = defineStore('storeProject', {
     state: ()=>({
@@ -10,7 +11,7 @@ export const useProjectStore = defineStore('storeProject', {
         navMenuIsClosed: false, // navMenu 是否折叠状态
         isInMobile: false, // 是否是手机端
         isShowingMenuToggleBtn: false, // 是否显示移动端的菜单切换按钮
-        authorization: null , // authorization
+        authorization: null as EntityAuthorization, // authorization
     }),
     getters: {
         isInPortraitMode (state) {

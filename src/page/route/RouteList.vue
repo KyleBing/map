@@ -189,6 +189,7 @@ import {dateFormatter} from "@/utility";
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {ElMessage, ElNotification} from "element-plus";
+import {EntityRoute} from "@/page/route/Route.ts";
 
 const store = useProjectStore()
 const route = useRoute()
@@ -201,11 +202,8 @@ const isLoading = ref(false)
 const editingRouteId = ref(null)
 const tableData = ref([])
 const modalEdit = ref(false) // modal show or not
-const groupOptions = [
-    {id: 1, name: '管理员'},
-    {id: 2, name: '普通路线'},
-]
-const formRoute = ref({
+
+const formRoute = ref<EntityRoute>({
     name: '', // *路线名
     area: '', // *地域
     road_type: '', // *路面类型
@@ -280,7 +278,7 @@ function clearForm() {
         name: '', // *路线名
         area: '', // *地域
         road_type: '', // *路面类型
-        policy: '', // 路线规划策略
+        policy: 0, // 路线规划策略
         seasonsArray: [], // *[适用季节]
         video_link: '', // 路径视频演示
         paths: '', // *路径点
@@ -291,16 +289,16 @@ function clearForm() {
 }
 function closeModal(done) {
     $confirm('确认关闭？')
-        .then(_ => {
+        .then(() => {
             editingRouteId.value = null
             modalEdit.value = false
             done();
         })
-        .catch(_ => {
+        .catch(() => {
         })
 }
 function submit() {
-    refForm.value.validate((valid) => {
+    refForm.value.validate(valid => {
         if (valid) {
             if (formRoute.value.paths){
                 try {
@@ -369,12 +367,12 @@ function routeNewSubmit() {
 
 
 // pagination
-function pagerSizeChange(newPageSize) {
+function pagerSizeChange(newPageSize: number) {
     pager.value.pageNo = 1
     pager.value.pageSize = newPageSize
     getRouteList()
 }
-function currentPageChange(newCurrentPage) {
+function currentPageChange(newCurrentPage: number) {
     pager.value.pageNo = 1
     pager.value.pageNo = newCurrentPage
     getRouteList()
@@ -409,12 +407,12 @@ function getRouteList() {
             isLoading.value = false
         })
 }
-function goEdit(routeLine) {
+function goEdit(routeLine: EntityRoute) {
     editingRouteId.value = routeLine.uid
     Object.assign(formRoute.value, routeLine)
     modalEdit.value = true
 }
-function goDelete(route) {
+function goDelete(route: EntityRoute) {
     console.log(route)
     $confirm(`删除路线 ${route.name} (${route.area})`, '删除', {
         confirmButtonText: '确定',
@@ -437,7 +435,7 @@ function goDelete(route) {
     })
 }
 
-watch (()=>formRoute.seasonsArray, newValue => {
+watch (() => formRoute.value.seasonsArray, newValue => {
     formRoute.value.seasons = newValue.join('、')
 })
 </script>
