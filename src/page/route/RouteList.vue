@@ -130,7 +130,7 @@
                 :model="formRoute"
                 :rules="routeRules"
                 size="small"
-                ref="formRoute" label-width="100px">
+                ref="refForm" label-width="100px">
                 <ElFormItem label="路线名" prop="name">
                     <ElInput v-model="formRoute.name"/>
                 </ElFormItem>
@@ -180,273 +180,266 @@
         </ElDialog>
     </div>
 </template>
-<script>
+<script lang="ts" setup>
 import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64"
 import { policyArray, policyMap } from './DrivingPolicy'
 import {useProjectStore} from "@/pinia";
 import {dateFormatter} from "@/utility";
+import {computed, onMounted, reactive, ref, watch} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {ElMessage, ElNotification} from "element-plus";
 
-export default {
-    name: "RouteList",
-    data() {
-        return {
-            store: useProjectStore(),
+const store = useProjectStore()
+const route = useRoute()
+const router = useRouter()
 
-            isLoading: false,
-
-            editingRouteId: null,
-
-            tableData: [],
-            modalEdit: false, // modal show or not
-            groupOptions: [
-                {id: 1, name: '管理员'},
-                {id: 2, name: '普通路线'},
-            ],
-            formRoute: {
-                name: '', // *路线名
-                area: '', // *地域
-                road_type: '', // *路面类型
-                policy: 2, // 路线规划策略 默认为最短距离
-                seasonsArray: [], // *[适用季节]
-                video_link: '', // 路径视频演示
-                paths: '', // *路径点
-                note: '', // 备注
-                thumb_up: 0, // *点赞数
-                is_public: 1, // *是否公开
-            },
-            routeRules: {
-                name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
-                area: [{required: true, message: '请填写地域', trigger: 'blur'},],
-                policy: [{required: true, message: '请选择路线规划策略', trigger: 'blur'},],
-                road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
-                seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
-            },
-            // pager
-            pager: {
-                pageSize: 15,
-                pageNo: 1,
-                total: 0
-            },
-
-            policyArray, // 路线规划策略
-            policyMap, // 路线规划策略
-
-            formSearch: {
-                keyword: '',
-                dateRange: []
-            }
-        }
-    },
-    mounted() {
-        this.getRouteList()
-    },
-    computed: {
-        modalTitle() {
-            return this.editingRouteId ? '编辑路线' : '新增路线'
-        }
-    },
-    watch: {
-        'formRoute.seasonsArray'(newValue){
-            this.formRoute.seasons = newValue.join('、')
-        }
-    },
-    methods: {
-        search(){
-            this.getRouteList()
-        },
-        editRouteLine(routeInfo){
-            this.$router.push({
-                name: "RouteEditor",
-                query: {
-                    lineId: routeInfo.id
-                }
-            })
-        },
-        // 跳转到路经展示页面
-        showRoute(routeInfo){
-            this.$router.push({
-                name: "RouteLine",
-                query: {
-                    lineId: routeInfo.id
-                }
-            })
-        },
-        // route to line editor
-        addNewRouteWidthMap(){
-            this.$router.push({
-                name: 'RouteEditor'
-            })
-        },
-        addNewRoute() {
-            this.modalEdit = true
-            this.editingRouteId = null
-            this.clearForm()
-        },
-        clearForm() {
-            this.formRoute = {
-                name: '', // *路线名
-                area: '', // *地域
-                road_type: '', // *路面类型
-                policy: '', // 路线规划策略
-                seasonsArray: [], // *[适用季节]
-                video_link: '', // 路径视频演示
-                paths: '', // *路径点
-                note: '', // 备注
-                thumb_up: 0, // *点赞数
-                is_public: 1, // *是否公开
-            }
-        },
-        closeModal(done) {
-            this.$confirm('确认关闭？')
-                .then(_ => {
-                    this.editingRouteId = null
-                    this.modalEdit = false
-                    done();
-                })
-                .catch(_ => {
-                })
-        },
-        submit() {
-            this.$refs['formRoute'].validate((valid) => {
-                if (valid) {
-                    if (this.formRoute.paths){
-                        try {
-                            let convertObject = JSON.parse(this.formRoute.paths)
-                        } catch (err){
-                            this.$message.error('节点数据格式错误，请检查')
-                            return false
-                        }
-                    }
-
-                    if (this.editingRouteId) {
-                        this.routeModifySubmit()
-                    } else {
-                        this.routeNewSubmit()
-                    }
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
-            })
-        },
-        // 编辑
-        routeModifySubmit() {
-            // 为了断开最终数据与 formPointer 的关联
-            let requestData = {}
-            Object.assign(requestData, this.formRoute)
-            requestData.paths = Base64.encode(this.formRoute.paths)
-            routeApi
-                .modify(requestData)
-                .then(res => {
-                    this.$notify({
-                        title: res.message,
-                        position: 'top-right',
-                        type: 'success',
-                        onClose() {
-                        }
-                    })
-                    this.editingRouteId = null
-                    this.modalEdit = false
-                    this.getRouteList()
-                })
-                .catch(err => {
-                })
-        },
-        // 新增
-        routeNewSubmit() {
-            // 为了断开最终数据与 formPointer 的关联
-            let requestData = {}
-            Object.assign(requestData, this.formRoute)
-            requestData.paths = Base64.encode(this.formRoute.paths)
-            routeApi
-                .add(requestData)
-                .then(res => {
-                    this.$notify({
-                        title: res.message,
-                        position: 'top-right',
-                        type: 'success',
-                        onClose() {
-                        }
-                    })
-                    this.editingRouteId = null
-                    this.modalEdit = false
-                    this.getRouteList()
-                })
-        },
+const refForm = ref()
 
 
-        // pagination
-        pagerSizeChange(newPageSize) {
-            this.pager.pageNo = 1
-            this.pager.pageSize = newPageSize
-            this.getRouteList()
-        },
-        currentPageChange(newCurrentPage) {
-            this.pager.pageNo = 1
-            this.pager.pageNo = newCurrentPage
-            this.getRouteList()
-        },
+const isLoading = ref(false)
+const editingRouteId = ref(null)
+const tableData = ref([])
+const modalEdit = ref(false) // modal show or not
+const groupOptions = [
+    {id: 1, name: '管理员'},
+    {id: 2, name: '普通路线'},
+]
+const formRoute = ref({
+    name: '', // *路线名
+    area: '', // *地域
+    road_type: '', // *路面类型
+    policy: 2, // 路线规划策略 默认为最短距离
+    seasonsArray: [], // *[适用季节]
+    video_link: '', // 路径视频演示
+    paths: '', // *路径点
+    note: '', // 备注
+    thumb_up: 0, // *点赞数
+    is_public: 1, // *是否公开
+})
 
-        // 获取路线列表
-        getRouteList() {
-            this.isLoading = true
-            let requestData = {
-                isMine: "1", // 是否过滤自己的路线
-                pageNo: this.pager.pageNo,
-                pageSize: this.pager.pageSize,
-                keyword: this.formSearch.keyword,
-                dateRange: this.formSearch.dateRange
-            }
-            routeApi
-                .list(requestData)
-                .then(res => {
-                    this.isLoading = false
-                    this.pager = res.data.pager
-                    this.tableData = res.data.list.map(item => {
-                        item.paths = Base64.decode(item.paths) || ''
+const routeRules = reactive({
+    name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
+    area: [{required: true, message: '请填写地域', trigger: 'blur'},],
+    policy: [{required: true, message: '请选择路线规划策略', trigger: 'blur'},],
+    road_type: [{required: true, message: '请填写路面类型', trigger: 'blur'},],
+    seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
+})
+// pager
+const pager = ref({
+    pageSize: 15,
+    pageNo: 1,
+    total: 0
+})
+const formSearch = ref({
+    keyword: '',
+    dateRange: []
+})
 
-                        item.pathArray = item.paths && JSON.parse(item.paths)
-                        item.seasonsArray = item.seasons.split('、').filter(item => item !== '')
-                        item.date_init = dateFormatter(new Date(item.date_init))
-                        item.date_modify = dateFormatter(new Date(item.date_modify))
-                        return item
-                    })
-                })
-                .catch(err => {
-                    this.isLoading = false
-                })
-        },
-        goEdit(routeLine) {
-            this.editingRouteId = routeLine.uid
-            Object.assign(this.formRoute, routeLine)
-            this.modalEdit = true
-        },
-        goDelete(route) {
-            console.log(route)
-            this.$confirm(`删除路线 ${route.name} (${route.area})`, '删除', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                let requestData = {
-                    id: route.id
-                }
-                routeApi.delete(requestData)
-                    .then(res => {
-                            this.getRouteList();
-                            this.$notify({
-                                title: res.message,
-                                position: 'top-right',
-                                type: 'success'
-                            });
-                        }
-                    )
-            })
-        }
-    },
+onMounted(()=>{
+    getRouteList()
+})
 
+const modalTitle = computed(()=>{
+    return editingRouteId.value ? '编辑路线' : '新增路线'
+})
+
+function search(){
+    getRouteList()
 }
+function editRouteLine(routeInfo){
+    router.push({
+        name: "RouteEditor",
+        query: {
+            lineId: routeInfo.id
+        }
+    })
+}
+// 跳转到路经展示页面
+function showRoute(routeInfo){
+    router.push({
+        name: "RouteLine",
+        query: {
+            lineId: routeInfo.id
+        }
+    })
+}
+// route to line editor
+function addNewRouteWidthMap(){
+    router.push({
+        name: 'RouteEditor'
+    })
+}
+function addNewRoute() {
+    modalEdit.value = true
+    editingRouteId.value = null
+    clearForm()
+}
+function clearForm() {
+    formRoute.value = {
+        name: '', // *路线名
+        area: '', // *地域
+        road_type: '', // *路面类型
+        policy: '', // 路线规划策略
+        seasonsArray: [], // *[适用季节]
+        video_link: '', // 路径视频演示
+        paths: '', // *路径点
+        note: '', // 备注
+        thumb_up: 0, // *点赞数
+        is_public: 1, // *是否公开
+    }
+}
+function closeModal(done) {
+    $confirm('确认关闭？')
+        .then(_ => {
+            editingRouteId.value = null
+            modalEdit.value = false
+            done();
+        })
+        .catch(_ => {
+        })
+}
+function submit() {
+    refForm.value.validate((valid) => {
+        if (valid) {
+            if (formRoute.value.paths){
+                try {
+                    let convertObject = JSON.parse(formRoute.value.paths)
+                } catch (err){
+                    ElMessage.error('节点数据格式错误，请检查')
+                    return false
+                }
+            }
+
+            if (editingRouteId.value) {
+                routeModifySubmit()
+            } else {
+                routeNewSubmit()
+            }
+        } else {
+            console.log('error submit!!');
+            return false;
+        }
+    })
+}
+// 编辑
+function routeModifySubmit() {
+    // 为了断开最终数据与 formPointer 的关联
+    let requestData = {}
+    Object.assign(requestData, formRoute.value)
+    requestData.paths = Base64.encode(formRoute.value.paths)
+    routeApi
+        .modify(requestData)
+        .then(res => {
+            ElNotification({
+                title: res.message,
+                position: 'top-right',
+                type: 'success',
+                onClose() {
+                }
+            })
+            editingRouteId.value = null
+            modalEdit.value = false
+            getRouteList()
+        })
+        .catch(err => {
+        })
+}
+// 新增
+function routeNewSubmit() {
+    // 为了断开最终数据与 formPointer 的关联
+    let requestData = {}
+    Object.assign(requestData, formRoute.value)
+    requestData.paths = Base64.encode(formRoute.value.paths)
+    routeApi
+        .add(requestData)
+        .then(res => {
+            ElNotification({
+                title: res.message,
+                position: 'top-right',
+                type: 'success',
+                onClose() {
+                }
+            })
+            editingRouteId.value = null
+            modalEdit.value = false
+            getRouteList()
+        })
+}
+
+
+// pagination
+function pagerSizeChange(newPageSize) {
+    pager.value.pageNo = 1
+    pager.value.pageSize = newPageSize
+    getRouteList()
+}
+function currentPageChange(newCurrentPage) {
+    pager.value.pageNo = 1
+    pager.value.pageNo = newCurrentPage
+    getRouteList()
+}
+
+// 获取路线列表
+function getRouteList() {
+    isLoading.value = true
+    let requestData = {
+        isMine: "1", // 是否过滤自己的路线
+        pageNo: pager.value.pageNo,
+        pageSize: pager.value.pageSize,
+        keyword: formSearch.value.keyword,
+        dateRange: formSearch.value.dateRange
+    }
+    routeApi
+        .list(requestData)
+        .then(res => {
+            isLoading.value = false
+            pager.value = res.data.pager
+            tableData.value = res.data.list.map(item => {
+                item.paths = Base64.decode(item.paths) || ''
+
+                item.pathArray = item.paths && JSON.parse(item.paths)
+                item.seasonsArray = item.seasons.split('、').filter(item => item !== '')
+                item.date_init = dateFormatter(new Date(item.date_init))
+                item.date_modify = dateFormatter(new Date(item.date_modify))
+                return item
+            })
+        })
+        .catch(err => {
+            isLoading.value = false
+        })
+}
+function goEdit(routeLine) {
+    editingRouteId.value = routeLine.uid
+    Object.assign(formRoute.value, routeLine)
+    modalEdit.value = true
+}
+function goDelete(route) {
+    console.log(route)
+    $confirm(`删除路线 ${route.name} (${route.area})`, '删除', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(() => {
+        let requestData = {
+            id: route.id
+        }
+        routeApi.delete(requestData)
+            .then(res => {
+                    getRouteList();
+                    ElNotification({
+                        title: res.message,
+                        position: 'top-right',
+                        type: 'success'
+                    });
+                }
+            )
+    })
+}
+
+watch (()=>formRoute.seasonsArray, newValue => {
+    formRoute.value.seasons = newValue.join('、')
+})
 </script>
 
 <style lang="scss">

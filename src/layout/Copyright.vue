@@ -1,6 +1,5 @@
 <template>
     <div class="copyright" :style="`height: ${height}px`">
-
         <dl><dt>用户：</dt>
             <dd v-if="store.authorization && store.authorization.nickname">{{ store.authorization.nickname }}
                 <span @click="logout" class="btn-logout">退出</span>
@@ -50,7 +49,7 @@ function login(){
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-end;
-    padding: 30px;
+    padding: 30px 20px;
     dl{
         font-size: 0.7rem;
         line-height: 1.5;

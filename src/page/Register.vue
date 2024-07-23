@@ -60,7 +60,7 @@
 import userApi from "@/api/userApi";
 import {reactive, ref} from "vue";
 import {useProjectStore} from "@/pinia.ts";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import {ElNotification} from "element-plus";
 
 const store = useProjectStore()

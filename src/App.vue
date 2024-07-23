@@ -33,5 +33,5 @@ function checkTip(){
 </script>
 
 <style lang="scss">
-@import "./scss/plugin";
+@import "./scss/main";
 </style>

@@ -1,6 +1,6 @@
 <template>
-    <ElContainer>
-        <ElContainer>
+    <el-container>
+        <el-container>
             <transition
                 enter-active-class="animate__bounceInDown"
                 leave-active-class="animate__bounceOutUp"
@@ -16,13 +16,13 @@
             >
                 <Aside class="animate__animated" v-show="!store.isShowingMenuToggleBtn"/>
             </transition>
-            <ElContainer>
+            <el-container>
                 <el-main>
                     <RouterView/>
                 </el-main>
-            </ElContainer>
-        </ElContainer>
-    </ElContainer>
+            </el-container>
+        </el-container>
+    </el-container>
 </template>
 
 <script lang="ts" setup>
@@ -34,14 +34,14 @@ const store = useProjectStore()
 
 onMounted(() => {
     onResize()
-    window.onresize = onResize
+    window.addEventListener('resize', ()=>{
+        onResize()
+    })
 })
 
 function onResize() {
-    store.windowInsets = {
-        height: window.innerHeight,
-        width: window.innerWidth
-    }
+    store.windowInsets.height = window.innerHeight
+    store.windowInsets.width = window.innerWidth
 }
 function toggleMenu() {
     store.isShowingMenuToggleBtn = !store.isShowingMenuToggleBtn

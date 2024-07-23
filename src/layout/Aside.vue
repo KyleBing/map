@@ -32,9 +32,9 @@ onMounted(()=>{
 
 watch(store.windowInsets, () => {
     resizeComponents()
-})
+},{deep: true})
 
-function  resizeComponents(){
+function resizeComponents(){
     heightAside.value = store.isInPortraitMode? store.windowInsets.height - 50 : store.windowInsets.height// padding aside remove
     heightNavbar.value = heightAside.value - heightLogo.value - heightCopyright.value
     if (store.isInPortraitMode){

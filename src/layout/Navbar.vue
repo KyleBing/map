@@ -10,10 +10,13 @@
             :collapse-transition="false"
         >
             <template v-for="(submenu,index) in menus">
-                <ElSubmenu v-if="submenu.children && submenu.children.length > 0" :index="submenu.path">
-                    <template slot="title">
-                        <i :class="submenu.meta.icon"></i>
-                        <span slot="title">{{ submenu.meta.title }}</span>
+                <ElSubMenu v-if="submenu.children && submenu.children.length > 0" :index="submenu.path">
+                    <template #title>
+                        <ElIcon>
+                            <component :is="submenu.meta.icon"/>
+                        </ElIcon>
+
+                        <span>{{ submenu.meta.title }}</span>
                     </template>
                     <ElMenuItem
                         :class="{'is-active': menuItem.name === $route.name}"
@@ -21,23 +24,27 @@
                         :key="menuItem.path"
                         :index="`${submenu.path}/${menuItem.path}`">{{ menuItem.meta.title }}
                     </ElMenuItem>
-                </ElSubmenu>
+                </ElSubMenu>
 
                 <!-- 显示所有名不为 CategoryLink 的-->
                 <ElMenuItem
                     v-else-if="submenu.name !== 'CategoryLink'"
                     :index="submenu.path"
                 >
-                    <i :class="submenu.meta.icon"></i>
-                    <span slot="title">{{ submenu.meta.title }}</span>
+                    <ElIcon>
+                        <component :is="submenu.meta.icon"/>
+                    </ElIcon>
+                    <span>{{ submenu.meta.title }}</span>
                 </ElMenuItem>
                 <!--如果名为 CategoryLink，需要 email === 管理员账户才显示 -->
                 <ElMenuItem
                     v-else-if="getAuthorization().group_id === 1"
                     :index="submenu.path"
                 >
-                    <i :class="submenu.meta.icon"></i>
-                    <span slot="title">{{ submenu.meta.title }}</span>
+                    <ElIcon>
+                        <component :is="submenu.meta.icon"/>
+                    </ElIcon>
+                    <span>{{ submenu.meta.title }}</span>
                 </ElMenuItem>
             </template>
 
@@ -119,7 +126,7 @@ $hover-menu-bg: transparentize($color-main, 0.4);
 .ElRadio-group {
     padding: 10px;
 }
-.el-submenu{
+.el-sub-menu{
     .el-menu-item{
         line-height: 40px;
         height: 40px;
@@ -134,7 +141,7 @@ $hover-menu-bg: transparentize($color-main, 0.4);
     }
     &.is-active{
         background-color: $active-submenu-bg;
-        .el-submenu__title{
+        .el-sub-menu__title{
             color: $active-submenu-title;
             &:hover{
                 color: white;
@@ -171,7 +178,7 @@ $hover-menu-bg: transparentize($color-main, 0.4);
     }
 }
 
-.el-menu-item, .el-submenu__title{
+.el-menu-item, .el-sub-menu__title{
     line-height: 40px;
     height: 40px;
     font-size: 0.9rem;

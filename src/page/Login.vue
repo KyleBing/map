@@ -35,7 +35,7 @@ import {useProjectStore} from "@/pinia.ts";
 import {useRoute, useRouter} from "vue-router";
 import {ElMessage} from "element-plus";
 import {getAuthorization, setAuthorization} from "@/utility.ts";
-import {AnimateHeartCanvas} from "animate-heart-canvas";
+import {AnimateHeartCanvas} from "animate-heart-canvas/animate-heart-canvas.js";
 
 
 const store = useProjectStore()
