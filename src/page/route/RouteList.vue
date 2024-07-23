@@ -188,7 +188,7 @@ import {useProjectStore} from "@/pinia";
 import {dateFormatter} from "@/utility";
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {ElMessage, ElNotification} from "element-plus";
+import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {EntityRoute} from "@/page/route/Route.ts";
 
 const store = useProjectStore()
@@ -216,7 +216,7 @@ const formRoute = ref<EntityRoute>({
     is_public: 1, // *是否公开
 })
 
-const routeRules = reactive({
+const routeRules = reactive<FormRules<EntityRoute>>({
     name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
     area: [{required: true, message: '请填写地域', trigger: 'blur'},],
     policy: [{required: true, message: '请选择路线规划策略', trigger: 'blur'},],
@@ -245,7 +245,7 @@ const modalTitle = computed(()=>{
 function search(){
     getRouteList()
 }
-function editRouteLine(routeInfo){
+function editRouteLine(routeInfo: EntityRoute){
     router.push({
         name: "RouteEditor",
         query: {
@@ -254,7 +254,7 @@ function editRouteLine(routeInfo){
     })
 }
 // 跳转到路经展示页面
-function showRoute(routeInfo){
+function showRoute(routeInfo: EntityRoute){
     router.push({
         name: "RouteLine",
         query: {

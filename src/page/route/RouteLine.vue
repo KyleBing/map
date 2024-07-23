@@ -3,7 +3,7 @@
         <div class="button-float btn-router-list"
              @click="isRouteListShowed = true"
              v-if="!isRouteListShowed && store.isInPortraitMode">
-            <ELIcon><Tickets/></ELIcon>
+            <ElIcon><Tickets/></ElIcon>
         </div>
 
         <!-- 路线列表 -->
@@ -39,6 +39,7 @@ import {useProjectStore} from "@/pinia";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig.ts";
+import {EntityRoute} from "@/page/route/Route.ts";
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
@@ -49,7 +50,7 @@ const route = useRoute()
 const router = useRouter()
 
 const isLoading = ref(false)
-const activeLineObj = ref(null) // 当前 Line 对象
+const activeLineObj = ref<EntityRoute>(null) // 当前 Line 对象
 const currentDragRouting = ref(null)  // 当前导航路线
 
 const isMarkerShowed = ref(true)
@@ -76,7 +77,7 @@ onMounted(() => {
         .then(mapItem => {
             AMap = mapItem
             map = new AMap.Map('container', {
-                // center: MY_POSITION,
+                center: MY_POSITION,
                 zoom: 11
             })
             map.addControl(new AMap.ToolBar())
@@ -260,7 +261,7 @@ function fetchWeatherFromRoute(steps){
         })
 }
 
-function getWeather(adcode){
+function getWeather(adcode: string){
     return axios({
         url: 'https://restapi.amap.com/v3/weather/weatherInfo',
         params: {
