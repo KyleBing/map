@@ -1,4 +1,4 @@
-import {request} from './request'
+import {request} from './request.ts'
 
 function pointerAdd( requestData){return request('post', null, requestData, false, 'map-pointer/add')}
 function pointerList(requestData){return request('post', null, requestData, false,'map-pointer/list')}

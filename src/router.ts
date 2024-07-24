@@ -4,7 +4,6 @@ import Logout from "./page/Logout.vue"
 import Login from "./page/Login.vue"
 import Register from "./page/Register.vue"
 
-
 const FIXED_ROUTES: Array<RouteRecordRaw> = [
     {
         name: 'Root',
@@ -121,11 +120,11 @@ const FIXED_ROUTES: Array<RouteRecordRaw> = [
         meta: {title: '注册', showInMenu: false, icon: 'el-icon-user-solid',},
         component: Register,
     },
-    {
-        name: 'NoPage', path: '*',
-        meta: {title: '404', showInMenu: false, icon: 'el-icon-user-solid',},
-        component: Login,
-    }
+    // {
+    //     name: 'NoPage', path: '*',
+    //     meta: {title: '404', showInMenu: false, icon: 'el-icon-user-solid',},
+    //     component: Login,
+    // }
 ]
 
 

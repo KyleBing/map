@@ -22,7 +22,7 @@
                 </ElFormItem>
             </ElForm>
             <div class="register-link">
-                <RouterLink to="Register">注册</RouterLink>
+                <RouterLink to="register">注册</RouterLink>
             </div>
         </div>
     </div>
@@ -84,30 +84,30 @@ function submit() {
 }
 function login() {
     isInLoginProcess.value = true
-    // userLogin(formLogin.value)
-    //     .then(res => {
-    //         console.log(res)
-    //         console.log('Login success')
-    //         isInLoginProcess.value = false
-    //         setAuthorization(
-    //             res.data.nickname,
-    //             res.data.uid,
-    //             res.data.email,
-    //             res.data.phone,
-    //             res.data.avatar,
-    //             res.data.password,
-    //             res.data.group_id,
-    //             res.data.city,
-    //             res.data.geolocation,
-    //         )
-    //         store.authorization = getAuthorization()
-    //         ElMessage.success('欢迎用户 ' + res.data.username)
-    //
-    //         router.push({name: 'Index'})
-    //     })
-    //     .catch(() => {
-    //         isInLoginProcess.value = false
-    //     })
+    userLogin(formLogin.value)
+        .then(res => {
+            console.log(res)
+            console.log('Login success')
+            isInLoginProcess.value = false
+            setAuthorization(
+                res.data.nickname,
+                res.data.uid,
+                res.data.email,
+                res.data.phone,
+                res.data.avatar,
+                res.data.password,
+                res.data.group_id,
+                res.data.city,
+                res.data.geolocation,
+            )
+            store.authorization = getAuthorization()
+            ElMessage.success('欢迎用户 ' + res.data.username)
+
+            router.push({name: 'Index'})
+        })
+        .catch(() => {
+            isInLoginProcess.value = false
+        })
 }
 </script>
 

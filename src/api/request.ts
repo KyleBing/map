@@ -13,7 +13,6 @@ const LOADING_OPTION = {
 
 const BASE_URL: string = process.env.NODE_ENV === 'development' ? '': 'http://kylebing.cn/portal/' // 生产环境时是 ../portal
 
-
 function request(
     method: 'get'|'post'|'put'|'delete',
     params: any,

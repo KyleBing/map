@@ -1,4 +1,4 @@
-import {request} from './request'
+import {request} from './request.ts'
 
 function routeAdd( requestData){return request('post', null, requestData, false, 'map-route/add')}
 function routeList(requestData){return request('post', null, requestData, false, 'map-route/list')}

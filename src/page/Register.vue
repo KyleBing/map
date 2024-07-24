@@ -66,7 +66,6 @@ import {ElNotification} from "element-plus";
 const store = useProjectStore()
 const router = useRouter()
 
-
 const refFormRegister = ref()
 
 const validatePasswordRepeat = (rule, value, callback) => {
@@ -137,18 +136,18 @@ function submit() {
     });
 }
 function register() {
-    userRegister(formRegister.value)
-        .then(res => {
-            ElNotification({
-                title: res.message,
-                message: '请登录',
-                position: 'top-right',
-                type: 'success',
-                onClose() {
-                }
-            })
-            router.push('/login')
-        })
+    // userRegister(formRegister.value)
+    //     .then(res => {
+    //         ElNotification({
+    //             title: res.message,
+    //             message: '请登录',
+    //             position: 'top-right',
+    //             type: 'success',
+    //             onClose() {
+    //             }
+    //         })
+    //         router.push('/login')
+    //     })
 }
 </script>
 

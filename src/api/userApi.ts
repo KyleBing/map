@@ -1,4 +1,4 @@
-import {request} from "@/api/request.ts";
+import {request} from "@/api/request";
 
 function userLogin(requestData: { email: string, password: string }) {return request('post', null, requestData, false, 'user/login')}
 function userRegister(requestData: any) {return request('post', {}, requestData, false, 'user/register')}
