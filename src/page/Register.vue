@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts" setup>
-import userApi from "@/api/userApi";
+import {userRegister} from "@/api/userApi";
 import {reactive, ref} from "vue";
 import {useProjectStore} from "@/pinia.ts";
 import {useRouter} from "vue-router";
@@ -76,8 +76,6 @@ const validatePasswordRepeat = (rule, value, callback) => {
         callback()
     }
 }
-
-const isNewUser = ref(false)
 const formRegister = ref({
     username: '',
     nickname: '',
@@ -139,8 +137,7 @@ function submit() {
     });
 }
 function register() {
-    userApi
-        .register(formRegister.value)
+    userRegister(formRegister.value)
         .then(res => {
             ElNotification({
                 title: res.message,

@@ -136,11 +136,11 @@ import RoutePanel from "@/page/tool/route/components/RoutePanel.vue";
 import {key_web_js} from "@/mapConfig";
 import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 import axios from "axios";
-import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64";
 
 import {policyArray} from "./DrivingPolicy"
 import {useProjectStore} from "@/pinia";
+import {routeAdd, routeDetail, routeModify} from "@/api/routeApi";
 
 const store = useProjectStore()
 
@@ -310,8 +310,7 @@ export default {
             let requestData = {}
             Object.assign(requestData, this.formLine)
             requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
-            routeApi
-                .modify(requestData)
+            routeModify(requestData)
                 .then(res => {
                     this.$notify({
                         title: res.message,
@@ -333,8 +332,7 @@ export default {
             let requestData = {}
             Object.assign(requestData, this.formLine)
             requestData.paths = Base64.encode(JSON.stringify(this.pathPointers))
-            routeApi
-                .add(requestData)
+            routeAdd(requestData)
                 .then(res => {
                     this.$notify({
                         title: res.message,
@@ -349,8 +347,7 @@ export default {
         // 获取路线信息
         getLineInfo() {
             if (this.$route.query.lineId) {
-                routeApi
-                    .detail({
+                routeDetail({
                         id: this.$route.query.lineId
                     })
                     .then(res => {

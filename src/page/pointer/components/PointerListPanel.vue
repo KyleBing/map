@@ -66,20 +66,21 @@ function toggleContent(){
     background-color: white;
     width: 350px;
     .route-line-list-item{
-        &:last-child{
-            border-bottom: none;
-        }
         border-bottom: 1px solid $border-light;
         padding: 3px;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         font-size: $fz-normal;
+        @extend .btn-like;
+
+        &:last-child{
+            border-bottom: none;
+        }
         &:hover{
             border-bottom-color: white;
             background-color: $bg-active;
         }
-        @extend .btn-like;
         .id{
             padding: 0 10px;
             text-align: right;

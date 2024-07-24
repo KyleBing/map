@@ -181,7 +181,6 @@
     </div>
 </template>
 <script lang="ts" setup>
-import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64"
 import { policyArray, policyMap } from './DrivingPolicy'
 import {useProjectStore} from "@/pinia";
@@ -190,6 +189,7 @@ import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {EntityRoute} from "@/page/route/Route.ts";
+import {routeAdd, routeDelete, routeList, routeModify} from "@/api/routeApi.ts";
 
 const store = useProjectStore()
 const route = useRoute()
@@ -326,8 +326,7 @@ function routeModifySubmit() {
     let requestData = {}
     Object.assign(requestData, formRoute.value)
     requestData.paths = Base64.encode(formRoute.value.paths)
-    routeApi
-        .modify(requestData)
+    routeModify(requestData)
         .then(res => {
             ElNotification({
                 title: res.message,
@@ -349,8 +348,7 @@ function routeNewSubmit() {
     let requestData = {}
     Object.assign(requestData, formRoute.value)
     requestData.paths = Base64.encode(formRoute.value.paths)
-    routeApi
-        .add(requestData)
+    routeAdd(requestData)
         .then(res => {
             ElNotification({
                 title: res.message,
@@ -388,8 +386,7 @@ function getRouteList() {
         keyword: formSearch.value.keyword,
         dateRange: formSearch.value.dateRange
     }
-    routeApi
-        .list(requestData)
+    routeList(requestData)
         .then(res => {
             isLoading.value = false
             pager.value = res.data.pager
@@ -422,7 +419,7 @@ function goDelete(route: EntityRoute) {
         let requestData = {
             id: route.id
         }
-        routeApi.delete(requestData)
+        routeDelete(requestData)
             .then(res => {
                     getRouteList();
                     ElNotification({

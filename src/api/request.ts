@@ -11,7 +11,7 @@ const LOADING_OPTION = {
     background: "rgba(0, 0, 0, 0.3)"
 }
 
-const BASE_URL = process.env.NODE_ENV === 'development' ? '': 'http://kylebing.cn/portal/' // 生产环境时是 ../portal
+const BASE_URL: string = process.env.NODE_ENV === 'development' ? '': 'http://kylebing.cn/portal/' // 生产环境时是 ../portal
 
 
 function request(
@@ -57,16 +57,17 @@ function request(
                         reject(res.data)
                     }
                 } else {
+                    reject(res.data)
                     console.log('request err: ', res.data) // 如果演示模式，不用显示网络请求错误
                 }
             })
             .catch(err => {
-                reject(err)
                 if (showLoading) layerLoading.close()
                 Message.error({
                     message: err.message
                 })
                 console.log(err, err.message)
+                reject(err)
             })
     })
 }

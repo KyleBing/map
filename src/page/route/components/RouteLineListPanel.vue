@@ -48,7 +48,6 @@
 </template>
 
 <script lang="ts" setup>
-import routeApi from "@/api/routeApi";
 import {Base64} from "js-base64";
 import {dateFormatter} from "@/utility";
 import axios from "axios";
@@ -56,6 +55,7 @@ import {useProjectStore} from "@/pinia";
 import {onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {EntityRoute} from "@/page/route/Route.ts";
+import routeList from "@/page/route/RouteList.vue";
 
 const store = useProjectStore()
 const route = useRoute()
@@ -109,8 +109,8 @@ function getRouteList() {
 
     axios
         .all([
-            routeApi.list(requestDataPublic),
-            routeApi.list(requestDataMine),
+            routeList(requestDataPublic),
+            routeList(requestDataMine),
         ])
         .then(response => {
             routeLineListPublic.value = []

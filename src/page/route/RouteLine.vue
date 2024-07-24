@@ -32,7 +32,6 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import ICON from "@/assets/icons"
 import RouteDetailPanel from "./components/RouteDetailPanel.vue"
-import routeApi from "@/api/routeApi";
 
 import {Base64} from "js-base64"
 import RouteLineListPanel from "@/page/route/components/RouteLineListPanel.vue";
@@ -42,6 +41,7 @@ import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig.ts";
 import {EntityRoute} from "@/page/route/Route.ts";
+import {routeDetail} from "@/api/routeApi.ts";
 
 const MY_POSITION = [117.129533, 36.685668]
 
@@ -149,8 +149,7 @@ function changeLine(lineId: number){
 }
 
 function getLineInfo(lineId: string) {
-    routeApi
-        .detail({
+    routeDetail({
             id: lineId
         })
         .then(res => {

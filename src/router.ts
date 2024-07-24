@@ -1,6 +1,8 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from "vue-router";
 import Layout from "./layout/Layout.vue"
 import Logout from "./page/Logout.vue"
+import Login from "./page/Login.vue"
+import Register from "./page/Register.vue"
 
 
 const FIXED_ROUTES: Array<RouteRecordRaw> = [
@@ -111,18 +113,19 @@ const FIXED_ROUTES: Array<RouteRecordRaw> = [
     {
         name: 'Login', path: '/login',
         meta: {title: '登录', showInMenu: false, icon: 'el-icon-user-solid',},
-        component: () => import('./page/Login.vue'),
+        component: Login,
+
     },
-    // {
-    //     name: 'Register', path: '/register',
-    //     meta: {title: '注册', showInMenu: false, icon: 'el-icon-user-solid',},
-    //     component: Register,
-    // },
-    // {
-    //     name: 'NoPage', path: '*',
-    //     meta: {title: '404', showInMenu: false, icon: 'el-icon-user-solid',},
-    //     component: Login,
-    // }
+    {
+        name: 'Register', path: '/register',
+        meta: {title: '注册', showInMenu: false, icon: 'el-icon-user-solid',},
+        component: Register,
+    },
+    {
+        name: 'NoPage', path: '*',
+        meta: {title: '404', showInMenu: false, icon: 'el-icon-user-solid',},
+        component: Login,
+    }
 ]
 
 
@@ -131,9 +134,6 @@ const router = createRouter({
     routes: FIXED_ROUTES
 })
 
-router.beforeEach((to, from, next) => {
-    next()
-})
 
 export {
     router,

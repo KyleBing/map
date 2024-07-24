@@ -126,9 +126,9 @@
 import ClipboardJS from 'clipboard'
 import {qiniu_bucket_name, qiniu_img_base_url, thumbnail200_suffix} from "@/mapConfig";
 import * as qiniu from "qiniu-js";
-import fileApi from "@/api/fileApi";
 import {getAuthorization} from "@/utility";
 import {ElMessage} from "element-plus";
+import {getUploadToken} from "@/api/fileApi";
 
 export default {
     name: "PointerEditPanel",
@@ -229,8 +229,7 @@ export default {
                     return
                 }
 
-                fileApi
-                    .getUploadToken({
+                getUploadToken({
                         bucket: qiniu_bucket_name
                     })
                     .then(res => {
