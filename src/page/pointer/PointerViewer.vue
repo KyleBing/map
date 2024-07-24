@@ -31,7 +31,7 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
 import mapData from './lines'
 import PointerDetailPanel from "./components/PointerDetailPanel.vue"
-import mapConfig from "../../mapConfig";
+import {key_web_js} from "@/mapConfig";
 import pointerApi from "@/api/pointerApi";
 
 import {Base64} from "js-base64"
@@ -74,7 +74,7 @@ export default {
 
         AMapLoader
             .load({
-                key: mapConfig.key_web_js, // 开发应用的 ID
+                key: key_web_js, // 开发应用的 ID
                 version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
                 plugins: [
                     'AMap.ToolBar', // 缩放按钮

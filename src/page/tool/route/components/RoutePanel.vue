@@ -127,7 +127,7 @@
 
 <script>
 import ClipboardJS from 'clipboard'
-import mapConfig from "@/mapConfig";
+import {qiniu_bucket_name, qiniu_img_base_url, thumbnail200_suffix} from "@/mapConfig";
 import * as qiniu from "qiniu-js";
 import fileApi from "@/api/fileApi";
 import {policyArray} from "@/page/route/DrivingPolicy";
@@ -161,7 +161,7 @@ export default {
             clipboardRouteData: '', // 要复制的所有路线点的数据
             clipboard: null,
 
-            imgSuffix: mapConfig.thumbnail200_suffix,
+            imgSuffix: thumbnail200_suffix,
             currentPointIndex: null, // 当前图片需要放到哪个点位上
 
             isModalShowing: false,
@@ -244,7 +244,7 @@ export default {
 
                 fileApi
                     .getUploadToken({
-                        bucket: mapConfig.qiniu_bucket_name
+                        bucket: qiniu_bucket_name
                     })
                     .then(res => {
                         console.log('get token success')
@@ -261,11 +261,11 @@ export default {
                                 console.log('complete: ',res)
                                 if (this.currentPointIndex !== null){
                                     let tempData = this.data // 临时数组
-                                    tempData[this.currentPointIndex].img = mapConfig.qiniu_img_base_url + res.key
+                                    tempData[this.currentPointIndex].img = qiniu_img_base_url + res.key
                                     this.$emit('setData', [...tempData])
                                     this.currentPointIndex = null // 指向归位
                                 } else {
-                                    this.pointerImg = mapConfig.qiniu_img_base_url + res.key
+                                    this.pointerImg = qiniu_img_base_url + res.key
                                 }
                             }
                         }

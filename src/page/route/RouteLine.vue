@@ -47,7 +47,7 @@ const MY_POSITION = [117.129533, 36.685668]
 
 let AMap = null
 let mapInstance = null
-const currentDragRouting = null  // 当前导航路线
+let currentDragRouting = null  // 当前导航路线
 
 
 const store = useProjectStore()

@@ -27,22 +27,10 @@
 
 <script lang="ts" setup>
 import Aside from "./Aside.vue";
-import {onMounted} from "vue";
 import {useProjectStore} from "@/pinia.ts";
 
 const store = useProjectStore()
 
-onMounted(() => {
-    onResize()
-    window.addEventListener('resize', ()=>{
-        onResize()
-    })
-})
-
-function onResize() {
-    store.windowInsets.height = window.innerHeight
-    store.windowInsets.width = window.innerWidth
-}
 function toggleMenu() {
     store.isShowingMenuToggleBtn = !store.isShowingMenuToggleBtn
 }

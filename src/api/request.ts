@@ -2,6 +2,7 @@ import axios from "axios";
 import { Loading, Message } from 'element-ui'
 import {getAuthorization} from "@/utility";
 import {ServerResponse} from "@/api/ServerResponse.ts";
+import {ElLoadingComponent} from "element-ui/types/loading";
 
 
 const LOADING_OPTION = {
@@ -18,10 +19,9 @@ function request(
     params: any,
     requestData: any,
     showLoading = false,
-    cancelToken,
     url: string
 ): Promise<ServerResponse> {
-    let layerLoading
+    let layerLoading: ElLoadingComponent
     if (showLoading) layerLoading = Loading.service(LOADING_OPTION)
 
     let headers = {}
@@ -40,7 +40,6 @@ function request(
         axios({
             url: BASE_URL + url,
             method,
-            cancelToken,
             data: requestData,
             params,
             headers,

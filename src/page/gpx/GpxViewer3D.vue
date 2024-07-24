@@ -77,7 +77,7 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader'
 import PointerDetailPanel from "../pointer/components/PointerDetailPanel.vue"
-import mapConfig from "../../mapConfig";
+import {key_web_js} from "@/mapConfig";
 import pointerApi from "@/api/pointerApi";
 import {XMLParser, XMLBuilder, XMLValidator} from "fast-xml-parser"
 
@@ -87,7 +87,7 @@ import {dateFormatter} from "@/utility";
 import ICON from "@/assets/icons";
 
 import Moment from "moment"
-import Colors from "@/lib/colors";
+import { colors } from "@/lib/colors";
 import {useProjectStore} from "@/pinia";
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -143,7 +143,7 @@ export default {
 
         AMapLoader
             .load({
-                key: mapConfig.key_web_js, // 开发应用的 ID
+                key: key_web_js, // 开发应用的 ID
                 version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
                 plugins: [],
                 Loca: {
@@ -343,7 +343,7 @@ export default {
             })
             // 给 Loca.LineLayer 添加数据
             lineLayer.setSource(geo, {
-                color: Colors.colors.magenta,
+                color: colors.magenta,
                 lineWidth: 5,
 
             })

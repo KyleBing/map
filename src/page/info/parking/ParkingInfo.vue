@@ -11,7 +11,7 @@
 
 <script>
 import AMapLoader from '@amap/amap-jsapi-loader'
-import mapConfig from "../../../mapConfig";
+import {key_web_js} from "@/mapConfig";
 const MAP_CENTER =  [117.129533, 36.685668]
 import locations from './parkingLocations.json'
 import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
@@ -33,7 +33,7 @@ export default {
     mounted() {
         AMapLoader
             .load({
-                key: mapConfig.key_web_js, // 开发应用的 ID
+                key: key_web_js, // 开发应用的 ID
                 version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
                 plugins: [
                     'AMap.ToolBar', // 缩放按钮

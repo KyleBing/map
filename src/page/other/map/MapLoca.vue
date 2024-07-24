@@ -8,7 +8,7 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader'
 import GEO_PROVINCE_DATA from './province.json'
-import mapConfig from "../../../mapConfig";
+import {key_web_js} from "@/mapConfig";
 import {useProjectStore} from "@/pinia";
 
 let AMap = null
@@ -31,7 +31,7 @@ export default {
     mounted() {
         AMapLoader
             .load({
-                key: mapConfig.key_web_js, // 开发应用的 ID
+                key: key_web_js, // 开发应用的 ID
                 version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
                 plugins: [],
                 Loca: {

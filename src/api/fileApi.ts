@@ -1,5 +1,5 @@
-import request from "./request";
+import {request} from "./request";
 
 export default {
-    getUploadToken(params) {return request('get', params, null,false, null,  '/image-qiniu/')},
+    getUploadToken(params) {return request('get', params, null,false, '/image-qiniu/')},
 }

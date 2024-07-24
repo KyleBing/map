@@ -23,7 +23,17 @@ const modalTip = ref(false)
 onMounted(() => {
     store.authorization = getAuthorization()
     modalTip.value = !localStorage.getItem('map-has-checked-tip')
+
+    onResize()
+    window.addEventListener('resize', ()=>{
+        onResize()
+    })
 })
+
+function onResize() {
+    store.windowInsets.height = window.innerHeight
+    store.windowInsets.width = window.innerWidth
+}
 
 function checkTip(){
     localStorage.setItem('map-has-checked-tip', 'true')

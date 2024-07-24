@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import userApi from "@/api/userApi";
-import {onMounted, onUnmounted, reactive, ref} from "vue";
+import {onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import {useProjectStore} from "@/pinia.ts";
 import {useRouter} from "vue-router";
 import {ElMessage, FormRules} from "element-plus";
@@ -60,13 +60,16 @@ const isInLoginProcess = ref(false) // 登录中状态展示
 
 
 onMounted(() => {
-    console.log('onmounted')
     height.value = innerHeight
     animatedBg.value = new AnimateHeartCanvas(0, 360, 50, 20, 100, '#eee')
 })
 
 onUnmounted(() => {
     animatedBg.value.destroy()
+})
+
+watch(() => store.windowInsets.height, newValue => {
+    height.value = newValue
 })
 
 function submit() {
@@ -81,30 +84,31 @@ function submit() {
 }
 function login() {
     isInLoginProcess.value = true
-    // userApi
-    //     .login(formLogin.value)
-    //     .then(res => {
-    //         console.log(res)
-    //         console.log('Login success')
-    //         isInLoginProcess.value = false
-    //         setAuthorization(
-    //             res.data.nickname,
-    //             res.data.uid,
-    //             res.data.email,
-    //             res.data.phone,
-    //             res.data.avatar,
-    //             res.data.password,
-    //             res.data.group_id,
-    //             res.data.city,
-    //             res.data.geolocation,
-    //         )
-    //         store.authorization = getAuthorization()
-    //         ElMessage.success('欢迎用户 ' + res.data.username)
-    //         router.push({name: 'Index'})
-    //     })
-    //     .catch(() => {
-    //         isInLoginProcess.value = false
-    //     })
+    userApi
+        .login(formLogin.value)
+        .then(res => {
+            console.log(res)
+            console.log('Login success')
+            isInLoginProcess.value = false
+            setAuthorization(
+                res.data.nickname,
+                res.data.uid,
+                res.data.email,
+                res.data.phone,
+                res.data.avatar,
+                res.data.password,
+                res.data.group_id,
+                res.data.city,
+                res.data.geolocation,
+            )
+            store.authorization = getAuthorization()
+            ElMessage.success('欢迎用户 ' + res.data.username)
+
+            router.push({name: 'Index'})
+        })
+        .catch(() => {
+            isInLoginProcess.value = false
+        })
 }
 </script>
 

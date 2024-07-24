@@ -1,10 +1,6 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from "vue-router";
-import Login from "./page/Login.vue"
-import Register from "./page/Register.vue"
 import Layout from "./layout/Layout.vue"
 import Logout from "./page/Logout.vue"
-import {useProjectStore} from "@/pinia.ts";
-// import {useProjectStore} from "./pinia.ts"
 
 
 const FIXED_ROUTES: Array<RouteRecordRaw> = [
