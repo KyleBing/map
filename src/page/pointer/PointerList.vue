@@ -194,7 +194,7 @@ export default {
             },
             // pager
             pager: {
-                pageSize: 15,
+                pageSize: 20,
                 pageNo: 1,
                 total: 0
             },

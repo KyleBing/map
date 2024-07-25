@@ -26,7 +26,7 @@
                 {{resultText}}
             </div>
 
-            <route-panel
+            <RoutePanel
                 ref="routePanel"
                 class="mt-1"
                 @pointAdd="handleAddRoutePoint"
@@ -37,7 +37,8 @@
                 :policy="currentPolicy"
                 :lng="positionPicked.lng"
                 :lat="positionPicked.lat"
-                v-model="routeData"/>
+                v-model="routeData"
+            />
         </div>
         <route-detail-panel
             class="detail-panel mt-1"

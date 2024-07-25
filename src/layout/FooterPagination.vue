@@ -3,7 +3,7 @@
         <ElPagination
             :current-page="pagerOption.pageNo"
             :page-size="pagerOption.pageSize"
-            :page-sizes="[20, 50, 100, 200, 500]"
+            :page-sizes="[20, 30, 50, 100, 200, 500]"
             :small="false"
             :disabled="false"
             :background="false"

@@ -1,13 +1,13 @@
 <template>
     <div class="map-container">
-        <pointer-detail-panel :pointer="pointerInfo"/>
+        <PointerDetailPanel :pointer="pointerInfo"/>
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
         <div class="card input-panel">
             <ElForm inline size="small">
-                <ElFormItem>
+                <ElFormItem class="mb-0 mr-1">
                     <ElInput placeholder="区域编码" v-model="pointerInfo.adcode"/>
                 </ElFormItem>
-                <ElFormItem>
+                <ElFormItem class="m-0">
                     <ElButton type="primary" @click="showDistrictOfAdcode">确定</ElButton>
                 </ElFormItem>
             </ElForm>

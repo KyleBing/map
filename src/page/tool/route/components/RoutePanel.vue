@@ -1,41 +1,20 @@
 <template>
     <div class="circle-panel card">
-
-        <ElDialog
-            center
-            title=""
-            append-to-body
-            :visible.sync="isModalShowing"
-            :before-close="closeModal"
-            width="50%">
-            <div>
-                <ElForm>
-                    <ElFormItem label="修改">
-                        <ElInput v-model="currentModifyingString"/>
-                    </ElFormItem>
-                </ElForm>
-            </div>
-            <div slot="footer" class="dialog-footer">
-                <ElButton size="small" type="default" @click="isModalShowing = false">取消</ElButton>
-                <ElButton size="small" type="primary" @click="submitStringChange">确定</ElButton>
-            </div>
-        </ElDialog>
-
         <div class="toolbar">
-            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="small" type="info" icon="el-icon-document-copy">复制 JSON 数据</ElButton>
-            <ElButton size="small" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</ElButton>
+            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(modelData)" size="small" type="info" icon="CopyDocument">复制 JSON 数据</ElButton>
+            <ElButton size="small" type="danger" @click="clearAllPointers" icon="RefreshLeft">清空</ElButton>
+            <ElButton size="small" type="warning" @click="reversePointers" icon="Sort">倒序</ElButton>
+            <ElButton size="small" type="primary" @click="emit('showLine', null)" icon="Position">展示路线</ElButton>
         </div>
         <div class="toolbar">
-            <ElButton size="small" type="warning" @click="$emit('setData', routePathLocal.reverse())" icon="el-icon-sort">倒序</ElButton>
-            <ElSelect size="small" class="ml-1" v-model="currentPolicy" placeholder="请选择">
-                <ElOption
-                    v-for="item in policyArray"
-                    :key="item.label"
-                    :label="item.label"
-                    :value="item.value">
-                </ElOption>
-            </ElSelect>
-            <ElButton class="ml-1" size="small" type="primary" @click="$emit('showLine', null)" icon="el-icon-position">展示路线</ElButton>
+            <ElFormItem class="mb-0" size="small" label="" label-width="">
+                <ElRadioGroup size="small" v-model="currentPolicy">
+                    <ElRadio  v-for="item in policyArray"
+                                    :key="item.label"
+                                    :label="item.label"
+                                    :value="item.value"/>
+                </ElRadioGroup>
+            </ElFormItem>
         </div>
 
         <table class="log">
@@ -60,36 +39,38 @@
                 </td>
                 <td>
                     <ElInput
-                        @keyup.native.enter="addNewRoutePointWithKeyEnter"
+                        @keyup.native.enter="addNewPointToRouteWithKeyEnter"
                         clearable
-                        ref="inputName" class="input-focus" size="small"
+                        ref="refInputName" class="input-focus" size="small"
                         placeholder="标记名"
                         v-model="pointerName"/>
                 </td>
                 <td>
                     <ElInput
-                        @keyup.native.enter="addNewRoutePointWithKeyEnter"
+                        type="textarea"
+                        autosize
                         clearable
                         ref="inputNote" class="input-focus" size="small"
-                        placeholder="备注" type="textarea" :rows="1"
+                        placeholder="备注"  :rows="1"
                         v-model="pointerNote"/>
                 </td>
                 <td>
                     <div class="img-wrapper">
                         <img v-if="pointerImg" :src="`${pointerImg}-${imgSuffix}`" alt="图片">
                         <label class="logo avatar" for="avatar">
-                            <i class="el-icon-upload2"></i>
+                            <ElIcon size="14">
+                                <Upload/>
+                            </ElIcon>
                         </label>
                         <input type="file" @change="uploadAvatar" id="avatar">
                     </div>
                 </td>
                 <td>
-                    <ElButton size="small" type="success" @click="addNewRoutePoint" icon="el-icon-plus">添加</ElButton>
+                    <ElButton size="small" type="success" @click="addNewPointToRoute" icon="Plus">添加</ElButton>
                 </td>
             </tr>
 
-            <tr v-for="(item, index) in routePathLocal" :key="index">
-
+            <tr v-for="(item, index) in modelData" :key="index">
                 <td>{{index + 1}}</td>
 <!--                <td @click="modifyString(item.position, index, 'position')">-->
                 <td>
@@ -104,18 +85,18 @@
                     <div class="img-wrapper">
                         <img v-if="item.img" :src="`${item.img}-${imgSuffix}`" alt="图片">
                         <label class="logo avatar" for="avatar" @click="currentPointIndex = index">
-                            <i class="el-icon-upload2"></i>
+                            <ElIcon size="14"><Upload/></ElIcon>
                         </label>
                     </div>
                 </td>
                 <td>
-                    <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < data.length - 1}]">
+                    <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < modelData.length - 1}]">
                         <div class="move">
-                            <i class="el-icon-caret-top" v-if="index > 0"  @click="move(index, 'up')"></i>
-                            <i class="el-icon-caret-bottom" v-if="index < data.length - 1" @click="move(index, 'down')"></i>
+                            <ElIcon v-if="index > 0"  @click="move(index, 'up')"><CaretTop/></ElIcon>
+                            <ElIcon v-if="index < modelData.length - 1" @click="move(index, 'down')"><CaretBottom/></ElIcon>
                         </div>
                         <div class="delete">
-                            <i class="el-icon-circle-close" @click="routePointDelete(index)"></i>
+                            <ElIcon @click="routePointDelete(index)"><CircleClose/></ElIcon>
                         </div>
                     </div>
                 </td>
@@ -123,9 +104,30 @@
             </tbody>
         </table>
     </div>
+
+    <ElDialog
+        center
+        title=""
+        append-to-body
+        v-model="isModalShowing"
+        :before-close="closeModal"
+        width="400px">
+        <div>
+            <ElForm label-position="top">
+                <ElFormItem label="修改">
+                    <ElInput autosize type="textarea" :rows="5" v-model="currentModifyingString"/>
+                </ElFormItem>
+            </ElForm>
+        </div>
+        <template #footer class="dialog-footer">
+            <ElButton type="info" @click="isModalShowing = false" icon="Close">取消</ElButton>
+            <ElButton type="primary" @click="submitStringChange" icon="Check">确定</ElButton>
+        </template>
+    </ElDialog>
+
 </template>
 
-<script>
+<script lang="ts" setup>
 import ClipboardJS from 'clipboard'
 import {qiniu_bucket_name, qiniu_img_base_url, thumbnail200_suffix} from "@/mapConfig";
 import * as qiniu from "qiniu-js";
@@ -133,210 +135,227 @@ import {policyArray} from "@/page/route/DrivingPolicy";
 import {getAuthorization} from "@/utility";
 import {ElMessage} from "element-plus";
 import {getUploadToken} from "@/api/fileApi";
+import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
+import {EntityRoutePointer} from "@/page/route/Route.ts";
 
-export default {
-    name: "RoutePanel",
-    props: {
-        searchLocation: {type: String},
-        data: {type: Array},
-        lng: {type: Number},
-        lat: {type: Number},
-        policy: {type: Number}
-    },
-    model: {
-        prop: 'data',
-        event: 'setData'
-    },
-    data() {
-        return {
-            pointerName: '', // 当前点的地名
-            pointerNote: '', // 标记note
-            pointerImg: '', // 标记图片地址
-            policyArray,
+const pointerName = ref('') // 当前点的地名
+const pointerNote = ref('') // 标记note
+const pointerImg = ref('') // 标记图片地址
+const currentPolicy = ref(2)
+const avatarFile = ref()
 
-            routePathLocal: [],
+const clipboardRouteData = ref('') // 要复制的所有路线点的数据
+let clipboard = null
 
-            currentPolicy: 2,
+const imgSuffix = thumbnail200_suffix
+const currentPointIndex = ref(null) // 当前图片需要放到哪个点位上
 
-            clipboardRouteData: '', // 要复制的所有路线点的数据
-            clipboard: null,
+const refInputName = ref()
 
-            imgSuffix: thumbnail200_suffix,
-            currentPointIndex: null, // 当前图片需要放到哪个点位上
 
-            isModalShowing: false,
-            currentModifyingString: '', //
-            modifyingArrayIndex: null, // 编辑的 index
-            modifyingParamName: '' // 编辑的字段名
-        }
-    },
-    computed: {
-    },
-    watch:{
-        data(newValue){
-            this.routePathLocal = [...this.data]
-            this.clipboardRouteData = JSON.stringify(newValue)
-        },
-        searchLocation(newValue){
-            this.pointerName = newValue
-        },
-        currentPolicy(newValue){
-            this.$emit('changeCurrentPolicy', newValue)
-        },
-        policy(newValue){
-            this.currentPolicy = newValue
-        },
+const emit = defineEmits(['print', 'showLine', 'changeCurrentPolicy'])
+const props = defineProps<{
+    searchLocation: string,
+    lng: number,
+    lat: number,
+    policy: number,
+}>()
+const modelData = defineModel<Array<EntityRoutePointer>>()
 
-    },
-    beforeDestroy() {
-        this.clipboard.destroy()
-    },
-    mounted() {
-        this.currentPolicy = this.policy
-        // 1. 绑定剪贴板操作方法
-        this.clipboard = new ClipboardJS('.lnglat', {
-            text: function (trigger) {
-                // 2. trigger 就是点击的 dom 元素，所以就可以通过它来获取到它的属性 'dataClipboard' 的值了
-                // 3. 从这个方法返回的 string 就是会复制到剪贴板中的内容，所以可以复制任何内容了，也可以在这里处理一些逻辑
-                // 4. 我在这里就只是单纯的输出了事先绑定好的值
-                return trigger.getAttribute('data-clipboard-text')
-            },
-        })
-        // 5. 当复制成功的时候提示复制成功
-        this.clipboard.on('success', ()=>{  // 还可以添加监听事件，如：复制成功后提示
-            this.$message.success('复制成功')
-        })
-    },
-    methods: {
-        closeModal(){
-            this.isModalShowing = false
-            this.currentModifyingString = ''
-        },
-        modifyString(str, index, paramName){
-            this.modifyingParamName = paramName
-            this.modifyingArrayIndex = index
-            this.currentModifyingString = str
-            this.isModalShowing =  true
-        },
-        // 提交对字符串的修改
-        submitStringChange(){
-            this.$set(this.routePathLocal[this.modifyingArrayIndex], this.modifyingParamName, this.currentModifyingString)
-            this.isModalShowing = false
-            this.currentModifyingString = ''
-        },
-        uploadAvatar(event){
-            if (!getAuthorization()){
-                this.$message.error('请登录后操作')
-                return
-            }
-            if (event.target.files.length > 0){
-                this.avatarFile = event.target.files[0]
-                if (!/image\/.*/.test(this.avatarFile.type)){
-                    this.$message.warning('请选择图片文件')
-                    event.target.value = '' // 清空 Input 内容
-                    return
-                }
-                if (this.avatarFile.size > 1024 * 1024 * 8){
-                    this.$message.warning('图片应小于 8MB')
-                    event.target.value = '' // 清空 Input 内容
-                    return
-                }
 
-                getUploadToken({
-                        bucket: qiniu_bucket_name
-                    })
-                    .then(res => {
-                        console.log('get token success')
-                        // 上传文件
-                        const observer = {
-                            next: res => {
-                                console.log('next: ',res)
-                            },
-                            error: err => {
-                                console.log(err)
-                            },
-                            complete: res => {
-                                // res = {hash: 'hash', key_service: 'key_service'}
-                                console.log('complete: ',res)
-                                if (this.currentPointIndex !== null){
-                                    let tempData = this.data // 临时数组
-                                    tempData[this.currentPointIndex].img = qiniu_img_base_url + res.key
-                                    this.$emit('setData', [...tempData])
-                                    this.currentPointIndex = null // 指向归位
-                                } else {
-                                    this.pointerImg = qiniu_img_base_url + res.key
-                                }
-                            }
-                        }
-                        const observable = qiniu.upload(this.avatarFile, null, res.data, {}, {})
-                        const subscription = observable.subscribe(observer) // 上传开始
-                        // subscription.unsubscribe() // 上传取消
-                    })
-                    .catch(err => {
-                        ElMessage.error('获取上传 token 失败')
-                    })
-            }
+onMounted(() => {
+    currentPolicy.value = props.policy
+    // 1. 绑定剪贴板操作方法
+    clipboard = new ClipboardJS('.lnglat', {
+        text: trigger => {
+            // 2. trigger 就是点击的 dom 元素，所以就可以通过它来获取到它的属性 'dataClipboard' 的值了
+            // 3. 从这个方法返回的 string 就是会复制到剪贴板中的内容，所以可以复制任何内容了，也可以在这里处理一些逻辑
+            // 4. 我在这里就只是单纯的输出了事先绑定好的值
+            return trigger.getAttribute('data-clipboard-text')
         },
-        // enter 时触发的方法
-        addNewRoutePointWithKeyEnter(){
-            if(this.validateInput()){
-                this.$emit('pointAdd', {
-                    position: [this.lng, this.lat],
-                    note: this.pointerNote,
-                    name: this.pointerName
-                })
-                this.pointerName = ''
-                this.pointerNote = ''
-            }
+    })
+    // 5. 当复制成功的时候提示复制成功
+    clipboard.on('success', ()=>{  // 还可以添加监听事件，如：复制成功后提示
+        ElMessage.success('复制成功')
+    })
+})
 
-            this.$nextTick(()=>{
-                this.$refs.inputName.focus()
-            })
-        },
-        // 点击时触发的方法
-        addNewRoutePoint(){
-            if(this.validateInput()){
-                this.$emit('pointAdd', {
-                    position: [this.lng, this.lat],
-                    note: this.pointerNote,
-                    name: this.pointerName,
-                    img: this.pointerImg
-                })
-            }
-        },
-        validateInput(){
-            if (!this.lng || !this.lat){
-                this.$message({
-                    message: '坐标未选定',
-                    type: 'warning'
-                })
-                return false
-            }
-            if (!this.pointerName){
-                this.$message({
-                    message: '地名未填写',
-                    type: 'warning'
-                })
-                this.$refs.inputName.focus()
-                return false
-            }
-            return true
-        },
-        move(index, direction){
-            let indexExchange = direction === 'up'? index - 1 : index + 1
-            let tempItem = this.data[index]
-            let preItem = this.data[indexExchange]
-            let tempData = this.data // 临时数组
-            tempData[indexExchange] = tempItem
-            tempData[index] = preItem
-            this.$emit('setData', [...tempData])
-        },
-        routePointDelete(index){
-            this.data.splice(index, 1)
-        }
-    }
+onUnmounted(()=>{
+    clipboard.destroy()
+})
 
+
+
+/**
+ * 编辑字段
+ **/
+let modifyingArrayIndex = 0 // 编辑的 index
+let modifyingParamName = '' // 编辑的字段名
+
+const isModalShowing = ref(false)
+const currentModifyingString = ref('')
+
+function modifyString(str: string, index: number, paramName: string){
+    modifyingParamName = paramName
+    modifyingArrayIndex = index
+    currentModifyingString.value = str
+    isModalShowing.value =  true
 }
+// 提交对字符串的修改
+function submitStringChange(){
+    modelData.value[modifyingArrayIndex][modifyingParamName] = currentModifyingString.value
+    isModalShowing.value = false
+    currentModifyingString.value = ''
+}
+function closeModal(){
+    isModalShowing.value = false
+    currentModifyingString.value = ''
+}
+
+
+/**
+ *
+ * 对于 ModelData 的操作
+ */
+
+function clearAllPointers(){
+    modelData.value = []
+}
+
+function reversePointers(){
+    modelData.value?.reverse()
+}
+
+
+
+
+function uploadAvatar(event){
+    if (!getAuthorization()){
+        ElMessage.error('请登录后操作')
+        return
+    }
+    if (event.target.files.length > 0){
+        avatarFile.value = event.target.files[0]
+        if (!/image\/.*/.test(avatarFile.value.type)){
+            ElMessage.warning('请选择图片文件')
+            event.target.value = '' // 清空 Input 内容
+            return
+        }
+        if (avatarFile.value.size > 1024 * 1024 * 8){
+            ElMessage.warning('图片应小于 8MB')
+            event.target.value = '' // 清空 Input 内容
+            return
+        }
+
+        getUploadToken({
+            bucket: qiniu_bucket_name
+        })
+            .then(res => {
+                console.log('get token success')
+                // 上传文件
+                const observer = {
+                    next: res => {
+                        console.log('next: ',res)
+                    },
+                    error: err => {
+                        console.log(err)
+                    },
+                    complete: res => {
+                        // res = {hash: 'hash', key_service: 'key_service'}
+                        console.log('complete: ',res)
+                        if (currentPointIndex.value !== null){
+                            let tempData = modelData.value // 临时数组
+                            tempData[currentPointIndex.value].img = qiniu_img_base_url + res.key
+                            emit('setData', [...tempData])
+                            currentPointIndex.value = null // 指向归位
+                        } else {
+                            pointerImg.value = qiniu_img_base_url + res.key
+                        }
+                    }
+                }
+                const observable = qiniu.upload(avatarFile.value, null, res.data, {}, {})
+                const subscription = observable.subscribe(observer) // 上传开始
+                // subscription.unsubscribe() // 上传取消
+            })
+            .catch(err => {
+                ElMessage.error('获取上传 token 失败')
+            })
+    }
+}
+// enter 时触发的方法
+function addNewPointToRouteWithKeyEnter(){
+    if(isInputValidated()){
+        modelData.value.push({
+            position: [props.lng, props.lat],
+            note: pointerNote.value,
+            name: pointerName.value
+        })
+        pointerName.value = ''
+        pointerNote.value = ''
+    }
+    nextTick(()=>{
+        refInputName.value.focus()
+    })
+}
+// 点击时触发的方法
+function addNewPointToRoute(){
+    if (isInputValidated()){
+        modelData.value.push({
+            position: [props.lng, props.lat],
+            note: pointerNote.value,
+            name: pointerName.value,
+            img: pointerImg.value
+        })
+    }
+}
+function isInputValidated(){
+    if (!props.lng || !props.lat){
+        ElMessage({
+            message: '坐标未选定',
+            type: 'warning'
+        })
+        return false
+    }
+    if (!pointerName.value){
+        ElMessage({
+            message: '地名未填写',
+            type: 'warning'
+        })
+        refInputName.value.focus()
+        return false
+    }
+    return true
+}
+
+
+function move(index: number, direction: 'up'|'down'){
+    let indexExchange = direction === 'up'? index - 1 : index + 1
+    let tempItem = modelData.value[index]
+    let preItem = modelData.value[indexExchange]
+    let tempData = modelData.value // 临时数组
+    tempData[indexExchange] = tempItem
+    tempData[index] = preItem
+    emit('setData', [...tempData])
+}
+function routePointDelete(index){
+    modelData.value.splice(index, 1)
+}
+
+
+
+
+watch(modelData, newValue => {
+    clipboardRouteData.value = JSON.stringify(newValue)
+})
+watch(() => props.searchLocation, newValue => {
+    pointerName.value = newValue
+})
+watch(currentPolicy, newValue => {
+    emit('changeCurrentPolicy', newValue)
+})
+watch(() => props.policy, newValue => {
+    currentPolicy.value = newValue
+})
 </script>
 
 <style scoped lang="scss">
@@ -490,6 +509,7 @@ tbody{
         background-color: #f2f2f2;
     }
     td{
+        vertical-align: top;
         font-size: 0.7rem;
         padding: 2px 2px 2px 5px;
         &:last-child, &:first-child {

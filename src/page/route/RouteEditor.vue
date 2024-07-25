@@ -1,11 +1,51 @@
 <template>
     <div class="map-container">
-
-        <route-detail-panel
+        <RouteDetailPanel
             class="detail-panel mt-1"
             v-if="activeLineObj"
             :line="activeLineObj"
         />
+
+
+        <div class="float-panel">
+            <!-- 搜索面板 -->
+            <div class="search-panel card mb-1">
+                <ElForm inline @submit="search" size="small" label-width="80px">
+                    <ElFormItem class="mb-0" label="搜索地址">
+                        <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
+                    </ElFormItem>
+                    <ElFormItem class="mb-0" label="">
+                        <ElButton type="primary" @click="search" icon="Search">搜索</ElButton>
+                    </ElFormItem>
+                </ElForm>
+
+                <ElForm inline class="mt-1" size="small" >
+                    <ElFormItem class="mb-0" label="经度" label-width="80px">
+                        <ElInput style="width:120px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
+                    </ElFormItem>
+                    <ElFormItem class="mb-0" label="纬度">
+                        <ElInput style="width:120px" placeholder="lat" v-model="positionPicked.lat"></ElInput>
+                    </ElFormItem>
+                </ElForm>
+            </div>
+
+            <!-- 搜索结果面板 -->
+            <div class="result card mt-1" v-if="searchResultText">
+                {{ searchResultText }}
+            </div>
+
+            <RoutePanel
+                class="mt-1"
+                :search-location="searchAddress"
+                :policy="currentPolicy"
+                :lng="Number(positionPicked.lng)"
+                :lat="Number(positionPicked.lat)"
+                v-model="pathPointers"
+                @print="printRoute"
+                @showLine="showLine"
+                @changeCurrentPolicy="changePolicy"
+            />
+        </div>
 
         <!-- 路线信息编辑面板-->
         <transition
@@ -64,62 +104,22 @@
                     </ElFormItem>
                     <ElFormItem label="总里程" prop="distance">
                         <ElInput disabled readonly v-model="formLine.distance">
-                            <template slot="append">km</template>
+                            <template #append>km</template>
                         </ElInput>
                     </ElFormItem>
                     <ElFormItem label="用时" prop="time">
                         <ElInput disabled readonly v-model="formLine.time">
-                            <template slot="append">分钟</template>
+                            <template #append>分钟</template>
                         </ElInput>
                     </ElFormItem>
                     <ElFormItem>
-                        <ElButton v-if="store.authorization" @click="submit" type="primary" icon="el-icon-check">保存</ElButton>
-                        <ElButton v-else @click="$router.push({name: 'Login'})" type="primary" icon="el-icon-user">请先登录</ElButton>
+                        <ElButton v-if="store.authorization" @click="submit" type="primary" icon="Check">保存</ElButton>
+                        <ElButton v-else @click="$router.push({name: 'Login'})" type="primary" icon="User">请先登录</ElButton>
                     </ElFormItem>
                 </ElForm>
             </div>
         </transition>
 
-        <div class="float-panel">
-            <!-- 搜索面板 -->
-            <div class="search-panel card">
-                <ElForm inline @submit="search" size="small">
-                    <ElFormItem class="mb-0" label="地址">
-                        <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
-                    </ElFormItem>
-                    <ElFormItem class="mb-0" label="">
-                        <ElButton type="primary" @click="search" icon="Filter">搜索</ElButton>
-                    </ElFormItem>
-                </ElForm>
-
-                <ElForm inline class="mt-1" size="small">
-                    <ElFormItem class="mb-0" label="经度">
-                        <ElInput style="width:140px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
-                    </ElFormItem>
-                    <ElFormItem class="mb-0" label="纬度">
-                        <ElInput style="width:140px" placeholder="lat" v-model="positionPicked.lat"></ElInput>
-                    </ElFormItem>
-                </ElForm>
-            </div>
-
-            <!-- 结果面板 -->
-            <div class="result card mt-1" v-if="searchResultText">
-                {{ searchResultText }}
-            </div>
-
-            <route-panel
-                class="mt-1"
-                :search-location="searchAddress"
-                @pointAdd="handleAddRoutePoint"
-                @print="printRoute"
-                @showLine="showLine"
-                @changeCurrentPolicy="changePolicy"
-                :policyArray="policyArray"
-                :policy="currentPolicy"
-                :lng="Number(positionPicked.lng)"
-                :lat="Number(positionPicked.lat)"
-                v-model="pathPointers"/>
-        </div>
 
 
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
@@ -138,7 +138,6 @@ import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 import axios from "axios";
 import {Base64} from "js-base64";
 
-import {policyArray} from "./DrivingPolicy"
 import {useProjectStore} from "@/pinia";
 import routeApi from "@/api/routeApi";
 import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
@@ -148,12 +147,10 @@ import {useRoute, useRouter} from "vue-router";
 
 const store = useProjectStore()
 const route = useRoute()
-const router = useRouter()
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 let map = null
-
 
 let activeLineObj = ref(null)
 const isLoading = ref(false)
@@ -258,7 +255,7 @@ const lineId = computed(() => {
 function toggleEditPanel(){
     isShowingEdit.value = !isShowingEdit.value
 }
-function changePolicy(policy){
+function changePolicy(policy: number){
     console.log('最新的 policy', policy)
     currentPolicy.value = policy
 }
@@ -343,7 +340,7 @@ function getLineInfo() {
             .then(res => {
                 formLine.value = res.data
                 currentPolicy.value = res.data.policy
-                this.$set(formLine.value, 'seasonsArray', formLine.value.seasons.split('、'))
+                formLine.value.seasonsArray = formLine.value.seasons.split('、')
                 activeLineObj.value = res.data
                 pathPointers.value = JSON.parse(Base64.decode(activeLineObj.value.paths))
                 loadLine(map, pathPointers.value)
@@ -378,22 +375,6 @@ function search() {
             map.setCenter(locationArray, false, 1000)
 
         })
-}
-// 添加新标记点和圆圈
-function handleAddRoutePoint(routePoint) {
-    pathPointers.value.push({
-        name: routePoint.name,
-        position: [positionPicked.value.lng, positionPicked.value.lat],
-        note: routePoint.note,
-        img: routePoint.img
-    })
-    map.setCenter(routePoint.position) // 定位到中心位置
-    addMarker(map, {
-        position: routePoint.position,
-        name: routePoint.name,
-        note: routePoint.note,
-        img: routePoint.img
-    }, 0)
 }
 // 设置地图中心点：用户坐标
 function setMapCenterToUserLocation(status, res) {
@@ -490,21 +471,22 @@ function loadLine(map, pathPointers) {
             activeLineObj.value = {
                 name: '临时路线'
             }
-            this.$set(formLine.value, 'distance', distance)
-            this.$set(formLine.value, 'time', time)
-
+            formLine.value.distance = distance
+            formLine.value.time = time
         })
 
         // 查询导航路径并开启拖拽导航
         currentDragRouting.value.search()
     })
 }
+
 // 添加路线 label 线路信息
 function loadLineLabels(map, pathPointers) {
     pathPointers.forEach((item, index) => {
         addMarker(map, item, index)
     })
 }
+
 function addMarker(map, item, index) {
     let marker
     if (item.img){
@@ -567,6 +549,11 @@ watch(currentPolicy, () => {
     showLine()
 })
 
+watch(pathPointers, () => {
+    map.clearMap() // 删除地图上的所有标记
+    loadLineLabels(map, pathPointers.value)
+}, {deep: true})
+
 
 </script>
 
@@ -582,7 +569,7 @@ watch(currentPolicy, () => {
     position: absolute;
     left: 20px;
     top: 20px;
-    width: 400px;
+    width: 500px;
     z-index: 100;
 
     .search-panel {

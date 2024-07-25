@@ -18,7 +18,7 @@
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
 
         <!-- DETAIL INFO -->
-        <pointer-detail-panel
+        <PointerDetailPanel
             v-if="activePointerObj && (!store.isInPortraitMode || !isPointerListShowed)"
             :pointer="activePointerObj"
             @openInGaodeApp="openInGaodeApp"

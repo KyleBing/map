@@ -38,9 +38,10 @@
                 >
                     <ElTableColumn width="50" prop="id" label="#"/>
                     <ElTableColumn width="200" prop="name" label="路线名"/>
-                    <ElTableColumn align="center" width="50" prop="is_public" label="状态">
+                    <ElTableColumn align="center" width="60" prop="is_public" label="状态">
                         <template #default="scope">
-                            {{ scope.row.is_public === 1 ? '公开' : '私有' }}
+                            <ElTag effect="dark" type="success" v-if="scope.row.is_public === 1">公开</ElTag>
+                            <ElTag effect="dark" type="info" v-else>私有</ElTag>
                         </template>
                     </ElTableColumn>
                     <ElTableColumn width="150" align="center" prop="area" label="地域"/>
@@ -54,7 +55,7 @@
                     <ElTableColumn align="center" min-width="350px" label="操作">
                         <template #default="scope">
                             <ElButton class="btn-narrow" type="success"
-                                       @click="showRoute(scope.row)" size="small" plain icon="View">查看</ElButton>
+                                       @click="showRoute(scope.row)" size="small" plain icon="View">查看路线</ElButton>
                             <ElButton class="btn-narrow" type="success"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
                                        @click="editRouteLine(scope.row)" plain size="small" icon="Position">地图中编辑</ElButton>
@@ -77,7 +78,7 @@
                     <ElTableColumn align="center" width="50" prop="video_link" label="视频">
                         <template #default="scope">
                             <a class="link" v-if="scope.row.video_link" target="_blank" :href="scope.row.video_link">
-                                <ElIcon size="14"><Camera/></ElIcon>
+                                <ElIcon size="14"><VideoCameraFilled/></ElIcon>
                             </a>
                             <span v-else>-</span>
                         </template>
@@ -141,21 +142,27 @@
                     <ElInput v-model="formRoute.road_type"/>
                 </ElFormItem>
                 <ElFormItem label="规划策略" prop="policy">
-                    <ElSelect v-model="formRoute.policy" placeholder="请选择">
-                        <ElOption
-                            v-for="item in policyArray"
-                            :key="item.label"
-                            :label="item.label"
-                            :value="item.value">
-                        </ElOption>
-                    </ElSelect>
+<!--                    <ElSelect v-model="formRoute.policy" placeholder="请选择">-->
+<!--                        <ElOption-->
+<!--                            v-for="item in policyArray"-->
+<!--                            :key="item.label"-->
+<!--                            :label="item.label"-->
+<!--                            :value="item.value">-->
+<!--                        </ElOption>-->
+<!--                    </ElSelect>-->
+                    <ElRadioGroup v-model="formRoute.policy">
+                        <ElRadio  v-for="item in policyArray"
+                                  :key="item.label"
+                                  :label="item.label"
+                                  :value="item.value"/>
+                    </ElRadioGroup>
                 </ElFormItem>
                 <ElFormItem label="是否公开" prop="is_public">
                     <ElRadio :label="1" v-model="formRoute.is_public">公开</ElRadio>
                     <ElRadio :label="0" v-model="formRoute.is_public">私有</ElRadio>
                 </ElFormItem>
                 <ElFormItem label="适用季节" prop="seasons">
-                    <ElCheckboxGroup v-model="formRoute.seasonsArray">
+                    <ElCheckboxGroup size="small" v-model="formRoute.seasonsArray">
                         <ElCheckboxButton label="春"></ElCheckboxButton>
                         <ElCheckboxButton label="夏"></ElCheckboxButton>
                         <ElCheckboxButton label="秋"></ElCheckboxButton>
@@ -227,7 +234,7 @@ const routeRules = reactive<FormRules<EntityRoute>>({
 })
 // pager
 const pager = ref({
-    pageSize: 15,
+    pageSize: 20,
     pageNo: 1,
     total: 0
 })

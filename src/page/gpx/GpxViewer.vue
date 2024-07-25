@@ -5,7 +5,7 @@
             <div class="mb-2">
                 <input accept=".gpx" id="inputFile" type="file" @change="fileChange($event.target.files)">
                 <label for="inputFile">
-                    <ElTag size="small" type="primary" icon="el-icon-tickets">选择 gpx 文件</ElTag>
+                    <ElTag size="small" type="primary" icon="Tickets">选择 gpx 文件</ElTag>
                 </label>
             </div>
 
@@ -53,8 +53,8 @@
             </ElForm>
 
             <div class="mt-1">
-                <ElButton type="warning" size="small" icon="PriceTag" @click="toggleMarkerDisplay">{{isMarkerShowed? '隐藏': '显示'}}标签</ElButton>
-                <ElButton type="primary" size="small" icon="el-icon-map-location" @click="togglePathDisplay">{{isPathShowed? '隐藏': '显示'}}路径</ElButton>
+                <ElButton type="primary" size="small" icon="PriceTag" @click="toggleMarkerDisplay">{{isMarkerShowed? '隐藏': '显示'}}标签</ElButton>
+                <ElButton type="primary" size="small" icon="Location" @click="togglePathDisplay">{{isPathShowed? '隐藏': '显示'}}路径</ElButton>
 <!--                <ElButton type="success" size="small" icon="el-icon-suitcase-1" @click="saveMapConfig">保存偏移量设置</ElButton>-->
 <!--                <ElButton type="success" size="small" icon="el-icon-medal-1" @click="toggleKmDisplay"-->
 <!--                           v-if="pathPointers[0] && pathPointers[0].extensions && pathPointers[0].extensions.distance">切换公里数显示</ElButton>-->
@@ -65,7 +65,7 @@
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
 
         <!-- DETAIL INFO -->
-        <pointer-detail-panel
+        <PointerDetailPanel
             v-if="activePointerObj && (!store.isInPortraitMode || !isPointerListShowed)"
             :pointer="activePointerObj"
             @openInGaodeApp="openInGaodeApp"
