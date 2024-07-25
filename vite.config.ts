@@ -25,10 +25,10 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '/api': {
+            '/dev': {
                 target: 'http://kylebing.cn/portal/',
                 changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '/api'),
+                rewrite: (path) => path.replace(/^\/dev/, '/'),
             },
         }
     }

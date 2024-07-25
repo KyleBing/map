@@ -1,7 +1,7 @@
 {
   "name": "riding-map",
-  "date-update": "2024.05.16",
-  "version": "0.2.9",
+  "date-update": "2024.07.25",
+  "version": "1.0.0",
   "private": true,
   "github": "https://github.com/KyleBing/map",
   "author": {
@@ -30,7 +30,6 @@
     "animate-bg-canvas": "^0.1.2",
     "animate-heart-canvas": "^0.1.9",
     "core-js": "^3.8.3",
-    "element-ui": "^2.15.14",
     "element-plus": "^2.6.0",
     "fast-xml-parser": "^4.3.3",
     "filemanager-webpack-plugin": "^7.0.0",

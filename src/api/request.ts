@@ -1,8 +1,7 @@
 import axios from "axios";
-import { Loading, Message } from 'element-ui'
 import {getAuthorization} from "@/utility";
 import {ServerResponse} from "@/api/ServerResponse.ts";
-import {ElLoadingComponent} from "element-ui/types/loading";
+import {ElLoading, ElMessage} from "element-plus";
 
 
 const LOADING_OPTION = {
@@ -11,27 +10,27 @@ const LOADING_OPTION = {
     background: "rgba(0, 0, 0, 0.3)"
 }
 
-const BASE_URL: string = process.env.NODE_ENV === 'development' ? '': 'http://kylebing.cn/portal/' // 生产环境时是 ../portal
+const BASE_URL: string = process.env.NODE_ENV === 'development' ? '/dev/' : 'http://kylebing.cn/portal/' // 生产环境时是 ../portal
 
 function request(
-    method: 'get'|'post'|'put'|'delete',
+    method: 'get' | 'post' | 'put' | 'delete',
     params: any,
     requestData: any,
     showLoading = false,
     url: string
 ): Promise<ServerResponse> {
-    let layerLoading: ElLoadingComponent
-    if (showLoading) layerLoading = Loading.service(LOADING_OPTION)
+    let layerLoading = null
+    if (showLoading) layerLoading = ElLoading.service(LOADING_OPTION)
 
     let headers = {}
     /*
     * 所有 requestData 都会自动添加  authorization 信息
     * 给 requestData 添加 authorization 内部的数据： username email uid 等等
     * */
-    if (url !== 'user/Login' && url !== 'user/Register'){ // 注册和登录时不添加 Token 数据
+    if (url !== 'user/Login' && url !== 'user/Register') { // 注册和登录时不添加 Token 数据
         Object.assign(headers, {
-            'Diary-Token':  getAuthorization() && getAuthorization().token,
-            'Diary-Uid':  getAuthorization() && getAuthorization().uid
+            'Diary-Token': getAuthorization() && getAuthorization().token,
+            'Diary-Uid': getAuthorization() && getAuthorization().uid
         })
     }
 
@@ -45,12 +44,12 @@ function request(
             withCredentials: true
         })
             .then(res => {
-                if (showLoading) layerLoading.close()
+                if (showLoading && layerLoading) layerLoading.close()
                 if (res.status === 200) {
-                    if (res.data.success){
+                    if (res.data.success) {
                         resolve(res.data)
                     } else {
-                        Message.error({
+                        ElMessage.error({
                             message: res.data.message || 'Error'
                         })
                         reject(res.data)
@@ -61,8 +60,8 @@ function request(
                 }
             })
             .catch(err => {
-                if (showLoading) layerLoading.close()
-                Message.error({
+                if (showLoading && layerLoading) layerLoading.close()
+                ElMessage.error({
                     message: err.message
                 })
                 console.log(err, err.message)
