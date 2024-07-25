@@ -1,5 +1,5 @@
 <template>
-    <div class="tool-bar"  v-if="!store.isInPortraitMode">
+    <div class="tool-bar"  v-if="!store.isInPortraitMode" :style="`height: ${store.contentInsets.heightToolbar}px`">
         <div class="left">
             <slot name="left"/>
         </div>

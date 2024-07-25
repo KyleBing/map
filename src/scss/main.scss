@@ -247,6 +247,14 @@ body{
     }
 }
 
+.table-date{
+    line-height: 1;
+    .create-date{}
+    .modify-date{
+        color: $orange;
+    }
+}
+
 
 
 

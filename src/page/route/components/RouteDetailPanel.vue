@@ -50,18 +50,18 @@
                     @click="$emit('openInGaodeApp')"
                     icon="el-icon-position">打开高德导航</ElButton>
             </div>-->
-            <div class="qr">
-                <img :src="qrImg" alt="">
-                <p>扫一扫，打开该页面</p>
-            </div>
+<!--            <div class="qr">-->
+<!--                <img :src="qrImg" alt="">-->
+<!--                <p>扫一扫，打开该页面</p>-->
+<!--            </div>-->
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-// import QRCode from "../../../lib/qr.js"
+// import * as QRCode from "../../../lib/qr.js"
 import {policyMap} from "@/page/route/DrivingPolicy"
-// import {marked} from "marked";
+import {marked} from "marked";
 import {useProjectStore} from "@/pinia";
 import {useRoute, useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
@@ -86,7 +86,7 @@ onMounted(()=>{
 })
 
 const contentHtml = computed(() => {
-    // return marked.parse(props.line.note)
+    return marked.parse(props.line.note)
 })
 
 function toggleContent(){
@@ -110,6 +110,7 @@ i{
     @extend .unselectable;
 }
 .detail{
+    z-index: 999;
     backdrop-filter: blur(3px) saturate(120%);
     position: absolute;
     top: 20px;

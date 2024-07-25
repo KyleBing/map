@@ -32,66 +32,61 @@
                     @click="$emit('openInGaodeApp')"
                     icon="el-icon-position">打开高德导航</ElButton>
             </div>-->
-            <div class="qr">
-                <img :src="qrImg" alt="">
-                <p>扫一扫，打开该页面</p>
-            </div>
+<!--            <div class="qr">-->
+<!--                <img :src="qrImg" alt="">-->
+<!--                <p>扫一扫，打开该页面</p>-->
+<!--            </div>-->
         </div>
     </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 // import QRCode from "./qr.js"
 import {marked} from "marked";
 import {useProjectStore} from "@/pinia";
+import {EntityPointer} from "@/page/pointer/Pointer.ts";
+import {computed, onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
 
-export default {
-    name: "PointerDetailPanel",
-    props:{
-        pointer:{
-            type: Object,
-            default: {
-                name: '', // *点图名
-                area: '', // *地域
-                video_link: '', // 路径视频演示
-                pointers: [], // *路径点
-                note: '', // 备注
-                thumb_up: 0, // *点赞数
-                is_public: 1, // *是否公开
-            }
-        },
-    },
-    data(){
-        return {
-            store: useProjectStore(),
+const store = useProjectStore()
+const router = useRouter()
 
-            showContent: true,
-            qrImg: '',
-            height: innerHeight * 0.5
-        }
-    },
-    mounted() {
-        // this.qrImg = QRCode.generatePNG(window.location.href)
-
-    },
-    computed:{
-        contentHtml(){
-            return marked.parse(this.pointer.note)
-        }
-    },
-    methods: {
-        toggleContent(){
-            this.showContent = !this.showContent
-        },
-        goToEditCurrentPointer(){
-            this.$router.push({
-                name: 'PointerEditor',
-                query: {
-                    pointerId: this.pointer.id
-                }
-            })
-        }
+const props = withDefaults(defineProps<{
+    pointer: EntityPointer
+}>(), {
+    pointer: {
+        name: '', // *点图名
+        area: '', // *地域
+        video_link: '', // 路径视频演示
+        pointers: [], // *路径点
+        note: '', // 备注
+        thumb_up: 0, // *点赞数
+        is_public: 1, // *是否公开
     }
+})
+
+const showContent = ref(true)
+const qrImg = ref('')
+const height = innerHeight * 0.5
+
+onMounted(() => {
+    // qrImg.value = QRCode.generatePNG(window.location.href)
+})
+
+const contentHtml = computed(()=>{
+    return marked.parse(props.pointer.note)
+})
+
+function toggleContent(){
+    showContent.value = !showContent.value
+}
+function goToEditCurrentPointer(){
+    router.push({
+        name: 'PointerEditor',
+        query: {
+            pointerId: props.pointer.id
+        }
+    })
 }
 </script>
 

@@ -9,7 +9,7 @@ export const useProjectStore = defineStore('storeProject', {
             width: 0
         },
         contentInsets: {
-            heightToolbar: 50, // toolbar 高度
+            heightToolbar: 60, // toolbar 高度
             heightPager: 50, // pagination 高度
             heightContent: 0, // 内容高度
             widthContent: 0, // 内容宽度

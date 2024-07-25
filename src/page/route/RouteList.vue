@@ -20,10 +20,7 @@
                     </ElForm>
                 </div>
             </template>
-
-            <template #right>
-
-            </template>
+            <template #right></template>
         </Toolbar>
 
         <ElRow :gutter="10">
@@ -103,12 +100,13 @@
                             </ElPopover>
                         </template>
                     </ElTableColumn>
-
 <!--                    <ElTableColumn sortable align="center" width="60px" prop="thumb_up" label="赞"/>-->
-                    <ElTableColumn sortable align="center" width="160px" prop="date_init" label="时间">
+                    <ElTableColumn sortable align="center" width="160px" prop="date_init" label="创建、编辑">
                         <template #default="scope">
-                            <div>{{ scope.row.date_init }}</div>
-<!--                            <div>{{ scope.row.date_modify }}</div>-->
+                            <div class="table-date">
+                                <div class="create-date">{{ scope.row.date_init }}</div>
+                                <div class="modify-date">{{ scope.row.date_modify }}</div>
+                            </div>
                         </template>
                     </ElTableColumn>
                 </ElTable>
@@ -400,8 +398,8 @@ function getRouteList() {
 
                 item.pathArray = item.paths && JSON.parse(item.paths)
                 item.seasonsArray = item.seasons.split('、').filter(item => item !== '')
-                item.date_init = dateFormatter(new Date(item.date_init))
-                item.date_modify = dateFormatter(new Date(item.date_modify))
+                item.date_init = dateFormatter(new Date(item.date_init), 'yyyy/MM/dd hh:mm:ss')
+                item.date_modify = dateFormatter(new Date(item.date_modify), 'yyyy/MM/dd hh:mm:ss')
                 return item
             })
         })
