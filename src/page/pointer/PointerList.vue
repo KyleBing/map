@@ -79,9 +79,9 @@
                                         width="400"
                                         trigger="hover"
                                         :content="scope.row.note">
-                                <span class="table-description" slot="reference" >
+                                <template #reference class="table-description">
                                     <i class="el-icon-tickets"></i> {{scope.row.note}}
-                                </span>
+                                </template>
                             </ElPopover>
                         </template>
                     </ElTableColumn>
@@ -162,6 +162,7 @@ import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64"
 import {dateFormatter} from "@/utility";
 import {useProjectStore} from "@/pinia";
+import {ElMessageBox} from "element-plus";
 
 const store = useProjectStore()
 
@@ -256,7 +257,7 @@ export default {
             }
         },
         closeModal(done) {
-            this.$confirm('确认关闭？')
+            ElMessageBox.confirm('确认关闭？')
                 .then(_ => {
                     this.editingPointerId = null
                     this.modalEdit = false
@@ -376,7 +377,7 @@ export default {
         },
         goDelete(route) {
             console.log(route)
-            this.$confirm(`删除点图 ${route.name} (${route.area})`, '删除', {
+            ElMessageBox.confirm(`删除点图 ${route.name} (${route.area})`, '删除', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'

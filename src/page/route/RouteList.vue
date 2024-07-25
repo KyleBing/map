@@ -51,10 +51,10 @@
                     </ElTableColumn>
                     <ElTableColumn width="100" align="center" prop="nickname" label="用户"/>
 
-                    <ElTableColumn align="center" width="450px" label="操作">
+                    <ElTableColumn align="center" min-width="350px" label="操作">
                         <template #default="scope">
                             <ElButton class="btn-narrow" type="success"
-                                       @click="showRoute(scope.row)" size="small" plain icon="View">地图中查看</ElButton>
+                                       @click="showRoute(scope.row)" size="small" plain icon="View">查看</ElButton>
                             <ElButton class="btn-narrow" type="success"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
                                        @click="editRouteLine(scope.row)" plain size="small" icon="Position">地图中编辑</ElButton>
@@ -76,27 +76,29 @@
                     </ElTableColumn>
                     <ElTableColumn align="center" width="50" prop="video_link" label="视频">
                         <template #default="scope">
-                            <a class="link" v-if="scope.row.video_link" target="_blank" :href="scope.row.video_link"><i class="el-icon-video-camera"></i></a>
+                            <a class="link" v-if="scope.row.video_link" target="_blank" :href="scope.row.video_link">
+                                <ElIcon size="14"><Camera/></ElIcon>
+                            </a>
                             <span v-else>-</span>
                         </template>
                     </ElTableColumn>
-                    <ElTableColumn align="center" prop="paths" label="路线节点">
+                    <ElTableColumn align="center" prop="paths" width="80" label="路线节点">
                         <template #default="scope">
                             <div v-if="scope.row.paths">{{ scope.row.pathArray.length }}</div>
                         </template>
                     </ElTableColumn>
-                    <ElTableColumn align="left" width="250" prop="note" label="备注">
+                    <ElTableColumn align="left" width="50" prop="note" label="备注">
                         <template #default="scope">
-                            <i class="el-icon-minus" v-if="scope.row.note === ''"></i>
+                            <ElIcon size="14" v-if="scope.row.note === ''"><Minus/></ElIcon>
                             <ElPopover v-else
-                                        placement="left"
-                                        title=""
-                                        width="400"
-                                        trigger="hover"
-                                        :content="scope.row.note">
-                                <span class="table-description" slot="reference" >
-                                    <i class="el-icon-tickets"></i> {{scope.row.note}}
-                                </span>
+                                       placement="left"
+                                       title=""
+                                       width="400"
+                                       trigger="hover"
+                                       :content="scope.row.note">
+                                <template #reference class="table-description">
+                                   <ElIcon size="14"><Tickets/></ElIcon>  {{ scope.row.note }}
+                                </template>
                             </ElPopover>
                         </template>
                     </ElTableColumn>
@@ -119,14 +121,15 @@
 
         <!-- 编辑窗口-->
         <ElDialog
+            center
             :title="modalTitle"
-            :visible.sync="modalEdit"
+            v-model="isShowDialogEdit"
             width="40%"
             :before-close="closeModal">
             <ElForm
                 :model="formRoute"
                 :rules="routeRules"
-                size="small"
+                size="default"
                 ref="refForm" label-width="100px">
                 <ElFormItem label="路线名" prop="name">
                     <ElInput v-model="formRoute.name"/>
@@ -169,11 +172,11 @@
                     <ElInput type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formRoute.note"/>
                 </ElFormItem>
             </ElForm>
-            <div slot="footer" class="dialog-footer">
-                <ElButton size="small" @click="clearForm" type="warning">清空</ElButton>
-                <ElButton size="small" @click="closeModal">取 消</ElButton>
-                <ElButton size="small" type="primary" @click="submit">{{ editingRouteId ? '修改' : '添加' }}</ElButton>
-            </div>
+            <template #footer class="dialog-footer">
+                <ElButton @click="clearForm" type="warning" icon="RefreshLeft">清空</ElButton>
+                <ElButton @click="closeModal" icon="Close">取 消</ElButton>
+                <ElButton type="primary" @click="submit" icon="Check">{{ editingRouteId ? '修改' : '添加' }}</ElButton>
+            </template>
         </ElDialog>
     </div>
 </template>
@@ -184,7 +187,7 @@ import {useProjectStore} from "@/pinia";
 import {dateFormatter} from "@/utility";
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {ElMessage, ElNotification, FormRules} from "element-plus";
+import {ElMessage, ElMessageBox, ElNotification, FormRules} from "element-plus";
 import {EntityRoute} from "@/page/route/Route.ts";
 import routeApi from "@/api/routeApi.ts";
 import FooterPagination from "@/layout/FooterPagination.vue";
@@ -200,7 +203,7 @@ const refForm = ref()
 const isLoading = ref(false)
 const editingRouteId = ref(null)
 const tableData = ref([])
-const modalEdit = ref(false) // modal show or not
+const isShowDialogEdit = ref(false) // modal show or not
 
 const formRoute = ref<EntityRoute>({
     name: '', // *路线名
@@ -268,7 +271,7 @@ function addNewRouteWidthMap(){
     })
 }
 function addNewRoute() {
-    modalEdit.value = true
+    isShowDialogEdit.value = true
     editingRouteId.value = null
     clearForm()
 }
@@ -287,10 +290,10 @@ function clearForm() {
     }
 }
 function closeModal(done) {
-    $confirm('确认关闭？')
+    ElMessageBox.confirm('确认关闭？')
         .then(() => {
             editingRouteId.value = null
-            modalEdit.value = false
+            isShowDialogEdit.value = false
             done();
         })
         .catch(() => {
@@ -336,7 +339,7 @@ function routeModifySubmit() {
                 }
             })
             editingRouteId.value = null
-            modalEdit.value = false
+            isShowDialogEdit.value = false
             getRouteList()
         })
         .catch(err => {
@@ -359,7 +362,7 @@ function routeNewSubmit() {
                 }
             })
             editingRouteId.value = null
-            modalEdit.value = false
+            isShowDialogEdit.value = false
             getRouteList()
         })
 }
@@ -402,11 +405,11 @@ function getRouteList() {
 function goEdit(routeLine: EntityRoute) {
     editingRouteId.value = routeLine.uid
     Object.assign(formRoute.value, routeLine)
-    modalEdit.value = true
+    isShowDialogEdit.value = true
 }
 function goDelete(route: EntityRoute) {
     console.log(route)
-    $confirm(`删除路线 ${route.name} (${route.area})`, '删除', {
+    ElMessageBox.confirm(`删除路线 ${route.name} (${route.area})`, '删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
