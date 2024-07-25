@@ -1,28 +1,26 @@
 <template>
     <div class="map-container">
-        <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
+        <div id="container" :style="`height: ${store.contentInsets.heightContent}px`"></div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import AMapLoader from '@amap/amap-jsapi-loader'
 import {useProjectStore} from "@/pinia";
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted} from "vue";
 import {key_web_js} from "@/mapConfig.ts";
+
+const store = useProjectStore()
 
 const POSITION = {
     daMingHu: [117.026217, 36.670921], // 大明湖
     quanChengGuangChang: [117.021226, 36.661487], // 泉城广场
     baoTuQuan: [117.015871, 36.661057], // 趵突泉
 }
+
 let AMap = null
 let map = null
 let loca = null
-
-const isLoading = ref(false)
-const currentLineId = ref(0)
-const activeLineObj = ref(null) // 当前 Line 对象
-const currentRouting = ref(null)  // 当前导航路线
 
 onMounted(() => {
     AMapLoader
