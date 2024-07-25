@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts" setup>
-import {userRegister} from "@/api/userApi";
+import userApi from "@/api/userApi";
 import {reactive, ref} from "vue";
 import {useProjectStore} from "@/pinia.ts";
 import {useRouter} from "vue-router";
@@ -136,7 +136,8 @@ function submit() {
     });
 }
 function register() {
-    userRegister(formRegister.value)
+    userApi
+        .register(formRegister.value)
         .then(res => {
             ElNotification({
                 title: res.message,

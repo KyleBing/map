@@ -6,6 +6,7 @@
             <ElButton size="small" icon="PriceTag" type="info" @click="toggleLabel">切换标签显示</ElButton>
         </div>
         <ElTabs
+            size="small"
             v-if="isShowPanel"
             type="card"
             @tab-click="tabClick"
@@ -55,7 +56,7 @@ import {useProjectStore} from "@/pinia";
 import {onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {EntityRoute} from "@/page/route/Route.ts";
-import routeList from "@/page/route/RouteList.vue";
+import routeApi from "@/api/routeApi.ts"
 
 const store = useProjectStore()
 const route = useRoute()
@@ -109,8 +110,8 @@ function getRouteList() {
 
     axios
         .all([
-            routeList(requestDataPublic),
-            routeList(requestDataMine),
+            routeApi.list(requestDataPublic),
+            routeApi.list(requestDataMine),
         ])
         .then(response => {
             routeLineListPublic.value = []

@@ -35,7 +35,7 @@ import {useRouter} from "vue-router";
 import {ElMessage, FormRules} from "element-plus";
 import {getAuthorization, setAuthorization} from "@/utility.ts";
 import {AnimateHeartCanvas} from "animate-heart-canvas/animate-heart-canvas.js";
-import {userLogin} from "@/api/userApi.ts";
+import userApi from "@/api/userApi.ts";
 
 const store = useProjectStore()
 const router = useRouter()
@@ -84,7 +84,8 @@ function submit() {
 }
 function login() {
     isInLoginProcess.value = true
-    userLogin(formLogin.value)
+    userApi
+        .login(formLogin.value)
         .then(res => {
             console.log(res)
             console.log('Login success')
