@@ -101,7 +101,7 @@
                         </template>
                     </ElTableColumn>
 <!--                    <ElTableColumn sortable align="center" width="60px" prop="thumb_up" label="赞"/>-->
-                    <ElTableColumn sortable align="center" width="160px" prop="date_init" label="创建、编辑">
+                    <ElTableColumn sortable align="center" width="180px" prop="date_init" label="创建、编辑">
                         <template #default="scope">
                             <div class="table-date">
                                 <div class="create-date">{{ scope.row.date_init }}</div>

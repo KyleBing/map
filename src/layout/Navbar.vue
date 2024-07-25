@@ -15,7 +15,6 @@
                         <ElIcon>
                             <component :is="submenu.meta.icon"/>
                         </ElIcon>
-
                         <span>{{ submenu.meta.title }}</span>
                     </template>
                     <ElMenuItem
@@ -116,15 +115,12 @@ watch(route, newValue => {
 <style lang="scss">
 @import "../scss/variables";
 
-$active-submenu-title: darken($color-main, 20%);
+$active-submenu-title: darken($color-main, 30%);
 $active-submenu-bg: transparentize($color-main, 0.9);
 $hover-menu-bg: transparentize($color-main, 0.4);
 
 .el-menu {
     border: none;
-}
-.ElRadio-group {
-    padding: 10px;
 }
 .el-sub-menu{
     .el-menu-item{
@@ -179,8 +175,8 @@ $hover-menu-bg: transparentize($color-main, 0.4);
 }
 
 .el-menu-item, .el-sub-menu__title{
-    line-height: 40px;
-    height: 40px;
+    line-height: 40px !important;
+    height: 40px !important;
     font-size: 0.9rem;
     color: $text-main;
     border-bottom: none;
@@ -190,7 +186,7 @@ $hover-menu-bg: transparentize($color-main, 0.4);
     }
 
     &.is-active {
-        color: white;
+        color: white !important;
         background-color: $color-main;
         &:hover{
             background-color: $color-main !important;
@@ -213,6 +209,12 @@ $hover-menu-bg: transparentize($color-main, 0.4);
     }
     &:last-child:after{
         content: none;
+    }
+}
+.el-menu--inline{
+    .el-menu-item{
+        user-select: none;
+        padding-left: 50px !important;
     }
 }
 
