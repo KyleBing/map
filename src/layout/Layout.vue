@@ -1,6 +1,6 @@
 <template>
-    <el-container>
-        <el-container>
+    <ElContainer>
+        <ElContainer>
             <transition
                 enter-active-class="animate__bounceInDown"
                 leave-active-class="animate__bounceOutUp"
@@ -16,18 +16,21 @@
             >
                 <Aside class="animate__animated" v-show="!store.isShowingMenuToggleBtn"/>
             </transition>
-            <el-container>
-                <el-main>
-                    <RouterView/>
-                </el-main>
-            </el-container>
-        </el-container>
-    </el-container>
+            <ElContainer>
+                <ElMain>
+                    <Container>
+                        <RouterView/>
+                    </Container>
+                </ElMain>
+            </ElContainer>
+        </ElContainer>
+    </ElContainer>
 </template>
 
 <script lang="ts" setup>
 import Aside from "./Aside.vue";
 import {useProjectStore} from "@/pinia.ts";
+import Container from "@/layout/Container.vue";
 
 const store = useProjectStore()
 

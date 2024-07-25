@@ -1,14 +1,12 @@
 <template>
-    <div>
-        <RouterView/>
-        <ElDialog center title="提示" width="50%"
-                  :visible.sync="modalTip">
-            <p class="text-center">地图多次拖动后会变得卡顿，刷新页面即可</p>
-            <div slot="footer" class="dialog-footer">
-                <ElButton size="small" type="primary" @click="checkTip">OK</ElButton>
-            </div>
-        </ElDialog>
-    </div>
+    <RouterView/>
+    <ElDialog center title="提示" width="50%"
+              :visible.sync="modalTip">
+        <p class="text-center">地图多次拖动后会变得卡顿，刷新页面即可</p>
+        <div slot="footer" class="dialog-footer">
+            <ElButton size="small" type="primary" @click="checkTip">OK</ElButton>
+        </div>
+    </ElDialog>
 </template>
 
 <script lang="ts" setup>
@@ -23,7 +21,6 @@ const modalTip = ref(false)
 onMounted(() => {
     store.authorization = getAuthorization()
     modalTip.value = !localStorage.getItem('map-has-checked-tip')
-
     onResize()
     window.addEventListener('resize', ()=>{
         onResize()
@@ -33,6 +30,8 @@ onMounted(() => {
 function onResize() {
     store.windowInsets.height = window.innerHeight
     store.windowInsets.width = window.innerWidth
+    store.contentInsets.heightContent = window.innerHeight - store.contentInsets.heightToolbar - store.contentInsets.heightPager
+    store.contentInsets.widthContent = window.innerWidth - store.navWidth
 }
 
 function checkTip(){

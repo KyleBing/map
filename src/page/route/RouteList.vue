@@ -1,36 +1,43 @@
 <template>
-    <div class="route-list p-2">
-        <div class="tool-bar mb-2" v-if="!store.isInPortraitMode">
-            <ElForm size="small" inline>
-                <ElFormItem>
-                    <ElButton type="success" @click="addNewRoute" icon="Plus">新增路线</ElButton>
-                    <ElButton type="primary" @click="addNewRouteWidthMap" icon="Promotion">从地图中规划路线</ElButton>
-                </ElFormItem>
-                <ElFormItem label="关键字" class="ml-4">
-                    <ElInput clearable placeholder="检索词条、编码、注释" v-model="formSearch.keyword"></ElInput>
-                </ElFormItem>
-                <ElFormItem label="添加时间区间">
-                    <ElDatePicker type="datetimerange" v-model="formSearch.dateRange"></ElDatePicker>
-                </ElFormItem>
-                <ElFormItem>
-                    <ElButton type="primary" @click="search" icon="Search">查询</ElButton>
-                </ElFormItem>
-            </ElForm>
-        </div>
+    <div class="route-list">
+        <Toolbar>
+            <template #left>
+                <ElButton type="success" @click="addNewRoute" icon="Plus">新增路线</ElButton>
+                <ElButton type="primary" @click="addNewRouteWidthMap" icon="Promotion">从地图中规划路线</ElButton>
+            </template>
+            <template #center>
+                <div class="search-bar">
+                    <ElForm inline>
+                        <ElFormItem label="关键字" class="ml-4">
+                            <ElInput clearable placeholder="检索词条、编码、注释" v-model="formSearch.keyword"></ElInput>
+                        </ElFormItem>
+                        <ElFormItem label="添加时间区间">
+                            <ElDatePicker type="datetimerange" v-model="formSearch.dateRange"></ElDatePicker>
+                        </ElFormItem>
+                        <ElFormItem>
+                            <ElButton type="primary" @click="search" icon="Filter">查询</ElButton>
+                        </ElFormItem>
+                    </ElForm>
+                </div>
+            </template>
+
+            <template #right>
+
+            </template>
+        </Toolbar>
 
         <ElRow :gutter="10">
             <ElCol :span="24">
                 <ElTable
                     class="table-narrow"
                     size="small"
-                    :height="store.windowInsets.height - 170"
-                    :max-height="store.windowInsets.height - 170"
+                    :height="store.contentInsets.heightContent"
                     stripe
                     :data="tableData"
                     v-loading="isLoading"
                 >
                     <ElTableColumn width="50" prop="id" label="#"/>
-                    <ElTableColumn width="150" prop="name" label="路线名"/>
+                    <ElTableColumn width="200" prop="name" label="路线名"/>
                     <ElTableColumn align="center" width="50" prop="is_public" label="状态">
                         <template #default="scope">
                             {{ scope.row.is_public === 1 ? '公开' : '私有' }}
@@ -101,22 +108,12 @@
 <!--                            <div>{{ scope.row.date_modify }}</div>-->
                         </template>
                     </ElTableColumn>
-
-
                 </ElTable>
 
                 <!--  PAGINATION  -->
-                <ElPagination
-                    align="right"
-                    class="mt-2"
-                    size="small"
-                    @size-change="pagerSizeChange"
-                    @current-change="currentPageChange"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="pager.total"
-                    :page-sizes="[10, 15, 20, 25, 30, 40, 100]"
-                    :current-page="pager.pageNo"
-                    :page-size="pager.pageSize"/>
+                <FooterPagination
+                    @pagerChange="pageChange"
+                    :pager-option="pager"/>
             </ElCol>
         </ElRow>
 
@@ -190,6 +187,8 @@ import {useRoute, useRouter} from "vue-router";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {EntityRoute} from "@/page/route/Route.ts";
 import routeApi from "@/api/routeApi.ts";
+import FooterPagination from "@/layout/FooterPagination.vue";
+import Toolbar from "@/layout/Toolbar.vue";
 
 const store = useProjectStore()
 const route = useRoute()
@@ -367,14 +366,7 @@ function routeNewSubmit() {
 
 
 // pagination
-function pagerSizeChange(newPageSize: number) {
-    pager.value.pageNo = 1
-    pager.value.pageSize = newPageSize
-    getRouteList()
-}
-function currentPageChange(newCurrentPage: number) {
-    pager.value.pageNo = 1
-    pager.value.pageNo = newCurrentPage
+function pageChange() {
     getRouteList()
 }
 

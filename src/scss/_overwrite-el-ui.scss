@@ -1,22 +1,36 @@
-input[type=number] {
-  padding-right: 0!important;
-}
+//input[type=number] {
+//  padding-right: 0!important;
+//}
+//
+//.el-input__inner{
+//  padding-left: 6px !important;
+//}
+//.el-textarea__inner{
+//  padding: 5px 8px !important;
+//}
 
-.ElInput__inner{
-  padding-left: 6px !important;
-}
-.el-textarea__inner{
-  padding: 5px 8px !important;
-}
-
-.ElTable .cell {
+.el-table .cell {
   line-height: 18px;
 }
 
 // TAB
-.ElTabs__item{
+.el-tabs__item{
   height: 30px !important;
   line-height: 30px !important;
   font-size: $fz-normal;
 }
 
+
+.search-bar{
+  margin-left: 20px;
+  margin-right: 10px;
+  padding: 0 10px;
+  align-items: center;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  .el-form-item{
+    margin-right: 15px !important;
+    margin-bottom: 0;
+  }
+}

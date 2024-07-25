@@ -13,7 +13,7 @@
                     <ElDatePicker type="datetimerange" v-model="formSearch.dateRange"></ElDatePicker>
                 </ElFormItem>
                 <ElFormItem>
-                    <ElButton type="primary" @click="search" icon="Search">查询</ElButton>
+                    <ElButton type="primary" @click="search" icon="Filter">查询</ElButton>
                 </ElFormItem>
             </ElForm>
         </div>
@@ -109,7 +109,7 @@
                     class="mt-2"
                     size="small"
                     @size-change="pagerSizeChange"
-                    @current-change="currentPageChange"
+                    @current-change="pageNoChange"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="pager.total"
                     :page-sizes="[10, 15, 20, 25, 30, 40, 100]"
@@ -331,7 +331,7 @@ export default {
             this.pager.pageSize = newPageSize
             this.getPointerList()
         },
-        currentPageChange(newCurrentPage) {
+        pageNoChange(newCurrentPage) {
             this.pager.pageNo = 1
             this.pager.pageNo = newCurrentPage
             this.getPointerList()

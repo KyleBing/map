@@ -8,7 +8,11 @@ const app = createApp(App)
 // ELEMENT-UI
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-app.use(ElementPlus)
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+
+app.use(ElementPlus, {
+    locale: zhCn
+})
 
 // ELEMENT-UI-ICONS
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
@@ -20,6 +24,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 import {createPinia} from "pinia"
 const pinia = createPinia()
 app.use(pinia)
+
 
 // ROUTER
 import {router} from "./router"
