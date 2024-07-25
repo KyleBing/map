@@ -8,7 +8,7 @@
                         <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="address"></ElInput>
                     </ElFormItem>
                     <ElFormItem class="mb-0" label="">
-                        <ElButton  type="primary" @click="search" icon="el-icon-search">搜索</ElButton>
+                        <ElButton  type="primary" @click="search" icon="Search">搜索</ElButton>
                     </ElFormItem>
                 </ElForm>
 

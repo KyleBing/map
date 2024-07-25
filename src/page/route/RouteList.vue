@@ -3,8 +3,8 @@
         <div class="tool-bar mb-2" v-if="!store.isInPortraitMode">
             <ElForm size="small" inline>
                 <ElFormItem>
-                    <ElButton type="success" @click="addNewRoute" icon="el-icon-plus">新增路线</ElButton>
-                    <ElButton type="primary" @click="addNewRouteWidthMap" icon="el-icon-s-promotion">从地图中规划路线</ElButton>
+                    <ElButton type="success" @click="addNewRoute" icon="Plus">新增路线</ElButton>
+                    <ElButton type="primary" @click="addNewRouteWidthMap" icon="Promotion">从地图中规划路线</ElButton>
                 </ElFormItem>
                 <ElFormItem label="关键字" class="ml-4">
                     <ElInput clearable placeholder="检索词条、编码、注释" v-model="formSearch.keyword"></ElInput>
@@ -13,7 +13,7 @@
                     <ElDatePicker type="datetimerange" v-model="formSearch.dateRange"></ElDatePicker>
                 </ElFormItem>
                 <ElFormItem>
-                    <ElButton type="primary" @click="search" icon="el-icon-search">查询</ElButton>
+                    <ElButton type="primary" @click="search" icon="Search">查询</ElButton>
                 </ElFormItem>
             </ElForm>
         </div>
@@ -47,16 +47,16 @@
                     <ElTableColumn align="center" width="450px" label="操作">
                         <template #default="scope">
                             <ElButton class="btn-narrow" type="success"
-                                       @click="showRoute(scope.row)" size="small" plain icon="el-icon-view">地图中查看</ElButton>
+                                       @click="showRoute(scope.row)" size="small" plain icon="View">地图中查看</ElButton>
                             <ElButton class="btn-narrow" type="success"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
-                                       @click="editRouteLine(scope.row)" plain size="small" icon="el-icon-position">地图中编辑</ElButton>
+                                       @click="editRouteLine(scope.row)" plain size="small" icon="Position">地图中编辑</ElButton>
                             <ElButton class="btn-narrow" type="primary"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
-                                       @click="goEdit(scope.row)" plain size="small" icon="el-icon-edit">编辑</ElButton>
+                                       @click="goEdit(scope.row)" plain size="small" icon="Edit">编辑</ElButton>
                             <ElButton class="btn-narrow" type="danger"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
-                                       @click="goDelete(scope.row)" plain size="small" icon="el-icon-delete">删除</ElButton>
+                                       @click="goDelete(scope.row)" plain size="small" icon="Delete">删除</ElButton>
                         </template>
                     </ElTableColumn>
                     <ElTableColumn width="130" align="left" prop="seasons" label="适用季节"/>
@@ -189,7 +189,7 @@ import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {EntityRoute} from "@/page/route/Route.ts";
-import {routeAdd, routeDelete, routeList, routeModify} from "@/api/routeApi.ts";
+import routeApi from "@/api/routeApi.ts";
 
 const store = useProjectStore()
 const route = useRoute()
@@ -326,7 +326,8 @@ function routeModifySubmit() {
     let requestData = {}
     Object.assign(requestData, formRoute.value)
     requestData.paths = Base64.encode(formRoute.value.paths)
-    routeModify(requestData)
+    routeApi
+        .modify(requestData)
         .then(res => {
             ElNotification({
                 title: res.message,
@@ -348,7 +349,8 @@ function routeNewSubmit() {
     let requestData = {}
     Object.assign(requestData, formRoute.value)
     requestData.paths = Base64.encode(formRoute.value.paths)
-    routeAdd(requestData)
+    routeApi
+        .add(requestData)
         .then(res => {
             ElNotification({
                 title: res.message,
@@ -386,7 +388,8 @@ function getRouteList() {
         keyword: formSearch.value.keyword,
         dateRange: formSearch.value.dateRange
     }
-    routeList(requestData)
+    routeApi
+        .list(requestData)
         .then(res => {
             isLoading.value = false
             pager.value = res.data.pager
@@ -419,7 +422,8 @@ function goDelete(route: EntityRoute) {
         let requestData = {
             id: route.id
         }
-        routeDelete(requestData)
+        routeApi
+            .delete(requestData)
             .then(res => {
                     getRouteList();
                     ElNotification({

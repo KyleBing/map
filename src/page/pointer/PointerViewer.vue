@@ -29,15 +29,15 @@
 <script>
 
 import AMapLoader from '@amap/amap-jsapi-loader'
-import mapData from './lines'
 import PointerDetailPanel from "./components/PointerDetailPanel.vue"
-import {key_web_js} from "@/mapConfig";
+import {key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig";
 import pointerApi from "@/api/pointerApi";
 
 import {Base64} from "js-base64"
 import PointerListPanel from "./components/PointerListPanel.vue";
 import {useProjectStore} from "@/pinia";
 import {dateFormatter} from "@/utility";
+import {COLORS} from "@/page/route/lines";
 const store = useProjectStore()
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -54,7 +54,7 @@ export default {
             map: null,
             cluster: null,  // 点聚合的对象
 
-            colors: mapData.COLORS,
+            colors: COLORS,
             currentPointerId: 0,
             activePointerObj: null, // 当前 Line 对象
 
@@ -275,8 +275,8 @@ export default {
                           <div class="marker-content ">
                                <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                                <div class="view">
-                                   <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
-                                      <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
+                                   <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
+                                      <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
                                    </a>
                                </div>
                           </div>
@@ -356,8 +356,8 @@ export default {
                   <div class="marker-content">
                        <div class="note">${item.note.replaceAll('|', '<br>')}</div>
                        <div class="view">
-                           <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
-                              <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
+                           <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
+                              <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
                            </a>
                        </div>
                   </div>

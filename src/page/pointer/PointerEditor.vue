@@ -16,8 +16,8 @@
                 <div class="form-title">
                     <div class="collapse-btn">
                         <ElButton size="small" @click="toggleEditPanel">
-                            <i v-if="isShowingEdit" class="el-icon-arrow-up"></i>
-                            <i v-else class="el-icon-arrow-down"></i>
+                            <i v-if="isShowingEdit" class="ArrowUp"></i>
+                            <i v-else class="ArrowDown"></i>
                             折叠面板
                         </ElButton>
                     </div>
@@ -67,7 +67,7 @@
                         <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
                     </ElFormItem>
                     <ElFormItem class="mb-0" label="">
-                        <ElButton type="primary" @click="search" icon="el-icon-search">搜索</ElButton>
+                        <ElButton type="primary" @click="search" icon="Search">搜索</ElButton>
                     </ElFormItem>
                 </ElForm>
 

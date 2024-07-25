@@ -13,7 +13,7 @@
                     <ElDatePicker type="datetimerange" v-model="formSearch.dateRange"></ElDatePicker>
                 </ElFormItem>
                 <ElFormItem>
-                    <ElButton type="primary" @click="search" icon="el-icon-search">查询</ElButton>
+                    <ElButton type="primary" @click="search" icon="Search">查询</ElButton>
                 </ElFormItem>
             </ElForm>
         </div>
@@ -47,16 +47,16 @@
                     <ElTableColumn align="center" width="450px" label="操作">
                         <template #default="scope">
                             <ElButton class="btn-narrow" type="success"
-                                       @click="showPointer(scope.row)" size="small" plain icon="el-icon-view">地图中查看</ElButton>
+                                       @click="showPointer(scope.row)" size="small" plain icon="View">地图中查看</ElButton>
                             <ElButton class="btn-narrow" type="success"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
-                                       @click="editPointer(scope.row)" plain size="small" icon="el-icon-position">地图中编辑</ElButton>
+                                       @click="editPointer(scope.row)" plain size="small" icon="Position">地图中编辑</ElButton>
                             <ElButton class="btn-narrow" type="primary"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
-                                       @click="goEdit(scope.row)" plain size="small" icon="el-icon-edit">编辑</ElButton>
+                                       @click="goEdit(scope.row)" plain size="small" icon="Edit">编辑</ElButton>
                             <ElButton class="btn-narrow" type="danger"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
-                                       @click="goDelete(scope.row)" plain size="small" icon="el-icon-delete">删除</ElButton>
+                                       @click="goDelete(scope.row)" plain size="small" icon="Delete">删除</ElButton>
                         </template>
                     </ElTableColumn>
                     <ElTableColumn align="center" width="50" prop="video_link" label="视频">

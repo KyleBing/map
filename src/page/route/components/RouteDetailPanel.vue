@@ -1,8 +1,8 @@
 <template>
     <div :class="['detail', 'card', {'closed': !showContent}, {'center': store.isInPortraitMode}]">
         <div class="title">
-            <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
-                <i @click="toggleContent" v-else class="el-icon-arrow-up"></i>
+            <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="ArrowDown"></i>
+                <i @click="toggleContent" v-else class="ArrowUp"></i>
             </h1>
             <a v-if="line.video_link" target="_blank" class="video-link" :href="line.video_link"><i class="el-icon-video-camera"></i></a>
         </div>
@@ -40,7 +40,7 @@
             >
                 <ElButton
                     v-if="line.id !== undefined"
-                    type="text" size="small"
+                    plain size="small"
                     @click="goToEditCurrentLine"
                     icon="el-icon-edit-outline">编辑</ElButton>
             </div>

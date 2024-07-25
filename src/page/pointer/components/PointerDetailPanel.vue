@@ -1,8 +1,8 @@
 <template>
     <div :class="['detail', 'card', {'closed': !showContent}, {'center': store.isInPortraitMode}]">
         <div class="title">
-            <h1>{{pointer.name}} <i @click="toggleContent" v-if="showContent" class="el-icon-arrow-down"></i>
-                <i @click="toggleContent" v-else class="el-icon-arrow-up"></i>
+            <h1>{{pointer.name}} <i @click="toggleContent" v-if="showContent" class="ArrowDown"></i>
+                <i @click="toggleContent" v-else class="ArrowUp"></i>
             </h1>
             <a v-if="pointer.video_link" target="_blank" class="video-link" :href="pointer.video_link"><i class="el-icon-video-camera"></i></a>
         </div>
@@ -22,13 +22,13 @@
             >
                 <ElButton
                     v-if="pointer.id !== undefined"
-                    type="text" size="small"
+                    plain size="small"
                     @click="goToEditCurrentPointer"
-                    icon="el-icon-edit-outline">编辑</ElButton>
+                    icon="Edit">编辑</ElButton>
             </div>
 <!--            <div class="button-center">
                 <ElButton
-                    type="text" size="small"
+                plain size="small"
                     @click="$emit('openInGaodeApp')"
                     icon="el-icon-position">打开高德导航</ElButton>
             </div>-->
