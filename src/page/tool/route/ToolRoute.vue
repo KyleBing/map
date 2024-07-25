@@ -2,22 +2,23 @@
     <div class="map-container">
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
         <div class="float-panel">
-            <div class="search-panel card">
-                <ElForm inline  size="small">
-                    <ElFormItem class="mb-0" label="地址">
-                        <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="address"></ElInput>
+            <!-- 搜索面板 -->
+            <div class="search-panel card mb-1">
+                <ElForm inline @submit="search" size="small" label-width="80px">
+                    <ElFormItem class="mb-0" label="搜索地址">
+                        <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
                     </ElFormItem>
                     <ElFormItem class="mb-0" label="">
-                        <ElButton  type="primary" @click="search" icon="Search">搜索</ElButton>
+                        <ElButton type="primary" @click="search" icon="Search">搜索</ElButton>
                     </ElFormItem>
                 </ElForm>
 
-                <ElForm inline class="mt-1" size="small">
-                    <ElFormItem class="mb-0" label="经度">
-                        <ElInput style="width:140px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
+                <ElForm inline class="mt-1" size="small" >
+                    <ElFormItem class="mb-0" label="经度" label-width="80px">
+                        <ElInput style="width:120px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
                     </ElFormItem>
                     <ElFormItem class="mb-0" label="纬度">
-                        <ElInput style="width:140px" placeholder="lat" v-model="positionPicked.lat"></ElInput>
+                        <ElInput style="width:120px" placeholder="lat" v-model="positionPicked.lat"></ElInput>
                     </ElFormItem>
                 </ElForm>
             </div>
@@ -69,9 +70,7 @@ export default {
         return {
             store: useProjectStore(),
 
-
             activeLineObj: null,
-
             isLoading: false,
             map: null,
             currentRouting: null,  // 当前导航路线
@@ -85,7 +84,6 @@ export default {
 
             policyArray,
             currentPolicy: 2, // 当前路径规则策略
-
             positionPicked: {
                 lng: 0,
                 lat: 0,
@@ -373,7 +371,7 @@ export default {
     position: relative;
 }
 .float-panel{
-    width: 400px;
+    width: 500px;
     position: absolute;
     left: 20px;
     top: 20px;
