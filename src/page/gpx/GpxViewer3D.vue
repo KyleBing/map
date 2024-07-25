@@ -73,8 +73,7 @@
     </div>
 </template>
 
-<script>
-
+<script lang="ts">
 import AMapLoader from '@amap/amap-jsapi-loader'
 import PointerDetailPanel from "../pointer/components/PointerDetailPanel.vue"
 import {key_web_js} from "@/mapConfig";
@@ -207,16 +206,16 @@ export default {
         }
     },
     methods: {
-        offsetMoveUp(step) {
+        offsetMoveUp(step: number){
             this.offsetN = Number(this.offsetN) + step
         },
-        offsetMoveLeft(step) {
+        offsetMoveLeft(step: number){
             this.offsetE = Number(this.offsetE) - step
         },
-        offsetMoveRight(step) {
+        offsetMoveRight(step: number){
             this.offsetE = Number(this.offsetE) + step
         },
-        offsetMoveDown(step) {
+        offsetMoveDown(step: number){
             this.offsetN = Number(this.offsetN) - step
         },
         getMapConfig() {
@@ -280,8 +279,8 @@ export default {
             }
         },
 
-        fileChange(files) {
-            if (files.length) {
+        fileChange(files: File){
+            if(files.length){
 
                 // reset map content
                 this.map.clearInfoWindow() // 清除地图上的信息窗体
@@ -386,7 +385,7 @@ export default {
             this.showLineLayer(this.loca, this.pathPointers)
         },
 
-        loadGpxPath(map, ptArray, isNeedFitToMap) {
+        loadGpxPath(map, ptArray: Array<[number, number]>, isNeedFitToMap: boolean){
             this.path = new AMap.Polyline({
                 path: ptArray,           // Array<[number, number]>
                 isOutline: true,
@@ -415,7 +414,7 @@ export default {
             }
         },
 
-        loadMarkers(map, ptArray) {
+        loadMarkers(map, ptArray: Array<[number, number]>){
             this.markers = []
             ptArray.forEach((item, index) => {
                 if (item.label === 'start') {
@@ -520,7 +519,7 @@ export default {
         },
 
 
-        addMarker(map, position, name, height, extData, icon, offset) {
+        addMarker(map, position, name: string, height: number, extData: any, icon: string, offset: number) {
             let marker
             if (icon) {
                 marker = new AMap.Marker({
@@ -547,20 +546,20 @@ export default {
 
     },
     watch: {
-        offsetN(newValue) {
+        offsetN(){
             this.saveMapConfig()
             if (this.xmlObj) {
                 this.loadAllPointer()
             }
         },
-        offsetE(newValue) {
+        offsetE(){
             this.saveMapConfig()
             if (this.xmlObj) {
                 this.loadAllPointer()
             }
         },
-        gapCount(newValue) {
-            if (this.xmlObj) {
+        gapCount(){
+            if (this.xmlObj){
                 this.loadAllPointer()
             }
         },
