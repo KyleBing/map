@@ -7,7 +7,7 @@
         </div>
 
         <!-- 路线列表 -->
-        <div class="float-route-list-panel" v-if="isRouteListShowed">
+        <div class="float-route-list-panel" v-if="isRouteListShowed" :style="`height: ${store.windowInsets.height - 40}px`">
             <RouteLineListPanel
                 @choseLine="changeLine"
                 @labelToggle="toggleLabel"/>

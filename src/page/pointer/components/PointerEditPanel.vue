@@ -15,7 +15,7 @@
                 </ElForm>
             </div>
             <div slot="footer" class="dialog-footer">
-                <ElButton size="small" type="default" @click="isModalShowing = false">取消</ElButton>
+                <ElButton size="small" type="info" @click="isModalShowing = false">取消</ElButton>
                 <ElButton size="small" type="primary" @click="submitStringChange">确定</ElButton>
             </div>
         </ElDialog>

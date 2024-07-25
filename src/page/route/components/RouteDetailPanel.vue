@@ -42,7 +42,7 @@
                     v-if="line.id !== undefined"
                     plain size="small"
                     @click="goToEditCurrentLine"
-                    icon="el-icon-edit-outline">编辑</ElButton>
+                    icon="EditPen">编辑</ElButton>
             </div>
 <!--            <div class="button-center">
                 <ElButton

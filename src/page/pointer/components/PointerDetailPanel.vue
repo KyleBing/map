@@ -24,7 +24,7 @@
                     v-if="pointer.id !== undefined"
                     plain size="small"
                     @click="goToEditCurrentPointer"
-                    icon="Edit">编辑</ElButton>
+                    icon="EditPen">编辑</ElButton>
             </div>
 <!--            <div class="button-center">
                 <ElButton

@@ -2,8 +2,8 @@
     <div :class="['list-panel', {collapsed: !isShowPanel}] " v-loading="isLoading">
         <div class="list-panel-header">
             <div class="title">路线列表</div>
-            <ElButton size="small" icon="Minus" type="info" @click="togglePanel">折叠/展开</ElButton>
-            <ElButton size="small" icon="PriceTag" type="info" @click="toggleLabel">切换标签显示</ElButton>
+            <ElButton size="small" :icon="isShowPanel?'ArrowDown':'ArrowRight'" type="primary" plain @click="togglePanel">折叠/展开</ElButton>
+            <ElButton size="small" icon="PriceTag" type="primary" plain @click="toggleLabel">切换标签显示</ElButton>
         </div>
         <ElTabs
             size="small"
@@ -12,7 +12,7 @@
             @tab-click="tabClick"
             v-model="currentTab">
             <ElTabPane label="我的" name="mine">
-                <div class="route-line-list" :style="`max-height: ${store.windowInsets.height - 300}px`">
+                <div class="route-line-list" :style="`max-height: ${store.windowInsets.height - 70 - 50}px`">
                     <div
                         @click="emit('choseLine', line.id)"
                         :class="[
@@ -28,7 +28,7 @@
                 </div>
             </ElTabPane>
             <ElTabPane label="其它公开路线" name="other">
-                <div class="route-line-list" :style="`max-height: ${store.windowInsets.height - 300}px`">
+                <div class="route-line-list" :style="`max-height: ${store.windowInsets.height - 70 - 50}px`">
                     <div
                         @click="emit('choseLine', line.id)"
                         :class="[
