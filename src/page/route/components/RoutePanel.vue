@@ -129,12 +129,12 @@
 
 <script lang="ts" setup>
 import ClipboardJS from 'clipboard'
-import {qiniu_bucket_name, qiniu_img_base_url, thumbnail200_suffix} from "@/mapConfig";
+import {qiniu_bucket_name, qiniu_img_base_url, thumbnail200_suffix} from "@/mapConfig.ts";
 import * as qiniu from "qiniu-js";
-import {policyArray} from "@/page/route/DrivingPolicy";
-import {getAuthorization} from "@/utility";
+import {policyArray} from "@/page/route/DrivingPolicy.ts";
+import {getAuthorization} from "@/utility.ts";
 import {ElMessage} from "element-plus";
-import {getUploadToken} from "@/api/fileApi";
+import {getUploadToken} from "@/api/fileApi.ts";
 import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import {EntityRoutePointer} from "@/page/route/Route.ts";
 
@@ -361,7 +361,7 @@ watch(() => props.policy, newValue => {
 <style scoped lang="scss">
 @use 'sass:math';
 
-@import "../../../../scss/plugin";
+@import "../../../scss/plugin";
 .circle-panel {
     width: 500px;
     padding: 0;

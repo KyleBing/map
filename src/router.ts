@@ -65,7 +65,6 @@ const FIXED_ROUTES: Array<RouteRecordRaw> = [
         meta: {title: '地图工具', showInMenu: true, icon: 'Coordinate' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
             {name: 'ToolCircle'  , path: 'circle'       , meta: {title: '范围标记' , showInMenu: true}, component: () => import('./page/tool/circle/ToolCircle.vue')},
-            {name: 'ToolRoute'   , path: 'route'        , meta: {title: '路线标记' , showInMenu: true}, component: () => import('./page/tool/route/ToolRoute.vue')},
             {name: 'DistrictInfo', path: 'district-info', meta: {title: '城市各区县', showInMenu: true}, component: () => import('./page/info/area/District.vue')},
         ]
     },

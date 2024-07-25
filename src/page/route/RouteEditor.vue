@@ -131,7 +131,7 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
-import RoutePanel from "@/page/tool/route/components/RoutePanel.vue";
+import RoutePanel from "@/page/route/components/RoutePanel.vue";
 
 import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig";
 import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";

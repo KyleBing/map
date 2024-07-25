@@ -15,7 +15,7 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader'
 import ICON from "@/assets/icons"
-import RoutePanel from "@/page/tool/route/components/RoutePanel.vue"
+import RoutePanel from "@/page/route/components/RoutePanel.vue"
 import {key_web_js} from "@/mapConfig";
 import {useProjectStore} from "@/pinia";
 // 显示地图行政区的深度
