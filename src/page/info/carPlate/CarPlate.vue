@@ -115,7 +115,7 @@ function addMarker(map, item) {
         content: `
                <div class="marker-plate">
                   <div class="title">${item.name}</div>
-                  <div class="note">${item.note.replace(/\|/, '<br>')}</div>
+                  <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
                </div>`,
     })
     map.add(marker)

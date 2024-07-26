@@ -288,7 +288,7 @@ export default {
                 content: `
                <div class="marker">
                   <div class="title">${item.name}</div>
-                  <div class="note">${item.note.replace(/\|/, '<br>')}</div>
+                  <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
                </div>`,
             })
             map.add(marker)

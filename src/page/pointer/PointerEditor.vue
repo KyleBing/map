@@ -422,7 +422,7 @@ function addMarker(map, item: EntityPointerPoint, index: number) {
                       <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replace(/\|/, '<br>')}</div>
+                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
                        <div class="view">
                            <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
                               <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
@@ -442,7 +442,7 @@ function addMarker(map, item: EntityPointerPoint, index: number) {
                       <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replace(/\|/, '<br>')}</div>
+                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
                   </div>
                </div>`,
         })
