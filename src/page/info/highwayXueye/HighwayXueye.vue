@@ -95,7 +95,7 @@ function addMarker(map, item, index: number) {
             position: item.position,
             offset: new AMap.Pixel(0, -20),
             content: `
-              <div class="marker">
+              <div class="marker no-content">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
                       <div class="title">${item.name}</div>

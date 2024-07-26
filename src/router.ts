@@ -43,8 +43,8 @@ const FIXED_ROUTES: Array<RouteRecordRaw> = [
         component: Layout,
         meta: {title: 'GPX', showInMenu: true, icon: 'Promotion' /* 菜单 icon 对应 Element UI 中的 ICON class 名 */},
         children: [
-            {name: 'GpxViewer', path: 'gpx-viewer', meta: {title: 'GPX路径', showInMenu: true, icon: 'el-icon-s-promotion'}, component: () => import('./page/gpx/GpxViewer.vue')},
-            {name: 'GpxViewer3D', path: 'gpx-viewer-3D', meta: {title: 'GPX路径3D', showInMenu: true, icon: 'el-icon-s-promotion'}, component: () => import('./page/gpx/GpxViewer3D.vue')},
+            {name: 'GpxViewer', path: 'gpx-viewer', meta: {title: 'GPX 路径', showInMenu: true, icon: 'el-icon-s-promotion'}, component: () => import('./page/gpx/GpxViewer.vue')},
+            {name: 'GpxViewer3D', path: 'gpx-viewer-3D', meta: {title: 'GPX 路径 3D', showInMenu: true, icon: 'el-icon-s-promotion'}, component: () => import('./page/gpx/GpxViewer3D.vue')},
         ]
     },
     {
@@ -78,7 +78,6 @@ const FIXED_ROUTES: Array<RouteRecordRaw> = [
             {name: 'MotorHighway'      , path: 'motor-highway'  , meta: {title: '摩托车高速'  , showInMenu: true} , component: () => import('./page/info/motorHighway/MotorHighway.vue')} ,
             {name: 'InfoPlate'         , path: 'plate'          , meta: {title: '山东各市车牌'  , showInMenu: true} , component: () => import('./page/info/carPlate/CarPlate.vue')} ,
             {name: 'InfoCarDepartment' , path: 'car-department' , meta: {title: '济南车管所'   , showInMenu: true} , component: () => import('./page/info/car/CarDepartment.vue')} ,
-            {name: 'CarUsed'           , path: 'car-used'       , meta: {title: '济南二手车市场' , showInMenu: true} , component: () => import('./page/info/car/CarUsedMarket.vue')} ,
             {name: 'HighwayXueye'      , path: 'highway-xueye'  , meta: {title: '济南籍车辆高速免费' , showInMenu: true} , component: () => import('./page/info/highwayXueye/HighwayXueye.vue')} ,
         ]
     },
