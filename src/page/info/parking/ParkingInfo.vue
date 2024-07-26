@@ -74,7 +74,7 @@ export default {
                       <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                       <div class="note">${item.note.replace(/\|/, '<br>')}</div>
                   </div>
                </div>
 `,

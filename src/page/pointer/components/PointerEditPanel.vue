@@ -1,29 +1,9 @@
 <template>
     <div class="pointer-panel card">
-        <ElDialog
-            center
-            title=""
-            append-to-body
-            :visible.sync="isModalShowing"
-            :before-close="closeModal"
-            width="50%">
-            <div>
-                <ElForm>
-                    <ElFormItem :label="`修改${modalTitle}`">
-                        <ElInput v-model="currentModifyingString"/>
-                    </ElFormItem>
-                </ElForm>
-            </div>
-            <div slot="footer" class="dialog-footer">
-                <ElButton size="small" type="info" @click="isModalShowing = false">取消</ElButton>
-                <ElButton size="small" type="primary" @click="submitStringChange">确定</ElButton>
-            </div>
-        </ElDialog>
-
         <div class="toolbar">
-            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="small" type="info" icon="el-icon-document-copy">复制 JSON 数据</ElButton>
-            <ElButton size="small" type="danger" @click="$emit('setData', [])" icon="el-icon-refresh-left">清空</ElButton>
-            <ElButton class="ml-1" size="small" type="primary" @click="$emit('showPointer', null)" icon="el-icon-position">展示点图</ElButton>
+            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(data)" size="small" type="info" icon="CopyDocument">复制 JSON 数据</ElButton>
+            <ElButton size="small" type="danger" @click="$emit('setData', [])" icon="RefreshLeft">清空</ElButton>
+            <ElButton class="ml-1" size="small" type="primary" @click="$emit('showPointer', null)" icon="Position">展示点图</ElButton>
         </div>
         <table class="table-record">
             <thead>
@@ -75,7 +55,7 @@
                     <div class="img-wrapper">
                         <img v-if="pointerImg" :src="`${pointerImg}-${imgSuffix}`" alt="图片">
                         <label class="logo avatar" for="avatar">
-                            <i class="el-icon-upload2"></i>
+                            <ElIcon size="14"><Upload/></ElIcon>
                         </label>
                         <input type="file" @change="uploadAvatar" id="avatar">
                     </div>
@@ -120,6 +100,25 @@
             </tbody>
         </table>
     </div>
+    <ElDialog
+        center
+        title=""
+        append-to-body
+        :visible.sync="isModalShowing"
+        :before-close="closeModal"
+        width="50%">
+        <div>
+            <ElForm>
+                <ElFormItem :label="`修改${modalTitle}`">
+                    <ElInput v-model="currentModifyingString"/>
+                </ElFormItem>
+            </ElForm>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <ElButton size="small" type="info" @click="isModalShowing = false">取消</ElButton>
+            <ElButton size="small" type="primary" @click="submitStringChange">确定</ElButton>
+        </div>
+    </ElDialog>
 </template>
 
 <script>
@@ -166,6 +165,7 @@ export default {
     },
     computed: {
     },
+    emits: ['pointAdd', 'print', 'showPointer'],
     watch:{
         data(newValue){
             this.pointersLocal = [...this.data]

@@ -295,7 +295,7 @@ function addMarker(map, item, index) {
                       <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                       <div class="note">${item.note.replace(/\|/, '<br>')}</div>
                        <div class="view">
                            <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
                               <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
@@ -316,7 +316,7 @@ function addMarker(map, item, index) {
                                    <div class="title">${item.name}</div>
                               </div>
                               <div class="marker-content">
-                                   <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                                   <div class="note">${item.note.replace(/\|/, '<br>')}</div>
                               </div>
                            </div>`,
         })

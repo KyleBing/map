@@ -1,13 +1,7 @@
 <template>
     <div class="map-container">
 
-        <route-detail-panel
-            class="detail-panel mt-1"
-            v-if="activeLineObj"
-            :line="activeLineObj"
-        />
-
-        <!-- 点图信息编辑面板-->
+        <!-- 编辑面板-->
         <transition
             enter-active-class="animate__bounceInDown"
             leave-active-class="animate__bounceOutUp"
@@ -22,13 +16,13 @@
                         </ElButton>
                     </div>
                     <div class="title">
-                        <p v-if="isEditingLineInfo">编辑点图 {{ formPointer.name }}</p>
+                        <p v-if="isEditingPointerInfo">编辑点图 {{ formPointer.name }}</p>
                         <p v-else>新建点图 {{ pointerId }}</p>
                     </div>
                 </div>
                 <ElForm
                     class="mt-2 p-1"
-                    ref="formPointer"
+                    ref="refFormPointer"
                     v-if="formPointer && isShowingEdit"
                     :model="formPointer"
                     :rules="formPointerRules"
@@ -103,342 +97,322 @@
     </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import AMapLoader from '@amap/amap-jsapi-loader';
 import PointerEditPanel from "./components/PointerEditPanel.vue";
-
-import {key_web_js} from "@/mapConfig";
-import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
+import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig";
 import axios from "axios";
 import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64";
 import {useProjectStore} from "@/pinia";
 import {getAuthorization} from "@/utility";
+import {useRouter, useRoute} from "vue-router";
+import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
+import {ElMessage, ElNotification, FormRules} from "element-plus";
+import {EntityPointer, EntityPointerPoint} from "@/page/pointer/Pointer.ts";
+
 const store = useProjectStore()
+const route = useRoute()
+const router = useRouter()
 
 const MY_POSITION = [117.129533, 36.685668]
+
 let AMap = null
-export default {
-    name: "PointerEditor",
-    components: {RouteDetailPanel, PointerEditPanel},
-    data() {
-        return {
-            store: store,
-            activeLineObj: null,
+let map = null
 
-            isLoading: false,
-            map: null,
 
-            pointers: [
-                /*                {
-                    name: '',
-                    position: [lng,lat]
-                    note: '', // 备注
-                },*/
-            ], // 对应点的范围数据
+const refFormPointer = ref()
+const isLoading = ref(false)
+const pointers = ref<Array<EntityPointerPoint>>([])// 对应点的范围数据
 
-            positionPicked: {
-                lng: 0,
-                lat: 0,
-            },
+const positionPicked = ref({
+    lng: 0,
+    lat: 0,
+})
 
-            // SEARCH
-            searchAddress: '',  // 地址搜索关键字
-            searchResultText: '',
+// SEARCH
+const searchAddress = ref('')  // 地址搜索关键字
+const searchResultText = ref('')
 
-            // FORM
-            formPointer: { // 点图信息
-                name: '', // *点图名
-                area: '', // *地域
-                video_link: '', // 路径视频演示
-                pointers: [], // *路径点
-                note: '', // 备注
-                thumb_up: 0, // *点赞数
-                is_public: 1, // *是否公开
-            },
-            formPointerRules: {
-                name: [{required: true, message: '请填写点图钱', trigger: 'blur'},],
-                area: [{required: true, message: '请填写地域', trigger: 'blur'},],
-            },
+// FORM
+const formPointer = ref({ // 点图信息
+    name: '', // *点图名
+    area: '', // *地域
+    video_link: '', // 路径视频演示
+    pointers: [], // *路径点
+    note: '', // 备注
+    thumb_up: 0, // *点赞数
+    is_public: 1, // *是否公开
+})
+const formPointerRules = reactive<FormRules<EntityPointer>>({
+        name: [{required: true, message: '请填写点图钱', trigger: 'blur'},],
+        area: [{required: true, message: '请填写地域', trigger: 'blur'},],
+    })
 
-            isShowingEdit: false,
-        }
-    },
-    mounted() {
-        this.isShowingEdit = true
-        AMapLoader
-            .load({
-                key: key_web_js, // 开发应用的 ID
-                version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-                plugins: [
-                    // 'AMap.ToolBar', // 缩放按钮
-                    'AMap.Scale', // 比例尺
-                    'AMap.Geolocation', // 定位
-                ],
+const isShowingEdit = ref(false)
+
+
+
+onMounted(() => {
+    isShowingEdit.value = true
+    AMapLoader
+        .load({
+            key: key_web_js, // 开发应用的 ID
+            version: "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+            plugins: [
+                // 'AMap.ToolBar', // 缩放按钮
+                'AMap.Scale', // 比例尺
+                'AMap.Geolocation', // 定位
+            ],
+        })
+        .then(mapItem => {
+            AMap = mapItem
+
+            map = new AMap.Map('container', {
+                center: MY_POSITION,
+                zoom: 11
             })
-            .then(map => {
-                AMap = map
 
-                this.map = new AMap.Map('container', {
-                    center: MY_POSITION,
-                    zoom: 11
-                })
+            // map.addControl(new AMap.ToolBar())
+            map.addControl(new AMap.Scale())
+            map.addControl(new AMap.Geolocation())
 
-                // this.map.addControl(new AMap.ToolBar())
-                this.map.addControl(new AMap.Scale())
-                this.map.addControl(new AMap.Geolocation())
-
-                // 定位
-                let geolocation = new AMap.Geolocation({
-                    // 是否使用高精度定位，默认：true
-                    enableHighAccuracy: true,
-                    // 设置定位超时时间，默认：无穷大
-                    timeout: 10000,
-                    // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
-                    buttonOffset: new AMap.Pixel(10, 20),
-                    //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-                    zoomToAccuracy: true,
-                    //  定位按钮的排放位置,  RB表示右下
-                    buttonPosition: 'RB'
-                })
-
-                geolocation.getCurrentPosition(this.setMapCenterToUserLocation)
-
-                // 地图选点操作
-                this.map.on('click', res => {
-                    this.positionPicked = {
-                        lng: res.lnglat.lng,
-                        lat: res.lnglat.lat
-                    }
-                })
-                // 地图准备好之后，获取点图信息
-                this.getPointerInfo()
+            // 定位
+            let geolocation = new AMap.Geolocation({
+                // 是否使用高精度定位，默认：true
+                enableHighAccuracy: true,
+                // 设置定位超时时间，默认：无穷大
+                timeout: 10000,
+                // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+                buttonOffset: new AMap.Pixel(10, 20),
+                //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                zoomToAccuracy: true,
+                //  定位按钮的排放位置,  RB表示右下
+                buttonPosition: 'RB'
             })
-            .catch(e => {
-                console.log(e);
-            })
-    },
-    computed: {
-        isEditingLineInfo() {
-            return !isNaN(Number(this.$route.query.pointerId))
-        },
-        pointerId() {
-            return this.$route.query.pointerId
-        }
-    },
-    methods: {
-        getAuthorization,
-        toggleEditPanel(){
-            this.isShowingEdit = !this.isShowingEdit
-        },
-        submit() {
-            this.$refs['formPointer'].validate((valid) => {
-                if (valid) {
-                    if (this.isEditingLineInfo) {
-                        this.pointerModifySubmit()
-                    } else {
-                        this.pointerNewSubmit()
-                    }
-                } else {
-                    console.log('error submit!!');
-                    return false;
+
+            geolocation.getCurrentPosition(setMapCenterToUserLocation)
+
+            // 地图选点操作
+            map.on('click', res => {
+                positionPicked.value = {
+                    lng: res.lnglat.lng,
+                    lat: res.lnglat.lat
                 }
             })
-        },
-        // 编辑
-        pointerModifySubmit() {
-            if (this.pointers.length < 1){
-                this.$message.warning('没有添加任何点位')
-                return
-            }
-            let requestData = {}
-            Object.assign(requestData, this.formPointer)
-            requestData.pointers = Base64.encode(JSON.stringify(this.pointers))
-            pointerApi
-                .modify(requestData)
-                .then(res => {
-                    this.$notify({
-                        title: res.message,
-                        position: 'top-right',
-                        type: 'success',
-                        onClose() {
-                        }
-                    })
-                    this.modalEdit = false
-                })
-        },
-        // 新增
-        pointerNewSubmit() {
-            if (this.pointers.length < 1){
-                this.$message.warning('没有添加任何点位')
-                return
-            }
-            let requestData = {}
-            Object.assign(requestData, this.formPointer)
-            requestData.pointers = Base64.encode(JSON.stringify(this.pointers))
-            pointerApi
-                .add(requestData)
-                .then(res => {
-                    this.$notify({
-                        title: res.message,
-                        position: 'top-right',
-                        type: 'success',
-                        onClose() {
-                        }
-                    })
-                    this.modalEdit = false
-                })
-        },
-        // 获取点图信息
-        getPointerInfo() {
-            if (this.$route.query.pointerId) {
-                pointerApi
-                    .detail({
-                        id: this.$route.query.pointerId
-                    })
-                    .then(res => {
-                        this.formPointer = res.data
-                        this.activeLineObj = res.data
-                        this.pointers = JSON.parse(Base64.decode(this.activeLineObj.pointers))
-                        this.loadPointerLabels(this.map, this.pointers)
-                    })
-            }
-        },
-        search() {
-            const url = 'https://restapi.amap.com/v3/geocode/geo'
-            axios({
-                url,
-                method: 'get',
-                params: {
-                    key: mapConfig.key_service,
-                    address: this.searchAddress
-                }
-            })
-                .then(response => {
-                    let res = response.data
-                    let geoLocation = res.geocodes[0].location
-                    let locationInfo = res.geocodes[0]
-                    console.log(geoLocation)
-                    let locationArray = geoLocation.split(',')
+            // 地图准备好之后，获取点图信息
+            getPointerInfo()
+        })
+        .catch(e => {
+            console.log(e);
+        })
+})
 
-                    this.positionPicked = {
-                        lng: Number(locationArray[0]),
-                        lat: Number(locationArray[1])
-                    }
-                    this.searchResultText = `${locationInfo.level}：${locationInfo.formatted_address}`
+const isEditingPointerInfo = computed(() => {
+    return !isNaN(Number(route.query.pointerId))
+})
+const pointerId = computed(() => {
+    return route.query.pointerId
+})
 
-                    // 定位地图中心到搜索的地点
-                    this.map.setCenter(locationArray, false, 1000)
 
-                })
-        },
-        // 添加新标记点和圆圈
-        handleAddNewPointer(routePoint) {
-            this.pointers.push({
-                name: routePoint.name,
-                position: [this.positionPicked.lng, this.positionPicked.lat],
-                note: routePoint.note,
-                type: routePoint.type,
-                img: routePoint.img
-            })
-            this.map.setCenter(routePoint.position) // 定位到中心位置
-            this.addMarker(this.map, {
-                position: routePoint.position,
-                name: routePoint.name,
-                note: routePoint.note,
-                type: routePoint.type,
-                img: routePoint.img
-            }, 0)
-        },
-        // 设置地图中心点：用户坐标
-        setMapCenterToUserLocation(status, res) {
-            if (status === 'complete') {
-                let center = [res.position.lng, res.position.lat]
-                this.map.setCenter(center)
-                this.addMarker(this.map, {
-                    position: center,
-                    name: '我',
-                    note: ''
-                })
+function toggleEditPanel(){
+    isShowingEdit.value = !isShowingEdit.value
+}
+function submit() {
+    refFormPointer.value.validate(valid => {
+        if (valid) {
+            if (isEditingPointerInfo.value) {
+                pointerModifySubmit()
             } else {
-                console.log(res)
+                pointerNewSubmit()
             }
-        },
-        // 结束拾取坐标
-        pickLocationStop() {
-            this.map.off('click', this.showLocation)
-        },
-        // 打印 点图数据
-        printPointers() {
-            console.log(JSON.stringify([...this.pointers].reverse()))
-        },
-        // 展示规划的地图信息
-        showPointer() {
-            this.map.clearMap() // 删除地图上的所有标记
-            this.loadPointerLabels(this.map, this.pointers)
-        },
-        // 添加点图 label 线路信息
-        loadPointerLabels(map, pathPointers) {
-            pathPointers.forEach((item, index) => {
-                this.addMarker(map, item, index)
+        } else {
+            console.log('error submit!!');
+            return false;
+        }
+    })
+}
+// 编辑
+function pointerModifySubmit() {
+    if (pointers.value.length < 1){
+        ElMessage.warning('没有添加任何点位')
+        return
+    }
+    let requestData = {}
+    Object.assign(requestData, formPointer.value)
+    requestData.pointers = Base64.encode(JSON.stringify(pointers.value))
+    pointerApi
+        .modify(requestData)
+        .then(res => {
+            ElNotification({
+                title: res.message,
+                position: 'top-right',
+                type: 'success',
+                onClose() {
+                }
             })
-        },
-        addMarker(map, item, index) {
-            if (item.img){
-                let marker = new AMap.Marker({
-                    position: item.position,
-                    content: `
+        })
+}
+// 新增
+function pointerNewSubmit() {
+    if (pointers.value.length < 1){
+        ElMessage.warning('没有添加任何点位')
+        return
+    }
+    let requestData = {}
+    Object.assign(requestData, formPointer.value)
+    requestData.pointers = Base64.encode(JSON.stringify(pointers.value))
+    pointerApi
+        .add(requestData)
+        .then(res => {
+            ElNotification({
+                title: res.message,
+                position: 'top-right',
+                type: 'success',
+                onClose() {
+                }
+            })
+        })
+}
+// 获取点图信息
+function getPointerInfo() {
+    if (route.query.pointerId) {
+        pointerApi
+            .detail({
+                id: route.query.pointerId
+            })
+            .then(res => {
+                formPointer.value = res.data
+                pointers.value = JSON.parse(Base64.decode(res.data.pointers))
+                loadPointerLabels(map, pointers.value)
+            })
+    }
+}
+function search() {
+    const url = 'https://restapi.amap.com/v3/geocode/geo'
+    axios({
+        url,
+        method: 'get',
+        params: {
+            key: key_service,
+            address: searchAddress.value
+        }
+    })
+        .then(response => {
+            let res = response.data
+            let geoLocation = res.geocodes[0].location
+            let locationInfo = res.geocodes[0]
+            console.log(geoLocation)
+            let locationArray = geoLocation.split(',')
+
+            positionPicked.value = {
+                lng: Number(locationArray[0]),
+                lat: Number(locationArray[1])
+            }
+            searchResultText.value = `${locationInfo.level}：${locationInfo.formatted_address}`
+
+            // 定位地图中心到搜索的地点
+            map.setCenter(locationArray, false, 1000)
+
+        })
+}
+// 添加新标记点和圆圈
+function handleAddNewPointer(routePoint: EntityPointerPoint) {
+    pointers.value.push({
+        name: routePoint.name,
+        position: [positionPicked.value.lng, positionPicked.value.lat],
+        note: routePoint.note,
+        type: routePoint.type,
+        img: routePoint.img
+    })
+    map.setCenter(routePoint.position) // 定位到中心位置
+    addMarker(map, {
+        position: routePoint.position,
+        name: routePoint.name,
+        note: routePoint.note,
+        type: routePoint.type,
+        img: routePoint.img
+    }, 0)
+}
+// 设置地图中心点：用户坐标
+function setMapCenterToUserLocation(status, res) {
+    if (status === 'complete') {
+        let center = [res.position.lng, res.position.lat]
+        map.setCenter(center)
+        addMarker(map, {
+            position: center,
+            name: '我',
+            note: ''
+        })
+    } else {
+        console.log(res)
+    }
+}
+
+// 打印 点图数据
+function printPointers() {
+    console.log(JSON.stringify([...pointers.value].reverse()))
+}
+// 展示规划的地图信息
+function showPointer() {
+    map.clearMap() // 删除地图上的所有标记
+    loadPointerLabels(map, pointers.value)
+}
+// 添加点图 label 线路信息
+function loadPointerLabels(map, pathPointers: Array<EntityPointerPoint>) {
+    pathPointers.forEach((item, index) => {
+        addMarker(map, item, index)
+    })
+}
+function addMarker(map, item: EntityPointerPoint, index: number) {
+    if (item.img){
+        let marker = new AMap.Marker({
+            position: item.position,
+            content: `
                <div class="marker">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
                       <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                       <div class="note">${item.note.replace(/\|/, '<br>')}</div>
                        <div class="view">
-                           <a target="_blank" href="${item.img + '-' + mapConfig.thumbnail1500_suffix}">
-                              <img src="${item.img + '-' + mapConfig.thumbnail1000_suffix}" alt="view">
+                           <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
+                              <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
                            </a>
                        </div>
                   </div>
                </div>
 `,
-                })
-                map.add(marker)
-            } else {
-                let marker = new AMap.Marker({
-                    position: item.position,
-                    content: `
+        })
+        map.add(marker)
+    } else {
+        let marker = new AMap.Marker({
+            position: item.position,
+            content: `
                <div class="marker">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
                       <div class="title">${item.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replaceAll('|', '<br>')}</div>
+                       <div class="note">${item.note.replace(/\|/, '<br>')}</div>
                   </div>
                </div>`,
-                })
-                map.add(marker)
-            }
-
-        }
-    },
-    watch: {
-        routeData(newValue) {
-            if (newValue.length <= 0) return
-            this.map.clearMap()
-            newValue.forEach((item, index) => {
-                this.addMarker(this.map, item, index)
-            })
-        },
-    },
-    beforeDestroy() {
-        this.map.clearInfoWindow() // 清除地图上的信息窗体
-        this.map.destroy() // 销毁地图，释放内存
-        this.map = null
+        })
+        map.add(marker)
     }
+
 }
+
+
+onUnmounted(() => {
+    map.clearInfoWindow() // 清除地图上的信息窗体
+    map.destroy() // 销毁地图，释放内存
+    map = null
+})
+
 
 
 </script>

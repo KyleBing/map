@@ -10,13 +10,13 @@ interface EntityPointer {
     is_public: number,                     // *是否公开
     visit_count?: number,                  // 访问次数
     video_link: '',                        // 路径视频演示
-    pointers: Array<EntityPointerPointer>, // *路径点
+    pointers: Array<EntityPointerPoint>, // *路径点
 
 }
 
-interface EntityPointerPointer{
+interface EntityPointerPoint{
     note: string,
-    img: string,
+    img?: string,
     position: [number, number],
     type: string,
     name: string
@@ -24,5 +24,5 @@ interface EntityPointerPointer{
 
 export {
     type EntityPointer,
-    type EntityPointerPointer
+    type EntityPointerPoint
 }
