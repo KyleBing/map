@@ -15,6 +15,7 @@ const MY_POSITION = [117.129533, 36.685668]
 const store = useProjectStore()
 
 const MARKERS = [
+    // 商场
     {position: [117.129533, 36.685668]  , phone: '' ,            type: "orange",     name: "高新万达"} ,
     {position: [117.100261, 36.658804]  , phone: '' ,            type: "orange",     name: "万象城"} ,
     {position: [117.063358, 36.683155]  , phone: '' ,            type: "orange",     name: "印象城"} ,
@@ -27,6 +28,13 @@ const MARKERS = [
     {position: [116.981724, 36.612771] ,  phone: '' ,            type: "orange",     name: "中海-环宇城"} ,
     {position: [116.978032, 36.649693] ,  phone: '' ,            type: "orange",     name: "和谐广场"} ,
     {position: [117.159784, 36.747578] ,  phone: '' ,            type: "orange",     name: "宜家"} ,
+
+    // 车站
+    {position: [116.893587, 36.66899] , phone: '' ,    type: "blue", name: "济南西" },
+    {position: [117.029475, 36.681202] , phone: '' ,    type: "blue", name: "大明湖站" },
+    {position: [117.159784, 36.747578] , phone: '' ,    type: "blue", name: "济南东" },
+
+    // 车管所
     {position: [117.821953 , 36.138451] , phone: '06345667973' , type: "", name: "钢城区车辆管理所" } ,
     {position: [117.166785 , 37.245034] , phone: '84801008' ,    type: "", name: "商河钱隆机动车登记服务站" } ,
     {position: [117.699792 , 36.179012] , phone: '06346096277' , type: "", name: "莱芜区车辆管理所" } ,
@@ -43,9 +51,7 @@ const MARKERS = [
     {position: [116.804331 , 36.587233] , phone: '66712345' ,    type: "", name: "长清区车辆管理所" } ,
     {position: [117.568698 , 36.684551] , phone: '66712345' ,    type: "", name: "章丘车辆管理所" },
 
-    {position: [116.893587, 36.66899] , phone: '' ,    type: "blue", name: "济南西" },
-    {position: [117.029475, 36.681202] , phone: '' ,    type: "blue", name: "大明湖站" },
-    {position: [117.159784, 36.747578] , phone: '' ,    type: "blue", name: "济南东" },
+
 ]
 
 let AMap = null
