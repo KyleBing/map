@@ -1,24 +1,25 @@
 <template>
-    <div class="circle-panel card">
-        <div class="toolbar">
-            <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(modelData)" size="small" type="info" icon="CopyDocument">复制 JSON 数据</ElButton>
-            <ElButton size="small" type="danger" @click="clearAllPointers" icon="RefreshLeft">清空</ElButton>
-            <ElButton size="small" type="warning" @click="reversePointers" icon="Sort">倒序</ElButton>
-            <ElButton size="small" type="primary" @click="emit('showLine', null)" icon="Position">展示路线</ElButton>
-        </div>
-        <div class="toolbar">
-            <ElFormItem class="mb-0" size="small" label="" label-width="">
-                <ElRadioGroup size="small" v-model="currentPolicy">
-                    <ElRadio  v-for="item in policyArray"
-                                    :key="item.label"
-                                    :label="item.label"
-                                    :value="item.value"/>
-                </ElRadioGroup>
-            </ElFormItem>
-        </div>
+    <div>
+        <div class="circle-panel card">
+            <div class="toolbar">
+                <ElButton class="lnglat" :data-clipboard-text="JSON.stringify(modelData)" size="small" type="info" icon="CopyDocument">复制 JSON 数据</ElButton>
+                <ElButton size="small" type="danger" @click="clearAllPointers" icon="RefreshLeft">清空</ElButton>
+                <ElButton size="small" type="warning" @click="reversePointers" icon="Sort">倒序</ElButton>
+                <ElButton size="small" type="primary" @click="emit('showLine', null)" icon="Position">展示路线</ElButton>
+            </div>
+            <div class="toolbar">
+                <ElFormItem class="mb-0" size="small" label="" label-width="">
+                    <ElRadioGroup size="small" v-model="currentPolicy">
+                        <ElRadio  v-for="item in policyArray"
+                                  :key="item.label"
+                                  :label="item.label"
+                                  :value="item.value"/>
+                    </ElRadioGroup>
+                </ElFormItem>
+            </div>
 
-        <table class="log">
-            <thead>
+            <table class="log">
+                <thead>
                 <tr>
                     <td>#</td>
                     <td>经纬</td>
@@ -27,102 +28,102 @@
                     <td>图片</td>
                     <td>操作</td>
                 </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><i class="el-icon-aim"></i></td>
-                <td>
-                    <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
-                        <div class="lng">经: {{lng || '--'}}</div>
-                        <div class="lat">纬: {{lat || '--'}}</div>
-                    </div>
-                </td>
-                <td>
-                    <ElInput
-                        @keyup.native.enter="addNewPointToRouteWithKeyEnter"
-                        clearable
-                        ref="refInputName" class="input-focus" size="small"
-                        placeholder="标记名"
-                        v-model="pointerName"/>
-                </td>
-                <td>
-                    <ElInput
-                        type="textarea"
-                        autosize
-                        clearable
-                        ref="inputNote" class="input-focus" size="small"
-                        placeholder="备注"  :rows="1"
-                        v-model="pointerNote"/>
-                </td>
-                <td>
-                    <div class="img-wrapper">
-                        <img v-if="pointerImg" :src="`${pointerImg}-${imgSuffix}`" alt="图片">
-                        <label class="logo avatar" for="avatar">
-                            <ElIcon size="14"><Upload/></ElIcon>
-                        </label>
-                        <input type="file" @change="uploadAvatar" id="avatar">
-                    </div>
-                </td>
-                <td>
-                    <ElButton size="small" type="success" @click="addNewPointToRoute" icon="Plus">添加</ElButton>
-                </td>
-            </tr>
-
-            <tr v-for="(item, index) in modelData" :key="index">
-                <td>{{index + 1}}</td>
-<!--                <td @click="modifyString(item.position, index, 'position')">-->
-                <td>
-                    <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
-                        <div class="lng">lng: {{item.position[0]}}</div>
-                        <div class="lat">lat: {{item.position[1]}}</div>
-                    </div>
-                </td>
-                <td @click="modifyString(item.name, index, 'name')">{{item.name}}</td>
-                <td @click="modifyString(item.note, index, 'note')">{{item.note}}</td>
-                <td>
-                    <div class="img-wrapper">
-                        <img v-if="item.img" :src="`${item.img}-${imgSuffix}`" alt="图片">
-                        <label class="logo avatar" for="avatar" @click="currentPointIndex = index">
-                            <ElIcon size="14"><Upload/></ElIcon>
-                        </label>
-                    </div>
-                </td>
-                <td>
-                    <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < modelData.length - 1}]">
-                        <div class="move">
-                            <ElIcon v-if="index > 0"  @click="move(index, 'up')" size="12"><CaretTop/></ElIcon>
-                            <ElIcon v-if="index < modelData.length - 1" @click="move(index, 'down')" size="12"><CaretBottom/></ElIcon>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><i class="el-icon-aim"></i></td>
+                    <td>
+                        <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
+                            <div class="lng">经: {{lng || '--'}}</div>
+                            <div class="lat">纬: {{lat || '--'}}</div>
                         </div>
-                        <div class="delete">
-                            <ElIcon @click="routePointDelete(index)" size="15"><CircleClose/></ElIcon>
+                    </td>
+                    <td>
+                        <ElInput
+                            @keyup.native.enter="addNewPointToRouteWithKeyEnter"
+                            clearable
+                            ref="refInputName" class="input-focus" size="small"
+                            placeholder="标记名"
+                            v-model="pointerName"/>
+                    </td>
+                    <td>
+                        <ElInput
+                            type="textarea"
+                            autosize
+                            clearable
+                            ref="inputNote" class="input-focus" size="small"
+                            placeholder="备注"  :rows="1"
+                            v-model="pointerNote"/>
+                    </td>
+                    <td>
+                        <div class="img-wrapper">
+                            <img v-if="pointerImg" :src="`${pointerImg}-${imgSuffix}`" alt="图片">
+                            <label class="logo avatar" for="avatar">
+                                <ElIcon size="14"><Upload/></ElIcon>
+                            </label>
+                            <input type="file" @change="uploadAvatar" id="avatar">
                         </div>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+                    </td>
+                    <td>
+                        <ElButton size="small" type="success" @click="addNewPointToRoute" icon="Plus">添加</ElButton>
+                    </td>
+                </tr>
 
-    <ElDialog
-        center
-        title=""
-        append-to-body
-        v-model="isModalShowing"
-        :before-close="closeModal"
-        width="400px">
-        <div>
-            <ElForm label-position="top">
-                <ElFormItem label="修改">
-                    <ElInput autosize type="textarea" :rows="5" v-model="currentModifyingString"/>
-                </ElFormItem>
-            </ElForm>
+                <tr v-for="(item, index) in modelData" :key="index">
+                    <td>{{index + 1}}</td>
+                    <!--                <td @click="modifyString(item.position, index, 'position')">-->
+                    <td>
+                        <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
+                            <div class="lng">lng: {{item.position[0]}}</div>
+                            <div class="lat">lat: {{item.position[1]}}</div>
+                        </div>
+                    </td>
+                    <td @click="modifyString(item.name, index, 'name')">{{item.name}}</td>
+                    <td @click="modifyString(item.note, index, 'note')">{{item.note}}</td>
+                    <td>
+                        <div class="img-wrapper">
+                            <img v-if="item.img" :src="`${item.img}-${imgSuffix}`" alt="图片">
+                            <label class="logo avatar" for="avatar" @click="currentPointIndex = index">
+                                <ElIcon size="14"><Upload/></ElIcon>
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < modelData.length - 1}]">
+                            <div class="move">
+                                <ElIcon v-if="index > 0"  @click="move(index, 'up')" size="12"><CaretTop/></ElIcon>
+                                <ElIcon v-if="index < modelData.length - 1" @click="move(index, 'down')" size="12"><CaretBottom/></ElIcon>
+                            </div>
+                            <div class="delete">
+                                <ElIcon @click="routePointDelete(index)" size="15"><CircleClose/></ElIcon>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <template #footer class="dialog-footer">
-            <ElButton type="info" @click="isModalShowing = false" icon="Close">取消</ElButton>
-            <ElButton type="primary" @click="submitStringChange" icon="Check">确定</ElButton>
-        </template>
-    </ElDialog>
 
+        <ElDialog
+            center
+            title=""
+            append-to-body
+            v-model="isModalShowing"
+            :before-close="closeModal"
+            width="400px">
+            <div>
+                <ElForm label-position="top">
+                    <ElFormItem label="修改">
+                        <ElInput autosize type="textarea" :rows="5" v-model="currentModifyingString"/>
+                    </ElFormItem>
+                </ElForm>
+            </div>
+            <template #footer class="dialog-footer">
+                <ElButton type="info" @click="isModalShowing = false" icon="Close">取消</ElButton>
+                <ElButton type="primary" @click="submitStringChange" icon="Check">确定</ElButton>
+            </template>
+        </ElDialog>
+    </div>
 </template>
 
 <script lang="ts" setup>

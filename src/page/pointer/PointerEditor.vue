@@ -45,8 +45,8 @@
                         <ElInput type="textarea" placeholder="支持 Markdown" :rows="5" v-model="formPointer.note"/>
                     </ElFormItem>
                     <ElFormItem>
-                        <ElButton v-if="getAuthorization()" @click="submit" type="primary" icon="el-icon-check">保存</ElButton>
-                        <ElButton v-else @click="$router.push({name: 'Login'})" type="primary" icon="el-icon-user">请先登录</ElButton>
+                        <ElButton v-if="getAuthorization()" @click="submit" type="primary" icon="Check">保存</ElButton>
+                        <ElButton v-else @click="$router.push({name: 'Login'})" type="primary" icon="User">请先登录</ElButton>
                     </ElFormItem>
                 </ElForm>
             </div>

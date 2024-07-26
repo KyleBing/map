@@ -4,7 +4,9 @@
             <h1>{{line.name}} <i @click="toggleContent" v-if="showContent" class="ArrowDown"></i>
                 <i @click="toggleContent" v-else class="ArrowUp"></i>
             </h1>
-            <a v-if="line.video_link" target="_blank" class="video-link" :href="line.video_link"><i class="el-icon-video-camera"></i></a>
+            <a v-if="line.video_link" target="_blank" class="video-link" :href="line.video_link">
+                <ElIcon size="20"><VideoCameraFilled/></ElIcon>
+            </a>
         </div>
 
         <div class="content" v-if="showContent">
@@ -115,7 +117,7 @@ i{
     position: absolute;
     top: 20px;
     right: 20px;
-    padding: 0;
+    padding: 0 !important;
     width: 350px;
     .title{
         position: relative;
@@ -130,26 +132,10 @@ i{
             right: 20px;
             top: 50%;
             transform: translateY(-50%);
-            ::after{
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                height: 30px;
-                width: 30px;
-                transform: translateX(-50%) translateY(-50%);
-                @include border-radius(100px);
-            }
             &:hover{
                 color: $color-main;
-                ::after{
-                    background-color: transparentize($color-main, 0.9);
-                }
             }
             &:active{
-                ::after{
-                    background-color: transparentize($color-main, 0.7);
-                }
             }
         }
     }
@@ -166,6 +152,7 @@ i{
 }
 
 .content{
+    padding-bottom: 20px;
     @include transition(all 0.3s);
     color: $text-subtitle;
     font-size: 0.8rem;

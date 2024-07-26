@@ -40,7 +40,7 @@ import {useProjectStore} from "@/pinia";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig.ts";
-import {EntityRoute} from "@/page/route/Route.ts";
+import {EntityRoute, EntityRoutePointer} from "@/page/route/Route.ts";
 import routeApi from "@/api/routeApi.ts";
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -168,7 +168,7 @@ function resizeMap() {
 }
 
 // 载入路线信息
-function loadLine(map, line) {
+function loadLine(map, line: EntityRoute) {
     currentMarkers.value = []
     isMarkerShowed.value = true
 
@@ -276,53 +276,80 @@ function getWeather(adcode: string){
 }
 
 // 添加路线 Label
-function loadLineLabels(map, line) {
+function loadLineLabels(map, line: EntityRoute) {
     line.pathArray.forEach((item, index) => {
         addMarker(map, item, index)
     })
 }
-function addMarker(map, item, index) {
-    let marker
-    if (item.img){
-        marker = new AMap.Marker({
-            position: item.position,
-            title: item.note,
-            draggable: false,
-            content: `
-               <div class="marker ${(item.note || item.img) ? '': 'no-content'}">
+function addMarker(map, item: EntityRoutePointer, index: number) {
+    let marker = new AMap.Marker({
+        position: item.position,
+        title: item.note,
+        draggable: false,
+        content: generateMarkerContent(item, index),
+    })
+    currentMarkers.value.push(marker)
+    map.add(marker)
+}
+
+
+/**
+ * 生成 Marker.note
+ * @param marker
+ * @param index
+ */
+function generateMarkerContent(marker: EntityRoutePointer, index: number){
+    if (marker.img && marker.note){
+        return `
+               <div class="marker">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
-                      <div class="title">${item.name}</div>
+                      <div class="title">${marker.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
+                       <div class="note">${marker.note.replace(/\n/g, '<br>')}</div>
                        <div class="view">
-                           <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
-                              <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
+                           <a target="_blank" href="${marker.img + '-' + thumbnail1500_suffix}">
+                              <img src="${marker.img + '-' + thumbnail1000_suffix}" alt="view">
                            </a>
                        </div>
                   </div>
-               </div>`,
-        })
+               </div>`
+    } else if (marker.img) {
+        return `
+               <div class="marker">
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                      <div class="title">${marker.name}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="view">
+                           <a target="_blank" href="${marker.img + '-' + thumbnail1500_suffix}">
+                              <img src="${marker.img + '-' + thumbnail1000_suffix}" alt="view">
+                           </a>
+                       </div>
+                  </div>
+               </div>`
+    } else if (marker.note){
+        return `
+               <div class="marker">
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                      <div class="title">${marker.name}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="note">${marker.note.replace(/\n/g, '<br>')}</div>
+                  </div>
+               </div>`
     } else {
-        marker = new AMap.Marker({
-            position: item.position,
-            title: item.note,
-            draggable: false,
-            content: `
-                           <div class="marker ${(item.note || item.img) ? '': 'no-content'}">
-                              <div class="marker-index">
-                                   <div class="index">${index + 1}</div>
-                                   <div class="title">${item.name}</div>
-                              </div>
-                              <div class="marker-content">
-                                   <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
-                              </div>
-                           </div>`,
-        })
+        return `
+               <div class="marker no-content">
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                      <div class="title">${marker.name}</div>
+                  </div>
+               </div>`
     }
-    currentMarkers.value.push(marker)
-    map.add(marker)
 }
 
 // float route list

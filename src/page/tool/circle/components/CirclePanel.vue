@@ -22,7 +22,7 @@
                 <td><ElInput @keyup.native.enter="addNewCircle" clearable ref="refInputName" size="small" placeholder="标记名" v-model="name"></ElInput></td>
                 <td><ElInput @keyup.native.enter="addNewCircle" ref="refInputRadius" size="small" placeholder="半径" v-model.number="radius" type="number"></ElInput></td>
                 <td>
-                    <ElButton size="small" type="success" @click="addNewCircle" icon="el-icon-plus">添加</ElButton>
+                    <ElButton size="small" type="success" @click="addNewCircle" icon="Plus">添加</ElButton>
                 </td>
             </tr>
                 <tr v-for="(item, index) in modelValue" :key="index">

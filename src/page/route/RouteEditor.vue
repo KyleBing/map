@@ -487,50 +487,74 @@ function loadLineLabels(map, pathPointers) {
     })
 }
 
-function addMarker(map, item, index) {
-    let marker
-    if (item.img){
-        marker = new AMap.Marker({
-            position: item.position,
-            title: item.note,
-            draggable: true,
-            content: `
+function addMarker(map, item, index: number) {
+    let marker= new AMap.Marker({
+        position: item.position,
+        title: item.note,
+        draggable: false,
+        content: generateMarkerContent(item, index),
+    })
+    currentMarkers.value.push(marker)
+    map.add(marker)
+}
+
+/**
+ * 生成 Marker.note
+ * @param marker
+ * @param index
+ */
+function generateMarkerContent(marker: EntityRoutePointer, index: number){
+    if (marker.img && marker.note){
+        return `
                <div class="marker">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
-                      <div class="title">${item.name}</div>
+                      <div class="title">${marker.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
+                       <div class="note">${marker.note.replace(/\n/g, '<br>')}</div>
                        <div class="view">
-                           <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
-                              <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
+                           <a target="_blank" href="${marker.img + '-' + thumbnail1500_suffix}">
+                              <img src="${marker.img + '-' + thumbnail1000_suffix}" alt="view">
                            </a>
                        </div>
                   </div>
-               </div>
-`,
-        })
-    } else {
-        marker = new AMap.Marker({
-            position: item.position,
-            title: item.note,
-            draggable: true,
-            content: `
+               </div>`
+    } else if (marker.img) {
+        return `
                <div class="marker">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
-                      <div class="title">${item.name}</div>
+                      <div class="title">${marker.name}</div>
                   </div>
                   <div class="marker-content">
-                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
+                       <div class="view">
+                           <a target="_blank" href="${marker.img + '-' + thumbnail1500_suffix}">
+                              <img src="${marker.img + '-' + thumbnail1000_suffix}" alt="view">
+                           </a>
+                       </div>
                   </div>
-               </div>`,
-        })
+               </div>`
+    } else if (marker.note){
+        return `
+               <div class="marker">
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                      <div class="title">${marker.name}</div>
+                  </div>
+                  <div class="marker-content">
+                       <div class="note">${marker.note.replace(/\n/g, '<br>')}</div>
+                  </div>
+               </div>`
+    } else {
+        return `
+               <div class="marker no-content">
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                      <div class="title">${marker.name}</div>
+                  </div>
+               </div>`
     }
-    currentMarkers.value.push(marker)
-    map.add(marker)
-
 }
 
 

@@ -5,7 +5,10 @@
             <div class="mb-2">
                 <input accept=".gpx" id="inputFile" type="file" @change="fileChange($event.target.files)">
                 <label for="inputFile">
-                    <ElTag size="small" type="primary" icon="el-icon-tickets">选择 gpx 文件</ElTag>
+                    <ElTag size="small" type="primary">
+                        <ElIcon><Folder/></ElIcon>
+                        选择 gpx 文件
+                    </ElTag>
                 </label>
             </div>
 

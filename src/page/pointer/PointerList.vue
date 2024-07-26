@@ -46,7 +46,7 @@
                     <ElTableColumn align="center" min-width="350px" label="操作">
                         <template #default="scope">
                             <ElButton class="btn-narrow" type="success"
-                                       @click="showPointer(scope.row)" size="small" plain icon="View">地图中查看</ElButton>
+                                       @click="showPointer(scope.row)" size="small" plain icon="View">查看点图</ElButton>
                             <ElButton class="btn-narrow" type="success"
                                        v-if="store.isAdmin || (store.authorization && Number(store.authorization.uid) === scope.row.uid)"
                                        @click="editPointer(scope.row)" plain size="small" icon="Position">地图中编辑</ElButton>
@@ -60,7 +60,9 @@
                     </ElTableColumn>
                     <ElTableColumn align="center" width="50" prop="video_link" label="视频">
                         <template #default="scope">
-                            <a class="link" v-if="scope.row.video_link" target="_blank" :href="scope.row.video_link"><i class="el-icon-video-camera"></i></a>
+                            <a class="link" v-if="scope.row.video_link" target="_blank" :href="scope.row.video_link">
+                                <ElIcon size="14"><VideoCameraFilled/></ElIcon>
+                            </a>
                             <span v-else>-</span>
                         </template>
                     </ElTableColumn>
