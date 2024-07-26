@@ -101,6 +101,7 @@
         "green": $green,
         "red": $red,
         "orange": $orange,
+        "yellow": $yellow,
     );
 
 
@@ -109,17 +110,31 @@
             .marker-index{
                 color: white;
                 background-color: $color;
+                border-bottom: 1px solid $color;
                 text-shadow: 1px 1px 1px transparentize(black, 0.9);
+                .index{
+                    margin-right: 10px;
+                    font-weight: bold;
+                    color: transparentize(white, 0.2);
+                    font-size: 18px;
+                }
             }
             .marker-content{
-                color: white;
-                background-color: $color;
-                .note{color: transparentize(white, 0.3);}
+                @include border-radius(0 0 10px 10px);
+                background-color: lighten($color, 45%);
+                .note{
+                    color: $text-main;
+                }
+            }
+            &:hover{
+                .marker-index {
+                    .index{
+                    }
+                }
             }
         }
     }
 }
-
 
 
 .marker-plate{

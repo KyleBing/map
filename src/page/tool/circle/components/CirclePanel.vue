@@ -19,12 +19,8 @@
                         <div class="lat">纬: {{lat || '--'}}</div>
                     </div>
                 </td>
-                <td>
-                    <ElInput @keyup.native.enter="addNewCircle" clearable ref="refInputName" size="small" placeholder="标记名" v-model="name"></ElInput>
-                </td>
-                <td>
-                    <ElInput @keyup.native.enter="addNewCircle" ref="refInputRadius" size="small" placeholder="半径" v-model="radius" type="number"></ElInput>
-                </td>
+                <td><ElInput @keyup.native.enter="addNewCircle" clearable ref="refInputName" size="small" placeholder="标记名" v-model="name"></ElInput></td>
+                <td><ElInput @keyup.native.enter="addNewCircle" ref="refInputRadius" size="small" placeholder="半径" v-model.number="radius" type="number"></ElInput></td>
                 <td>
                     <ElButton size="small" type="success" @click="addNewCircle" icon="el-icon-plus">添加</ElButton>
                 </td>
@@ -43,11 +39,11 @@
                     <td>
                         <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < modelValue.length - 1}]">
                             <div class="move">
-                                <ElIcon v-if="index > 0"  @click="move(index, 'up')"><ArrowUp /></ElIcon>
-                                <ElIcon v-if="index < modelValue.length - 1" @click="move(index, 'down')"><ArrowDown /></ElIcon>
+                                <ElIcon v-if="index > 0"  @click="move(index, 'up')" size="12"><CaretTop /></ElIcon>
+                                <ElIcon v-if="index < modelValue.length - 1" @click="move(index, 'down')" size="12"><CaretBottom /></ElIcon>
                             </div>
                             <div class="delete">
-                                <ElIcon  @click="circleDelete(index)"><Delete /></ElIcon>
+                                <ElIcon  @click="circleDelete(index)" size="15"><CircleClose /></ElIcon>
                             </div>
                         </div>
                     </td>
@@ -59,26 +55,31 @@
 
 <script lang="ts" setup>
 import ClipboardJS from 'clipboard'
-import {onMounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import {ElMessage} from "element-plus";
 
 const props = defineProps<{
+    searchAddress: string,
     lng: number,
     lat: number,
 }>()
 
-const modelValue = defineModel<Array<any>>([])
+const modelValue = defineModel<Array<any>>()
 
 const name = ref('') // 当前点的地名
-const radius = ref('1') // 半径：公里
+const radius = ref(1) // 半径：公里
 
 const refInputName = ref()
 const refInputRadius = ref()
 
+let clipboard = null
 
 
 onMounted(() => {
-    let clipboard = new ClipboardJS('.lnglat')
+    clipboard = new ClipboardJS('.lnglat')
+})
+onUnmounted(() => {
+    clipboard.destroy()
 })
 
 function addNewCircle(){
@@ -135,41 +136,21 @@ watch(radius, newValue => {
         radius.value = 0
     }
 })
+watch(() => props.searchAddress, newValue => {
+    name.value = newValue
+})
 </script>
 
 <style scoped lang="scss">
 @use 'sass:math';
-
 @import "../../../../scss/plugin";
+
 .circle-panel {
     width: 400px;
-    padding: 0;
+    padding: 0 !important;
 }
-
-$height-btn: 28px;
-
 .operation{
     display: flex;
-}
-.delete{
-    i {
-        @include border-radius(3px);
-        margin: 0 auto;
-        cursor: pointer;
-        text-align: center;
-        font-size: 1rem;
-        display: block;
-        height: $height-btn - 2;
-        width: $height-btn;
-        line-height: $height-btn - 2;
-        &:hover{
-            color: white;
-            background-color: $color-danger;
-        }
-        &:active{
-            transform: translateY(2px);
-        }
-    }
 }
 
 
@@ -180,50 +161,6 @@ $height-btn: 28px;
     align-items: flex-end;
 }
 
-.move{
-    display: flex;
-    flex-flow: column nowrap;
-    flex-shrink: 0;
-    > *{
-        margin: 0 auto;
-        cursor: pointer;
-        text-align: center;
-        font-size: 0.5rem;
-        display: block;
-        height: math.div(($height-btn - 2), 2);
-        width: math.div(($height-btn - 2), 2) + 6;
-        line-height: math.div(($height-btn - 2), 2);
-        background-color: $border-normal;
-
-        &:hover{
-            color: white;
-            background: $color-main;
-        }
-        &:active{
-            transform: translateY(2px);
-        }
-    }
-    .up{
-        @include border-radius(3px 3px 0 0);
-    }
-    .down{
-        @include border-radius(0 0 3px 3px);
-    }
-}
-
-.lnglat{
-    cursor: pointer;
-    flex-shrink: 0;
-    .lng, .lat{
-        font-size: 10px;
-        height: math.div(($height-btn - 2), 2);
-        line-height: math.div(($height-btn - 2), 2);
-    }
-    &:active{
-        transform: translateY(1px);
-        color: $color-main;
-    }
-}
 
 .toolbar{
     border-top: 1px solid $border-normal;

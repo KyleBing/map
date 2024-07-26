@@ -1,9 +1,11 @@
+@use 'sass:math';
+
 @import "reset";
 @import "plugin";
 @import "gutter";
 @import "animate";
 @import "markdown";
-@import "markder";   // map marker
+@import "marker";   // map marker
 
 body{
     background-color: #f2f2f2;
@@ -113,6 +115,75 @@ body{
     .create-date{}
     .modify-date{
         color: $orange;
+    }
+}
+
+
+// 操作面板中 table 内部的一些操作按钮
+$height-btn: 28px;
+.lnglat{
+    cursor: pointer;
+    flex-shrink: 0;
+    .lng, .lat{
+        white-space: nowrap;
+        font-size: 10px;
+        height: math.div(( $height-btn - 2 ), 2);
+        line-height: math.div(( $height-btn - 2 ), 2);
+    }
+    &:active{
+        transform: translateY(1px);
+        color: $color-main;
+    }
+}
+.operation{
+    display: flex;
+}
+.move{
+    display: flex;
+    flex-flow: column nowrap;
+    flex-shrink: 0;
+    > *{
+        margin: 0 auto;
+        cursor: pointer;
+        text-align: center;
+        font-size: 0.5rem;
+        display: block;
+        height: math.div(($height-btn - 2), 2);
+        width: math.div(($height-btn - 2), 2) + 6;
+        line-height: math.div(($height-btn - 2), 2);
+        background-color: $border-normal;
+
+        &:hover{
+            color: white;
+            background: $color-main;
+        }
+        &:active{
+            transform: translateY(2px);
+        }
+    }
+    .up{
+        @include border-radius(3px 3px 0 0);
+    }
+    .down{
+        @include border-radius(0 0 3px 3px);
+    }
+}
+.delete{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    i {
+        height: $height-btn;
+        width: $height-btn;
+        @include border-radius(3px);
+        cursor: pointer;
+        &:hover{
+            color: white;
+            background-color: $color-danger;
+        }
+        &:active{
+            transform: translateY(2px);
+        }
     }
 }
 

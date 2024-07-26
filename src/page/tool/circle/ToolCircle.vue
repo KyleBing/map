@@ -30,6 +30,7 @@
             <CirclePanel
                 ref="refCirclePanel"
                 class="mt-1"
+                :search-address="resultText"
                 :lng="positionPicked.lng"
                 :lat="positionPicked.lat"
                 v-model="circleData"/>
@@ -47,7 +48,7 @@ import axios from "axios";
 import {useProjectStore} from "@/pinia";
 import {useRoute, useRouter} from "vue-router";
 import {onMounted, onUnmounted, ref, watch} from "vue";
-import {key_web_js} from "@/mapConfig.ts";
+import {key_service, key_web_js} from "@/mapConfig.ts";
 
 
 const refCirclePanel = ref()
@@ -75,7 +76,7 @@ const positionPicked = ref({
     lng: 0,
     lat: 0,
 })
-const address = ref('')  // 地址搜索关键字
+const searchAddress = ref('')  // 地址搜索关键字
 const resultText = ref('')
 
 onMounted(() => {
@@ -136,8 +137,8 @@ function search(){
         url,
         method: 'get',
         params: {
-            key: mapConfig.key_service,
-            address: address.value
+            key: key_service,
+            address: searchAddress.value
         }
     })
         .then(response => {
@@ -156,7 +157,7 @@ function search(){
             // 定位地图中心到搜索的地点
             map.setCenter(locationArray, false, 1000)
 
-            refCirclePanel.value.name = address.value
+            refCirclePanel.value.name = searchAddress.value
         })
 }
 // 添加新标记点和圆圈

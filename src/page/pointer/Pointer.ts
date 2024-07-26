@@ -22,7 +22,23 @@ interface EntityPointerPoint{
     name: string
 }
 
+enum EnumPointerType {
+     "yellow" = "yellow",
+     "orange" = "orange",
+     "red" = "red",
+     "green" = "green",
+     "blue" = "blue",
+}
+const EnumPointerTypeMap = new Map([
+    [EnumPointerType.yellow, "黄色"],
+    [EnumPointerType.orange, "橙色"],
+    [EnumPointerType.red, "红色"],
+    [EnumPointerType.green, "绿色"],
+    [EnumPointerType.blue, "蓝色"],
+])
+
 export {
     type EntityPointer,
-    type EntityPointerPoint
+    type EntityPointerPoint,
+    EnumPointerType, EnumPointerTypeMap
 }

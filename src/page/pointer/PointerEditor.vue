@@ -1,6 +1,5 @@
 <template>
     <div class="map-container">
-
         <!-- 编辑面板-->
         <transition
             enter-active-class="animate__bounceInDown"
@@ -83,7 +82,6 @@
             <PointerEditPanel
                 class="mt-1"
                 :search-location="searchAddress"
-                @pointAdd="handleAddNewPointer"
                 @print="printPointers"
                 @showPointer="showPointer"
                 :lng="Number(positionPicked.lng)"
@@ -119,7 +117,6 @@ const MY_POSITION = [117.129533, 36.685668]
 
 let AMap = null
 let map = null
-
 
 const refFormPointer = ref()
 const isLoading = ref(false)
@@ -359,18 +356,19 @@ function showPointer() {
     map.clearMap() // 删除地图上的所有标记
     loadPointerLabels(map, pointers.value)
 }
-// 添加点图 label 线路信息
+// 添加点图 label 线路信息  TODO: 编辑页面时，初次没有居中所有点
 function loadPointerLabels(map, pathPointers: Array<EntityPointerPoint>) {
     pathPointers.forEach((item, index) => {
         addMarker(map, item, index)
     })
 }
 function addMarker(map, item: EntityPointerPoint, index: number) {
+    let marker = null
     if (item.img){
-        let marker = new AMap.Marker({
+        marker = new AMap.Marker({
             position: item.position,
             content: `
-               <div class="marker">
+               <div class="marker ${item.type}">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
                       <div class="title">${item.name}</div>
@@ -386,12 +384,11 @@ function addMarker(map, item: EntityPointerPoint, index: number) {
                </div>
 `,
         })
-        map.add(marker)
-    } else {
-        let marker = new AMap.Marker({
+    } else if (item.note) {
+        marker = new AMap.Marker({
             position: item.position,
             content: `
-               <div class="marker">
+               <div class="marker ${item.type}">
                   <div class="marker-index">
                        <div class="index">${index + 1}</div>
                       <div class="title">${item.name}</div>
@@ -401,8 +398,19 @@ function addMarker(map, item: EntityPointerPoint, index: number) {
                   </div>
                </div>`,
         })
-        map.add(marker)
+    } else {
+        marker = new AMap.Marker({
+            position: item.position,
+            content: `
+               <div class="marker no-content ${item.type}">
+                  <div class="marker-index">
+                       <div class="index">${index + 1}</div>
+                      <div class="title">${item.name}</div>
+                  </div>
+               </div>`,
+        })
     }
+    map.add(marker)
 
 }
 
@@ -412,6 +420,11 @@ onUnmounted(() => {
     map.destroy() // 销毁地图，释放内存
     map = null
 })
+
+watch(pointers, () => {
+    map.clearMap() // 删除地图上的所有标记
+    loadPointerLabels(map, pointers.value)
+}, {deep: true})
 
 
 

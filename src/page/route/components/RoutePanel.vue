@@ -90,11 +90,11 @@
                 <td>
                     <div :class="['operation', {'align-items-start': index > 0}, {'align-items-end': index < modelData.length - 1}]">
                         <div class="move">
-                            <ElIcon v-if="index > 0"  @click="move(index, 'up')"><CaretTop/></ElIcon>
-                            <ElIcon v-if="index < modelData.length - 1" @click="move(index, 'down')"><CaretBottom/></ElIcon>
+                            <ElIcon v-if="index > 0"  @click="move(index, 'up')" size="12"><CaretTop/></ElIcon>
+                            <ElIcon v-if="index < modelData.length - 1" @click="move(index, 'down')" size="12"><CaretBottom/></ElIcon>
                         </div>
                         <div class="delete">
-                            <ElIcon @click="routePointDelete(index)"><CircleClose/></ElIcon>
+                            <ElIcon @click="routePointDelete(index)" size="15"><CircleClose/></ElIcon>
                         </div>
                     </div>
                 </td>
@@ -219,12 +219,9 @@ function closeModal(){
 function clearAllPointers(){
     modelData.value = []
 }
-
 function reversePointers(){
     modelData.value?.reverse()
 }
-
-
 
 
 function uploadAvatar(event){
@@ -341,7 +338,6 @@ function routePointDelete(index){
 
 
 
-
 watch(modelData, newValue => {
     clipboardRouteData.value = JSON.stringify(newValue)
 })
@@ -363,32 +359,6 @@ watch(() => props.policy, newValue => {
 .circle-panel {
     width: 500px;
     padding: 0;
-}
-
-$height-btn: 28px;
-
-.operation{
-    display: flex;
-}
-.delete{
-    i {
-        @include border-radius(3px);
-        margin: 0 auto;
-        cursor: pointer;
-        text-align: center;
-        font-size: 1rem;
-        display: block;
-        height: $height-btn - 2;
-        width: $height-btn;
-        line-height: $height-btn - 2;
-        &:active{
-            transform: translateY(2px);
-        }
-    }
-    &:hover{
-        color: white;
-        background-color: $color-danger;
-    }
 }
 
 
@@ -429,50 +399,6 @@ $height-btn: 28px;
     }
 }
 
-.move{
-    display: flex;
-    flex-flow: column nowrap;
-    flex-shrink: 0;
-    > *{
-        margin: 0 auto;
-        cursor: pointer;
-        text-align: center;
-        font-size: 12px;
-        display: block;
-        height: math.div(( $height-btn - 2 ), 2);
-        width: math.div(( $height-btn - 2 ), 2) + 6;
-        line-height: math.div(( $height-btn - 2 ), 2);
-        &:hover{
-            color: white;
-            background-color: $color-primary;
-            border-color: $color-primary;
-        }
-        &:active{
-            transform: translateY(2px);
-        }
-    }
-    .up{
-        @include border-radius(3px 3px 0 0);
-    }
-    .down{
-        @include border-radius(0 0 3px 3px);
-    }
-}
-
-.lnglat{
-    cursor: pointer;
-    flex-shrink: 0;
-    .lng, .lat{
-        white-space: nowrap;
-        font-size: 10px;
-        height: math.div(( $height-btn - 2 ), 2);
-        line-height: math.div(( $height-btn - 2 ), 2);
-    }
-    &:active{
-        transform: translateY(1px);
-        color: $color-main;
-    }
-}
 
 .toolbar{
     padding: 6px;
