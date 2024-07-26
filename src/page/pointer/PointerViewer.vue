@@ -37,7 +37,6 @@ import {Base64} from "js-base64"
 import PointerListPanel from "./components/PointerListPanel.vue";
 import {useProjectStore} from "@/pinia";
 import {dateFormatter} from "@/utility";
-import {COLORS} from "@/page/route/lines";
 import {EntityPointer} from "@/page/pointer/Pointer.ts";
 const store = useProjectStore()
 
@@ -54,8 +53,6 @@ export default {
             isLoading: false,
             map: null,
             cluster: null,  // 点聚合的对象
-
-            colors: COLORS,
             currentPointerId: 0,
             activePointerObj: null, // 当前 Line 对象
 

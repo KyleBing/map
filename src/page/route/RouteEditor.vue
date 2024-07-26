@@ -1,12 +1,5 @@
 <template>
     <div class="map-container">
-        <RouteDetailPanel
-            class="detail-panel mt-1"
-            v-if="activeLineObj"
-            :line="activeLineObj"
-        />
-
-
         <div class="float-panel">
             <!-- 搜索面板 -->
             <div class="search-panel card mb-1">
