@@ -1,13 +1,13 @@
 <template>
     <div class="map-container">
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
-        <route-panel
+        <RouteEditPanel
             @pointAdd="handleAddRoutePoint"
             @print="printRoute"
             @showLine="showLine"
             :lng="positionPicked.lng"
             :lat="positionPicked.lat"
-            v-model="routeData"></route-panel>
+            v-model="routeData"/>
     </div>
 </template>
 
@@ -15,9 +15,9 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader'
 import ICON from "@/assets/icons"
-import RoutePanel from "@/page/route/components/RoutePanel.vue"
 import {key_web_js} from "@/mapConfig";
 import {useProjectStore} from "@/pinia";
+import RouteEditPanel from "@/page/route/components/RouteEditPanel.vue";
 // 显示地图行政区的深度
 const DEPTH = {
     province: 0, // 省
@@ -29,7 +29,7 @@ const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
 export default {
     name: "Debug",
-    components: {RoutePanel},
+    components: {RouteEditPanel, RoutePanel},
     data() {
         return {
             store: useProjectStore(),

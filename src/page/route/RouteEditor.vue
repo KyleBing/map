@@ -34,7 +34,7 @@
                 {{ searchResultText }}
             </div>
 
-            <RoutePanel
+            <RouteEditPanel
                 class="mt-1"
                 :search-location="searchAddress"
                 :policy="currentPolicy"
@@ -131,7 +131,7 @@
 
 import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
-import RoutePanel from "@/page/route/components/RoutePanel.vue";
+import RouteEditPanel from "@/page/route/components/RouteEditPanel.vue";
 
 import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig";
 import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
