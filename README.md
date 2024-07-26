@@ -21,6 +21,9 @@ gpx 3D 路径展示
 市内区县展示  
 <img width="2032" alt="Screenshot 2024-01-23 at 17 40 42" src="https://github.com/KyleBing/map/assets/12215982/5a1603cb-1ecf-4782-a22d-5e684cfc3653">
 
+---
+
+# 开发
 
 ## 一、使用
 
@@ -33,22 +36,28 @@ gpx 3D 路径展示
 
 
 ```js
-export default {
-    key_web_js: '', // web js key
-    key_service: '',  // web服务 key
+const key_web_js = ''   // web js key
+const key_service = ''  // web服务 key
+
+export {
+    key_web_js,
+    key_service
 }
 ```
 
 Web JS 在使用的时候还需要在服务器中设置对应的安全密钥，具体参见官方文档：
 > [JS API 安全密钥使用 https://lbs.amap.com/api/javascript-api-v2/guide/abc/jscode](https://lbs.amap.com/api/javascript-api-v2/guide/abc/jscode)
 
-## 二、后台
+## 二、后台程序
 
 后台：[https://github.com/KyleBing/portal](https://github.com/KyleBing/portal)
 
 
 ## 三、用到的技术
-- vue2
-- vue router
-- vuex
+- `vue3` + `pinia` + `router` 
+- `ts`
 - 高德 API 2.0
+
+## 四、历程
+- 2021-06-28 init `vue2`
+- 2024-07-26 `vite` + `ts` + `vue3`
