@@ -26,7 +26,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 
 import AMapLoader from '@amap/amap-jsapi-loader'
 import PointerDetailPanel from "./components/PointerDetailPanel.vue"
@@ -38,6 +38,7 @@ import PointerListPanel from "./components/PointerListPanel.vue";
 import {useProjectStore} from "@/pinia";
 import {dateFormatter} from "@/utility";
 import {COLORS} from "@/page/route/lines";
+import {EntityPointer} from "@/page/pointer/Pointer.ts";
 const store = useProjectStore()
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -58,10 +59,10 @@ export default {
             currentPointerId: 0,
             activePointerObj: null, // 当前 Line 对象
 
-            pointerList: [], // 点图数组
+            pointerList: [] as Array<EntityPointer>, // 点图数组
             // pager
             pager: {
-                pageSize: 30,
+                pageSize: 20,
                 pageNo: 1,
                 total: 0
             },
@@ -71,7 +72,6 @@ export default {
         }
     },
     mounted() {
-
         AMapLoader
             .load({
                 key: key_web_js, // 开发应用的 ID
@@ -176,14 +176,14 @@ export default {
             }
         },
 
-        getPointerInfo(pointerId) {
+        getPointerInfo(pointerId: number) {
             pointerApi
                 .detail({
                     id: pointerId
                 })
                 .then(res => {
                     this.activePointerObj = res.data
-                    this.activePointerObj.pointerArray = JSON.parse(Base64.decode(this.activePointerObj.pointers))
+                    this.activePointerObj.pointerArray = JSON.parse(Base64.decode(this.activePointerObj.pointers))!
                     this.loadPointerLabels(this.map, this.activePointerObj)
                 })
         },
@@ -213,10 +213,8 @@ export default {
         /**
          * 获取区域对角线的两点坐标，即这个区域内的最小坐标值和最大坐标值
          *
-         * @param pointerArray [[a,b],[c,d]]
-         * @return Array {min:number[a,b], max:number[c,d]}
          */
-        getMaxBoundsPointer(pointerArray){
+        getMaxBoundsPointer(pointerArray: Array<EntityPointer>): {min: [number, number ], max: [number, number]}{
             let lngArray = pointerArray.map(item => item[0])
             let latArray = pointerArray.map(item => item[1])
 
@@ -227,7 +225,7 @@ export default {
         },
 
         // 添加点图 Label
-        loadPointerLabels(map, pointer) {
+        loadPointerLabels(map, pointer: EntityPointer) {
             let pointers = pointer.pointerArray.map(item => {
                 item.weight = 1
                 item.lnglat = item.position

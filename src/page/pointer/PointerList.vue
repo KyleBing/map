@@ -79,7 +79,7 @@
                                         trigger="hover"
                                         :content="scope.row.note">
                                 <template #reference class="table-description">
-                                    <i class="el-icon-tickets"></i> {{scope.row.note}}
+                                    <ElIcon size="14"><Tickets/></ElIcon>  {{ scope.row.note }}
                                 </template>
                             </ElPopover>
                         </template>

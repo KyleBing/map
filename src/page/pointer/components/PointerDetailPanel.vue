@@ -100,7 +100,7 @@ i{
     position: absolute;
     top: 20px;
     right: 20px;
-    padding: 0;
+    padding: 0 !important;
     width: 250px;
     z-index: 1000;
     .title{
@@ -152,6 +152,8 @@ i{
 }
 
 .content{
+    padding-bottom: 20px;
+    background-color: white;
     @include transition(all 0.3s);
     color: $text-subtitle;
     font-size: 0.8rem;

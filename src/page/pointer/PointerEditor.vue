@@ -356,12 +356,60 @@ function showPointer() {
     map.clearMap() // 删除地图上的所有标记
     loadPointerLabels(map, pointers.value)
 }
-// 添加点图 label 线路信息  TODO: 编辑页面时，初次没有居中所有点
+
+/**
+ * 记录是否已经居中过，居中操作只执行一次，避免在后面添加标点的时候每次都居中显示
+ */
+const isMapHasRelocatedToCenter = ref(false)
+// 添加点图 label 线路信息
 function loadPointerLabels(map, pathPointers: Array<EntityPointerPoint>) {
     pathPointers.forEach((item, index) => {
         addMarker(map, item, index)
     })
+
+    if (!isMapHasRelocatedToCenter.value){
+        let maxLocations =  getMaxBoundsPointer(pathPointers.map(item => item.position))
+        // 取区间的 1/4 作为地图的边界
+        let lngGap = (maxLocations.max[0] - maxLocations.min[0]) / 4
+        let latGap = (maxLocations.max[1] - maxLocations.min[1]) / 4
+
+        // 新的区域极点坐标
+        let min = new AMap.LngLat(maxLocations.min[0] - lngGap, maxLocations.min[1] - latGap)
+        let max = new AMap.LngLat(maxLocations.max[0] + lngGap, maxLocations.max[1] + latGap)
+
+        // 1. 多个点时，设置 bounds
+        if (pathPointers.length > 1){
+            let bounds = new AMap.Bounds(min, max)
+            map.setBounds(bounds)
+        }
+        // 2. 一个点时，将其作为中心点
+        else if (pathPointers.length === 1){
+            console.log(pathPointers)
+            let centerLngLat = new AMap.LngLat(...pathPointers[0].position)
+            map.setCenter(centerLngLat)  // 设置地图中心点坐标
+        }
+        // 3.
+        else {
+
+        }
+        isMapHasRelocatedToCenter.value = true
+    }
 }
+
+/**
+ * 获取区域对角线的两点坐标，即这个区域内的最小坐标值和最大坐标值
+ *
+ */
+function getMaxBoundsPointer(pointerArray: Array<EntityPointer>): {min: [number, number ], max: [number, number]}{
+    let lngArray = pointerArray.map(item => item[0])
+    let latArray = pointerArray.map(item => item[1])
+
+    return {
+        min: [Math.min(...lngArray),  Math.min(...latArray)],
+        max: [Math.max(...lngArray),  Math.max(...latArray)],
+    }
+}
+
 function addMarker(map, item: EntityPointerPoint, index: number) {
     let marker = null
     if (item.img){

@@ -9,8 +9,9 @@ interface EntityPointer {
     thumb_up: number,                      // *点赞数
     is_public: number,                     // *是否公开
     visit_count?: number,                  // 访问次数
-    video_link: '',                        // 路径视频演示
-    pointers: Array<EntityPointerPoint>, // *路径点
+    video_link: string,                    // 路径视频演示
+    pointers: string,                       // *路径点 json 字符串
+    pointer_array?: Array<EntityPointerPoint>, // *路径点
 
 }
 
