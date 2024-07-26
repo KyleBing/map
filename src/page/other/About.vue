@@ -15,20 +15,17 @@
         </div>
     </div>
 </template>
-<script>
+<script lang="ts" setup>
 import packageInfo from "../../../package.json"
-import {AnimateHeartCanvas} from "animate-heart-canvas";
+import {AnimateHeartCanvas} from "animate-heart-canvas/animate-heart-canvas";
 import {marked} from "marked";
+import {onMounted, onUnmounted, ref} from "vue";
 
-export default {
-    name: 'About',
-    data() {
-        return {
-            projectName: '路书',
-            email: packageInfo.author.email,
-            animatedBg: null,
-            homepage: packageInfo.author.homepage,
-            aboutMarkdownContent: `
+const projectName = '路书'
+const email = packageInfo.author.email
+let animatedBg = null
+const homepage = packageInfo.author.homepage
+const aboutMarkdownContent = `
 #####  一个可以分享行车路线、地域信息的网站
 建议电脑端浏览该网站
 
@@ -55,26 +52,26 @@ export default {
 
 ---
 
-            `,
-            aboutHtmlContent: ''
-        }
-    },
-    mounted() {
-        this.animatedBg =
-            new AnimateHeartCanvas(
-                0,
-                360,
-                30,
-                30,
-                800,
-                ''
-            )
-        this.aboutHtmlContent = marked.parse(this.aboutMarkdownContent)
-    },
-    beforeDestroy() {
-        this.animatedBg.destroy()
-    }
-}
+`
+const aboutHtmlContent = ref('')
+
+onMounted(() => {
+    animatedBg =
+        new AnimateHeartCanvas(
+            0,
+            360,
+            30,
+            30,
+            800,
+            ''
+        )
+    aboutHtmlContent.value = marked.parse(aboutMarkdownContent)
+})
+
+onUnmounted(() => {
+    animatedBg.destroy()
+})
+
 </script>
 
 <style scoped lang="scss">
