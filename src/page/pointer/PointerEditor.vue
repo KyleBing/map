@@ -189,7 +189,10 @@ onMounted(() => {
                 buttonPosition: 'RB'
             })
 
-            geolocation.getCurrentPosition(setMapCenterToUserLocation)
+            // 获取用户当前位置
+            if (store.isShowUserSelfLocation){
+                geolocation.getCurrentPosition(setMapCenterToUserLocation)
+            }
 
             // 地图选点操作
             map.on('click', res => {

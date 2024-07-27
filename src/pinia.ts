@@ -18,6 +18,8 @@ export const useProjectStore = defineStore('storeProject', {
         isInMobile: false, // 是否是手机端
         isShowingMenuToggleBtn: false, // 是否显示移动端的菜单切换按钮
         authorization: null as EntityAuthorization, // authorization
+
+        isShowUserSelfLocation: false, // 是否显示用户自己的位置， http 下无用，https 才有用
     }),
     getters: {
         isInPortraitMode (state) {

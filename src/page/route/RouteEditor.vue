@@ -134,9 +134,10 @@ import {Base64} from "js-base64";
 import {useProjectStore} from "@/pinia";
 import routeApi from "@/api/routeApi";
 import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
-import {EntityRoute, EntityRoutePointer} from "@/page/route/Route.ts";
+import {EntityRoute, EntityRoutePoint} from "@/page/route/Route.ts";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {useRoute, useRouter} from "vue-router";
+import {generateMarkerContent} from "@/page/MyMapLib.ts";
 
 const store = useProjectStore()
 const route = useRoute()
@@ -149,16 +150,66 @@ let activeLineObj = ref(null)
 const isLoading = ref(false)
 const currentMarkers = ref([])
 const currentDragRouting = ref(null) // 当前导航路线，拖拽导航路径对象
-const pathPointers = ref<Array<EntityRoutePointer>>([]) // 对应点的范围数据
 const positionPicked = ref({lng: 0, lat: 0})
 
-const currentPolicy = ref(2) // 当前路径规则策略
 
-// SEARCH
+/**
+ * SEARCH
+ */
 const searchAddress = ref('')  // 地址搜索关键字
 const searchResultText = ref('')
+function search() {
+    const url = 'https://restapi.amap.com/v3/geocode/geo'
+    axios({
+        url,
+        method: 'get',
+        params: {
+            key: key_service,
+            address: searchAddress.value
+        }
+    })
+        .then(response => {
+            let res = response.data
+            let geoLocation = res.geocodes[0].location
+            let locationInfo = res.geocodes[0]
+            console.log(geoLocation)
+            let locationArray = geoLocation.split(',')
 
-// FORM
+            positionPicked.value = {
+                lng: Number(locationArray[0]),
+                lat: Number(locationArray[1])
+            }
+            searchResultText.value = `${locationInfo.level}：${locationInfo.formatted_address}`
+
+            // 定位地图中心到搜索的地点
+            map.setCenter(locationArray, false, 1000)
+        })
+}
+
+
+
+/**
+ * POINTERS
+ */
+const pathPointers = ref<Array<EntityRoutePoint>>([]) // 对应点的范围数据
+watch(pathPointers, () => {
+    map.clearMap() // 删除地图上的所有标记
+    loadLineLabels(map, pathPointers.value)
+}, {deep: true})
+
+/**
+ * policy change
+ */
+const currentPolicy = ref(2) // 当前路径规则策略
+watch(currentPolicy, () => {
+    showLine()
+})
+
+/**
+ * FORM
+ */
+const isShowingEdit = ref(false)
+const refFormLine = ref()
 const formLine = ref<EntityRoute>({ // 路线信息
     name: '', // *路线名
     area: '', // *地域
@@ -166,12 +217,11 @@ const formLine = ref<EntityRoute>({ // 路线信息
     policy: 2, // 路线规划策略 默认为最短距离
     seasonsArray: [], // *[适用季节]
     video_link: '', // 路径视频演示
-    paths: [], // *路径点
+    paths: '', // *路径点
     note: '', // 备注
     thumb_up: 0, // *点赞数
     is_public: 1, // *是否公开
 })
-
 const formLineRules = reactive<FormRules<EntityRoute>>({
     name: [{required: true, message: '请填写路线钱', trigger: 'blur'},],
     area: [{required: true, message: '请填写地域', trigger: 'blur'},],
@@ -180,7 +230,10 @@ const formLineRules = reactive<FormRules<EntityRoute>>({
     seasonsArray: [{required: true, message: '请选择季节', trigger: 'blur'},],
 })
 
-const isShowingEdit = ref(false)
+watch(() => formLine.value.seasonsArray, newValue => {
+    formLine.value.seasons = newValue.join('、')
+})
+
 
 onMounted(() => {
     isShowingEdit.value = true
@@ -220,7 +273,10 @@ onMounted(() => {
                 buttonPosition: 'RB'
             })
 
-            geolocation.getCurrentPosition(setMapCenterToUserLocation)
+            // 获取用户当前位置
+            if (store.isShowUserSelfLocation){
+                geolocation.getCurrentPosition(setMapCenterToUserLocation)
+            }
 
             // 地图选点操作
             map.on('click', res => {
@@ -237,6 +293,10 @@ onMounted(() => {
         })
 })
 
+
+/**
+ * COMPUTED VALUE
+ */
 const isEditingLineInfo = computed(() => {
     return !isNaN(Number(route.query.lineId))
 })
@@ -253,7 +313,6 @@ function changePolicy(policy: number){
     currentPolicy.value = policy
 }
 
-const refFormLine = ref()
 function submit() {
     refFormLine.value.validate(valid => {
         if (valid) {
@@ -341,35 +400,10 @@ function getLineInfo() {
             })
     }
 }
-function search() {
-    const url = 'https://restapi.amap.com/v3/geocode/geo'
-    axios({
-        url,
-        method: 'get',
-        params: {
-            key: key_service,
-            address: searchAddress.value
-        }
-    })
-        .then(response => {
-            let res = response.data
-            let geoLocation = res.geocodes[0].location
-            let locationInfo = res.geocodes[0]
-            console.log(geoLocation)
-            let locationArray = geoLocation.split(',')
 
-            positionPicked.value = {
-                lng: Number(locationArray[0]),
-                lat: Number(locationArray[1])
-            }
-            searchResultText.value = `${locationInfo.level}：${locationInfo.formatted_address}`
-
-            // 定位地图中心到搜索的地点
-            map.setCenter(locationArray, false, 1000)
-
-        })
-}
-// 设置地图中心点：用户坐标
+/**
+ * 设置地图中心点：用户坐标
+ */
 function setMapCenterToUserLocation(status, res) {
     if (status === 'complete') {
         let center = [res.position.lng, res.position.lat]
@@ -383,6 +417,7 @@ function setMapCenterToUserLocation(status, res) {
         console.log(res)
     }
 }
+
 // 结束拾取坐标
 function pickLocationStop() {
     map.off('click', this.showLocation)
@@ -391,6 +426,7 @@ function pickLocationStop() {
 function printRoute() {
     console.log(JSON.stringify([...pathPointers.value].reverse()))
 }
+
 // 展示规划的路线
 function showLine() {
     map.clearMap() // 删除地图上的所有标记
@@ -401,7 +437,7 @@ function showLine() {
     loadLineLabels(map, pathPointers.value)
 }
 // 载入线路信息
-function loadLine(map, pathPointers) {
+function loadLine(map, linePointers: Array<EntityRoutePoint>) {
     currentMarkers.value = []
 
     // 切换线路之前如果存在路线，销毁已存在的路线
@@ -409,44 +445,47 @@ function loadLine(map, pathPointers) {
         currentDragRouting.value.destroy()
         currentDragRouting.value = null
     }
+
     map.plugin('AMap.DragRoute', () => {
-        // path 是驾车导航的起、途径和终点，最多支持16个途经点
-        let path = pathPointers.map(point => point.position)
-        currentDragRouting.value = new AMap.DragRoute(map, path, currentPolicy.value, {
-            startMarkerOptions: {
-                offset: new AMap.Pixel(-13, -40),
-                icon: new AMap.Icon({ // 设置途经点的图标
-                    size: new AMap.Size(26, 40),
-                    image: ICON.start,
-                    // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                    imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
-
-                }),
-            },
-            endMarkerOptions: {
-                offset: new AMap.Pixel(-13, -40),
-                icon: new AMap.Icon({ // 设置途经点的图标
-                    size: new AMap.Size(26, 40),
-                    image: ICON.end,
-                    // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                    imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
-
-                }),
-            },
-            midMarkerOptions: {
-                offset: new AMap.Pixel(-9, -9),
-                icon: new AMap.Icon({ // 设置途经点的图标
-                    size: new AMap.Size(30, 30),
-                    image: ICON.midIcon,
-                    // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
-                    imageSize: new AMap.Size(18, 18) // 指定图标的大小，可以压缩图片
-
-                }),
-            },
+        // path 是驾车导航的起、途径和终点，官方建议最多放置 16个 途经点，以保证良好体验
+        let path = linePointers.map(point => point.position)
+        currentDragRouting.value = new AMap.DragRoute(
+            map,
+            path,
+            currentPolicy.value,
+            {
+                startMarkerOptions: {
+                    offset: new AMap.Pixel(-13, -40),
+                    icon: new AMap.Icon({ // 设置途经点的图标
+                        size: new AMap.Size(26, 40),
+                        image: ICON.start,
+                        // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                        imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
+                    }),
+                },
+                endMarkerOptions: {
+                    offset: new AMap.Pixel(-13, -40),
+                    icon: new AMap.Icon({ // 设置途经点的图标
+                        size: new AMap.Size(26, 40),
+                        image: ICON.end,
+                        // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                        imageSize: new AMap.Size(26, 40) // 指定图标的大小，可以压缩图片
+                    }),
+                },
+                midMarkerOptions: {
+                    offset: new AMap.Pixel(-9, -9),
+                    icon: new AMap.Icon({ // 设置途经点的图标
+                        size: new AMap.Size(30, 30),
+                        image: ICON.midIcon,
+                        // imageOffset: new AMap.Pixel(0,0), // 图片的偏移量，在大图中取小图的时候有用
+                        imageSize: new AMap.Size(18, 18) // 指定图标的大小，可以压缩图片
+                    }),
+                },
         })
 
         // 添加途经点时
         currentDragRouting.value.on('addway', res => {
+            console.log(res,res.lnglat)
             if (res.lnglat){
                 positionPicked.value = {
                     lng: res.lnglat.lng,
@@ -457,6 +496,8 @@ function loadLine(map, pathPointers) {
 
         // 路线规划完成时
         currentDragRouting.value.on('complete', res => {
+            // console.log(currentDragRouting.value.getWays().toString())  // 除去起点终点的路径点
+
             // 路线规划完成后，返回的路线数据：设置距离、行驶时间
             let lineData = res.data.routes[0]
             let distance = (lineData.distance / 1000).toFixed(1) // m -> km
@@ -485,71 +526,11 @@ function addMarker(map, item, index: number) {
         position: item.position,
         title: item.note,
         draggable: false,
-        content: generateMarkerContent(item, index),
+        content: generateMarkerContent(item.name, item.note, item.img, item.type, index)
     })
     currentMarkers.value.push(marker)
     map.add(marker)
 }
-
-/**
- * 生成 Marker.note
- * @param marker
- * @param index
- */
-function generateMarkerContent(marker: EntityRoutePointer, index: number){
-    if (marker.img && marker.note){
-        return `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${marker.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${marker.note.replace(/\n/g, '<br>')}</div>
-                       <div class="view">
-                           <a target="_blank" href="${marker.img + '-' + thumbnail1500_suffix}">
-                              <img src="${marker.img + '-' + thumbnail1000_suffix}" alt="view">
-                           </a>
-                       </div>
-                  </div>
-               </div>`
-    } else if (marker.img) {
-        return `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${marker.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="view">
-                           <a target="_blank" href="${marker.img + '-' + thumbnail1500_suffix}">
-                              <img src="${marker.img + '-' + thumbnail1000_suffix}" alt="view">
-                           </a>
-                       </div>
-                  </div>
-               </div>`
-    } else if (marker.note){
-        return `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${marker.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${marker.note.replace(/\n/g, '<br>')}</div>
-                  </div>
-               </div>`
-    } else {
-        return `
-               <div class="marker no-content">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${marker.name}</div>
-                  </div>
-               </div>`
-    }
-}
-
 
 onUnmounted(()=>{
     currentDragRouting.value && currentDragRouting.value.destroy() // 销毁行程规划
@@ -557,20 +538,6 @@ onUnmounted(()=>{
     map.destroy() // 销毁地图，释放内存
     map = null
 })
-
-watch(() => formLine.value.seasonsArray, newValue => {
-    formLine.value.seasons = newValue.join('、')
-})
-
-watch(currentPolicy, () => {
-    showLine()
-})
-
-watch(pathPointers, () => {
-    map.clearMap() // 删除地图上的所有标记
-    loadLineLabels(map, pathPointers.value)
-}, {deep: true})
-
 
 </script>
 

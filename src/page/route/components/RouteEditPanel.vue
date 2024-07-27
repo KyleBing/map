@@ -135,7 +135,7 @@ import {getAuthorization} from "@/utility.ts";
 import {ElMessage} from "element-plus";
 import {getUploadToken} from "@/api/fileApi.ts";
 import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
-import {EntityRoutePointer} from "@/page/route/Route.ts";
+import {EntityRoutePoint} from "@/page/route/Route.ts";
 
 const pointerName = ref('') // 当前点的地名
 const pointerNote = ref('') // 标记note
@@ -159,7 +159,7 @@ const props = defineProps<{
     lat: number,
     policy: number,
 }>()
-const modelData = defineModel<Array<EntityRoutePointer>>()
+const modelData = defineModel<Array<EntityRoutePoint>>()
 
 
 onMounted(() => {

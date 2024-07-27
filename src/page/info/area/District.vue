@@ -131,7 +131,10 @@ onMounted(() => {
                 buttonPosition: 'RB'
             })
 
-            geolocation.getCurrentPosition(setMapCenterToUserLocation)
+            // 获取用户当前位置
+            if (store.isShowUserSelfLocation){
+                geolocation.getCurrentPosition(setMapCenterToUserLocation)
+            }
 
             // 初始化默认展示济南区县
             getAdcodeOfCity(pointerInfo.value.name)

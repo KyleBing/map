@@ -11,7 +11,7 @@ interface EntityRoute {
     seasonsArray?: Array<string>,          // 季节数组
     seasons?: string,                      // 骑行季节
     paths?: string,                        // 路线节点
-    pathArray?: Array<EntityRoutePointer>,
+    pathArray?: Array<EntityRoutePoint>,
     date_modify?: string,                  // 编辑时间
     date_init?: string,                    // 创建时间
     uid?: number,                          // user ID
@@ -22,16 +22,15 @@ interface EntityRoute {
     time?: string
 }
 
-interface EntityRoutePointer {
+interface EntityRoutePoint {
     type: string,                // 颜色类别，为了匹配 EntityPointerPoint 的属性，共用一个方法
     position: [number, number],  // 地址 lng,lat
     note: string,                // 标点备注
     name: string,                // 标点名称
     img?: string                 // 图片 http 路径
-
 }
 
 export {
     type EntityRoute,
-    type EntityRoutePointer
+    type EntityRoutePoint
 }

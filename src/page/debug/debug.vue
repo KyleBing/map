@@ -233,7 +233,7 @@ export default {
         // 载入线路信息
         loadLine(map, line) {
             map.plugin('AMap.DragRoute', () => {
-                // path 是驾车导航的起、途径和终点，最多支持16个途经点
+                // path 是驾车导航的起、途径和终点，官方建议最多放置 16个 途经点，以保证良好体验
                 let path = []
                 line.paths.forEach(point => {
                     path.unshift(point.position) // 之前存入的是倒序的，所以现在给正过来

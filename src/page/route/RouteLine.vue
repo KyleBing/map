@@ -40,7 +40,7 @@ import {useProjectStore} from "@/pinia";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {key_service, key_web_js} from "@/mapConfig.ts";
-import {EntityRoute, EntityRoutePointer} from "@/page/route/Route.ts";
+import {EntityRoute, EntityRoutePoint} from "@/page/route/Route.ts";
 import routeApi from "@/api/routeApi.ts";
 import {generateMarkerContent} from "@/page/MyMapLib.ts";
 
@@ -179,7 +179,7 @@ function loadLine(map, line: EntityRoute) {
         currentDragRouting = null
     }
     map.plugin('AMap.DragRoute', () => {
-        // path 是驾车导航的起、途径和终点，最多支持16个途经点
+        // path 是驾车导航的起、途径和终点，官方建议最多放置 16个 途经点，以保证良好体验
         let path = line.pathArray.map (item => item.position)
         currentDragRouting = new AMap.DragRoute(map, path, line.policy, {
             startMarkerOptions: {
@@ -282,7 +282,7 @@ function loadLineLabels(map, line: EntityRoute) {
         addMarker(map, item, index)
     })
 }
-function addMarker(map, item: EntityRoutePointer, index: number) {
+function addMarker(map, item: EntityRoutePoint, index: number) {
     let marker = new AMap.Marker({
         position: item.position,
         title: item.note,
