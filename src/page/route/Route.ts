@@ -3,17 +3,18 @@ interface EntityRoute {
     name: string,                          // 路线名称
     area: string,                          // 地址位置
     road_type: string,                     // 路面类型
+    note: string,                          // 备注
+    is_public: 0|1,                        // 是否共享 0 否 1 是
+
+    video_link?: string,                   // 视频链接
+    thumb_up?: number,                     // 点赞数
+    seasonsArray?: Array<string>,          // 季节数组
     seasons?: string,                      // 骑行季节
-    seasonsArray: Array<string>,           // 季节数组
-    video_link: string,                    // 视频链接
     paths?: string,                        // 路线节点
     pathArray?: Array<EntityRoutePointer>,
-    note: string,                          // 备注
-    date_init?: string,                    // 创建时间
     date_modify?: string,                  // 编辑时间
-    thumb_up: number,                      // 点赞数
+    date_init?: string,                    // 创建时间
     uid?: number,                          // user ID
-    is_public: 0|1,                        // 是否共享 0 否 1 是
     policy?: number,                       // 路线规划策略
 
     distance?: number,
