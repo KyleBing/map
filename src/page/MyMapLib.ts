@@ -2,11 +2,11 @@ import {thumbnail1000_suffix, thumbnail1500_suffix} from "../mapConfig";
 
 /**
  * 生成 Marker.note
- * @param note
- * @param img
- * @param type
- * @param name
- * @param index
+ * @param note 注释
+ * @param img 图片链接
+ * @param type 类别：颜色
+ * @param name 标题
+ * @param index 序号
  */
 function generateMarkerContent(
     name: string,

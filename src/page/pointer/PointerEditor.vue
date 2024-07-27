@@ -104,7 +104,7 @@ import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64";
 import {useProjectStore} from "@/pinia";
 import {getAuthorization} from "@/utility";
-import {useRouter, useRoute} from "vue-router";
+import {useRoute} from "vue-router";
 import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {EntityPointer, EntityPointerPoint} from "@/page/pointer/Pointer.ts";
@@ -112,7 +112,6 @@ import {generateMarkerContent} from "@/page/MyMapLib.ts";
 
 const store = useProjectStore()
 const route = useRoute()
-const router = useRouter()
 
 const MY_POSITION = [117.129533, 36.685668]
 
@@ -148,7 +147,6 @@ const formPointerRules = reactive<FormRules<EntityPointer>>({
     })
 
 const isShowingEdit = ref(false)
-
 
 
 onMounted(() => {
@@ -417,9 +415,32 @@ function getMaxBoundsPointer(pointerArray: Array<EntityPointer>): {min: [number,
 function addMarker(map, item: EntityPointerPoint, index: number) {
     let marker = new AMap.Marker({
         position: item.position,
+        draggable: true,
         content: generateMarkerContent(item.name, item.note, item.img, item.type, index),
+        extData: {
+            arrayIndex: index, // 元素在数组中的位置 index
+        }
     })
+    marker.on('dragstart', handleMarkerDragging)
+    marker.on('dragging', handleMarkerDragStart)
+    marker.on('dragend', handleMarkerDragEnd)
     map.add(marker)
+}
+
+function handleMarkerDragging(event){
+    // console.log(event)
+    const markerIndex =  event.target._opts.extData.arrayIndex  // 在新建 marker 的时候提前定义的数据
+    pointers.value[markerIndex].position = [event.lnglat.lng, event.lnglat.lat]
+}
+function handleMarkerDragStart(event){
+    // console.log(event)
+    const markerIndex =  event.target._opts.extData.arrayIndex  // 在新建 marker 的时候提前定义的数据
+    pointers.value[markerIndex].position = [event.lnglat.lng, event.lnglat.lat]
+}
+function handleMarkerDragEnd(event){
+    // console.log(event)
+    const markerIndex =  event.target._opts.extData.arrayIndex  // 在新建 marker 的时候提前定义的数据
+    pointers.value[markerIndex].position = [event.lnglat.lng, event.lnglat.lat]
 }
 
 

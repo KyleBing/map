@@ -49,7 +49,6 @@ let map = null
 let cluster = null  // 点聚合的对象
 
 const isLoading = ref(false)
-const currentPointerId = ref(0)
 const activePointerObj = ref(null) // 当前 Line 对象
 const pointerList = ref<Array<EntityPointer>>([]) // 点图数组
 const isPointerListShowed = ref(true) // route list 是否显示
@@ -212,10 +211,10 @@ function getMaxBoundsPointer(pointerArray: Array<EntityPointer>): {min: [number,
 // 添加点图 Label
 function loadPointerLabels(map, pointer: EntityPointer) {
     let pointers = pointer.pointerArray.map(item => {
-        item.weight = 1
-        item.lnglat = item.position
-        return item
-    })
+                                            item.weight = 1
+                                            item.lnglat = item.position
+                                            return item
+                                        })
     let count = pointers.length
 
     // 最终聚合之后，只显示一个点，这个点就是权重比较大的点，context 数据里的 clusterData 也只显示这个聚合位置的点，
@@ -301,6 +300,7 @@ function loadPointerLabels(map, pointer: EntityPointer) {
 function addMarker(map, item: EntityPointerPoint, index: number) {
     let marker = new AMap.Marker({
         position: item.position,
+        draggable: true,
         content: generateMarkerContent(item.name, item.note, item.img, item.type, index),
     })
     map.add(marker)
