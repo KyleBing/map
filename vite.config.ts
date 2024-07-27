@@ -9,6 +9,7 @@ const timeStringNow = dateFormatter(new Date(), 'yyyy-MM-dd hh-mm')
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: './',
     plugins: [
         vue(),
         zipPack({
