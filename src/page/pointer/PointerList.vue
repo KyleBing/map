@@ -43,7 +43,7 @@
                     </ElTableColumn>
                     <ElTableColumn width="150" align="center" prop="area" label="地域"/>
                     <ElTableColumn width="100" align="center" prop="nickname" label="用户"/>
-                    <ElTableColumn align="center" min-width="350px" label="操作">
+                    <ElTableColumn align="center" min-width="380px" label="操作">
                         <template #default="scope">
                             <ElButton class="btn-narrow" type="success"
                                        @click="showPointer(scope.row)" size="small" plain icon="View">查看点图</ElButton>

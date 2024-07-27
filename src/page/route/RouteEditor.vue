@@ -135,7 +135,7 @@ import routeApi from "@/api/routeApi";
 import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import {EntityRoute, EntityRoutePoint} from "@/page/route/Route.ts";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
-import {useRoute, useRouter} from "vue-router";
+import {useRoute} from "vue-router";
 import {generateMarkerContent} from "@/page/MyMapLib.ts";
 
 const store = useProjectStore()
@@ -147,7 +147,6 @@ let map = null
 
 let activeLineObj = ref(null)
 const isLoading = ref(false)
-const currentMarkers = ref([])
 const currentDragRouting = ref(null) // 当前导航路线，拖拽导航路径对象
 const positionPicked = ref({lng: 0, lat: 0})
 
@@ -437,8 +436,6 @@ function showLine() {
 }
 // 载入线路信息
 function loadLine(map, linePointers: Array<EntityRoutePoint>) {
-    currentMarkers.value = []
-
     // 切换线路之前如果存在路线，销毁已存在的路线
     if (currentDragRouting.value) {
         currentDragRouting.value.destroy()
@@ -514,21 +511,43 @@ function loadLine(map, linePointers: Array<EntityRoutePoint>) {
 }
 
 // 添加路线 label 线路信息
-function loadLineLabels(map, pathPointers) {
+function loadLineLabels(map, pathPointers: Array<EntityRoutePoint>) {
     pathPointers.forEach((item, index) => {
         addMarker(map, item, index)
     })
 }
 
-function addMarker(map, item, index: number) {
+function addMarker(map, item: EntityRoutePoint, index: number) {
     let marker= new AMap.Marker({
         position: item.position,
         title: item.note,
-        draggable: false,
-        content: generateMarkerContent(item.name, item.note, item.img, item.type, index)
+        draggable: true,
+        content: generateMarkerContent(item.name, item.note, item.img, item.type, index),
+        extData: {
+            arrayIndex: index, // 元素在数组中的位置 index
+        }
     })
-    currentMarkers.value.push(marker)
+    marker.on('dragstart', handleMarkerDragging)
+    marker.on('dragging', handleMarkerDragStart)
+    marker.on('dragend', handleMarkerDragEnd)
+    // pathPointers.value.push(marker)
     map.add(marker)
+}
+
+function handleMarkerDragging(event){
+    // console.log(event)
+    const markerIndex =  event.target._opts.extData.arrayIndex  // 在新建 marker 的时候提前定义的数据
+    pathPointers.value[markerIndex].position = [event.lnglat.lng, event.lnglat.lat]
+}
+function handleMarkerDragStart(event){
+    // console.log(event)
+    const markerIndex =  event.target._opts.extData.arrayIndex  // 在新建 marker 的时候提前定义的数据
+    pathPointers.value[markerIndex].position = [event.lnglat.lng, event.lnglat.lat]
+}
+function handleMarkerDragEnd(event){
+    // console.log(event)
+    const markerIndex =  event.target._opts.extData.arrayIndex  // 在新建 marker 的时候提前定义的数据
+    pathPointers.value[markerIndex].position = [event.lnglat.lng, event.lnglat.lat]
 }
 
 onUnmounted(()=>{
