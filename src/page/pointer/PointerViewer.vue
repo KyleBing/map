@@ -37,7 +37,8 @@ import {Base64} from "js-base64"
 import PointerListPanel from "./components/PointerListPanel.vue";
 import {useProjectStore} from "@/pinia";
 import {dateFormatter} from "@/utility";
-import {EntityPointer} from "@/page/pointer/Pointer.ts";
+import {EntityPointer, EntityPointerPoint} from "@/page/pointer/Pointer.ts";
+import {generateMarkerContent} from "@/page/MyMapLib.ts";
 const store = useProjectStore()
 
 const MY_POSITION = [117.129533, 36.685668]
@@ -260,33 +261,8 @@ export default {
 
             const _renderMarker = function(context) {
                 // console.log('context normal: ', context)
-                let item = context.data[0]
-                if (item.img){
-                    context.marker.setContent(`
-                       <div class="marker ${(item.note || item.img) ? '': 'no-content'}">
-                          <div class="marker-index">
-                              <div class="title">${item.name}</div>
-                          </div>
-                          <div class="marker-content ">
-                               <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
-                               <div class="view">
-                                   <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
-                                      <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
-                                   </a>
-                               </div>
-                          </div>
-                       </div>`)
-                } else {
-                    context.marker.setContent(`
-                       <div class="marker ${(item.note || item.img) ? '': 'no-content'}">
-                          <div class="marker-index">
-                              <div class="title">${item.name}</div>
-                          </div>
-                          <div class="marker-content ">
-                               <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
-                          </div>
-                       </div>`)
-                }
+                let item = context.data[0] as EntityPointerPoint
+                context.marker.setContent(generateMarkerContent(item.name, item.note, item.img, item.type))
 
                 let offset = new AMap.Pixel(-9, -9);
                 context.marker.setOffset(offset)
@@ -338,43 +314,12 @@ export default {
             })*/
         },
 
-        addMarker(map, item, index) {
-            if (item.img){
-                let marker = new AMap.Marker({
-                    position: item.position,
-                    content: `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${item.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
-                       <div class="view">
-                           <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
-                              <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
-                           </a>
-                       </div>
-                  </div>
-               </div>`,
-                })
-                map.add(marker)
-            } else {
-                let marker = new AMap.Marker({
-                    position: item.position,
-                    content: `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                       <div class="title">${item.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
-                  </div>
-               </div>`,
-                })
-                map.add(marker)
-            }
+        addMarker(map, item: EntityPointerPoint, index: number) {
+            let marker = new AMap.Marker({
+                position: item.position,
+                content: generateMarkerContent(item.name, item.note, item.img, item.type, index),
+            })
+            map.add(marker)
         }
 
     },
@@ -385,7 +330,7 @@ export default {
             this.getPointerInfo(newValue)
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.map.clearInfoWindow() // 清除地图上的信息窗体
         this.map.clearMap() // 删除所有 Marker
         this.map.destroy() // 销毁地图，释放内存

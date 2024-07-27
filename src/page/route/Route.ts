@@ -22,6 +22,7 @@ interface EntityRoute {
 }
 
 interface EntityRoutePointer {
+    type: string,                // 颜色类别，为了匹配 EntityPointerPoint 的属性，共用一个方法
     position: [number, number],  // 地址 lng,lat
     note: string,                // 标点备注
     name: string,                // 标点名称

@@ -508,10 +508,10 @@ export default {
         /**
          * 获取区域对角线的两点坐标，即这个区域内的最小坐标值和最大坐标值
          *
-         * @param pointerArray [[a,b],[c,d]]
          * @return Array {min:number[a,b], max:number[c,d]}
+         * @param pointerArray
          */
-        getMaxBoundsPointer(pointerArray) {
+        getMaxBoundsPointer(pointerArray: Array<[number, number]>) {
             let lngArray = pointerArray.map(item => item[0])
             let latArray = pointerArray.map(item => item[1])
 
@@ -522,7 +522,10 @@ export default {
         },
 
 
-        addMarker(map, position, name: string, height: number, extData: any, icon: string, offset: number) {
+        addMarker(map, position:[number, number],
+                  name: string, height: number,
+                  extData: any, icon: string, offset: number
+        ) {
             let marker
             if (icon) {
                 marker = new AMap.Marker({
@@ -567,7 +570,7 @@ export default {
             }
         },
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.map.clearInfoWindow() // 清除地图上的信息窗体
         this.map.clearMap() // 删除所有 Marker
         this.map.destroy() // 销毁地图，释放内存

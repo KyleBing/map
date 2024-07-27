@@ -108,6 +108,7 @@ import {useRouter, useRoute} from "vue-router";
 import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {EntityPointer, EntityPointerPoint} from "@/page/pointer/Pointer.ts";
+import {generateMarkerContent} from "@/page/MyMapLib.ts";
 
 const store = useProjectStore()
 const route = useRoute()
@@ -411,55 +412,11 @@ function getMaxBoundsPointer(pointerArray: Array<EntityPointer>): {min: [number,
 }
 
 function addMarker(map, item: EntityPointerPoint, index: number) {
-    let marker = null
-    if (item.img){
-        marker = new AMap.Marker({
-            position: item.position,
-            content: `
-               <div class="marker ${item.type}">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${item.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
-                       <div class="view">
-                           <a target="_blank" href="${item.img + '-' + thumbnail1500_suffix}">
-                              <img src="${item.img + '-' + thumbnail1000_suffix}" alt="view">
-                           </a>
-                       </div>
-                  </div>
-               </div>
-`,
-        })
-    } else if (item.note) {
-        marker = new AMap.Marker({
-            position: item.position,
-            content: `
-               <div class="marker ${item.type}">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${item.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
-                  </div>
-               </div>`,
-        })
-    } else {
-        marker = new AMap.Marker({
-            position: item.position,
-            content: `
-               <div class="marker no-content ${item.type}">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${item.name}</div>
-                  </div>
-               </div>`,
-        })
-    }
+    let marker = new AMap.Marker({
+        position: item.position,
+        content: generateMarkerContent(item.name, item.note, item.img, item.type, index),
+    })
     map.add(marker)
-
 }
 
 

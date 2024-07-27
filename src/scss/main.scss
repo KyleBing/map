@@ -187,7 +187,9 @@ $height-btn: 28px;
     }
 }
 
-
+.hidden{
+    display: none;
+}
 
 
 @import "overwrite-el-ui";

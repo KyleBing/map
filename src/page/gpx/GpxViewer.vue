@@ -497,7 +497,7 @@ export default {
             }
         },
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.map.clearInfoWindow() // 清除地图上的信息窗体
         this.map.clearMap() // 删除所有 Marker
         this.map.destroy() // 销毁地图，释放内存

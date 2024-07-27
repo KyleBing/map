@@ -19,6 +19,7 @@ import RouteDetailPanel from "@/page/route/components/RouteDetailPanel.vue";
 import {useProjectStore} from "@/pinia";
 import {onMounted, onUnmounted, ref} from "vue";
 import {key_web_js} from "@/mapConfig.ts";
+import {generateMarkerContent} from "@/page/MyMapLib.ts";
 
 const MARKERS  = [
     {"id": 1, "name": "济南港沟收费站", "position": [117.176286, 36.629877], "note": "", "img": ""},
@@ -78,17 +79,7 @@ function addMarker(map, item, index: number) {
         marker = new AMap.Marker({
             position: item.position,
             offset: new AMap.Pixel(0, -20),
-            content: `
-              <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${item.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
-                  </div>
-               </div>
-`
+            content: generateMarkerContent(item.name, item.note, item.img, item.type, index)
         })
     } else {
         marker = new AMap.Marker({

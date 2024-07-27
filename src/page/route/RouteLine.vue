@@ -39,9 +39,10 @@ import axios from "axios";
 import {useProjectStore} from "@/pinia";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig.ts";
+import {key_service, key_web_js} from "@/mapConfig.ts";
 import {EntityRoute, EntityRoutePointer} from "@/page/route/Route.ts";
 import routeApi from "@/api/routeApi.ts";
+import {generateMarkerContent} from "@/page/MyMapLib.ts";
 
 const MY_POSITION = [117.129533, 36.685668]
 
@@ -286,70 +287,10 @@ function addMarker(map, item: EntityRoutePointer, index: number) {
         position: item.position,
         title: item.note,
         draggable: false,
-        content: generateMarkerContent(item, index),
+        content: generateMarkerContent(item.name, item.note, item.img, item.type, index),
     })
     currentMarkers.value.push(marker)
     map.add(marker)
-}
-
-
-/**
- * 生成 Marker.note
- * @param marker
- * @param index
- */
-function generateMarkerContent(marker: EntityRoutePointer, index: number){
-    if (marker.img && marker.note){
-        return `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${marker.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${marker.note.replace(/\n/g, '<br>')}</div>
-                       <div class="view">
-                           <a target="_blank" href="${marker.img + '-' + thumbnail1500_suffix}">
-                              <img src="${marker.img + '-' + thumbnail1000_suffix}" alt="view">
-                           </a>
-                       </div>
-                  </div>
-               </div>`
-    } else if (marker.img) {
-        return `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${marker.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="view">
-                           <a target="_blank" href="${marker.img + '-' + thumbnail1500_suffix}">
-                              <img src="${marker.img + '-' + thumbnail1000_suffix}" alt="view">
-                           </a>
-                       </div>
-                  </div>
-               </div>`
-    } else if (marker.note){
-        return `
-               <div class="marker">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${marker.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${marker.note.replace(/\n/g, '<br>')}</div>
-                  </div>
-               </div>`
-    } else {
-        return `
-               <div class="marker no-content">
-                  <div class="marker-index">
-                       <div class="index">${index + 1}</div>
-                      <div class="title">${marker.name}</div>
-                  </div>
-               </div>`
-    }
 }
 
 // float route list
