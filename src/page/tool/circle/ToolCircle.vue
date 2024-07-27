@@ -49,6 +49,7 @@ import {useProjectStore} from "@/pinia";
 import {useRoute, useRouter} from "vue-router";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {key_service, key_web_js} from "@/mapConfig.ts";
+import {generateMarkerContent} from "@/page/MyMapLib.ts";
 
 
 const refCirclePanel = ref()
@@ -66,9 +67,9 @@ const isLoading = ref(false)
 
 interface EntityCircle {
     name: string,
-    center: Array<Number>
+    center: [number, number]
     radius: number, // 半径
-    color: string //
+    color?: string //
 }
 
 const circleData = ref<Array<EntityCircle>>([]) // 对应点的范围数据
@@ -163,22 +164,6 @@ function search(){
             refCirclePanel.value.name = searchAddress.value
         })
 }
-// 添加新标记点和圆圈
-function handleCircleAdd(circle){
-    circleData.value.push({
-        name: circle.name,
-        center: [positionPicked.value.lng, positionPicked.value.lat],
-        radius: circle.radius,
-        color: '#00b8e5',
-    })
-    map.setCenter(circle.center) // 定位到中心位置
-    addMarker(map, {
-        position: circle.center,
-        name: circle.name,
-        note: circle.radius + ' km'
-    })
-    addCircle(map, circle.center, '#00b8e5', circle.radius)
-}
 // 设置地图中心点：用户坐标
 function setMapCenterToUserLocation(status, res){
     if (status === 'complete') {
@@ -195,7 +180,7 @@ function setMapCenterToUserLocation(status, res){
 }
 
 
-function addCircle(map, position, borderColor, radius) {
+function addCircle(map, position: [number, number], borderColor: string = '#52c7f9', radius: number) {
     let circle = new AMap.Circle({
         center: position,         // 圆心位置
         radius: radius * 1000,    // 圆半径
@@ -203,25 +188,40 @@ function addCircle(map, position, borderColor, radius) {
         // fillOpacity: 0.3,           // 填充透明度
         strokeColor: borderColor, // 描边颜色
         strokeOpacity: 1,         // 描边透明度
-        strokeWeight: 2,          // 描边宽度
+        strokeWeight: 1,          // 描边宽度
     })
     map.add(circle)
 }
 
-function addMarker(map, item) {
+function addMarker(map, item: EntityCircle, index: number) {
     let marker = new AMap.Marker({
-        position: item.position,
-        content: `
-               <div class="marker">
-                  <div class="marker-index">
-                      <div class="title">${item.name}</div>
-                  </div>
-                  <div class="marker-content">
-                       <div class="note">${item.note.replace(/\n/g, '<br>')}</div>
-                  </div>
-               </div>`,
+        position: item.center,
+        draggable: true,
+        content: generateMarkerContent(item.name, `${item.radius} km`),
+        extData: {
+            arrayIndex: index, // 元素在数组中的位置 index
+        }
     })
+    marker.on('dragstart', handleMarkerDragging)
+    marker.on('dragging', handleMarkerDragStart)
+    marker.on('dragend', handleMarkerDragEnd)
     map.add(marker)
+}
+
+function handleMarkerDragging(event){
+    // console.log(event)
+    const markerIndex =  event.target._opts.extData.arrayIndex  // 在新建 marker 的时候提前定义的数据
+    circleData.value[markerIndex].center = [event.lnglat.lng, event.lnglat.lat]
+}
+function handleMarkerDragStart(event){
+    // console.log(event)
+    const markerIndex =  event.target._opts.extData.arrayIndex  // 在新建 marker 的时候提前定义的数据
+    circleData.value[markerIndex].center = [event.lnglat.lng, event.lnglat.lat]
+}
+function handleMarkerDragEnd(event){
+    // console.log(event)
+    const markerIndex =  event.target._opts.extData.arrayIndex  // 在新建 marker 的时候提前定义的数据
+    circleData.value[markerIndex].center = [event.lnglat.lng, event.lnglat.lat]
 }
 
 
@@ -230,13 +230,17 @@ watch(circleData, newValue => {
         map.clearMap()
     }
     if (newValue.length > 0){
-        newValue.forEach(item => {
+        newValue.forEach((item, index) => {
             addCircle(map, item.center, item.color, item.radius)
-            addMarker(map, {
-                position: item.center,
-                name: item.name,
-                note: item.radius + ' km'
-            })
+            addMarker(
+                map,
+                {
+                    center: item.center,
+                    name: item.name,
+                    radius: item.radius
+                },
+                index
+            )
         })
     }
 }, {deep: true})
