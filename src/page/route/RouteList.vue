@@ -49,7 +49,7 @@
                     </ElTableColumn>
                     <ElTableColumn width="100" align="center" prop="nickname" label="用户"/>
 
-                    <ElTableColumn align="center" min-width="350px" label="操作">
+                    <ElTableColumn align="center" min-width="380px" label="操作">
                         <template #default="scope">
                             <ElButton class="btn-narrow" type="success"
                                        @click="showRoute(scope.row)" size="small" plain icon="View">查看路线</ElButton>
@@ -65,7 +65,7 @@
                         </template>
                     </ElTableColumn>
                     <ElTableColumn width="130" align="left" prop="seasons" label="适用季节"/>
-                    <ElTableColumn width="200" align="left" prop="road_type" label="路线类型">
+                    <ElTableColumn width="220" align="left" prop="road_type" label="路线类型">
                         <template #default="scope">
                             <ElTag class="mr-1" size="small"
                                     v-for="item in scope.row.road_type.split('，')" :key="item">{{ item }}

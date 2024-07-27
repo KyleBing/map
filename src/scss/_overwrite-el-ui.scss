@@ -19,6 +19,15 @@
   line-height: 30px !important;
   font-size: $fz-normal;
 }
+.el-tabs__content{
+  padding: 0 !important;
+}
+
+.el-tabs--border-card>.el-tabs__header{
+  height: 30px !important;
+  margin-bottom: 0 !important;
+  border-bottom: none;
+}
 
 
 .search-bar{
@@ -35,7 +44,4 @@
   }
 }
 
-.el-tabs__header{
-  height: 30px !important;
-  margin-bottom: 0 !important;
-}
+

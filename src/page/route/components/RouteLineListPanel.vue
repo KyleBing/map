@@ -8,7 +8,7 @@
         <ElTabs
             size="small"
             v-if="isShowPanel"
-            type="card"
+            type="border-card"
             @tab-click="tabClick"
             v-model="currentTab">
             <ElTabPane label="我的" name="mine">
@@ -65,7 +65,6 @@ const router = useRouter()
 
 const emit = defineEmits(['choseLine', 'labelToggle'])
 
-const isShowContent = ref(true)
 const currentTab = ref('mine') // 我的
 const isLoading = ref(false)
 const routeLineListPublic = ref<Array<EntityRoute>>([])
