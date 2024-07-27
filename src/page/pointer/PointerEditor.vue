@@ -98,7 +98,7 @@
 <script lang="ts" setup>
 import AMapLoader from '@amap/amap-jsapi-loader';
 import PointerEditPanel from "./components/PointerEditPanel.vue";
-import {key_service, key_web_js, thumbnail1000_suffix, thumbnail1500_suffix} from "@/mapConfig";
+import {key_service, key_web_js} from "@/mapConfig";
 import axios from "axios";
 import pointerApi from "@/api/pointerApi";
 import {Base64} from "js-base64";

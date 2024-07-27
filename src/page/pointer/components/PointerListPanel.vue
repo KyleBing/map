@@ -22,26 +22,15 @@
 </template>
 
 <script setup lang="ts">
-
-import {useProjectStore} from "@/pinia";
 import {useRoute} from "vue-router";
-import {ref} from "vue";
-
-const store = useProjectStore()
+import {EntityPointer} from "@/page/pointer/Pointer.ts";
 const route = useRoute()
 
-
-const emit = defineEmits()
-
+const emit = defineEmits(['chosePointer'])
 defineProps<{
-    pointerList: []
+    pointerList: Array<EntityPointer>
 }>()
 
-const showContent = ref(true)
-
-function toggleContent(){
-    showContent.value = !showContent.value
-}
 </script>
 
 <style lang="scss" scoped>
