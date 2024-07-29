@@ -33,6 +33,7 @@ withDefaults(defineProps<{
 
 function logout(){
     deleteAuthorization()
+    store.authorization = null
 }
 
 function login(){
