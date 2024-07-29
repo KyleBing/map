@@ -116,13 +116,20 @@ const isPathShowed = ref(true)
 
 // 路径上的 markers
 const isMarkerShowed = ref(true)
-const pathPointers = ref([])
+interface EntityGpxPoint{
+    lnglat: any,
+    label: string,
+}
+const pathPointers = ref<Array<EntityGpxPoint>>([])
 const markers = ref([])
 // 公里标记显示
 const kmMarkers = ref([])
 
 // float route list
 const isPointerListShowed = true // route list 是否显示
+
+
+
 
 
 
@@ -284,8 +291,39 @@ function loadAllPointer(isNeedFitToMap = false){
         }
         return item  // E,N 向东，向北移动距离，单位：米
     })
-    loadGpxPath(map, pathPointers.value.map(item => item.lnglat), isNeedFitToMap)
-    loadMarkers(map, pathPointers.value)
+
+
+
+    /**
+     * 坐标转换
+     */
+    let readyCovertPoints = pathPointers.value.map(item => {
+        return [item.lnglat.lng, item.lnglat.lat]
+    })
+    readyCovertPoints = readyCovertPoints.slice(0,1000)
+    console.log(readyCovertPoints)
+    // mapbar  gps  baidu
+    AMap.convertFrom(readyCovertPoints, 'baidu', function (status, result) {
+        console.log(status, result)
+        switch (status) {
+            case 'complete':
+                if (result.info === 'ok') {
+                    // const lnglats = result.locations // Array<LngLat>
+                    // lnglats.forEach((item, index) => {
+                    //     pathPointers.value[index].lnglat = item
+                    // })
+                    // loadGpxPath(map, pathPointers.value.map(item => item.lnglat), isNeedFitToMap)
+                    // loadMarkers(map, pathPointers.value)
+                }
+                break;
+            case 'no_data':
+            case 'error':
+            default:
+                console.log(status, result)
+        }
+    })
+
+
 }
 
 function loadGpxPath(map, ptArray: Array<[number, number]>, isNeedFitToMap: boolean){
@@ -317,7 +355,7 @@ function loadGpxPath(map, ptArray: Array<[number, number]>, isNeedFitToMap: bool
     }
 }
 
-function loadMarkers(map, ptArray: Array<[number, number]>){
+function loadMarkers(map, ptArray: Array<any>){
     markers.value = []
     ptArray.forEach((item, index) => {
         if (item.label === 'start'){
