@@ -116,7 +116,13 @@ const isPathShowed = ref(true)
 
 // 路径上的 markers
 const isMarkerShowed = ref(true)
-const pathPointers = ref([])
+
+interface EntityGpxPoint{
+    lnglat: any,
+    label: string,
+}
+
+const pathPointers = ref<Array<EntityGpxPoint>>([])
 const markers = ref([])
 // 公里标记显示
 const kmMarkers = ref([])
