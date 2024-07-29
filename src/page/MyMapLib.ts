@@ -67,6 +67,26 @@ function generateMarkerContent(
                </div>`
     }
 }
+
+
+/**
+ * 获取区域对角线的两点坐标，即这个区域内的最小坐标值和最大坐标值
+ *
+ * @return Array {min:number[a,b], max:number[c,d]}
+ * @param pointerArray
+ */
+function getMaxBoundsPointer(pointerArray: Array<[number, number]>): {min: [number,number], max: [number,number]} {
+    let lngArray = pointerArray.map(item => item[0])
+    let latArray = pointerArray.map(item => item[1])
+
+    return {
+        min: [Math.min(...lngArray), Math.min(...latArray)],
+        max: [Math.max(...lngArray), Math.max(...latArray)],
+    }
+}
+
+
 export {
-    generateMarkerContent
+    generateMarkerContent,
+    getMaxBoundsPointer
 }

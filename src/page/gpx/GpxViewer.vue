@@ -405,21 +405,6 @@ function resizeMap() {
     mapContainer.style.width = window.innerWidth + "px"
 }
 
-/**
- * 获取区域对角线的两点坐标，即这个区域内的最小坐标值和最大坐标值
- *
- * @param pointerArray [[a,b],[c,d]]
- * @return Array {min:number[a,b], max:number[c,d]}
- */
-function getMaxBoundsPointer(pointerArray){
-    let lngArray = pointerArray.map(item => item[0])
-    let latArray = pointerArray.map(item => item[1])
-
-    return {
-        min: [Math.min(...lngArray),  Math.min(...latArray)],
-        max: [Math.max(...lngArray),  Math.max(...latArray)],
-    }
-}
 function addMarker(map, position, name: string, height: number, extData: any, icon: string, offset: number) {
     let marker
     if (icon){

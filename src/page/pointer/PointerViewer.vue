@@ -36,7 +36,7 @@ import PointerListPanel from "./components/PointerListPanel.vue";
 import {useProjectStore} from "@/pinia";
 import {dateFormatter} from "@/utility";
 import {EntityPointer, EntityPointerPoint} from "@/page/pointer/Pointer.ts";
-import {generateMarkerContent} from "@/page/MyMapLib.ts";
+import {generateMarkerContent, getMaxBoundsPointer} from "@/page/MyMapLib.ts";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 const store = useProjectStore()
@@ -195,18 +195,6 @@ function resizeMap() {
     mapContainer.style.width = window.innerWidth + "px"
 }
 
-/**
- * 获取区域对角线的两点坐标，即这个区域内的最小坐标值和最大坐标值
- *
- */
-function getMaxBoundsPointer(pointerArray: Array<EntityPointer>): {min: [number, number ], max: [number, number]}{
-    let lngArray = pointerArray.map(item => item[0])
-    let latArray = pointerArray.map(item => item[1])
-    return {
-        min: [Math.min(...lngArray),  Math.min(...latArray)],
-        max: [Math.max(...lngArray),  Math.max(...latArray)],
-    }
-}
 
 // 添加点图 Label
 function loadPointerLabels(map, pointer: EntityPointer) {

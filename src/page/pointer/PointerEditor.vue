@@ -108,7 +108,7 @@ import {useRoute} from "vue-router";
 import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {EntityPointer, EntityPointerPoint} from "@/page/pointer/Pointer.ts";
-import {generateMarkerContent} from "@/page/MyMapLib.ts";
+import {generateMarkerContent, getMaxBoundsPointer} from "@/page/MyMapLib.ts";
 
 const store = useProjectStore()
 const route = useRoute()
@@ -398,19 +398,6 @@ function loadPointerLabels(map, pathPointers: Array<EntityPointerPoint>) {
     }
 }
 
-/**
- * 获取区域对角线的两点坐标，即这个区域内的最小坐标值和最大坐标值
- *
- */
-function getMaxBoundsPointer(pointerArray: Array<EntityPointer>): {min: [number, number ], max: [number, number]}{
-    let lngArray = pointerArray.map(item => item[0])
-    let latArray = pointerArray.map(item => item[1])
-
-    return {
-        min: [Math.min(...lngArray),  Math.min(...latArray)],
-        max: [Math.max(...lngArray),  Math.max(...latArray)],
-    }
-}
 
 function addMarker(map, item: EntityPointerPoint, index: number) {
     let marker = new AMap.Marker({
