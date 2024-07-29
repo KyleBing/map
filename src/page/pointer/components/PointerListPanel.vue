@@ -3,7 +3,7 @@
         <div class="list-title">点图列表</div>
         <div class="route-line-list">
             <div
-                v-if="pointerList.length > 0"
+                v-if="pointerList.length > 1000"
                 v-for="pointer in pointerList" :key="pointer.id"
                 @click="emit('chosePointer', pointer.id)"
                 :class="[
@@ -15,7 +15,9 @@
                 <div class="name">{{pointer.name}}</div>
                 <div class="area">{{pointer.area}}</div>
             </div>
-            <div v-else> 暂无数据</div>
+            <div v-else>
+                <ElEmpty description="没有数据" image-size="50" />
+            </div>
         </div>
     </div>
 
