@@ -123,7 +123,13 @@ const isPathShowed = ref(true)
 
 // 路径上的 markers
 const isMarkerShowed = ref(true)
-const pathPointers = ref([])
+
+interface EntityGpxPoint{
+    height: number,
+    lnglat: any,
+    label: string,
+}
+const pathPointers = ref<Array<EntityGpxPoint>>([])
 const markers = ref([])
 // 公里标记显示
 const kmMarkers = ref([])
@@ -345,21 +351,30 @@ function loadAllPointer(isNeedFitToMap = false) {
     loca.clear() // 清除所有 loca 上的图层
     isMarkerShowed.value = true
     isPathShowed.value = true
-    /*            pointer = {
-                    "ele": 18,
-                    "time": "2023-11-18T12:08:53Z",
-                    "extensions": {
-                        "heartrate": 96,
-                        "distance": 13
-                    },
-                    "_lat": "36.7426527",
-                    "_lon": "117.0671413"
-                }*/
 
-    let pointers = xmlObj.value.gpx.trk.trkseg.trkpt
+    interface EntityGPXOriginalPoint {
+        label: string,  // 手动新增属性
+        lnglat?: any,   // 手动新增属性
+
+        ele: number,
+        height: number,
+
+        time: string, // 2023-11-18T12:08:53Z
+        extensions: {
+            heartrate: number,
+            distance: number
+        },
+        _lat: string, // 36.7426527
+        _lon: string // 117.0671413
+    }
+
+
+    let pointers = xmlObj.value.gpx.trk.trkseg.trkpt as Array<EntityGPXOriginalPoint>
     pathPointers.value = pointers.map((item, index) => {
         item.lnglat = new AMap.LngLat(item._lon, item._lat)
         item.lnglat = item.lnglat.offset(offsetE.value, offsetN.value) // offset 偏移量 E, N 单位：米
+
+        item.height = item.ele  // 高度，同时保留了原来的 ele 参数
 
         // 给 pointers 添加 label: start | end，供后续对 marker 的操作
         if (index === 0) {
@@ -404,13 +419,12 @@ function loadGpxPath(map, ptArray: Array<[number, number]>, isNeedFitToMap: bool
     }
 }
 
-function loadMarkers(map, ptArray: Array<[number, number]>){
+function loadMarkers(map, ptArray: Array<EntityGpxPoint>){
     markers.value = []
     ptArray.forEach((item, index) => {
         if (item.label === 'start') {
             // 起点
-            addMarker(map, item.lnglat, '起点', item.ele,
-                {label: item.label}, // AMap.Marker.extData
+            addMarker(map, item.lnglat, item.height,'起点', {label: item.label}, // AMap.Marker.extData
                 new AMap.Icon({ // 设置途经点的图标
                     size: new AMap.Size(26, 43),
                     image: ICON.start,
@@ -422,8 +436,7 @@ function loadMarkers(map, ptArray: Array<[number, number]>){
             )
         } else if (item.label === 'end') {
             // 终点
-            addMarker(map, item.lnglat, '终点', item.ele,
-                {label: item.label}, // AMap.Marker.extData
+            addMarker(map, item.lnglat, item.height,'终点', {label: item.label}, // AMap.Marker.extData
                 new AMap.Icon({ // 设置途经点的图标
                     size: new AMap.Size(26, 43),
                     image: ICON.end,
@@ -434,7 +447,7 @@ function loadMarkers(map, ptArray: Array<[number, number]>){
             )
         } else {
             if (index % gapCount.value === 0) {
-                addMarker(map, item.lnglat, dateFormatter(new Date(item.time), 'hh:mm'))
+                addMarker(map, item.lnglat, item.height, dateFormatter(new Date(item.time), 'hh:mm'))
                 // addMarker(map, item.lnglat, item.extensions.heartrate)
             }
         }
@@ -509,7 +522,7 @@ function getMaxBoundsPointer(pointerArray) {
 }
 
 
-function addMarker(map, position, name: string, height: number, extData: any, icon: string, offset: number) {
+function addMarker(map, position: [number, number], height: number, name: string, extData: any, icon: string, offset: number) {
     let marker
     if (icon) {
         marker = new AMap.Marker({
@@ -524,10 +537,10 @@ function addMarker(map, position, name: string, height: number, extData: any, ic
             position: position,
             height,
             content: `<div class="marker no-content">
-                              <div class="marker-index">
-                                  <div class="title">${name}</div>
-                              </div>
-                           </div>`,
+                          <div class="marker-index">
+                              <div class="title">${name}</div>
+                          </div>
+                       </div>`,
         })
     }
     markers.value.push(marker)
