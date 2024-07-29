@@ -3,7 +3,7 @@
         <div class="list-title">点图列表</div>
         <div class="route-line-list">
             <div
-                v-if="pointerList.length > 1000"
+                v-if="pointerList.length > 0"
                 v-for="pointer in pointerList" :key="pointer.id"
                 @click="emit('chosePointer', pointer.id)"
                 :class="[
