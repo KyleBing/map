@@ -45,7 +45,6 @@ const router = useRouter()
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
-let map = null
 let cluster = null  // 点聚合的对象
 
 const isLoading = ref(false)
@@ -74,12 +73,12 @@ onMounted(() => {
         })
         .then(mapItem => {
             AMap = mapItem
-            map = new AMap.Map('container', {
+            window.map = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
             })
-            map.addControl(new AMap.ToolBar())
-            map.addControl(new AMap.Scale())
+            window.map.addControl(new AMap.ToolBar())
+            window.map.addControl(new AMap.Scale())
 
             if (route.query.pointerId){
                 getPointerInfo(route.query.pointerId)
@@ -94,9 +93,9 @@ onMounted(() => {
 function openInGaodeApp(){
     let originLnglat = activePointerObj.value.pointerArray[0].position // [lng, lat]
     let destLnglat = activePointerObj.value.pointerArray[activePointerObj.value.pointerArray.length - 1].position // [lng, lat]
-    map.plugin('AMap.Driving', () => {
+    window.map.plugin('AMap.Driving', () => {
         let currentDriving = new AMap.Driving({
-            map: map,
+            map: window.map,
             policy: AMap.DrivingPolicy.LEAST_TIME
         })
         currentDriving.search(
@@ -170,7 +169,7 @@ function getPointerInfo(pointerId: number) {
         .then(res => {
             activePointerObj.value = res.data
             activePointerObj.value.pointerArray = JSON.parse(Base64.decode(activePointerObj.value.pointers))!
-            loadPointerLabels(map, activePointerObj.value)
+            loadPointerLabels(window.map, activePointerObj.value)
         })
 }
 
@@ -178,8 +177,8 @@ function getPointerInfo(pointerId: number) {
 function setMapCenterToUserLocation(status, res) {
     if (status === 'complete') {
         let center = [res.position.lng, res.position.lat]
-        map.setCenter(center)
-        addMarker(map, {
+        window.map.setCenter(center)
+        addMarker(window.map, {
             position: center,
             name: '我的位置',
             note: ''
@@ -295,16 +294,14 @@ function addMarker(map, item: EntityPointerPoint, index: number) {
 }
 
 watch(() => route.query.pointerId, newValue => {
-    map.clearInfoWindow() // 清除地图上的信息窗体
-    map.clearMap() // 删除所有 Marker
+    window.map.clearInfoWindow() // 清除地图上的信息窗体
+    window.map.clearMap() // 删除所有 Marker
     getPointerInfo(newValue)
 })
 
 onUnmounted(() => {
-    map.clearInfoWindow() // 清除地图上的信息窗体
-    map.clearMap() // 删除所有 Marker
-    map.destroy() // 销毁地图，释放内存
-    map = null
+    window.map.clearInfoWindow() // 清除地图上的信息窗体
+    window.map.clearMap() // 删除所有 Marker
 })
 </script>
 

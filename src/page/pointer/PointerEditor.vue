@@ -116,7 +116,6 @@ const route = useRoute()
 const MY_POSITION = [117.129533, 36.685668]
 
 let AMap = null
-let map = null
 
 const refFormPointer = ref()
 const isLoading = ref(false)
@@ -164,14 +163,14 @@ onMounted(() => {
         .then(mapItem => {
             AMap = mapItem
 
-            map = new AMap.Map('container', {
+            window.map = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
             })
 
             // map.addControl(new AMap.ToolBar())
-            map.addControl(new AMap.Scale())
-            map.addControl(new AMap.Geolocation())
+            window.map.addControl(new AMap.Scale())
+            window.map.addControl(new AMap.Geolocation())
 
             // 定位
             let geolocation = new AMap.Geolocation({
@@ -193,7 +192,7 @@ onMounted(() => {
             }
 
             // 地图选点操作
-            map.on('click', res => {
+            window.map.on('click', res => {
                 positionPicked.value = {
                     lng: res.lnglat.lng,
                     lat: res.lnglat.lat
@@ -284,7 +283,7 @@ function getPointerInfo() {
             .then(res => {
                 formPointer.value = res.data
                 pointers.value = JSON.parse(Base64.decode(res.data.pointers))
-                loadPointerLabels(map, pointers.value)
+                loadPointerLabels(window.map, pointers.value)
             })
     }
 }
@@ -312,7 +311,7 @@ function search() {
             searchResultText.value = `${locationInfo.level}：${locationInfo.formatted_address}`
 
             // 定位地图中心到搜索的地点
-            map.setCenter(locationArray, false, 1000)
+            window.map.setCenter(locationArray, false, 1000)
 
         })
 }
@@ -325,8 +324,8 @@ function handleAddNewPointer(routePoint: EntityPointerPoint) {
         type: routePoint.type,
         img: routePoint.img
     })
-    map.setCenter(routePoint.position) // 定位到中心位置
-    addMarker(map, {
+    window.map.setCenter(routePoint.position) // 定位到中心位置
+    addMarker(window.map, {
         position: routePoint.position,
         name: routePoint.name,
         note: routePoint.note,
@@ -338,8 +337,8 @@ function handleAddNewPointer(routePoint: EntityPointerPoint) {
 function setMapCenterToUserLocation(status, res) {
     if (status === 'complete') {
         let center = [res.position.lng, res.position.lat]
-        map.setCenter(center)
-        addMarker(map, {
+        window.map.setCenter(center)
+        addMarker(window.map, {
             position: center,
             name: '我',
             note: ''
@@ -355,8 +354,8 @@ function printPointers() {
 }
 // 展示规划的地图信息
 function showPointer() {
-    map.clearMap() // 删除地图上的所有标记
-    loadPointerLabels(map, pointers.value)
+    window.map.clearMap() // 删除地图上的所有标记
+    loadPointerLabels(window.map, pointers.value)
 }
 
 /**
@@ -432,14 +431,12 @@ function handleMarkerDragEnd(event){
 
 
 onUnmounted(() => {
-    map.clearInfoWindow() // 清除地图上的信息窗体
-    map.destroy() // 销毁地图，释放内存
-    map = null
+    window.map.clearInfoWindow() // 清除地图上的信息窗体
 })
 
 watch(pointers, () => {
-    map.clearMap() // 删除地图上的所有标记
-    loadPointerLabels(map, pointers.value)
+    window.map.clearMap() // 删除地图上的所有标记
+    loadPointerLabels(window.map, pointers.value)
 }, {deep: true})
 
 

@@ -143,7 +143,6 @@ const route = useRoute()
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
-let map = null
 
 let activeLineObj = ref(null)
 const isLoading = ref(false)
@@ -180,7 +179,7 @@ function search() {
             searchResultText.value = `${locationInfo.level}：${locationInfo.formatted_address}`
 
             // 定位地图中心到搜索的地点
-            map.setCenter(locationArray, false, 1000)
+            window.map.setCenter(locationArray, false, 1000)
         })
 }
 
@@ -191,8 +190,8 @@ function search() {
  */
 const pathPointers = ref<Array<EntityRoutePoint>>([]) // 对应点的范围数据
 watch(pathPointers, () => {
-    map.clearMap() // 删除地图上的所有标记
-    loadLineLabels(map, pathPointers.value)
+    window.map.clearMap() // 删除地图上的所有标记
+    loadLineLabels(window.map, pathPointers.value)
 }, {deep: true})
 
 /**
@@ -248,14 +247,14 @@ onMounted(() => {
         .then(mapItem => {
             AMap = mapItem
 
-            map = new AMap.Map('container', {
+            window.map = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
             })
 
             // map.addControl(new AMap.ToolBar())
-            map.addControl(new AMap.Scale())
-            map.addControl(new AMap.Geolocation())
+            window.map.addControl(new AMap.Scale())
+            window.map.addControl(new AMap.Geolocation())
 
             // 定位
             let geolocation = new AMap.Geolocation({
@@ -277,7 +276,7 @@ onMounted(() => {
             }
 
             // 地图选点操作
-            map.on('click', res => {
+            window.map.on('click', res => {
                 positionPicked.value = {
                     lng: res.lnglat.lng,
                     lat: res.lnglat.lat
@@ -393,8 +392,8 @@ function getLineInfo() {
                 formLine.value.seasonsArray = formLine.value.seasons.split('、')
                 activeLineObj.value = res.data
                 pathPointers.value = JSON.parse(Base64.decode(activeLineObj.value.paths))
-                loadLine(map, pathPointers.value)
-                loadLineLabels(map, pathPointers.value)
+                loadLine(window.map, pathPointers.value)
+                loadLineLabels(window.map, pathPointers.value)
             })
     }
 }
@@ -405,8 +404,8 @@ function getLineInfo() {
 function setMapCenterToUserLocation(status, res) {
     if (status === 'complete') {
         let center = [res.position.lng, res.position.lat]
-        map.setCenter(center)
-        addMarker(map, {
+        window.map.setCenter(center)
+        addMarker(window.map, {
             position: center,
             name: '我',
             note: ''
@@ -427,12 +426,12 @@ function printRoute() {
 
 // 展示规划的路线
 function showLine() {
-    map.clearMap() // 删除地图上的所有标记
+    window.map.clearMap() // 删除地图上的所有标记
     if (currentDragRouting.value) {
         currentDragRouting.value.destroy() // 删除之前的路线
     }
-    loadLine(map, pathPointers.value)
-    loadLineLabels(map, pathPointers.value)
+    loadLine(window.map, pathPointers.value)
+    loadLineLabels(window.map, pathPointers.value)
 }
 // 载入线路信息
 function loadLine(map, linePointers: Array<EntityRoutePoint>) {
@@ -552,9 +551,7 @@ function handleMarkerDragEnd(event){
 
 onUnmounted(()=>{
     currentDragRouting.value && currentDragRouting.value.destroy() // 销毁行程规划
-    map.clearInfoWindow() // 清除地图上的信息窗体
-    map.destroy() // 销毁地图，释放内存
-    map = null
+    window.map.clearInfoWindow() // 清除地图上的信息窗体
 })
 
 </script>

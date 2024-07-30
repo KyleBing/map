@@ -56,7 +56,6 @@ const refCirclePanel = ref()
 
 const MY_POSITION = [117.129533, 36.685668]
 let AMap = null
-let map = null
 
 const store = useProjectStore()
 const route = useRoute()
@@ -93,14 +92,14 @@ onMounted(() => {
         })
         .then(mapItem => {
             AMap = mapItem
-            map = new AMap.Map('container', {
+            window.map = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
             })
 
             // map.addControl(new AMap.ToolBar())
-            map.addControl(new AMap.Scale())
-            map.addControl(new AMap.Geolocation())
+            window.map.addControl(new AMap.Scale())
+            window.map.addControl(new AMap.Geolocation())
 
             // 定位
             let geolocation = new AMap.Geolocation({
@@ -122,7 +121,7 @@ onMounted(() => {
             }
 
             // 地图选点操作
-            map.on('click', res => {
+            window.map.on('click', res => {
                 positionPicked.value = {
                     lng: res.lnglat.lng,
                     lat: res.lnglat.lat
@@ -159,7 +158,7 @@ function search(){
             resultText.value = `${locationInfo.level}：${locationInfo.formatted_address}`
 
             // 定位地图中心到搜索的地点
-            map.setCenter(locationArray, false, 1000)
+            window.map.setCenter(locationArray, false, 1000)
 
             refCirclePanel.value.name = searchAddress.value
         })
@@ -168,8 +167,8 @@ function search(){
 function setMapCenterToUserLocation(status, res){
     if (status === 'complete') {
         let center = [res.position.lng, res.position.lat]
-        map.setCenter(center)
-        addMarker(map, {
+        window.map.setCenter(center)
+        addMarker(window.map, {
             position: center,
             name: '我',
             note: ''
@@ -226,14 +225,14 @@ function handleMarkerDragEnd(event){
 
 
 watch(circleData, newValue => {
-    if (map){
-        map.clearMap()
+    if (window.map){
+        window.map.clearMap()
     }
     if (newValue.length > 0){
         newValue.forEach((item, index) => {
-            addCircle(map, item.center, item.color, item.radius)
+            addCircle(window.map, item.center, item.color, item.radius)
             addMarker(
-                map,
+                window.map,
                 {
                     center: item.center,
                     name: item.name,
@@ -246,8 +245,9 @@ watch(circleData, newValue => {
 }, {deep: true})
 
 onUnmounted(() => {
-    map.destroy() // 销毁地图，释放内存
-    map = null
+    window.map.clearMap() // 删除地图上的所有标记
+    // window.map.destroy() // 销毁地图，释放内存
+    // window.map = null
 })
 
 

@@ -47,7 +47,6 @@ import {generateMarkerContent} from "@/page/MyMapLib.ts";
 const MY_POSITION = [117.129533, 36.685668]
 
 let AMap = null
-let mapInstance = null
 let currentDragRouting = null  // 当前导航路线
 
 
@@ -81,12 +80,12 @@ onMounted(() => {
         })
         .then(mapItem => {
             AMap = mapItem
-            mapInstance = new AMap.Map('container', {
+            window.map = new AMap.Map('container', {
                 center: MY_POSITION,
                 zoom: 11
             })
-            mapInstance.addControl(new AMap.ToolBar())
-            mapInstance.addControl(new AMap.Scale())
+            window.map.addControl(new AMap.ToolBar())
+            window.map.addControl(new AMap.Scale())
             if (route.query.lineId) {
                 getLineInfo(route.query.lineId!)
             }
@@ -110,9 +109,9 @@ function toggleLabel(){
 function openInGaodeApp(){
     let originLnglat = activeLineObj.value.pathArray[0].position // [lng, lat]
     let destLnglat = activeLineObj.value.pathArray[activeLineObj.value.pathArray.length - 1].position // [lng, lat]
-    mapInstance.plugin('AMap.Driving', () => {
+    window.map.plugin('AMap.Driving', () => {
         let currentDriving = new AMap.Driving({
-            map: mapInstance,
+            map: window.map,
             policy: AMap.DrivingPolicy.LEAST_TIME
         })
         currentDriving.search(
@@ -157,8 +156,8 @@ function getLineInfo(lineId: string) {
         .then(res => {
             activeLineObj.value = res.data
             activeLineObj.value.pathArray = JSON.parse(Base64.decode(activeLineObj.value.paths))
-            loadLine(mapInstance, activeLineObj.value)
-            loadLineLabels(mapInstance, activeLineObj.value)
+            loadLine(window.map, activeLineObj.value)
+            loadLineLabels(window.map, activeLineObj.value)
         })
 }
 
@@ -299,17 +298,17 @@ const isRouteListShowed = ref(true) // route list 是否显示
 
 watch(()=>route.query.lineId, newValue => {
     currentDragRouting && currentDragRouting.destroy() // 销毁行程规划
-    mapInstance.clearInfoWindow() // 清除地图上的信息窗体
-    mapInstance.clearMap() // 删除所有 Marker
+    window.map.clearInfoWindow() // 清除地图上的信息窗体
+    window.map.clearMap() // 删除所有 Marker
     getLineInfo(newValue)
 })
 
 onUnmounted(() => {
     currentDragRouting && currentDragRouting.destroy() // 销毁行程规划
-    mapInstance.clearInfoWindow() // 清除地图上的信息窗体
-    mapInstance.clearMap() // 删除所有 Marker
-    mapInstance.destroy() // 销毁地图，释放内存
-    mapInstance = null
+    window.map.clearInfoWindow() // 清除地图上的信息窗体
+    window.map.clearMap() // 删除所有 Marker
+    window.map.destroy() // 销毁地图，释放内存
+    window.map = null
 })
 </script>
 
