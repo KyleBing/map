@@ -33,10 +33,12 @@
                 <tr>
                     <td><i class="el-icon-aim"></i></td>
                     <td>
-                        <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
-                            <div class="lng">经: {{lng || '--'}}</div>
-                            <div class="lat">纬: {{lat || '--'}}</div>
-                        </div>
+                        <ElTooltip effect="dark" trigger="hover" placement="left" content="点击复制坐标值">
+                            <div class="lnglat" :data-clipboard-text="`[${lng}, ${lat}]`">
+                                <div class="lng">经: {{lng || '--'}}</div>
+                                <div class="lat">纬: {{lat || '--'}}</div>
+                            </div>
+                        </ElTooltip>
                     </td>
                     <td>
                         <ElInput
@@ -56,13 +58,15 @@
                             v-model="pointerNote"/>
                     </td>
                     <td>
-                        <div class="img-wrapper">
-                            <img v-if="pointerImg" :src="`${pointerImg}-${imgSuffix}`" alt="图片">
-                            <label class="logo avatar" for="avatar">
-                                <ElIcon size="14"><Upload/></ElIcon>
-                            </label>
-                            <input type="file" @change="uploadAvatar" id="avatar">
-                        </div>
+                        <ElTooltip effect="dark" trigger="hover" placement="top" content="点击上传图片">
+                            <div class="img-wrapper">
+                                <img v-if="pointerImg" :src="`${pointerImg}-${imgSuffix}`" alt="图片">
+                                <label class="logo avatar" for="avatar">
+                                    <ElIcon size="14"><Upload/></ElIcon>
+                                </label>
+                                <input type="file" @change="uploadAvatar" id="avatar">
+                            </div>
+                        </ElTooltip>
                     </td>
                     <td>
                         <ElButton size="small" type="success" @click="addNewPointToRoute" icon="Plus">添加</ElButton>
@@ -154,10 +158,10 @@ const refInputName = ref()
 
 const emit = defineEmits(['print', 'showLine', 'changeCurrentPolicy'])
 const props = defineProps<{
-    searchLocation: string,
     lng: number,
     lat: number,
     policy: number,
+    keyword: string,
 }>()
 const modelData = defineModel<Array<EntityRoutePoint>>()
 
@@ -177,10 +181,15 @@ onMounted(() => {
     clipboard.on('success', ()=>{  // 还可以添加监听事件，如：复制成功后提示
         ElMessage.success('复制成功')
     })
+    pointerName.value = props.keyword
 })
 
 onUnmounted(()=>{
     clipboard.destroy()
+})
+
+watch(() => props.keyword, newValue => {
+    pointerName.value = newValue
 })
 
 
@@ -342,9 +351,7 @@ function routePointDelete(index){
 watch(modelData, newValue => {
     clipboardRouteData.value = JSON.stringify(newValue)
 })
-watch(() => props.searchLocation, newValue => {
-    pointerName.value = newValue
-})
+
 watch(currentPolicy, newValue => {
     emit('changeCurrentPolicy', newValue)
 })

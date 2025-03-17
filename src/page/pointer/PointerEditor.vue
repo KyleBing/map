@@ -53,37 +53,25 @@
         </transition>
 
         <div class="float-panel">
-            <!-- 搜索面板 -->
-            <div class="search-panel card">
-                <ElForm inline @submit="search" size="small">
-                    <ElFormItem class="mb-0" label="地址">
-                        <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
-                    </ElFormItem>
-                    <ElFormItem class="mb-0" label="">
-                        <ElButton type="primary" @click="search" icon="Filter">搜索</ElButton>
-                    </ElFormItem>
-                </ElForm>
 
-                <ElForm inline class="mt-1" size="small">
-                    <ElFormItem class="mb-0" label="经度">
-                        <ElInput style="width:140px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
+            <SearchPanel @choose-location="chooseLocation"/>
+
+            <div class="search-panel card">
+                <ElForm inline class="" size="small" >
+                    <ElFormItem class="mb-0" label="经度" label-width="80px">
+                        <ElInput style="width:120px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
                     </ElFormItem>
                     <ElFormItem class="mb-0" label="纬度">
-                        <ElInput style="width:140px" placeholder="lat" v-model="positionPicked.lat"></ElInput>
+                        <ElInput style="width:120px" placeholder="lat" v-model="positionPicked.lat"></ElInput>
                     </ElFormItem>
                 </ElForm>
-            </div>
-
-            <!-- 结果面板 -->
-            <div class="result card mt-1" v-if="searchResultText">
-                {{ searchResultText }}
             </div>
 
             <PointerEditPanel
                 class="mt-1"
-                :search-location="searchAddress"
                 @print="printPointers"
                 @showPointer="showPointer"
+                :keyword="keyword"
                 :lng="Number(positionPicked.lng)"
                 :lat="Number(positionPicked.lat)"
                 v-model="pointers"/>
@@ -109,7 +97,7 @@ import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {EntityPointer, EntityPointerPoint} from "@/page/pointer/Pointer.ts";
 import {generateMarkerContent, getMaxBoundsPointer} from "@/page/MyMapLib.ts";
-
+import SearchPanel from "@/page/SearchPanel.vue";
 const store = useProjectStore()
 const route = useRoute()
 
@@ -126,9 +114,20 @@ const positionPicked = ref({
     lat: 0,
 })
 
-// SEARCH
-const searchAddress = ref('')  // 地址搜索关键字
-const searchResultText = ref('')
+
+/**
+ * SEARCH
+ */
+const keyword = ref('')
+function chooseLocation(location: {name: string, location: number[], keyword: string}){
+    keyword.value = location.keyword
+    positionPicked.value = {
+        lng: location.location[0],
+        lat: location.location[1],
+    }
+    window.map.setCenter(location.location)
+}
+
 
 // FORM
 const formPointer = ref({ // 点图信息
@@ -315,6 +314,7 @@ function search() {
 
         })
 }
+
 // 添加新标记点和圆圈
 function handleAddNewPointer(routePoint: EntityPointerPoint) {
     pointers.value.push({

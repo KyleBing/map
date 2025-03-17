@@ -28,6 +28,7 @@ export default defineConfig({
         proxy: {
             '/dev': {
                 target: 'http://kylebing.cn/portal/',
+                // target: 'http://localhost:3000/',
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/dev/, '/'),
             },

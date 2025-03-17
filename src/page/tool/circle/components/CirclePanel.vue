@@ -59,7 +59,7 @@ import {onMounted, onUnmounted, ref, watch} from "vue";
 import {ElMessage} from "element-plus";
 
 const props = defineProps<{
-    searchAddress: string,
+    keyword: string,
     lng: number,
     lat: number,
 }>()
@@ -136,7 +136,7 @@ watch(radius, newValue => {
         radius.value = 0
     }
 })
-watch(() => props.searchAddress, newValue => {
+watch(() => props.keyword, newValue => {
     name.value = newValue
 })
 </script>
@@ -146,7 +146,7 @@ watch(() => props.searchAddress, newValue => {
 @import "../../../../scss/plugin";
 
 .circle-panel {
-    width: 400px;
+    width: 500px;
     padding: 0 !important;
 }
 .operation{

@@ -2,19 +2,12 @@
     <div class="map-container">
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
         <div class="float-panel">
-            <!-- 搜索面板 -->
-            <div class="search-panel card mb-1">
-                <ElForm inline @submit="search" size="small">
-                    <ElFormItem class="mb-0" label="搜索地址">
-                        <ElInput style="width: 150px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
-                    </ElFormItem>
-                    <ElFormItem class="mb-0">
-                        <ElButton type="primary" @click="search" icon="Search">搜索</ElButton>
-                    </ElFormItem>
-                </ElForm>
 
-                <ElForm inline class="mt-1" size="small" >
-                    <ElFormItem class="mb-0" label="经度">
+            <SearchPanel @choose-location="chooseLocation"/>
+
+            <div class="search-panel card">
+                <ElForm inline class="" size="small" >
+                    <ElFormItem class="mb-0" label="经度" label-width="80px">
                         <ElInput style="width:120px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
                     </ElFormItem>
                     <ElFormItem class="mb-0" label="纬度">
@@ -23,13 +16,10 @@
                 </ElForm>
             </div>
 
-            <div class="result card mt-1" v-if="resultText">
-                {{resultText}}
-            </div>
-
             <CirclePanel
                 ref="refCirclePanel"
                 class="mt-1"
+                :keyword="keyword"
                 :search-address="resultText"
                 :lng="positionPicked.lng"
                 :lat="positionPicked.lat"
@@ -50,6 +40,7 @@ import {useRoute, useRouter} from "vue-router";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {key_service, key_web_js} from "@/mapConfig.ts";
 import {generateMarkerContent} from "@/page/MyMapLib.ts";
+import SearchPanel from "@/page/SearchPanel.vue";
 
 
 const refCirclePanel = ref()
@@ -133,36 +124,19 @@ onMounted(() => {
         })
 })
 
-
-function search(){
-    const url = 'https://restapi.amap.com/v3/geocode/geo'
-    axios({
-        url,
-        method: 'get',
-        params: {
-            key: key_service,
-            address: searchAddress.value
-        }
-    })
-        .then(response => {
-            let res = response.data
-            let geoLocation = res.geocodes[0].location
-            let locationInfo = res.geocodes[0]
-            console.log(geoLocation)
-            let locationArray = geoLocation.split(',')
-
-            positionPicked.value = {
-                lng: Number(locationArray[0]),
-                lat: Number(locationArray[1])
-            }
-            resultText.value = `${locationInfo.level}：${locationInfo.formatted_address}`
-
-            // 定位地图中心到搜索的地点
-            window.map.setCenter(locationArray, false, 1000)
-
-            refCirclePanel.value.name = searchAddress.value
-        })
+/**
+ * SEARCH
+ */
+const keyword = ref('')
+function chooseLocation(location: {name: string, location: number[], keyword: string}){
+    keyword.value = location.keyword
+    positionPicked.value = {
+        lng: location.location[0],
+        lat: location.location[1],
+    }
+    window.map.setCenter(location.location)
 }
+
 // 设置地图中心点：用户坐标
 function setMapCenterToUserLocation(status, res){
     if (status === 'complete') {
@@ -259,7 +233,7 @@ onUnmounted(() => {
     position: relative;
 }
 .float-panel{
-    width: 400px;
+    width: 500px;
     position: absolute;
     left: 20px;
     top: 20px;

@@ -1,18 +1,10 @@
 <template>
     <div class="map-container">
         <div class="float-panel">
-            <!-- 搜索面板 -->
-            <div class="search-panel card mb-1">
-                <ElForm inline @submit="search" size="small" label-width="80px">
-                    <ElFormItem class="mb-0" label="搜索地址">
-                        <ElInput style="width: 200px" placeholder="输入较完整的地址" v-model="searchAddress"></ElInput>
-                    </ElFormItem>
-                    <ElFormItem class="mb-0" label="">
-                        <ElButton type="primary" @click="search" icon="Search">搜索</ElButton>
-                    </ElFormItem>
-                </ElForm>
+            <SearchPanel @choose-location="chooseLocation"/>
 
-                <ElForm inline class="mt-1" size="small" >
+            <div class="search-panel card">
+                <ElForm inline class="" size="small" >
                     <ElFormItem class="mb-0" label="经度" label-width="80px">
                         <ElInput style="width:120px" placeholder="lng" v-model="positionPicked.lng"></ElInput>
                     </ElFormItem>
@@ -22,18 +14,13 @@
                 </ElForm>
             </div>
 
-            <!-- 搜索结果面板 -->
-            <div class="result card mt-1" v-if="searchResultText">
-                {{ searchResultText }}
-            </div>
-
             <RouteEditPanel
                 class="mt-1"
-                :search-location="searchAddress"
                 :policy="currentPolicy"
                 :lng="Number(positionPicked.lng)"
                 :lat="Number(positionPicked.lat)"
                 v-model="pathPointers"
+                :keyword="keyword"
                 @print="printRoute"
                 @showLine="showLine"
                 @changeCurrentPolicy="changePolicy"
@@ -114,9 +101,7 @@
         </transition>
 
 
-
         <div id="container" :style="`height: ${store.windowInsets.height}px`"></div>
-
     </div>
 </template>
 
@@ -125,9 +110,7 @@
 import AMapLoader from '@amap/amap-jsapi-loader';
 import ICON from "@/assets/icons";
 import RouteEditPanel from "@/page/route/components/RouteEditPanel.vue";
-
-import {key_service, key_web_js} from "@/mapConfig";
-import axios from "axios";
+import {key_web_js} from "@/mapConfig";
 import {Base64} from "js-base64";
 
 import {useProjectStore} from "@/pinia";
@@ -137,6 +120,7 @@ import {EntityRoute, EntityRoutePoint} from "@/page/route/Route.ts";
 import {ElMessage, ElNotification, FormRules} from "element-plus";
 import {useRoute} from "vue-router";
 import {generateMarkerContent} from "@/page/MyMapLib.ts";
+import SearchPanel from "@/page/SearchPanel.vue";
 
 const store = useProjectStore()
 const route = useRoute()
@@ -153,36 +137,15 @@ const positionPicked = ref({lng: 0, lat: 0})
 /**
  * SEARCH
  */
-const searchAddress = ref('')  // 地址搜索关键字
-const searchResultText = ref('')
-function search() {
-    const url = 'https://restapi.amap.com/v3/geocode/geo'
-    axios({
-        url,
-        method: 'get',
-        params: {
-            key: key_service,
-            address: searchAddress.value
-        }
-    })
-        .then(response => {
-            let res = response.data
-            let geoLocation = res.geocodes[0].location
-            let locationInfo = res.geocodes[0]
-            console.log(geoLocation)
-            let locationArray = geoLocation.split(',')
-
-            positionPicked.value = {
-                lng: Number(locationArray[0]),
-                lat: Number(locationArray[1])
-            }
-            searchResultText.value = `${locationInfo.level}：${locationInfo.formatted_address}`
-
-            // 定位地图中心到搜索的地点
-            window.map.setCenter(locationArray, false, 1000)
-        })
+const keyword = ref('')
+function chooseLocation(location: {name: string, location: number[], keyword: string}){
+    keyword.value = location.keyword
+    positionPicked.value = {
+        lng: location.location[0],
+        lat: location.location[1],
+    }
+    window.map.setCenter(location.location)
 }
-
 
 
 /**
@@ -570,11 +533,6 @@ onUnmounted(()=>{
     top: 20px;
     width: 500px;
     z-index: 100;
-
-    .search-panel {
-        background-color: white;
-        padding: 10px;
-    }
 }
 
 .result {
