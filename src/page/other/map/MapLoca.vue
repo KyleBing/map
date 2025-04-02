@@ -26,6 +26,7 @@ export default {
             isLoading: false,
             map: null,
             loca: null,
+            store: store
         }
     },
     mounted() {
