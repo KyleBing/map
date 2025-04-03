@@ -18,8 +18,7 @@
                 <ElDescriptionsItem v-if="path" label="总长">{{pathLength}}</ElDescriptionsItem>
             </ElDescriptions>
 
-            <ElForm inline size="small" class="mt-1" label-width="70px">
-
+            <ElForm inline size="small" class="mt-1" label-width="60px">
                 <div class="move-pad mb-1">
                     <div class="up">
                         <ElButton size="small"  @click=offsetMoveUp(5) type="primary" class="p-1">↑</ElButton>
@@ -33,22 +32,23 @@
                     </div>
                 </div>
                 <ElFormItem label="偏移量" class="mb-1">
-                    <ElInput type="number" :step="5" v-model="offsetN">
+                    <ElInput style="width: 230px" type="number" :step="5" v-model="offsetN">
                         <template #prepend>向北</template>
                         <template #append>米</template>
                     </ElInput>
                 </ElFormItem>
                 <ElFormItem label="偏移量" class="mb-1">
-                    <ElInput type="number" :step="5" v-model="offsetE">
+                    <ElInput style="width: 230px" type="number" :step="5" v-model="offsetE">
                         <template #prepend>向东</template>
                         <template #append>米</template>
                     </ElInput>
                 </ElFormItem>
                 <ElFormItem label="间隔点" class="mb-1">
-                    <ElInput type="number" :step="5" v-model="gapCount">
+                    <ElInput style="width: 230px" type="number" :step="5" v-model.lazy="gapCount">
                         <template #prepend>间隔</template>
                         <template #append>个数据点</template>
                     </ElInput>
+                    <ElButton class="ml-1" @click="refreshMarkers" type="primary">确定</ElButton>
                 </ElFormItem>
             </ElForm>
 
@@ -116,6 +116,12 @@ const xmlObj = ref(null)
 const offsetN = ref(45) // 北
 const offsetE = ref(545) // 东
 const gapCount = ref(100) // 间隔多少个数据点展示一个 marker
+
+function refreshMarkers(){
+    if (xmlObj.value){
+        loadAllPointer()
+    }
+}
 
 // 路径
 const path = ref(null)
@@ -542,11 +548,6 @@ watch(offsetN, () => {
 })
 watch(offsetE, () => {
     saveMapConfig()
-    if (xmlObj.value){
-        loadAllPointer()
-    }
-})
-watch(gapCount, () => {
     if (xmlObj.value){
         loadAllPointer()
     }

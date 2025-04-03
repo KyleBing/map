@@ -18,7 +18,7 @@
                 <ElDescriptionsItem v-if="path" label="总长">{{pathLength}}</ElDescriptionsItem>
             </ElDescriptions>
 
-            <ElForm inline size="small" class="mt-1" label-width="70px">
+            <ElForm inline size="small" class="mt-1" label-width="60px">
 
                 <div class="move-pad mb-1">
                     <div class="up">
@@ -33,22 +33,23 @@
                     </div>
                 </div>
                 <ElFormItem label="偏移量" class="mb-1">
-                    <ElInput type="number" :step="5" v-model="offsetN">
+                    <ElInput style="width: 230px" type="number" :step="5" v-model="offsetN">
                         <template #prepend>向北</template>
                         <template #append>米</template>
                     </ElInput>
                 </ElFormItem>
                 <ElFormItem label="偏移量" class="mb-1">
-                    <ElInput type="number" :step="5" v-model="offsetE">
+                    <ElInput style="width: 230px" type="number" :step="5" v-model="offsetE">
                         <template #prepend>向东</template>
                         <template #append>米</template>
                     </ElInput>
                 </ElFormItem>
                 <ElFormItem label="间隔点" class="mb-1">
-                    <ElInput type="number" :step="5" v-model="gapCount">
+                    <ElInput style="width: 230px" type="number" :step="5" v-model.lazy="gapCount">
                         <template #prepend>间隔</template>
                         <template #append>个数据点</template>
                     </ElInput>
+                    <ElButton class="ml-1" @click="refreshMarkers" type="primary">确定</ElButton>
                 </ElFormItem>
             </ElForm>
 
@@ -468,11 +469,11 @@ function offsetMoveDown(step: number){
  * 显示标签的间隔
  */
 const gapCount = ref(100) // 间隔多少个数据点展示一个 marker
-watch(gapCount, () => {
+function refreshMarkers(){
     if (xmlObj.value){
         loadAllPointer()
     }
-})
+}
 onUnmounted(() => {
     map.clearInfoWindow() // 清除地图上的信息窗体
     map.clearMap() // 删除所有 Marker
